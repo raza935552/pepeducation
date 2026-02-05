@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom base styles - Warm cream/gold theme */
+@layer base {
+    :root {
+        --color-gold: 154 123 79;
+        --color-caramel: 166 123 91;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply antialiased;
+    }
+}
+
+/* Custom component styles - Warm Theme */
+@layer components {
+    /* Buttons */
+    .btn {
+        @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+    }
+
+    .btn-primary {
+        @apply bg-gray-900 dark:bg-cream-100 text-white dark:text-brown-900 hover:bg-gray-800 dark:hover:bg-cream-200 focus:ring-gold-500;
+    }
+
+    .btn-secondary {
+        @apply bg-cream-200 dark:bg-brown-800 text-gray-900 dark:text-cream-100 hover:bg-cream-300 dark:hover:bg-brown-700 focus:ring-gold-500;
+    }
+
+    .btn-gold {
+        @apply bg-gold-500 text-white hover:bg-gold-600 focus:ring-gold-500;
+    }
+
+    .btn-outline {
+        @apply border-2 border-cream-300 dark:border-brown-600 text-gray-700 dark:text-cream-300 hover:bg-cream-100 dark:hover:bg-brown-800;
+    }
+
+    .btn-ghost {
+        @apply text-gray-600 dark:text-cream-400 hover:bg-cream-200 dark:hover:bg-brown-800;
+    }
+
+    /* Cards */
+    .card {
+        @apply bg-white dark:bg-brown-800 rounded-2xl shadow-sm border border-cream-200 dark:border-brown-700 p-6;
+    }
+
+    .card-compact {
+        @apply bg-white dark:bg-brown-800 rounded-xl shadow-sm border border-cream-200 dark:border-brown-700 p-4;
+    }
+
+    .card-cream {
+        @apply bg-cream-50 dark:bg-brown-900 rounded-2xl border border-cream-200 dark:border-brown-700 p-6;
+    }
+
+    /* Inputs */
+    .input {
+        @apply block w-full rounded-xl border-cream-300 dark:border-brown-600 bg-white dark:bg-brown-800 text-gray-900 dark:text-cream-100 placeholder-gray-400 dark:placeholder-cream-500 shadow-sm focus:border-gold-500 focus:ring-gold-500 sm:text-sm px-4 py-3;
+    }
+
+    .input-pill {
+        @apply block w-full rounded-full border-cream-300 dark:border-brown-600 bg-white dark:bg-brown-800 text-gray-900 dark:text-cream-100 placeholder-gray-400 dark:placeholder-cream-500 shadow-sm focus:border-gold-500 focus:ring-gold-500 sm:text-sm px-5 py-4;
+    }
+
+    /* Utility */
+    .skeleton {
+        @apply animate-pulse bg-cream-200 dark:bg-brown-700 rounded;
+    }
+
+    .glass {
+        @apply bg-white/80 dark:bg-brown-900/80 backdrop-blur-lg;
+    }
+
+    /* Section headings with icon badge */
+    .section-heading {
+        @apply text-xl font-bold text-gray-900 dark:text-cream-100 mb-4 flex items-center gap-3;
+    }
+
+    .section-heading-lg {
+        @apply text-2xl font-bold text-gray-900 dark:text-cream-100 mb-6 flex items-center gap-3;
+    }
+
+    .section-icon {
+        @apply flex items-center justify-center w-10 h-10 rounded-xl text-white shadow-lg;
+    }
+
+    .section-icon-sm {
+        @apply flex items-center justify-center w-8 h-8 rounded-lg text-white shadow-md;
+    }
+
+    /* Badge styles */
+    .badge {
+        @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+    }
+
+    .badge-gold {
+        @apply bg-gold-100 dark:bg-gold-900/30 text-gold-700 dark:text-gold-400;
+    }
+
+    .badge-cream {
+        @apply bg-cream-200 dark:bg-brown-700 text-gray-700 dark:text-cream-300;
+    }
+}
+
+/* Custom utility styles */
+@layer utilities {
+    .text-gradient {
+        @apply bg-clip-text text-transparent bg-gradient-to-r;
+    }
+
+    .text-gradient-gold {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-gold-400 to-caramel-500;
+    }
+
+    .glow-gold {
+        box-shadow: 0 0 20px rgba(154, 123, 79, 0.3);
+    }
+
+    .glow-caramel {
+        box-shadow: 0 0 20px rgba(166, 123, 91, 0.3);
+    }
+
+    /* Hide scrollbar but keep functionality */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+}

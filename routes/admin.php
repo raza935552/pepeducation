@@ -1,0 +1,111 @@
+<?php
+
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\PeptideController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ContributionController;
+use App\Http\Controllers\Admin\ContactMessageController;
+use App\Http\Controllers\Admin\PeptideRequestController;
+use App\Http\Controllers\Admin\SubscriberController;
+use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\SupporterController;
+use App\Http\Controllers\Admin\TemplateController;
+use App\Http\Controllers\Admin\QuizController;
+use App\Http\Controllers\Admin\QuizQuestionController;
+use App\Http\Controllers\Admin\QuizOutcomeController;
+use App\Http\Controllers\Admin\PopupController;
+use App\Http\Controllers\Admin\LeadMagnetController;
+use App\Http\Controllers\Admin\OutboundLinkController;
+use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\AnalyticsController;
+use Illuminate\Support\Facades\Route;
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
+
+    // Peptides
+    Route::resource('peptides', PeptideController::class);
+    Route::patch('peptides/{peptide}/toggle-publish', [PeptideController::class, 'togglePublish'])
+        ->name('peptides.toggle-publish');
+
+    // Categories
+    Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
+    Route::post('categories', [CategoryController::class, 'store'])->name('categories.store');
+    Route::put('categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
+    // Users
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::get('users/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::patch('users/{user}/suspend', [UserController::class, 'toggleSuspend'])->name('users.suspend');
+    Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    // Contributions
+    Route::get('contributions', [ContributionController::class, 'index'])->name('contributions.index');
+    Route::get('contributions/{contribution}', [ContributionController::class, 'show'])->name('contributions.show');
+    Route::post('contributions/{contribution}/approve', [ContributionController::class, 'approve'])->name('contributions.approve');
+    Route::post('contributions/{contribution}/reject', [ContributionController::class, 'reject'])->name('contributions.reject');
+
+    // Contact Messages
+    Route::get('messages', [ContactMessageController::class, 'index'])->name('messages.index');
+    Route::get('messages/{message}', [ContactMessageController::class, 'show'])->name('messages.show');
+    Route::patch('messages/{message}/status', [ContactMessageController::class, 'updateStatus'])->name('messages.status');
+    Route::delete('messages/{message}', [ContactMessageController::class, 'destroy'])->name('messages.destroy');
+
+    // Peptide Requests
+    Route::get('requests', [PeptideRequestController::class, 'index'])->name('requests.index');
+    Route::get('requests/{peptideRequest}', [PeptideRequestController::class, 'show'])->name('requests.show');
+    Route::patch('requests/{peptideRequest}/status', [PeptideRequestController::class, 'updateStatus'])->name('requests.status');
+    Route::delete('requests/{peptideRequest}', [PeptideRequestController::class, 'destroy'])->name('requests.destroy');
+
+    // Subscribers
+    Route::get('subscribers', [SubscriberController::class, 'index'])->name('subscribers.index');
+    Route::get('subscribers/export', [SubscriberController::class, 'export'])->name('subscribers.export');
+    Route::get('subscribers/{subscriber}', [SubscriberController::class, 'show'])->name('subscribers.show');
+    Route::get('subscribers/{subscriber}/profile', [SubscriberController::class, 'profile'])->name('subscribers.profile');
+    Route::delete('subscribers/{subscriber}', [SubscriberController::class, 'destroy'])->name('subscribers.destroy');
+
+    // Pages (Page Builder)
+    Route::resource('pages', PageController::class);
+    Route::post('pages/{page}/duplicate', [PageController::class, 'duplicate'])->name('pages.duplicate');
+    Route::post('pages/upload-image', [PageController::class, 'uploadImage'])->name('pages.upload-image');
+
+    // Page Templates
+    Route::get('templates', [TemplateController::class, 'index'])->name('templates.index');
+    Route::post('templates', [TemplateController::class, 'store'])->name('templates.store');
+    Route::get('templates/{template}', [TemplateController::class, 'show'])->name('templates.show');
+    Route::delete('templates/{template}', [TemplateController::class, 'destroy'])->name('templates.destroy');
+
+    // Supporters
+    Route::resource('supporters', SupporterController::class)->except(['show']);
+
+    // Marketing: Quizzes
+    Route::resource('quizzes', QuizController::class);
+    Route::post('quizzes/{quiz}/duplicate', [QuizController::class, 'duplicate'])->name('quizzes.duplicate');
+    Route::post('quizzes/{quiz}/questions', [QuizQuestionController::class, 'store'])->name('quizzes.questions.store');
+    Route::put('quizzes/{quiz}/questions/{question}', [QuizQuestionController::class, 'update'])->name('quizzes.questions.update');
+    Route::delete('quizzes/{quiz}/questions/{question}', [QuizQuestionController::class, 'destroy'])->name('quizzes.questions.destroy');
+    Route::post('quizzes/{quiz}/questions/reorder', [QuizQuestionController::class, 'reorder'])->name('quizzes.questions.reorder');
+    Route::post('quizzes/{quiz}/outcomes', [QuizOutcomeController::class, 'store'])->name('quizzes.outcomes.store');
+    Route::put('quizzes/{quiz}/outcomes/{outcome}', [QuizOutcomeController::class, 'update'])->name('quizzes.outcomes.update');
+    Route::delete('quizzes/{quiz}/outcomes/{outcome}', [QuizOutcomeController::class, 'destroy'])->name('quizzes.outcomes.destroy');
+
+    // Marketing: Popups
+    Route::resource('popups', PopupController::class);
+    Route::post('popups/{popup}/duplicate', [PopupController::class, 'duplicate'])->name('popups.duplicate');
+
+    // Marketing: Lead Magnets
+    Route::resource('lead-magnets', LeadMagnetController::class);
+    Route::post('lead-magnets/{leadMagnet}/duplicate', [LeadMagnetController::class, 'duplicate'])->name('lead-magnets.duplicate');
+
+    // Marketing: Outbound Links
+    Route::resource('outbound-links', OutboundLinkController::class);
+
+    // Settings (Integrations)
+    Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::post('settings', [SettingsController::class, 'update'])->name('settings.update');
+});
