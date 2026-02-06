@@ -30,7 +30,7 @@
             <h3 class="text-lg font-semibold mb-4">Funnel Segments</h3>
             @if(count($segments) > 0)
                 <div class="space-y-3">
-                    @foreach(['TOF' => 'Top of Funnel', 'MOF' => 'Middle of Funnel', 'BOF' => 'Bottom of Funnel'] as $key => $label)
+                    @foreach(['tof' => 'Top of Funnel', 'mof' => 'Middle of Funnel', 'bof' => 'Bottom of Funnel'] as $key => $label)
                         @php $count = $segments[$key] ?? 0; $total = array_sum($segments); $pct = $total > 0 ? round($count / $total * 100) : 0; @endphp
                         <div>
                             <div class="flex justify-between text-sm mb-1">
@@ -38,7 +38,7 @@
                                 <span class="font-medium">{{ number_format($count) }} ({{ $pct }}%)</span>
                             </div>
                             <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
-                                <div class="h-full {{ $key === 'TOF' ? 'bg-blue-500' : ($key === 'MOF' ? 'bg-yellow-500' : 'bg-green-500') }}" style="width: {{ $pct }}%"></div>
+                                <div class="h-full {{ $key === 'tof' ? 'bg-blue-500' : ($key === 'mof' ? 'bg-yellow-500' : 'bg-green-500') }}" style="width: {{ $pct }}%"></div>
                             </div>
                         </div>
                     @endforeach

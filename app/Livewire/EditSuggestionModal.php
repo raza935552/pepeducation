@@ -73,7 +73,8 @@ class EditSuggestionModal extends Component
     public function submit()
     {
         if (!auth()->check()) {
-            return redirect()->route('login');
+            $this->addError('newContent', 'You must be logged in to submit suggestions.');
+            return;
         }
 
         $this->validate();

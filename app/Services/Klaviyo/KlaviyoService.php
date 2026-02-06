@@ -14,11 +14,11 @@ class KlaviyoService
     protected ProfileService $profiles;
     protected EventService $events;
 
-    public function __construct()
+    public function __construct(KlaviyoClient $client, ProfileService $profiles, EventService $events)
     {
-        $this->client = new KlaviyoClient();
-        $this->profiles = new ProfileService($this->client);
-        $this->events = new EventService($this->client, $this->profiles);
+        $this->client = $client;
+        $this->profiles = $profiles;
+        $this->events = $events;
     }
 
     public function isEnabled(): bool

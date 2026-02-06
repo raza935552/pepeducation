@@ -4,9 +4,12 @@ namespace App\Livewire;
 
 use App\Models\ContactMessage;
 use Livewire\Component;
+use Livewire\Attributes\Renderless;
 
 class ContactModal extends Component
 {
+    protected int $rateLimitMaxAttempts = 3;
+
     public bool $show = false;
     public string $name = '';
     public string $email = '';
@@ -43,6 +46,16 @@ class ContactModal extends Component
     public function submit()
     {
         $this->validate();
+
+        // Simple rate limit: max 3 per session (bypassed on .test domains)
+        if (! \App\Providers\AppServiceProvider::isTestEnv()) {
+            $key = 'contact_submit_' . request()->ip();
+            if (cache()->get($key, 0) >= $this->rateLimitMaxAttempts) {
+                $this->addError('message', 'Too many submissions. Please try again later.');
+                return;
+            }
+            cache()->put($key, cache()->get($key, 0) + 1, 3600);
+        }
 
         ContactMessage::create([
             'user_id' => auth()->id(),

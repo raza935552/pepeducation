@@ -15,12 +15,13 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'throttle' => \App\Http\Middleware\ThrottleRequestsTest::class,
         ]);
 
-        // Exclude tracking cookies from encryption
+        // Exclude tracking cookies from encryption (session/segment only)
+        // pp_email removed - should not be stored in plain cookie
         $middleware->encryptCookies(except: [
             'pp_session_id',
-            'pp_email',
             'pp_segment',
         ]);
     })

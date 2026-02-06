@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Subscriber;
+use App\Jobs\SyncSubscriberToKlaviyo;
 use App\Services\Klaviyo\KlaviyoService;
 
 class SubscriberService
@@ -86,7 +87,7 @@ class SubscriberService
         return Subscriber::create([
             'email' => $email,
             'source' => $data['source'] ?? 'unknown',
-            'segment' => $data['segment'] ?? 'TOF',
+            'segment' => strtolower($data['segment'] ?? 'tof'),
             'first_session_id' => $data['first_session_id'] ?? null,
             'first_landing_page' => $data['first_landing_page'] ?? null,
             'ip_address' => $data['ip_address'] ?? request()->ip(),
@@ -97,7 +98,7 @@ class SubscriberService
     }
 
     /**
-     * Sync subscriber to Klaviyo with deduplication
+     * Dispatch async Klaviyo sync job
      */
     protected function syncToKlaviyo(Subscriber $subscriber, string $source): void
     {
@@ -105,18 +106,7 @@ class SubscriberService
             return;
         }
 
-        try {
-            // Sync profile (Klaviyo handles email-based dedup)
-            $this->klaviyo->syncProfile($subscriber);
-
-            // Track subscription event
-            $this->klaviyo->trackSubscribed($subscriber, $source);
-        } catch (\Exception $e) {
-            logger()->error('Klaviyo sync failed', [
-                'email' => $subscriber->email,
-                'error' => $e->getMessage(),
-            ]);
-        }
+        SyncSubscriberToKlaviyo::dispatch($subscriber, $source);
     }
 
     /**

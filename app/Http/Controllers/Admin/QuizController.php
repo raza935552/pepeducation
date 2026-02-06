@@ -96,7 +96,13 @@ class QuizController extends Controller
     {
         $newQuiz = $quiz->replicate();
         $newQuiz->name = $quiz->name . ' (Copy)';
-        $newQuiz->slug = \Str::slug($newQuiz->name);
+        $slug = $uniqueSlug = \Str::slug($newQuiz->name);
+        $count = 1;
+        while (Quiz::where('slug', $uniqueSlug)->exists()) {
+            $uniqueSlug = "{$slug}-{$count}";
+            $count++;
+        }
+        $newQuiz->slug = $uniqueSlug;
         $newQuiz->is_active = false;
         $newQuiz->starts_count = 0;
         $newQuiz->completions_count = 0;

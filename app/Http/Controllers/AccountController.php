@@ -32,7 +32,7 @@ class AccountController extends Controller
     {
         $bookmarks = Auth::user()
             ->bookmarks()
-            ->with('peptide')
+            ->with('peptide.categories')
             ->latest()
             ->paginate(12);
 

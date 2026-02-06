@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
@@ -59,9 +60,11 @@ class CategoryController extends Controller
     {
         $order = $request->validate(['order' => 'required|array'])['order'];
 
-        foreach ($order as $index => $id) {
-            Category::where('id', $id)->update(['sort_order' => $index]);
-        }
+        DB::transaction(function () use ($order) {
+            foreach ($order as $index => $id) {
+                Category::where('id', $id)->update(['sort_order' => $index]);
+            }
+        });
 
         return response()->json(['success' => true]);
     }

@@ -27,11 +27,10 @@ class ContactMessageController extends Controller
         }
 
         $messages = $query->paginate(20)->withQueryString();
-        $counts = [
-            'new' => ContactMessage::where('status', 'new')->count(),
-            'in_progress' => ContactMessage::where('status', 'in_progress')->count(),
-            'resolved' => ContactMessage::where('status', 'resolved')->count(),
-        ];
+        $counts = array_merge(
+            ['new' => 0, 'in_progress' => 0, 'resolved' => 0],
+            ContactMessage::selectRaw('status, COUNT(*) as count')->groupBy('status')->pluck('count', 'status')->toArray()
+        );
 
         return view('admin.messages.index', compact('messages', 'counts'));
     }

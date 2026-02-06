@@ -73,8 +73,26 @@ class TemplateController extends Controller
             $extension = 'png';
         }
 
+        // Only allow safe image extensions
+        $allowedExtensions = ['png', 'jpg', 'jpeg', 'webp'];
+        if (!in_array(strtolower($extension), $allowedExtensions)) {
+            return null;
+        }
+
         $imageData = base64_decode($base64);
         if ($imageData === false) {
+            return null;
+        }
+
+        // Enforce max size: 2MB
+        if (strlen($imageData) > 2 * 1024 * 1024) {
+            return null;
+        }
+
+        // Verify it's actually an image
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->buffer($imageData);
+        if (!str_starts_with($mimeType, 'image/')) {
             return null;
         }
 

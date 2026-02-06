@@ -5,14 +5,14 @@
         {{-- Header --}}
         <div class="flex items-center justify-between">
             <a href="{{ route('admin.subscribers.index') }}"
-               class="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               class="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900">
+                <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                 </svg>
                 Back to Subscribers
             </a>
             @if($subscriber->klaviyo_id)
-                <span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-full text-sm">
+                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm">
                     Synced to Klaviyo
                 </span>
             @endif

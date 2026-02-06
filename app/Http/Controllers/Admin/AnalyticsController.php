@@ -12,6 +12,7 @@ use App\Models\LeadMagnetDownload;
 use App\Models\OutboundClick;
 use App\Models\TrackingError;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -21,20 +22,34 @@ class AnalyticsController extends Controller
     {
         $period = $request->get('period', '7d');
         $startDate = $this->getStartDate($period);
+        $ttl = $this->cacheTtl($period);
+
+        $cached = fn(string $key, callable $cb) => Cache::remember("analytics:{$period}:{$key}", $ttl, $cb);
 
         return view('admin.analytics.index', [
             'period' => $period,
-            'overview' => $this->getOverviewStats($startDate),
-            'segments' => $this->getSegmentDistribution($startDate),
-            'topEvents' => $this->getTopEvents($startDate),
-            'ctaStats' => $this->getCTAStats($startDate),
-            'quizStats' => $this->getQuizStats($startDate),
-            'popupStats' => $this->getPopupStats($startDate),
-            'leadMagnetStats' => $this->getLeadMagnetStats($startDate),
-            'outboundStats' => $this->getOutboundStats($startDate),
-            'recentErrors' => $this->getRecentErrors(),
-            'dailyTrend' => $this->getDailyTrend($startDate),
+            'overview' => $cached('overview', fn() => $this->getOverviewStats($startDate)),
+            'segments' => $cached('segments', fn() => $this->getSegmentDistribution($startDate)),
+            'topEvents' => $cached('topEvents', fn() => $this->getTopEvents($startDate)),
+            'ctaStats' => $cached('ctaStats', fn() => $this->getCTAStats($startDate)),
+            'quizStats' => $cached('quizStats', fn() => $this->getQuizStats($startDate)),
+            'popupStats' => $cached('popupStats', fn() => $this->getPopupStats($startDate)),
+            'leadMagnetStats' => $cached('leadMagnets', fn() => $this->getLeadMagnetStats($startDate)),
+            'outboundStats' => $cached('outbound', fn() => $this->getOutboundStats($startDate)),
+            'recentErrors' => $cached('errors', fn() => $this->getRecentErrors()),
+            'dailyTrend' => $cached('trend', fn() => $this->getDailyTrend($startDate)),
         ]);
+    }
+
+    private function cacheTtl(string $period): int
+    {
+        return match($period) {
+            '24h' => 300,    // 5 minutes
+            '7d' => 1800,    // 30 minutes
+            '30d' => 3600,   // 1 hour
+            '90d' => 7200,   // 2 hours
+            default => 1800,
+        };
     }
 
     private function getStartDate(string $period): Carbon
@@ -53,7 +68,7 @@ class AnalyticsController extends Controller
         return [
             'sessions' => UserSession::where('created_at', '>=', $startDate)->count(),
             'uniqueVisitors' => UserSession::where('created_at', '>=', $startDate)
-                ->distinct('ip_address')->count('ip_address'),
+                ->where('is_returning', false)->count(),
             'pageViews' => UserEvent::where('created_at', '>=', $startDate)
                 ->where('event_type', 'page_view')->count(),
             'avgEngagement' => round(UserSession::where('created_at', '>=', $startDate)
@@ -107,20 +122,22 @@ class AnalyticsController extends Controller
             })
             ->toArray();
 
-        // Get CTAs by type
-        $byType = UserEvent::where('created_at', '>=', $startDate)
+        // Get CTAs by type (DB-level aggregation, not in-memory)
+        $byType = DB::table('user_events')
+            ->where('created_at', '>=', $startDate)
             ->where('event_type', 'cta_click')
-            ->get()
-            ->groupBy(fn($e) => $e->event_data['cta_type'] ?? 'general')
-            ->map(fn($g) => $g->count())
+            ->selectRaw("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.cta_type')), 'general') as cta_type, COUNT(*) as cnt")
+            ->groupBy('cta_type')
+            ->pluck('cnt', 'cta_type')
             ->toArray();
 
-        // Get CTAs by position
-        $byPosition = UserEvent::where('created_at', '>=', $startDate)
+        // Get CTAs by position (DB-level aggregation)
+        $byPosition = DB::table('user_events')
+            ->where('created_at', '>=', $startDate)
             ->where('event_type', 'cta_click')
-            ->get()
-            ->groupBy(fn($e) => $e->event_data['cta_position'] ?? 'unknown')
-            ->map(fn($g) => $g->count())
+            ->selectRaw("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.cta_position')), 'unknown') as cta_position, COUNT(*) as cnt")
+            ->groupBy('cta_position')
+            ->pluck('cnt', 'cta_position')
             ->toArray();
 
         // Get CTAs by source page

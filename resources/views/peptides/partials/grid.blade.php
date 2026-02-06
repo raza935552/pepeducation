@@ -1,17 +1,17 @@
 @if($peptides->isEmpty())
-    <div class="bg-white dark:bg-brown-800 rounded-2xl border border-cream-200 dark:border-brown-700 p-12 text-center">
-        <div class="w-20 h-20 mx-auto mb-6 rounded-2xl bg-cream-100 dark:bg-brown-700 flex items-center justify-center">
-            <svg class="w-10 h-10 text-cream-400 dark:text-cream-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="bg-white rounded-2xl border border-cream-200 p-12 text-center">
+        <div class="w-20 h-20 mx-auto mb-6 rounded-2xl bg-cream-100 flex items-center justify-center">
+            <svg aria-hidden="true" class="w-10 h-10 text-cream-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
         </div>
-        <h3 class="text-xl font-semibold text-gray-900 dark:text-cream-100 mb-2">No peptides found</h3>
-        <p class="text-gray-500 dark:text-cream-500 mb-6 max-w-md mx-auto">
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">No peptides found</h3>
+        <p class="text-gray-500 mb-6 max-w-md mx-auto">
             We couldn't find any peptides matching your criteria. Try adjusting your filters or search terms.
         </p>
         <a href="{{ route('peptides.index') }}"
            class="inline-flex items-center gap-2 px-6 py-3 bg-gold-500 hover:bg-gold-600 text-white font-medium rounded-xl transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
             </svg>
             Reset Filters
@@ -29,15 +29,15 @@
             <nav class="flex items-center gap-2" role="navigation" aria-label="Pagination">
                 {{-- Previous --}}
                 @if($peptides->onFirstPage())
-                    <span class="px-4 py-2 rounded-xl bg-cream-100 dark:bg-brown-800 text-cream-400 dark:text-cream-600 cursor-not-allowed">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span class="px-4 py-2 rounded-xl bg-cream-100 text-cream-400 cursor-not-allowed">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                         </svg>
                     </span>
                 @else
                     <a href="{{ $peptides->previousPageUrl() }}"
-                       class="px-4 py-2 rounded-xl bg-white dark:bg-brown-800 border border-cream-200 dark:border-brown-700 text-gray-600 dark:text-cream-300 hover:bg-gold-50 dark:hover:bg-brown-700 hover:border-gold-300 dark:hover:border-gold-700 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       class="px-4 py-2 rounded-xl bg-white border border-cream-200 text-gray-600 hover:bg-gold-50 hover:border-gold-300 transition-colors">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                         </svg>
                     </a>
@@ -51,7 +51,7 @@
                         </span>
                     @else
                         <a href="{{ $url }}"
-                           class="px-4 py-2 rounded-xl bg-white dark:bg-brown-800 border border-cream-200 dark:border-brown-700 text-gray-600 dark:text-cream-300 hover:bg-gold-50 dark:hover:bg-brown-700 hover:border-gold-300 dark:hover:border-gold-700 transition-colors min-w-[44px] text-center">
+                           class="px-4 py-2 rounded-xl bg-white border border-cream-200 text-gray-600 hover:bg-gold-50 hover:border-gold-300 transition-colors min-w-[44px] text-center">
                             {{ $page }}
                         </a>
                     @endif
@@ -60,14 +60,14 @@
                 {{-- Next --}}
                 @if($peptides->hasMorePages())
                     <a href="{{ $peptides->nextPageUrl() }}"
-                       class="px-4 py-2 rounded-xl bg-white dark:bg-brown-800 border border-cream-200 dark:border-brown-700 text-gray-600 dark:text-cream-300 hover:bg-gold-50 dark:hover:bg-brown-700 hover:border-gold-300 dark:hover:border-gold-700 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       class="px-4 py-2 rounded-xl bg-white border border-cream-200 text-gray-600 hover:bg-gold-50 hover:border-gold-300 transition-colors">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>
                     </a>
                 @else
-                    <span class="px-4 py-2 rounded-xl bg-cream-100 dark:bg-brown-800 text-cream-400 dark:text-cream-600 cursor-not-allowed">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span class="px-4 py-2 rounded-xl bg-cream-100 text-cream-400 cursor-not-allowed">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>
                     </span>

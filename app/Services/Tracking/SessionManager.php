@@ -6,6 +6,7 @@ use App\Models\UserSession;
 use App\Models\Subscriber;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class SessionManager
@@ -26,8 +27,7 @@ class SessionManager
             ->first();
 
         if ($session) {
-            $this->updateActivity($session);
-            return $session;
+            return $this->updateActivity($session);
         }
 
         return $this->createSession($sessionId);
@@ -54,8 +54,12 @@ class SessionManager
     protected function createSession(string $sessionId): UserSession
     {
         $userAgent = $this->request->userAgent() ?? '';
-        $isReturning = UserSession::where('ip_address', $this->request->ip())->exists();
-        $sessionNumber = UserSession::where('ip_address', $this->request->ip())->count() + 1;
+        $isReturning = UserSession::where('ip_address', $this->request->ip())
+            ->where('created_at', '>=', now()->subDays(30))
+            ->exists();
+        $sessionNumber = UserSession::where('ip_address', $this->request->ip())
+            ->where('created_at', '>=', now()->subDays(30))
+            ->count() + 1;
 
         return UserSession::create([
             'session_id' => $sessionId,
@@ -83,19 +87,23 @@ class SessionManager
         ]);
     }
 
-    protected function updateActivity(UserSession $session): void
+    protected function updateActivity(UserSession $session): UserSession
     {
         $timeout = (int) Setting::getValue('tracking', 'session_timeout_minutes', 30);
 
-        // Use updated_at for activity tracking
         if ($session->updated_at->diffInMinutes(now()) > $timeout) {
-            $session->endSession();
-            $this->createSession($this->getSessionId());
-            return;
+            // Use DB transaction to prevent duplicate session creation
+            return DB::transaction(function () use ($session) {
+                $locked = UserSession::where('id', $session->id)->lockForUpdate()->first();
+                if ($locked && !$locked->ended_at) {
+                    $locked->endSession();
+                }
+                return $this->createSession($this->getSessionId());
+            });
         }
 
-        // Touch to update updated_at timestamp
         $session->touch();
+        return $session;
     }
 
     protected function findSubscriberId(): ?int

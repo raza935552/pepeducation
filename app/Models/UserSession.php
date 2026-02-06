@@ -92,6 +92,11 @@ class UserSession extends Model
         return $query->whereDate('started_at', today());
     }
 
+    public function scopeOlderThan($query, int $days)
+    {
+        return $query->where('created_at', '<', now()->subDays($days));
+    }
+
     // Methods
     public function endSession(): void
     {

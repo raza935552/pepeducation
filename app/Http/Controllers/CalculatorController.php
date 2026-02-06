@@ -8,7 +8,8 @@ class CalculatorController extends Controller
 {
     public function index()
     {
-        $peptides = Peptide::orderBy('name')
+        $peptides = Peptide::where('is_published', true)
+            ->orderBy('name')
             ->select('id', 'name', 'abbreviation', 'typical_dose', 'dose_frequency', 'route')
             ->get();
 

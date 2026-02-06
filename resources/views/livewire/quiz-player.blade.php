@@ -22,11 +22,17 @@
                         type="email"
                         wire:model="email"
                         placeholder="Enter your email"
-                        class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold"
+                        autocomplete="email"
+                        required
+                        class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold disabled:opacity-50"
+                        wire:loading.attr="disabled"
                     >
                     @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     <div class="flex gap-3">
-                        <button type="submit" class="btn btn-primary flex-1">Continue</button>
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-primary flex-1 disabled:opacity-50">
+                            <span wire:loading.remove>Continue</span>
+                            <span wire:loading>Submitting...</span>
+                        </button>
                         <button type="button" wire:click="skipEmail" class="btn bg-gray-200 text-gray-700 hover:bg-gray-300">Skip</button>
                     </div>
                 </form>
@@ -62,7 +68,7 @@
                 @if(($quiz->settings['allow_back'] ?? true) && $currentStep > 0)
                     <div class="flex justify-start mt-8">
                         <button wire:click="previousStep" class="btn bg-gray-200 text-gray-700 hover:bg-gray-300">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg aria-hidden="true" class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                             </svg>
                             Back
@@ -77,7 +83,7 @@
         <div class="card p-8 text-center" wire:key="results">
             @if($outcome)
                 @if($outcome->result_image)
-                    <img src="{{ Storage::url($outcome->result_image) }}" alt="{{ $outcome->result_title }}" class="w-32 h-32 mx-auto mb-6 rounded-full object-cover">
+                    <img src="{{ Storage::url($outcome->result_image) }}" alt="{{ $outcome->result_title }}" loading="lazy" class="w-32 h-32 mx-auto mb-6 rounded-full object-cover">
                 @endif
 
                 <h2 class="text-3xl font-bold mb-4">{{ $outcome->result_title ?? $outcome->name }}</h2>

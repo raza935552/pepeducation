@@ -92,6 +92,22 @@ class TrackingManager
         return $this->eventRecorder->record($this->getSession(), UserEvent::TYPE_CLICK, $data);
     }
 
+    public function trackCTAClick(array $data): UserEvent
+    {
+        return $this->eventRecorder->record($this->getSession(), UserEvent::TYPE_CTA_CLICK, [
+            'extra' => [
+                'cta_name' => $data['cta_name'] ?? null,
+                'cta_type' => $data['cta_type'] ?? 'general',
+                'cta_position' => $data['cta_position'] ?? null,
+                'destination' => $data['destination'] ?? null,
+            ],
+            'page_url' => $data['source_page'] ?? $data['page_url'] ?? '',
+            'element_text' => $data['element_text'] ?? null,
+            'element_id' => $data['element_id'] ?? null,
+            'element_class' => $data['element_class'] ?? null,
+        ]);
+    }
+
     public function trackScroll(int $depth, string $url): UserEvent
     {
         return $this->eventRecorder->record($this->getSession(), UserEvent::TYPE_SCROLL, [
@@ -151,12 +167,13 @@ class TrackingManager
             'quiz_name' => $response->quiz?->name,
             'segment' => $response->segment,
             'outcome' => $response->outcome?->name,
-            'time_to_complete' => $response->time_to_complete,
+            'time_to_complete' => $response->duration_seconds,
         ], $response->klaviyo_properties ?? []));
 
         // Sync to Klaviyo specifically for quiz responses
-        if ($this->drivers->has('klaviyo')) {
-            $this->drivers->get('klaviyo')->getKlaviyoService()->trackQuizCompleted($response);
+        $klaviyoService = $this->getKlaviyoService();
+        if ($klaviyoService) {
+            $klaviyoService->trackQuizCompleted($response);
         }
     }
 
@@ -168,8 +185,9 @@ class TrackingManager
             'delivery_method' => $download->delivery_method,
         ]);
 
-        if ($this->drivers->has('klaviyo')) {
-            $this->drivers->get('klaviyo')->getKlaviyoService()->trackLeadMagnetDownload($download);
+        $klaviyoService = $this->getKlaviyoService();
+        if ($klaviyoService) {
+            $klaviyoService->trackLeadMagnetDownload($download);
         }
     }
 
@@ -181,9 +199,18 @@ class TrackingManager
             'segment' => $click->pp_segment,
         ]);
 
-        if ($this->drivers->has('klaviyo')) {
-            $this->drivers->get('klaviyo')->getKlaviyoService()->trackOutboundClick($click);
+        $klaviyoService = $this->getKlaviyoService();
+        if ($klaviyoService) {
+            $klaviyoService->trackOutboundClick($click);
         }
+    }
+
+    protected function getKlaviyoService()
+    {
+        $driver = $this->drivers->get('klaviyo');
+        return $driver && method_exists($driver, 'getKlaviyoService')
+            ? $driver->getKlaviyoService()
+            : null;
     }
 
     // Create outbound click record and broadcast (for OutboundController)
@@ -204,7 +231,7 @@ class TrackingManager
             'pp_segment' => $passedData['pp_segment'] ?? null,
             'pp_engagement_score' => $passedData['pp_engagement_score'] ?? null,
             'pp_health_goal' => $passedData['pp_health_goal'] ?? null,
-            'pp_experience' => $passedData['pp_experience_level'] ?? null,
+            'pp_experience_level' => $passedData['pp_experience_level'] ?? null,
             'pp_recommended_peptide' => $passedData['pp_recommended_peptide'] ?? null,
             'utm_source' => $link->utm_source,
             'utm_medium' => $link->utm_medium,
@@ -262,7 +289,7 @@ class TrackingManager
             'pp_segment' => $session->segment ?? $subscriber?->segment,
             'pp_engagement_score' => $session->engagement_score,
             'pp_email_hash' => $subscriber ? hash('sha256', $subscriber->email) : null,
-            'pp_quiz_completed' => $session->quiz_completed,
+            'pp_quiz_completed' => $session->converted && $session->conversion_type === 'quiz',
             'pp_health_goal' => $quizResponse?->klaviyo_properties['pp_health_goal'] ?? null,
             'pp_experience_level' => $quizResponse?->klaviyo_properties['pp_experience_level'] ?? null,
             'pp_recommended_peptide' => $quizResponse?->outcome?->recommended_peptides[0] ?? null,

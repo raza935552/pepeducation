@@ -7,6 +7,24 @@ import gjsCustomCode from 'grapesjs-custom-code';
 import gjsTouch from 'grapesjs-touch';
 import html2canvas from 'html2canvas';
 
+import registerCountdownTimer from './grapesjs-countdown';
+import registerUnsplash from './grapesjs-unsplash';
+import registerMediaLibrary from './grapesjs-media-library';
+import registerGlobalColors from './grapesjs-global-colors';
+import registerComparisonTable from './grapesjs-comparison-table';
+import registerExitIntent from './grapesjs-exit-intent';
+import registerTrustBadges from './grapesjs-trust-badges';
+import registerVideoTestimonial from './grapesjs-video-testimonial';
+import registerStickyCta from './grapesjs-sticky-cta';
+import registerFormBuilder from './grapesjs-form-builder';
+import registerSavedSections from './grapesjs-saved-sections';
+import registerVersionHistory from './grapesjs-version-history';
+import registerPageAnalytics from './grapesjs-page-analytics';
+import registerAnimations from './grapesjs-animations';
+import registerCalculator from './grapesjs-calculator';
+import registerMobilePreview from './grapesjs-mobile-preview';
+import registerImportExport from './grapesjs-import-export';
+import registerAiContent from './grapesjs-ai-content';
 import 'grapesjs/dist/css/grapes.min.css';
 
 window.initGrapesJS = function(config = {}) {
@@ -42,6 +60,7 @@ window.initGrapesJS = function(config = {}) {
         assetManager: {
             upload: '/admin/pages/upload-image',
             uploadName: 'image',
+            multiUpload: false,
             headers: {
                 'X-CSRF-TOKEN': csrfToken,
             },
@@ -116,6 +135,10 @@ window.initGrapesJS = function(config = {}) {
         selectorManager: {
             appendTo: '#selectors-panel',
         },
+
+        undoManager: {
+            maximumStackLength: 50,
+        },
     });
 
     // Load existing content if provided
@@ -123,11 +146,47 @@ window.initGrapesJS = function(config = {}) {
         editor.loadProjectData(config.projectData);
     }
 
+    // Handle image upload errors
+    editor.on('asset:upload:error', (error) => {
+        const msg = error?.message || 'Image upload failed. Please check file size (max 5MB) and format (JPG, PNG, WebP, GIF).';
+        showEditorToast(msg, 'error');
+    });
+
+    editor.on('asset:upload:response', (response) => {
+        if (response && !response.data) {
+            showEditorToast('Upload failed: invalid server response.', 'error');
+        }
+    });
+
     // Custom commands
     addCustomCommands(editor);
 
     // Add custom blocks
     addCustomBlocks(editor);
+
+    // Register countdown timer block & component type
+    registerCountdownTimer(editor);
+
+    // Register Unsplash stock photo integration
+    registerUnsplash(editor);
+
+    // Register Media Library
+    registerMediaLibrary(editor);
+    registerGlobalColors(editor);
+    registerComparisonTable(editor);
+    registerExitIntent(editor);
+    registerTrustBadges(editor);
+    registerVideoTestimonial(editor);
+    registerStickyCta(editor);
+    registerFormBuilder(editor);
+    registerSavedSections(editor);
+    registerVersionHistory(editor);
+    registerPageAnalytics(editor);
+    registerAnimations(editor);
+    registerCalculator(editor);
+    registerMobilePreview(editor);
+    registerImportExport(editor);
+    registerAiContent(editor);
 
     // Make editor globally accessible
     window.gjsEditor = editor;
@@ -176,35 +235,33 @@ function addCustomBlocks(editor) {
         label: 'Image Carousel',
         category: 'Carousel',
         content: `
-            <div class="carousel-container" style="position:relative; width:100%; overflow:hidden; border-radius:12px;">
-                <div class="carousel-track" style="display:flex; transition:transform 0.5s ease;">
-                    <div class="carousel-slide" style="min-width:100%; position:relative;">
-                        <img src="https://placehold.co/1200x500/9A7B4F/ffffff?text=Slide+1" style="width:100%; height:auto; display:block;" />
+            <div data-carousel data-autoplay="5000" style="position:relative; width:100%; overflow:hidden; border-radius:12px;">
+                <div data-carousel-track style="display:flex; transition:transform 0.5s ease;">
+                    <div data-carousel-slide style="min-width:100%; position:relative;">
+                        <img src="https://placehold.co/1200x500/9A7B4F/ffffff?text=Slide+1" style="width:100%; height:auto; display:block;" alt="Slide 1" />
                         <div style="position:absolute; bottom:20px; left:20px; color:white; text-shadow:0 2px 4px rgba(0,0,0,0.5);">
                             <h3 style="margin:0; font-size:24px;">Slide Title</h3>
                             <p style="margin:5px 0 0 0;">Slide description text</p>
                         </div>
                     </div>
-                    <div class="carousel-slide" style="min-width:100%; position:relative;">
-                        <img src="https://placehold.co/1200x500/A67B5B/ffffff?text=Slide+2" style="width:100%; height:auto; display:block;" />
+                    <div data-carousel-slide style="min-width:100%; position:relative;">
+                        <img src="https://placehold.co/1200x500/A67B5B/ffffff?text=Slide+2" style="width:100%; height:auto; display:block;" alt="Slide 2" />
                         <div style="position:absolute; bottom:20px; left:20px; color:white; text-shadow:0 2px 4px rgba(0,0,0,0.5);">
                             <h3 style="margin:0; font-size:24px;">Slide Title</h3>
                             <p style="margin:5px 0 0 0;">Slide description text</p>
                         </div>
                     </div>
-                    <div class="carousel-slide" style="min-width:100%; position:relative;">
-                        <img src="https://placehold.co/1200x500/C9A227/ffffff?text=Slide+3" style="width:100%; height:auto; display:block;" />
+                    <div data-carousel-slide style="min-width:100%; position:relative;">
+                        <img src="https://placehold.co/1200x500/C9A227/ffffff?text=Slide+3" style="width:100%; height:auto; display:block;" alt="Slide 3" />
                         <div style="position:absolute; bottom:20px; left:20px; color:white; text-shadow:0 2px 4px rgba(0,0,0,0.5);">
                             <h3 style="margin:0; font-size:24px;">Slide Title</h3>
                             <p style="margin:5px 0 0 0;">Slide description text</p>
                         </div>
                     </div>
                 </div>
-                <div style="position:absolute; bottom:15px; left:50%; transform:translateX(-50%); display:flex; gap:8px;">
-                    <span style="width:10px; height:10px; border-radius:50%; background:#9A7B4F;"></span>
-                    <span style="width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,0.5);"></span>
-                    <span style="width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,0.5);"></span>
-                </div>
+                <button data-carousel-prev style="position:absolute;top:50%;left:10px;transform:translateY(-50%);background:rgba(0,0,0,0.5);color:#fff;border:none;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:18px;" aria-label="Previous slide">&#8249;</button>
+                <button data-carousel-next style="position:absolute;top:50%;right:10px;transform:translateY(-50%);background:rgba(0,0,0,0.5);color:#fff;border:none;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:18px;" aria-label="Next slide">&#8250;</button>
+                <div data-carousel-dots style="position:absolute; bottom:15px; left:50%; transform:translateX(-50%); display:flex; gap:8px;"></div>
             </div>
         `,
         media: `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="6" width="20" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="16" r="1"/><circle cx="9" cy="16" r="1"/><circle cx="15" cy="16" r="1"/></svg>`,
@@ -240,28 +297,37 @@ function addCustomBlocks(editor) {
         label: 'Product Carousel',
         category: 'Carousel',
         content: `
-            <div style="padding:40px 20px; background:#fff;">
+            <div data-carousel style="position:relative; padding:40px 20px; background:#fff; overflow:hidden;">
                 <h2 style="text-align:center; margin-bottom:30px; color:#333;">Featured Products</h2>
-                <div style="display:flex; gap:20px; overflow-x:auto; padding:10px 0;">
-                    <div style="min-width:280px; background:#f8f5f0; border-radius:12px; padding:20px; text-align:center;">
-                        <img src="https://placehold.co/200x200/9A7B4F/ffffff?text=Product" style="width:100%; border-radius:8px;" />
-                        <h3 style="margin:15px 0 10px; color:#333;">Product Name</h3>
-                        <p style="color:#9A7B4F; font-weight:600; font-size:20px;">$99.00</p>
-                        <button style="background:#9A7B4F; color:white; border:none; padding:12px 30px; border-radius:25px; cursor:pointer; font-weight:600;">Add to Cart</button>
+                <div data-carousel-track style="display:flex; transition:transform 0.5s ease;">
+                    <div data-carousel-slide style="min-width:100%; display:flex; justify-content:center;">
+                        <div style="max-width:280px; background:#f8f5f0; border-radius:12px; padding:20px; text-align:center;">
+                            <img src="https://placehold.co/200x200/9A7B4F/ffffff?text=Product" style="width:100%; border-radius:8px;" alt="Product 1" />
+                            <h3 style="margin:15px 0 10px; color:#333;">Product Name</h3>
+                            <p style="color:#9A7B4F; font-weight:600; font-size:20px;">$99.00</p>
+                            <button style="background:#9A7B4F; color:white; border:none; padding:12px 30px; border-radius:25px; cursor:pointer; font-weight:600;">Add to Cart</button>
+                        </div>
                     </div>
-                    <div style="min-width:280px; background:#f8f5f0; border-radius:12px; padding:20px; text-align:center;">
-                        <img src="https://placehold.co/200x200/A67B5B/ffffff?text=Product" style="width:100%; border-radius:8px;" />
-                        <h3 style="margin:15px 0 10px; color:#333;">Product Name</h3>
-                        <p style="color:#9A7B4F; font-weight:600; font-size:20px;">$149.00</p>
-                        <button style="background:#9A7B4F; color:white; border:none; padding:12px 30px; border-radius:25px; cursor:pointer; font-weight:600;">Add to Cart</button>
+                    <div data-carousel-slide style="min-width:100%; display:flex; justify-content:center;">
+                        <div style="max-width:280px; background:#f8f5f0; border-radius:12px; padding:20px; text-align:center;">
+                            <img src="https://placehold.co/200x200/A67B5B/ffffff?text=Product" style="width:100%; border-radius:8px;" alt="Product 2" />
+                            <h3 style="margin:15px 0 10px; color:#333;">Product Name</h3>
+                            <p style="color:#9A7B4F; font-weight:600; font-size:20px;">$149.00</p>
+                            <button style="background:#9A7B4F; color:white; border:none; padding:12px 30px; border-radius:25px; cursor:pointer; font-weight:600;">Add to Cart</button>
+                        </div>
                     </div>
-                    <div style="min-width:280px; background:#f8f5f0; border-radius:12px; padding:20px; text-align:center;">
-                        <img src="https://placehold.co/200x200/C9A227/ffffff?text=Product" style="width:100%; border-radius:8px;" />
-                        <h3 style="margin:15px 0 10px; color:#333;">Product Name</h3>
-                        <p style="color:#9A7B4F; font-weight:600; font-size:20px;">$199.00</p>
-                        <button style="background:#9A7B4F; color:white; border:none; padding:12px 30px; border-radius:25px; cursor:pointer; font-weight:600;">Add to Cart</button>
+                    <div data-carousel-slide style="min-width:100%; display:flex; justify-content:center;">
+                        <div style="max-width:280px; background:#f8f5f0; border-radius:12px; padding:20px; text-align:center;">
+                            <img src="https://placehold.co/200x200/C9A227/ffffff?text=Product" style="width:100%; border-radius:8px;" alt="Product 3" />
+                            <h3 style="margin:15px 0 10px; color:#333;">Product Name</h3>
+                            <p style="color:#9A7B4F; font-weight:600; font-size:20px;">$199.00</p>
+                            <button style="background:#9A7B4F; color:white; border:none; padding:12px 30px; border-radius:25px; cursor:pointer; font-weight:600;">Add to Cart</button>
+                        </div>
                     </div>
                 </div>
+                <button data-carousel-prev style="position:absolute;top:50%;left:10px;transform:translateY(-50%);background:rgba(0,0,0,0.5);color:#fff;border:none;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:18px;" aria-label="Previous product">&#8249;</button>
+                <button data-carousel-next style="position:absolute;top:50%;right:10px;transform:translateY(-50%);background:rgba(0,0,0,0.5);color:#fff;border:none;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:18px;" aria-label="Next product">&#8250;</button>
+                <div data-carousel-dots style="text-align:center; margin-top:20px; display:flex; justify-content:center; gap:8px;"></div>
             </div>
         `,
         media: `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="6" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect x="11" y="5" width="6" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19 9l2 3-2 3" fill="none" stroke="currentColor" stroke-width="2"/></svg>`,
@@ -429,30 +495,36 @@ function addCustomBlocks(editor) {
         label: 'FAQ Accordion',
         category: 'Marketing',
         content: `
-            <div style="padding:60px 20px; background:#f8f5f0;">
+            <div data-faq style="padding:60px 20px; background:#f8f5f0;">
                 <div style="max-width:700px; margin:0 auto;">
                     <h2 style="text-align:center; margin-bottom:40px; color:#333;">Frequently Asked Questions</h2>
                     <div style="display:flex; flex-direction:column; gap:15px;">
-                        <div style="background:white; border-radius:12px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
-                            <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+                        <div data-faq-item style="background:white; border-radius:12px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+                            <div data-faq-trigger style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" role="button" tabindex="0" aria-expanded="false">
                                 <h4 style="margin:0; color:#333;">How long until I see results?</h4>
-                                <span style="color:#9A7B4F; font-size:24px;">+</span>
+                                <span data-faq-icon style="color:#9A7B4F; font-size:24px; transition:transform 0.3s;">+</span>
                             </div>
-                            <p style="margin:15px 0 0; color:#666; line-height:1.6;">Most customers begin to notice improvements within 2-4 weeks of consistent use. For optimal results, we recommend using the product for at least 90 days.</p>
+                            <div data-faq-content style="max-height:0; overflow:hidden; transition:max-height 0.3s ease;">
+                                <p style="margin:15px 0 0; color:#666; line-height:1.6;">Most customers begin to notice improvements within 2-4 weeks of consistent use. For optimal results, we recommend using the product for at least 90 days.</p>
+                            </div>
                         </div>
-                        <div style="background:white; border-radius:12px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
-                            <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+                        <div data-faq-item style="background:white; border-radius:12px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+                            <div data-faq-trigger style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" role="button" tabindex="0" aria-expanded="false">
                                 <h4 style="margin:0; color:#333;">Is there a money-back guarantee?</h4>
-                                <span style="color:#9A7B4F; font-size:24px;">+</span>
+                                <span data-faq-icon style="color:#9A7B4F; font-size:24px; transition:transform 0.3s;">+</span>
                             </div>
-                            <p style="margin:15px 0 0; color:#666; line-height:1.6;">Yes! We offer a 30-day money-back guarantee. If you're not completely satisfied, simply contact us for a full refund.</p>
+                            <div data-faq-content style="max-height:0; overflow:hidden; transition:max-height 0.3s ease;">
+                                <p style="margin:15px 0 0; color:#666; line-height:1.6;">Yes! We offer a 30-day money-back guarantee. If you're not completely satisfied, simply contact us for a full refund.</p>
+                            </div>
                         </div>
-                        <div style="background:white; border-radius:12px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
-                            <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+                        <div data-faq-item style="background:white; border-radius:12px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+                            <div data-faq-trigger style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" role="button" tabindex="0" aria-expanded="false">
                                 <h4 style="margin:0; color:#333;">How do I use this product?</h4>
-                                <span style="color:#9A7B4F; font-size:24px;">+</span>
+                                <span data-faq-icon style="color:#9A7B4F; font-size:24px; transition:transform 0.3s;">+</span>
                             </div>
-                            <p style="margin:15px 0 0; color:#666; line-height:1.6;">Simply follow the instructions included with your order. We recommend taking it once daily with food for best absorption.</p>
+                            <div data-faq-content style="max-height:0; overflow:hidden; transition:max-height 0.3s ease;">
+                                <p style="margin:15px 0 0; color:#666; line-height:1.6;">Simply follow the instructions included with your order. We recommend taking it once daily with food for best absorption.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -551,11 +623,24 @@ function cleanExportedCss(css) {
     css = css.replace(/border:\s*1px\s+dashed\s+#ccc;?/gi, '');
     // Remove min-height on empty cells (only needed in editor)
     css = css.replace(/min-height:\s*100px;?/gi, '');
-    // Clean up empty rules and extra whitespace
+    // Remove editor-only selectors (gjs-selected, gjs-hovered)
+    css = css.replace(/\.gjs-selected[^}]*}/g, '');
+    css = css.replace(/\.gjs-hovered[^}]*}/g, '');
+    // Remove empty rules
+    css = css.replace(/[^{}]+\{\s*\}/g, '');
+    // Clean up extra semicolons and whitespace
     css = css.replace(/\s*;\s*;/g, ';');
     css = css.replace(/{\s*;/g, '{');
     css = css.replace(/;\s*}/g, '}');
-    return css;
+    return css.trim();
+}
+
+// Helper to clean HTML - removes editor-only data attributes
+function cleanExportedHtml(html) {
+    html = html.replace(/\s*data-gjs-type="[^"]*"/g, '');
+    html = html.replace(/\s*data-highlightable="[^"]*"/g, '');
+    html = html.replace(/\s*id="i[a-z0-9]+"/g, '');
+    return html;
 }
 
 // Helper function to get editor data for saving
@@ -567,7 +652,7 @@ window.getGrapesJSData = function() {
     const cleanedCss = cleanExportedCss(rawCss);
 
     return {
-        html: editor.getHtml(),
+        html: cleanExportedHtml(editor.getHtml()),
         css: cleanedCss,
         projectData: editor.getProjectData(),
     };
@@ -590,23 +675,31 @@ class AutosaveManager {
     }
 
     init() {
-        // Listen for changes
-        this.editor.on('component:add component:remove component:update', () => this.markDirty());
-        this.editor.on('style:change', () => this.markDirty());
-        this.editor.on('canvas:drop', () => this.markDirty());
+        // Debounced dirty marker to avoid rapid-fire from drag-drop
+        let dirtyTimeout = null;
+        this._debouncedDirty = () => {
+            clearTimeout(dirtyTimeout);
+            dirtyTimeout = setTimeout(() => this.markDirty(), 150);
+        };
+
+        // Listen for changes (store ref for cleanup)
+        this.editor.on('component:add component:remove component:update', this._debouncedDirty);
+        this.editor.on('style:change', this._debouncedDirty);
+        this.editor.on('canvas:drop', this._debouncedDirty);
 
         // Start autosave timer
         this.startTimer();
 
-        // Save before unload
-        window.addEventListener('beforeunload', (e) => {
+        // Save before unload (store ref for cleanup)
+        this._beforeUnload = (e) => {
             if (this.isDirty) {
                 this.save();
                 e.preventDefault();
                 e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
                 return e.returnValue;
             }
-        });
+        };
+        window.addEventListener('beforeunload', this._beforeUnload);
     }
 
     markDirty() {
@@ -638,6 +731,9 @@ class AutosaveManager {
     }
 
     save() {
+        if (this._isSaving) return false;
+        this._isSaving = true;
+
         try {
             this.onStatusChange({ dirty: this.isDirty, saving: true });
 
@@ -660,9 +756,16 @@ class AutosaveManager {
 
             return true;
         } catch (error) {
-            console.error('Autosave failed:', error);
-            this.onStatusChange({ dirty: this.isDirty, saving: false, error: true });
+            if (error.name === 'QuotaExceededError') {
+                console.error('LocalStorage full - please save to server');
+                this.onStatusChange({ dirty: this.isDirty, saving: false, error: 'Storage full' });
+            } else {
+                console.error('Autosave failed:', error);
+                this.onStatusChange({ dirty: this.isDirty, saving: false, error: true });
+            }
             return false;
+        } finally {
+            this._isSaving = false;
         }
     }
 
@@ -712,8 +815,30 @@ class AutosaveManager {
 
     destroy() {
         this.stopTimer();
+        if (this._debouncedDirty) {
+            this.editor.off('component:add component:remove component:update', this._debouncedDirty);
+            this.editor.off('style:change', this._debouncedDirty);
+            this.editor.off('canvas:drop', this._debouncedDirty);
+        }
+        if (this._beforeUnload) {
+            window.removeEventListener('beforeunload', this._beforeUnload);
+        }
     }
 }
+
+// Toast notification for editor
+function showEditorToast(message, type = 'info') {
+    const toast = document.createElement('div');
+    const bg = type === 'success' ? 'bg-green-600' : type === 'error' ? 'bg-red-600' : 'bg-blue-600';
+    toast.className = `fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg text-white z-50 transition-opacity duration-300 ${bg}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        toast.classList.add('opacity-0');
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+window.showEditorToast = showEditorToast;
 
 // Export autosave manager
 window.GrapesJSAutosave = AutosaveManager;
@@ -738,6 +863,7 @@ window.captureCanvasThumbnail = async function(options = {}) {
     const maxWidth = options.maxWidth || 400;
     const maxHeight = options.maxHeight || 300;
     const quality = options.quality || 0.8;
+    const timeout = options.timeout || 10000; // 10s timeout
 
     try {
         const editor = window.gjsEditor;
@@ -747,16 +873,22 @@ window.captureCanvasThumbnail = async function(options = {}) {
         const body = frame.contentDocument.body;
         if (!body) return null;
 
-        // Capture the canvas content
-        const canvas = await html2canvas(body, {
+        // Race html2canvas against a timeout
+        const capturePromise = html2canvas(body, {
             width: body.scrollWidth,
-            height: Math.min(body.scrollHeight, 1500), // Limit height
-            scale: 0.5, // Reduce scale for smaller file size
+            height: Math.min(body.scrollHeight, 1500),
+            scale: 0.5,
             useCORS: true,
             allowTaint: true,
             backgroundColor: '#ffffff',
             logging: false,
         });
+
+        const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Thumbnail capture timed out')), timeout)
+        );
+
+        const canvas = await Promise.race([capturePromise, timeoutPromise]);
 
         // Resize to thumbnail dimensions
         const thumbCanvas = document.createElement('canvas');

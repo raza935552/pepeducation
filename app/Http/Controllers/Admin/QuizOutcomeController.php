@@ -13,30 +13,34 @@ class QuizOutcomeController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255',
-            'headline' => 'nullable|string|max:255',
-            'body' => 'nullable|string',
-            'image' => 'nullable|string',
-            'min_score' => 'nullable|integer|min:0',
+            'condition_type' => 'nullable|in:segment,score,answer',
             'segment' => 'nullable|in:tof,mof,bof',
-            'recommended_peptides' => 'nullable|array',
-            'cta_text' => 'nullable|string|max:255',
-            'cta_url' => 'nullable|string',
+            'min_score' => 'nullable|integer|min:0',
+            'score_type' => 'nullable|string|max:50',
+            'answer_question' => 'nullable|string|max:255',
+            'answer_value' => 'nullable|string|max:255',
+            'result_title' => 'nullable|string|max:255',
+            'result_message' => 'nullable|string',
+            'result_image' => 'nullable|string',
+            'redirect_url' => 'nullable|string',
+            'redirect_type' => 'nullable|in:internal,external,product',
+            'recommended_peptide_id' => 'nullable|exists:peptides,id',
+            'product_link' => 'nullable|string',
             'klaviyo_properties' => 'nullable|array',
         ]);
 
         $outcome = $quiz->outcomes()->create([
             'name' => $validated['name'],
-            'slug' => $validated['slug'] ?: \Str::slug($validated['name']),
-            'headline' => $validated['headline'],
-            'body' => $validated['body'],
-            'image' => $validated['image'],
-            'min_score' => $validated['min_score'] ?? 0,
-            'segment' => $validated['segment'],
-            'recommended_peptides' => $validated['recommended_peptides'] ?? [],
-            'cta_text' => $validated['cta_text'] ?? 'Continue',
-            'cta_url' => $validated['cta_url'],
+            'conditions' => $this->buildConditions($validated),
+            'result_title' => $validated['result_title'] ?? null,
+            'result_message' => $validated['result_message'] ?? null,
+            'result_image' => $validated['result_image'] ?? null,
+            'redirect_url' => $validated['redirect_url'] ?? null,
+            'redirect_type' => $validated['redirect_type'] ?? 'internal',
+            'recommended_peptide_id' => $validated['recommended_peptide_id'] ?? null,
+            'product_link' => $validated['product_link'] ?? null,
             'klaviyo_properties' => $validated['klaviyo_properties'] ?? [],
+            'priority' => $quiz->outcomes()->max('priority') + 1,
         ]);
 
         if ($request->wantsJson()) {
@@ -50,29 +54,32 @@ class QuizOutcomeController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255',
-            'headline' => 'nullable|string|max:255',
-            'body' => 'nullable|string',
-            'image' => 'nullable|string',
-            'min_score' => 'nullable|integer|min:0',
+            'condition_type' => 'nullable|in:segment,score,answer',
             'segment' => 'nullable|in:tof,mof,bof',
-            'recommended_peptides' => 'nullable|array',
-            'cta_text' => 'nullable|string|max:255',
-            'cta_url' => 'nullable|string',
+            'min_score' => 'nullable|integer|min:0',
+            'score_type' => 'nullable|string|max:50',
+            'answer_question' => 'nullable|string|max:255',
+            'answer_value' => 'nullable|string|max:255',
+            'result_title' => 'nullable|string|max:255',
+            'result_message' => 'nullable|string',
+            'result_image' => 'nullable|string',
+            'redirect_url' => 'nullable|string',
+            'redirect_type' => 'nullable|in:internal,external,product',
+            'recommended_peptide_id' => 'nullable|exists:peptides,id',
+            'product_link' => 'nullable|string',
             'klaviyo_properties' => 'nullable|array',
         ]);
 
         $outcome->update([
             'name' => $validated['name'],
-            'slug' => $validated['slug'] ?: \Str::slug($validated['name']),
-            'headline' => $validated['headline'],
-            'body' => $validated['body'],
-            'image' => $validated['image'],
-            'min_score' => $validated['min_score'] ?? 0,
-            'segment' => $validated['segment'],
-            'recommended_peptides' => $validated['recommended_peptides'] ?? [],
-            'cta_text' => $validated['cta_text'],
-            'cta_url' => $validated['cta_url'],
+            'conditions' => $this->buildConditions($validated),
+            'result_title' => $validated['result_title'] ?? null,
+            'result_message' => $validated['result_message'] ?? null,
+            'result_image' => $validated['result_image'] ?? null,
+            'redirect_url' => $validated['redirect_url'] ?? null,
+            'redirect_type' => $validated['redirect_type'] ?? 'internal',
+            'recommended_peptide_id' => $validated['recommended_peptide_id'] ?? null,
+            'product_link' => $validated['product_link'] ?? null,
             'klaviyo_properties' => $validated['klaviyo_properties'] ?? [],
         ]);
 
@@ -81,6 +88,29 @@ class QuizOutcomeController extends Controller
         }
 
         return back()->with('success', 'Outcome updated.');
+    }
+
+    private function buildConditions(array $validated): array
+    {
+        $type = $validated['condition_type'] ?? null;
+
+        return match ($type) {
+            'segment' => [
+                'type' => 'segment',
+                'segment' => $validated['segment'] ?? 'tof',
+            ],
+            'score' => [
+                'type' => 'score',
+                'min_score' => $validated['min_score'] ?? 0,
+                'score_type' => $validated['score_type'] ?? 'total',
+            ],
+            'answer' => [
+                'type' => 'answer',
+                'question' => $validated['answer_question'] ?? null,
+                'value' => $validated['answer_value'] ?? null,
+            ],
+            default => [],
+        };
     }
 
     public function destroy(Quiz $quiz, QuizOutcome $outcome)

@@ -25,14 +25,16 @@
                 x-transition:leave-start="opacity-100 scale-100"
                 x-transition:leave-end="opacity-0 scale-95"
                 class="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden"
+                role="dialog" aria-modal="true" aria-labelledby="popup-title"
                 style="{{ $this->activePopup->getInlineStyles() }}"
             >
                 <!-- Close Button -->
                 <button
                     @click="$wire.closePopup(); open = false"
+                    aria-label="Close"
                     class="absolute top-3 right-3 z-10 p-1 rounded-full bg-black/10 hover:bg-black/20 transition-colors"
                 >
-                    <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg aria-hidden="true" class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
@@ -41,10 +43,10 @@
                     <!-- Popup Content -->
                     <div class="p-6 text-center">
                         @if($this->activePopup->design['image'] ?? null)
-                            <img src="{{ Storage::url($this->activePopup->design['image']) }}" alt="" class="w-full h-40 object-cover mb-4 -mt-6 -mx-6" style="width: calc(100% + 3rem);">
+                            <img src="{{ Storage::url($this->activePopup->design['image']) }}" alt="{{ $this->activePopup->design['headline'] ?? $this->activePopup->name }}" class="w-full h-40 object-cover mb-4 -mt-6 -mx-6" style="width: calc(100% + 3rem);">
                         @endif
 
-                        <h2 class="text-2xl font-bold mb-2" style="color: {{ $this->activePopup->design['text_color'] ?? '#1f2937' }}">
+                        <h2 id="popup-title" class="text-2xl font-bold mb-2" style="color: {{ $this->activePopup->design['text_color'] ?? '#1f2937' }}">
                             {{ $this->activePopup->design['headline'] ?? $this->activePopup->name }}
                         </h2>
 
@@ -57,18 +59,22 @@
                                 <input
                                     type="email"
                                     wire:model="email"
+                                    autocomplete="email"
                                     placeholder="{{ $this->activePopup->design['placeholder'] ?? 'Enter your email' }}"
-                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-brand-gold focus:ring-brand-gold"
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-brand-gold focus:ring-brand-gold disabled:opacity-50"
                                     required
+                                    wire:loading.attr="disabled"
                                 >
                                 @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
 
                                 <button
                                     type="submit"
-                                    class="w-full py-3 px-6 rounded-lg font-semibold transition-colors"
+                                    wire:loading.attr="disabled"
+                                    class="w-full py-3 px-6 rounded-lg font-semibold transition-colors disabled:opacity-50"
                                     style="background-color: {{ $this->activePopup->design['button_color'] ?? '#D4A35A' }}; color: {{ $this->activePopup->design['button_text_color'] ?? '#ffffff' }}"
                                 >
-                                    {{ $this->activePopup->design['button_text'] ?? 'Subscribe' }}
+                                    <span wire:loading.remove>{{ $this->activePopup->design['button_text'] ?? 'Subscribe' }}</span>
+                                    <span wire:loading>Submitting...</span>
                                 </button>
                             </form>
 
@@ -101,7 +107,7 @@
                     <!-- Success State -->
                     <div class="p-8 text-center">
                         <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center">
-                            <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg aria-hidden="true" class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                             </svg>
                         </div>

@@ -8,7 +8,7 @@
             <div class="card p-6">
                 <h3 class="text-lg font-semibold mb-4">Popup Content</h3>
                 <div class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-3 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Name (internal)</label>
                             <input type="text" name="name" value="{{ old('name', $popup?->name) }}" required
@@ -18,6 +18,14 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1">Slug</label>
                             <input type="text" name="slug" value="{{ old('slug', $popup?->slug) }}"
                                 class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                            <select name="type" class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                                <option value="lead_capture" {{ old('type', $popup?->type) === 'lead_capture' ? 'selected' : '' }}>Lead Capture</option>
+                                <option value="cta" {{ old('type', $popup?->type) === 'cta' ? 'selected' : '' }}>CTA</option>
+                                <option value="announcement" {{ old('type', $popup?->type) === 'announcement' ? 'selected' : '' }}>Announcement</option>
+                            </select>
                         </div>
                     </div>
                     <div>

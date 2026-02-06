@@ -7,6 +7,7 @@ use App\Models\QuizResponse;
 use App\Models\QuizOutcome;
 use App\Services\SubscriberService;
 use App\Services\Klaviyo\KlaviyoService;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class QuizPlayer extends Component
@@ -31,8 +32,26 @@ class QuizPlayer extends Component
 
     public function startQuiz(): void
     {
-        // Use tracking session ID from cookie (same as tracker.js)
         $trackingSessionId = request()->cookie('pp_session_id') ?? session()->getId();
+
+        // Check for existing in-progress response to prevent duplicate starts on refresh
+        $existing = QuizResponse::where('quiz_id', $this->quiz->id)
+            ->where('session_id', $trackingSessionId)
+            ->where('status', 'in_progress')
+            ->first();
+
+        if ($existing) {
+            // Expire stale responses older than 24 hours
+            if ($existing->started_at && $existing->started_at->diffInHours(now()) > 24) {
+                $existing->update(['status' => 'abandoned']);
+            } else {
+                $this->response = $existing;
+                $this->answers = $existing->answers ?? [];
+                $this->currentStep = max(0, count($this->answers) - 1);
+                $this->recalculateScores();
+                return;
+            }
+        }
 
         $this->response = QuizResponse::create([
             'quiz_id' => $this->quiz->id,
@@ -43,13 +62,15 @@ class QuizPlayer extends Component
         ]);
 
         $this->quiz->increment('starts_count');
-
-        // Dispatch to frontend for JavaScript tracker
         $this->dispatch('quiz-started', quizId: $this->quiz->id);
     }
 
     public function selectAnswer(int $questionIndex, string $optionId): void
     {
+        if ($questionIndex < 0 || $questionIndex >= count($this->questions)) {
+            return;
+        }
+
         $question = $this->questions[$questionIndex] ?? null;
         if (!$question) return;
 
@@ -57,25 +78,30 @@ class QuizPlayer extends Component
         $selectedOption = collect($options)->firstWhere('id', $optionId);
         if (!$selectedOption) return;
 
+        // Subtract old answer scores if changing answer (back button fix)
+        if (isset($this->answers[$questionIndex])) {
+            $oldOptionId = $this->answers[$questionIndex]['option_id'];
+            $oldOption = collect($options)->firstWhere('id', $oldOptionId);
+            if ($oldOption) {
+                $this->segmentScores['tof'] -= (int) ($oldOption['score_tof'] ?? 0);
+                $this->segmentScores['mof'] -= (int) ($oldOption['score_mof'] ?? 0);
+                $this->segmentScores['bof'] -= (int) ($oldOption['score_bof'] ?? 0);
+            }
+        }
+
         $this->answers[$questionIndex] = [
-            'question_id' => $question['id'],
-            'question_text' => $question['question_text'],
+            'question_id' => $question['id'] ?? null,
+            'question_text' => $question['question_text'] ?? '',
             'option_id' => $optionId,
-            'option_text' => $selectedOption['text'] ?? '',
+            'option_text' => $selectedOption['text'] ?? $selectedOption['label'] ?? '',
             'klaviyo_property' => $question['klaviyo_property'] ?? null,
-            'klaviyo_value' => $selectedOption['klaviyo_value'] ?? $selectedOption['text'] ?? '',
+            'klaviyo_value' => $selectedOption['klaviyo_value'] ?? $selectedOption['text'] ?? $selectedOption['label'] ?? '',
         ];
 
-        // Update segment scores
-        if (isset($selectedOption['score_tof'])) {
-            $this->segmentScores['tof'] += (int) $selectedOption['score_tof'];
-        }
-        if (isset($selectedOption['score_mof'])) {
-            $this->segmentScores['mof'] += (int) $selectedOption['score_mof'];
-        }
-        if (isset($selectedOption['score_bof'])) {
-            $this->segmentScores['bof'] += (int) $selectedOption['score_bof'];
-        }
+        // Add new answer scores
+        $this->segmentScores['tof'] += (int) ($selectedOption['score_tof'] ?? 0);
+        $this->segmentScores['mof'] += (int) ($selectedOption['score_mof'] ?? 0);
+        $this->segmentScores['bof'] += (int) ($selectedOption['score_bof'] ?? 0);
 
         $this->response->update([
             'answers' => $this->answers,
@@ -156,32 +182,55 @@ class QuizPlayer extends Component
 
     public function completeQuiz(): void
     {
+        // Idempotency: skip if already completed in memory
+        if ($this->completed) {
+            return;
+        }
+
+        // Refresh from DB to catch concurrent completion attempts
+        $this->response->refresh();
+        if ($this->response->status === 'completed') {
+            $this->completed = true;
+            return;
+        }
+
         $segment = $this->determineSegment();
         $this->outcome = $this->determineOutcome($segment);
 
         // Build Klaviyo properties from answers
         $klaviyoProperties = $this->buildKlaviyoProperties();
 
-        $this->response->update([
-            'outcome_id' => $this->outcome?->id,
-            'outcome_name' => $this->outcome?->name,
-            'score_tof' => $this->segmentScores['tof'],
-            'score_mof' => $this->segmentScores['mof'],
-            'score_bof' => $this->segmentScores['bof'],
-            'total_score' => array_sum($this->segmentScores),
-            'segment' => $segment,
-            'status' => 'completed',
-            'completed_at' => now(),
-            'duration_seconds' => now()->diffInSeconds($this->response->started_at),
-            'klaviyo_properties' => $klaviyoProperties,
-        ]);
+        // Use transaction with conditional update to prevent double-completion
+        $updated = DB::table('quiz_responses')
+            ->where('id', $this->response->id)
+            ->where('status', 'in_progress')
+            ->update([
+                'outcome_id' => $this->outcome?->id,
+                'outcome_name' => $this->outcome?->name,
+                'score_tof' => $this->segmentScores['tof'],
+                'score_mof' => $this->segmentScores['mof'],
+                'score_bof' => $this->segmentScores['bof'],
+                'total_score' => array_sum($this->segmentScores),
+                'segment' => $segment,
+                'status' => 'completed',
+                'completed_at' => now(),
+                'duration_seconds' => now()->diffInSeconds($this->response->started_at),
+                'klaviyo_properties' => json_encode($klaviyoProperties),
+                'updated_at' => now(),
+            ]);
 
+        if (!$updated) {
+            $this->completed = true;
+            return;
+        }
+
+        $this->response->refresh();
         $this->quiz->increment('completions_count');
         $this->completed = true;
 
         // Store segment in session/cookie for targeting
-        session(['pp_segment' => strtoupper($segment)]);
-        cookie()->queue('pp_segment', strtoupper($segment), 60 * 24 * 30);
+        session(['pp_segment' => $segment]);
+        cookie()->queue('pp_segment', $segment, 60 * 24 * 30);
 
         // Sync to Klaviyo if subscriber exists
         if ($this->response->subscriber_id) {
@@ -199,7 +248,7 @@ class QuizPlayer extends Component
     private function buildKlaviyoProperties(): array
     {
         $properties = [
-            'pp_segment' => strtoupper($this->determineSegment()),
+            'pp_segment' => $this->determineSegment(),
             'pp_quiz_name' => $this->quiz->name,
         ];
 
@@ -247,12 +296,28 @@ class QuizPlayer extends Component
         return $outcomes->first();
     }
 
+    private function recalculateScores(): void
+    {
+        $this->segmentScores = ['tof' => 0, 'mof' => 0, 'bof' => 0];
+        foreach ($this->answers as $questionIndex => $answer) {
+            $question = $this->questions[$questionIndex] ?? null;
+            if (!$question) continue;
+            $option = collect($question['options'] ?? [])->firstWhere('id', $answer['option_id']);
+            if (!$option) continue;
+            $this->segmentScores['tof'] += (int) ($option['score_tof'] ?? 0);
+            $this->segmentScores['mof'] += (int) ($option['score_mof'] ?? 0);
+            $this->segmentScores['bof'] += (int) ($option['score_bof'] ?? 0);
+        }
+    }
+
     private function determineSegment(): string
     {
-        $max = max($this->segmentScores);
-        foreach ($this->segmentScores as $segment => $score) {
-            if ($score === $max) return $segment;
-        }
+        $scores = $this->segmentScores;
+        $max = max($scores);
+
+        // Tie-breaking: prefer higher intent (BOF > MOF > TOF)
+        if ($scores['bof'] === $max) return 'bof';
+        if ($scores['mof'] === $max) return 'mof';
         return 'tof';
     }
 

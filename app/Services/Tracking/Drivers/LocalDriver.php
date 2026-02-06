@@ -7,6 +7,7 @@ use App\Models\UserEvent;
 use App\Services\Tracking\Contracts\TrackingDriver;
 use App\Services\Tracking\SessionManager;
 use App\Services\Tracking\EventRecorder;
+use Illuminate\Support\Facades\Log;
 
 class LocalDriver implements TrackingDriver
 {
@@ -21,7 +22,7 @@ class LocalDriver implements TrackingDriver
 
     public function isEnabled(): bool
     {
-        return true; // Always enabled
+        return true;
     }
 
     public function getName(): string
@@ -37,16 +38,30 @@ class LocalDriver implements TrackingDriver
 
     public function trackEvent(string $eventName, array $properties = [], ?Subscriber $subscriber = null): void
     {
-        $session = $this->sessionManager->getOrCreateSession();
-        $this->eventRecorder->record($session, $eventName, $properties);
+        try {
+            $session = $this->sessionManager->getOrCreateSession();
+            $this->eventRecorder->record($session, $eventName, $properties);
+        } catch (\Exception $e) {
+            Log::warning('LocalDriver tracking failed', [
+                'event' => $eventName,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     public function trackPageView(string $url, ?string $title = null): void
     {
-        $session = $this->sessionManager->getOrCreateSession();
-        $this->eventRecorder->record($session, UserEvent::TYPE_PAGE_VIEW, [
-            'page_url' => $url,
-            'page_title' => $title,
-        ]);
+        try {
+            $session = $this->sessionManager->getOrCreateSession();
+            $this->eventRecorder->record($session, UserEvent::TYPE_PAGE_VIEW, [
+                'page_url' => $url,
+                'page_title' => $title,
+            ]);
+        } catch (\Exception $e) {
+            Log::warning('LocalDriver page view tracking failed', [
+                'url' => $url,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 }

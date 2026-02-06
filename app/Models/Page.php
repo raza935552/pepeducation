@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use App\Services\HtmlSanitizer;
 
 class Page extends Model
 {
@@ -18,6 +20,8 @@ class Page extends Model
         'featured_image',
         'status',
         'template',
+        'variant_of',
+        'variant_weight',
         'created_by',
         'published_at',
     ];
@@ -30,6 +34,21 @@ class Page extends Model
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'variant_of');
+    }
+
+    public function variants(): HasMany
+    {
+        return $this->hasMany(self::class, 'variant_of');
+    }
+
+    public function versions(): HasMany
+    {
+        return $this->hasMany(PageVersion::class)->orderByDesc('version');
     }
 
     public function scopePublished($query)
@@ -50,8 +69,26 @@ class Page extends Model
     public static function generateSlug(string $title): string
     {
         $slug = Str::slug($title);
-        $count = static::where('slug', 'like', "{$slug}%")->count();
+        $original = $slug;
+        $count = 1;
 
-        return $count ? "{$slug}-{$count}" : $slug;
+        while (static::where('slug', $slug)->exists()) {
+            $slug = "{$original}-{$count}";
+            $count++;
+        }
+
+        return $slug;
+    }
+
+    /**
+     * Return HTML with dangerous tags stripped using HTMLPurifier
+     */
+    public function sanitizedHtml(): string
+    {
+        if (!$this->html) {
+            return '';
+        }
+
+        return app(HtmlSanitizer::class)->sanitize($this->html);
     }
 }

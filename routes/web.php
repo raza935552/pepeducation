@@ -62,6 +62,11 @@ Route::get('/quiz/{slug}/embed', [QuizController::class, 'embed'])->name('quiz.e
 Route::get('/lead-magnet/{slug}', [LeadMagnetController::class, 'landing'])->name('lead-magnet.landing');
 Route::get('/lead-magnet/{slug}/download', [LeadMagnetController::class, 'download'])->name('lead-magnet.download');
 
+// Public form submissions (from page builder forms)
+Route::post('/form-submit', [\App\Http\Controllers\FormSubmitController::class, 'store'])
+    ->name('form.submit')
+    ->middleware('throttle:10,1');
+
 // Auth routes (must come before catch-all)
 require __DIR__.'/auth.php';
 
@@ -69,4 +74,6 @@ require __DIR__.'/auth.php';
 require __DIR__.'/admin.php';
 
 // Dynamic Pages (must be last to not conflict with other routes)
-Route::get('/{slug}', [PageController::class, 'show'])->name('page.show');
+Route::get('/{slug}', [PageController::class, 'show'])
+    ->where('slug', '[a-z0-9][a-z0-9\-]*')
+    ->name('page.show');

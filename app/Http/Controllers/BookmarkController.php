@@ -9,6 +9,10 @@ class BookmarkController extends Controller
 {
     public function toggle(Peptide $peptide)
     {
+        if (!$peptide->is_published) {
+            abort(403, 'Cannot bookmark unpublished peptide.');
+        }
+
         $user = Auth::user();
         $bookmark = $user->bookmarks()->where('peptide_id', $peptide->id)->first();
 

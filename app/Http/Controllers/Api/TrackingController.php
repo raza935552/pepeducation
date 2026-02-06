@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\Tracking\TrackingManager;
-use App\Models\UserEvent;
 use App\Models\TrackingError;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -108,9 +107,9 @@ class TrackingController extends Controller
 
     protected function identifyUser(array $data): void
     {
-        if (!empty($data['email'])) {
+        if (!empty($data['email']) && filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             $subscriber = \App\Models\Subscriber::firstOrCreate(
-                ['email' => $data['email']],
+                ['email' => strtolower(trim($data['email']))],
                 ['source' => 'tracker', 'status' => 'active', 'subscribed_at' => now()]
             );
             $this->tracking->linkSubscriber($subscriber);
@@ -137,18 +136,8 @@ class TrackingController extends Controller
 
     protected function trackPopupView(array $data): void
     {
-        if (!empty($data['popup_id'])) {
-            $popup = \App\Models\Popup::find($data['popup_id']);
-            if ($popup) {
-                $popup->increment('views_count');
-                \App\Models\PopupInteraction::create([
-                    'popup_id' => $popup->id,
-                    'session_id' => $this->tracking->getSessionId(),
-                    'interaction_type' => 'view',
-                    'created_at' => now(),
-                ]);
-            }
-        }
+        // Popup impressions are tracked server-side by PopupManager Livewire component.
+        // This endpoint exists to receive frontend events but does not double-record.
     }
 
     protected function trackPopupConvert(array $data): void
@@ -163,27 +152,7 @@ class TrackingController extends Controller
 
     protected function trackCTAClick(array $data): void
     {
-        UserEvent::create([
-            'session_id' => $this->tracking->getSessionId(),
-            'user_id' => auth()->id(),
-            'event_type' => 'cta_click',
-            'event_name' => $data['cta_name'] ?? 'Unknown CTA',
-            'page_url' => $data['source_page'] ?? $data['page_url'] ?? '',
-            'event_data' => [
-                'cta_name' => $data['cta_name'] ?? null,
-                'cta_type' => $data['cta_type'] ?? 'general',
-                'cta_position' => $data['cta_position'] ?? null,
-                'destination' => $data['destination'] ?? null,
-                'element_text' => $data['element_text'] ?? null,
-                'element_id' => $data['element_id'] ?? null,
-                'element_class' => $data['element_class'] ?? null,
-            ],
-            'engagement_points' => 5, // CTAs are high-value actions
-        ]);
-
-        // Also update session engagement
-        $session = $this->tracking->getSession();
-        $session->increment('engagement_score', 5);
+        $this->tracking->trackCTAClick($data);
     }
 
     public function getSession(Request $request): JsonResponse

@@ -19,6 +19,13 @@ use App\Http\Controllers\Admin\LeadMagnetController;
 use App\Http\Controllers\Admin\OutboundLinkController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\AnalyticsController;
+use App\Http\Controllers\Admin\UnsplashController;
+use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\PageVersionController;
+use App\Http\Controllers\Admin\PageAnalyticsController;
+use App\Http\Controllers\Admin\SavedSectionController;
+use App\Http\Controllers\Admin\FormSubmissionController;
+use App\Http\Controllers\Admin\AiContentController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -72,7 +79,25 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Pages (Page Builder)
     Route::resource('pages', PageController::class);
     Route::post('pages/{page}/duplicate', [PageController::class, 'duplicate'])->name('pages.duplicate');
-    Route::post('pages/upload-image', [PageController::class, 'uploadImage'])->name('pages.upload-image');
+    Route::post('pages/{page}/variant', [PageController::class, 'createVariant'])->name('pages.variant');
+    Route::post('pages/upload-image', [PageController::class, 'uploadImage'])->name('pages.upload-image')->middleware('throttle:30,1');
+
+    // Page Versions
+    Route::get('pages/{page}/versions', [PageVersionController::class, 'index'])->name('pages.versions');
+    Route::post('pages/{page}/versions/{version}/restore', [PageVersionController::class, 'restore'])->name('pages.versions.restore');
+
+    // Page Analytics
+    Route::get('pages/{page}/analytics', [PageAnalyticsController::class, 'show'])->name('pages.analytics');
+
+    // Saved Sections (Reusable)
+    Route::get('sections', [SavedSectionController::class, 'index'])->name('sections.index');
+    Route::post('sections', [SavedSectionController::class, 'store'])->name('sections.store');
+    Route::get('sections/{section}', [SavedSectionController::class, 'show'])->name('sections.show');
+    Route::delete('sections/{section}', [SavedSectionController::class, 'destroy'])->name('sections.destroy');
+
+    // Form Submissions
+    Route::get('form-submissions', [FormSubmissionController::class, 'index'])->name('form-submissions.index');
+    Route::delete('form-submissions/{submission}', [FormSubmissionController::class, 'destroy'])->name('form-submissions.destroy');
 
     // Page Templates
     Route::get('templates', [TemplateController::class, 'index'])->name('templates.index');
@@ -104,6 +129,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Marketing: Outbound Links
     Route::resource('outbound-links', OutboundLinkController::class);
+
+    // Media Library (Page Builder)
+    Route::get('media', [MediaController::class, 'index'])->name('media.index');
+    Route::delete('media', [MediaController::class, 'destroy'])->name('media.destroy');
+
+    // Unsplash (Stock Photos for Page Builder)
+    Route::get('unsplash/search', [UnsplashController::class, 'search'])->name('unsplash.search')->middleware('throttle:60,1');
+    Route::post('unsplash/track-download', [UnsplashController::class, 'trackDownload'])->name('unsplash.track-download');
+
+    // AI Content Generation (Page Builder)
+    Route::post('ai-content/generate', [AiContentController::class, 'generate'])->name('ai-content.generate')->middleware('throttle:20,1');
 
     // Settings (Integrations)
     Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');

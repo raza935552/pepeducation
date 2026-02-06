@@ -73,6 +73,11 @@ class UserEvent extends Model
         return $query->where('synced_to_klaviyo', false);
     }
 
+    public function scopeOlderThan($query, int $days)
+    {
+        return $query->where('created_at', '<', now()->subDays($days));
+    }
+
     // Event Types
     public const TYPE_PAGE_VIEW = 'page_view';
     public const TYPE_CLICK = 'click';
@@ -85,6 +90,7 @@ class UserEvent extends Model
     public const TYPE_POPUP_VIEW = 'popup_view';
     public const TYPE_POPUP_CONVERT = 'popup_convert';
     public const TYPE_LEAD_MAGNET = 'lead_magnet_download';
+    public const TYPE_CTA_CLICK = 'cta_click';
     public const TYPE_OUTBOUND_CLICK = 'outbound_click';
     public const TYPE_RAGE_CLICK = 'rage_click';
 }

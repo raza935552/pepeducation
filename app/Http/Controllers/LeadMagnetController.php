@@ -30,6 +30,14 @@ class LeadMagnetController extends Controller
      */
     public function download(Request $request, string $slug)
     {
+        // Rate limit: max 10 downloads per hour per IP+session
+        $sessionId = $request->cookie('pp_session_id') ?? session()->getId();
+        $key = 'lead_download_' . request()->ip() . '_' . substr(md5($sessionId), 0, 8);
+        if (cache()->get($key, 0) >= 10) {
+            abort(429, 'Too many download requests. Please try again later.');
+        }
+        cache()->put($key, cache()->get($key, 0) + 1, 3600);
+
         $leadMagnet = LeadMagnet::where('slug', $slug)
             ->active()
             ->firstOrFail();
@@ -96,9 +104,13 @@ class LeadMagnetController extends Controller
             abort(404, 'File not found');
         }
 
+        $extension = $leadMagnet->file_type
+            ?? pathinfo($leadMagnet->file_path, PATHINFO_EXTENSION)
+            ?: 'pdf';
+
         return Storage::disk('public')->download(
             $leadMagnet->file_path,
-            $leadMagnet->file_name ?? $leadMagnet->slug . '.' . $leadMagnet->file_type
+            $leadMagnet->file_name ?? $leadMagnet->slug . '.' . $extension
         );
     }
 }

@@ -11,7 +11,7 @@ class QuizQuestionController extends Controller
 {
     public function store(Request $request, Quiz $quiz)
     {
-        $validated = $request->validate([
+        $rules = [
             'question_text' => 'required|string',
             'question_type' => 'required|in:single_choice,multiple_choice,text,email,scale',
             'options' => 'nullable|array',
@@ -23,7 +23,13 @@ class QuizQuestionController extends Controller
             'options.*.score_bof' => 'nullable|integer',
             'klaviyo_property' => 'nullable|string|max:255',
             'is_required' => 'boolean',
-        ]);
+        ];
+
+        if (in_array($request->input('question_type'), ['single_choice', 'multiple_choice'])) {
+            $rules['options'] = 'required|array|min:2';
+        }
+
+        $validated = $request->validate($rules);
 
         $maxOrder = $quiz->questions()->max('order') ?? 0;
 
@@ -45,13 +51,19 @@ class QuizQuestionController extends Controller
 
     public function update(Request $request, Quiz $quiz, QuizQuestion $question)
     {
-        $validated = $request->validate([
+        $rules = [
             'question_text' => 'required|string',
             'question_type' => 'required|in:single_choice,multiple_choice,text,email,scale',
             'options' => 'nullable|array',
             'klaviyo_property' => 'nullable|string|max:255',
             'is_required' => 'boolean',
-        ]);
+        ];
+
+        if (in_array($request->input('question_type'), ['single_choice', 'multiple_choice'])) {
+            $rules['options'] = 'required|array|min:2';
+        }
+
+        $validated = $request->validate($rules);
 
         $question->update([
             'question_text' => $validated['question_text'],

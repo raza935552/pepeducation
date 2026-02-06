@@ -11,11 +11,18 @@ class PPTracker {
         this.maxScrollDepth = 0;
         this.events = [];
         this.debounceTimers = {};
+        this._initialized = false;
+        this._consentRequired = window.__ppConsentRequired || false;
 
+        if (this._consentRequired && !this.hasConsent()) {
+            return; // Wait for setConsent() call
+        }
         this.init();
     }
 
     init() {
+        if (this._initialized) return;
+        this._initialized = true;
         this.trackPageView();
         this.setupScrollTracking();
         this.setupClickTracking();
@@ -23,11 +30,22 @@ class PPTracker {
         this.setupBeforeUnload();
     }
 
+    hasConsent() {
+        return this.getCookie('pp_consent') === '1';
+    }
+
+    setConsent(granted) {
+        if (granted) {
+            this.setCookie('pp_consent', '1', 365);
+            this.init();
+        }
+    }
+
     getOrCreateSessionId() {
         let sessionId = this.getCookie('pp_session_id');
         if (!sessionId) {
             sessionId = this.generateUUID();
-            this.setCookie('pp_session_id', sessionId, 365);
+            this.setCookie('pp_session_id', sessionId, 30);
         }
         return sessionId;
     }
@@ -258,14 +276,46 @@ class PPTracker {
         });
     }
 
+    // Allowed event types
+    static VALID_EVENTS = new Set([
+        'page_view', 'click', 'cta_click', 'scroll', 'js_error',
+        'page_exit', 'identify', 'quiz_start', 'quiz_answer', 'quiz_complete',
+        'popup_view', 'popup_convert', 'outbound_click', 'rage_click',
+    ]);
+
+    // Truncate string to max length
+    truncate(str, maxLen) {
+        return typeof str === 'string' ? str.substring(0, maxLen) : str;
+    }
+
+    // Sanitize payload before sending
+    sanitizePayload(data) {
+        const clean = {};
+        for (const [key, val] of Object.entries(data)) {
+            if (typeof val === 'string') {
+                clean[key] = this.truncate(val, key.includes('url') ? 2048 : 255);
+            } else if (typeof val === 'number' || typeof val === 'boolean' || val === null) {
+                clean[key] = val;
+            } else if (typeof val === 'object' && val !== null) {
+                clean[key] = val; // Allow nested objects (e.g. cta data)
+            }
+        }
+        return clean;
+    }
+
     // Send event to backend
     send(eventType, data) {
+        if (!PPTracker.VALID_EVENTS.has(eventType)) return;
+
         const payload = {
             event_type: eventType,
             session_id: this.sessionId,
             timestamp: new Date().toISOString(),
-            ...data,
+            ...this.sanitizePayload(data),
         };
+
+        const body = JSON.stringify(payload);
+        if (body.length > 65536) return; // 64KB max payload
 
         fetch(this.endpoint, {
             method: 'POST',
@@ -273,11 +323,11 @@ class PPTracker {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
             },
-            body: JSON.stringify(payload),
+            body,
         }).catch(() => {});
     }
 
-    // Use beacon API for exit events
+    // Use beacon API for exit events, with fetch+keepalive fallback
     sendBeacon(eventType, data) {
         const payload = {
             event_type: eventType,
@@ -286,7 +336,20 @@ class PPTracker {
             ...data,
         };
 
-        navigator.sendBeacon(this.endpoint, JSON.stringify(payload));
+        const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+        const sent = navigator.sendBeacon?.(this.endpoint, blob);
+
+        if (!sent) {
+            fetch(this.endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                },
+                body: JSON.stringify(payload),
+                keepalive: true,
+            }).catch(() => {});
+        }
     }
 
     // Public methods for custom tracking
@@ -315,10 +378,10 @@ class PPTracker {
     }
 
     identifyUser(email) {
-        this.setCookie('pp_email', email, 365);
         this.send('identify', { email });
     }
 }
 
 // Initialize tracker
+// If consent required: window.PPTracker.setConsent(true) from cookie banner
 window.PPTracker = new PPTracker();

@@ -1,6 +1,10 @@
 <x-public-layout>
     <x-slot name="title">Home</x-slot>
 
+    @push('head')
+        @include('partials.schema-website')
+    @endpush
+
     {{-- Hero Section --}}
     @include('home.partials.hero')
 

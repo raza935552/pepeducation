@@ -13,7 +13,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="h-full bg-gray-100 dark:bg-gray-900" x-data="{ sidebarOpen: false }">
+<body class="h-full bg-gray-100" x-data="{ sidebarOpen: false }">
     <div class="min-h-full">
         @include('layouts.partials.admin-sidebar')
 

@@ -1,5 +1,5 @@
 {{-- Featured CTA Section (Caramel Background) --}}
-<section class="relative bg-caramel-500 dark:bg-caramel-600 overflow-hidden">
+<section class="relative bg-caramel-500 overflow-hidden">
     {{-- Decorative elements --}}
     <div class="absolute inset-0 opacity-10">
         <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
@@ -23,7 +23,7 @@
                     <a href="{{ route('peptides.index') }}"
                        class="inline-flex items-center justify-center px-8 py-4 bg-white text-caramel-600 font-semibold rounded-full hover:bg-cream-100 transition-all duration-300 shadow-lg hover:shadow-xl">
                         Get Started
-                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg aria-hidden="true" class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                         </svg>
                     </a>

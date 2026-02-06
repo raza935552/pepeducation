@@ -1,11 +1,11 @@
 <x-public-layout title="Terms of Service">
     {{-- Hero --}}
-    <section class="bg-gradient-to-b from-cream-100 to-cream-50 dark:from-brown-900 dark:to-brown-900 py-16 lg:py-20">
+    <section class="bg-gradient-to-b from-cream-100 to-cream-50 py-16 lg:py-20">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-cream-100 mb-4">
+            <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
                 Terms of Service
             </h1>
-            <p class="text-gray-500 dark:text-cream-400">
+            <p class="text-gray-500">
                 Last updated: {{ date('F j, Y') }}
             </p>
         </div>
@@ -14,8 +14,8 @@
     {{-- Content --}}
     <section class="py-16">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-brown-800 rounded-2xl p-8 lg:p-12 border border-cream-200 dark:border-brown-700">
-                <div class="prose prose-lg dark:prose-invert max-w-none prose-headings:text-gray-900 dark:prose-headings:text-cream-100 prose-p:text-gray-600 dark:prose-p:text-cream-300 prose-li:text-gray-600 dark:prose-li:text-cream-300">
+            <div class="bg-white rounded-2xl p-8 lg:p-12 border border-cream-200">
+                <div class="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-600 prose-li:text-gray-600">
 
                     <h2>1. Acceptance of Terms</h2>
                     <p>By accessing and using PepProfesor, you accept and agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our website.</p>
@@ -70,7 +70,7 @@
                     <p>We may modify these terms at any time. Continued use of the service after changes constitutes acceptance of the new terms.</p>
 
                     <h2>10. Contact</h2>
-                    <p>For questions about these Terms, please contact us through our <button onclick="Livewire.dispatch('openContactModal')" class="text-gold-600 dark:text-gold-400 hover:underline">contact form</button>.</p>
+                    <p>For questions about these Terms, please contact us through our <button onclick="Livewire.dispatch('openContactModal')" class="text-gold-600 hover:underline">contact form</button>.</p>
 
                 </div>
             </div>

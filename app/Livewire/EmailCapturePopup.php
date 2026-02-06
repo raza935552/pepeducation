@@ -35,7 +35,7 @@ class EmailCapturePopup extends Component
 
         $service->subscribe($this->email, [
             'source' => 'popup',
-            'segment' => request()->cookie('pp_segment') ?? 'TOF',
+            'segment' => in_array($s = strtolower(request()->cookie('pp_segment') ?? 'tof'), ['tof', 'mof', 'bof']) ? $s : 'tof',
             'first_session_id' => request()->cookie('pp_session_id'),
             'first_landing_page' => url()->previous(),
         ]);

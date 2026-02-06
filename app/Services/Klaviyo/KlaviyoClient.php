@@ -12,6 +12,7 @@ class KlaviyoClient
     protected string $revision = '2024-02-15';
     protected ?string $privateKey;
     protected ?string $publicKey;
+    protected int $maxRetries = 2;
 
     public function __construct()
     {
@@ -26,82 +27,82 @@ class KlaviyoClient
 
     public function post(string $endpoint, array $data): ?array
     {
+        return $this->request('post', $endpoint, $data);
+    }
+
+    public function get(string $endpoint, array $params = []): ?array
+    {
+        return $this->request('get', $endpoint, $params);
+    }
+
+    public function patch(string $endpoint, array $data): ?array
+    {
+        return $this->request('patch', $endpoint, $data);
+    }
+
+    protected function request(string $method, string $endpoint, array $data): ?array
+    {
         if (!$this->isEnabled()) {
             Log::warning('Klaviyo not enabled, skipping API call', ['endpoint' => $endpoint]);
             return null;
         }
 
-        try {
-            $response = Http::withHeaders($this->headers())
-                ->timeout(30)
-                ->post($this->baseUrl . $endpoint, $data);
+        $attempt = 0;
 
-            if ($response->failed()) {
-                Log::error('Klaviyo API error', [
+        while ($attempt <= $this->maxRetries) {
+            try {
+                $http = Http::withHeaders($this->headers())->timeout(30);
+                $response = ($method === 'get')
+                    ? $http->get($this->baseUrl . $endpoint, $data)
+                    : $http->$method($this->baseUrl . $endpoint, $data);
+
+                if ($response->status() === 429) {
+                    $retryAfter = (int) ($response->header('Retry-After') ?? 10);
+                    $retryAfter = min($retryAfter, 60);
+                    Log::warning('Klaviyo rate limited', [
+                        'endpoint' => $endpoint,
+                        'retry_after' => $retryAfter,
+                        'attempt' => $attempt + 1,
+                    ]);
+                    if ($attempt < $this->maxRetries) {
+                        sleep($retryAfter);
+                        $attempt++;
+                        continue;
+                    }
+                    return null;
+                }
+
+                if ($response->failed()) {
+                    Log::error('Klaviyo API error', [
+                        'endpoint' => $endpoint,
+                        'status' => $response->status(),
+                        'body' => $this->sanitizeLogBody($response->body()),
+                    ]);
+                    return null;
+                }
+
+                return $response->json();
+            } catch (\Exception $e) {
+                Log::error('Klaviyo API exception', [
                     'endpoint' => $endpoint,
-                    'status' => $response->status(),
-                    'body' => $response->body(),
+                    'error' => $this->sanitizeLogBody($e->getMessage()),
                 ]);
                 return null;
             }
-
-            return $response->json();
-        } catch (\Exception $e) {
-            Log::error('Klaviyo API exception', [
-                'endpoint' => $endpoint,
-                'error' => $e->getMessage(),
-            ]);
-            return null;
         }
+
+        return null;
     }
 
-    public function get(string $endpoint, array $params = []): ?array
+    protected function sanitizeLogBody(string $body): string
     {
-        if (!$this->isEnabled()) return null;
-
-        try {
-            $response = Http::withHeaders($this->headers())
-                ->timeout(30)
-                ->get($this->baseUrl . $endpoint, $params);
-
-            if ($response->failed()) {
-                Log::error('Klaviyo API error', [
-                    'endpoint' => $endpoint,
-                    'status' => $response->status(),
-                ]);
-                return null;
-            }
-
-            return $response->json();
-        } catch (\Exception $e) {
-            Log::error('Klaviyo API exception', ['error' => $e->getMessage()]);
-            return null;
+        if ($this->privateKey) {
+            $body = str_replace($this->privateKey, '[REDACTED]', $body);
         }
-    }
-
-    public function patch(string $endpoint, array $data): ?array
-    {
-        if (!$this->isEnabled()) return null;
-
-        try {
-            $response = Http::withHeaders($this->headers())
-                ->timeout(30)
-                ->patch($this->baseUrl . $endpoint, $data);
-
-            if ($response->failed()) {
-                Log::error('Klaviyo API error', [
-                    'endpoint' => $endpoint,
-                    'status' => $response->status(),
-                    'body' => $response->body(),
-                ]);
-                return null;
-            }
-
-            return $response->json();
-        } catch (\Exception $e) {
-            Log::error('Klaviyo API exception', ['error' => $e->getMessage()]);
-            return null;
+        if ($this->publicKey) {
+            $body = str_replace($this->publicKey, '[REDACTED]', $body);
         }
+        return $body;
     }
 
     protected function headers(): array

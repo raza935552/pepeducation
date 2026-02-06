@@ -20,12 +20,22 @@ class SubscribeForm extends Component
     {
         $this->validate();
 
+        // Rate limit: max 5 per hour per IP (bypassed on .test domains)
+        if (! \App\Providers\AppServiceProvider::isTestEnv()) {
+            $key = 'subscribe_' . request()->ip();
+            if (cache()->get($key, 0) >= 5) {
+                $this->addError('email', 'Too many attempts. Please try again later.');
+                return;
+            }
+            cache()->put($key, cache()->get($key, 0) + 1, 3600);
+        }
+
         $service = app(SubscriberService::class);
 
         // Subscribe (handles deduplication internally - no duplicates created)
         $service->subscribe($this->email, [
             'source' => $this->source,
-            'segment' => request()->cookie('pp_segment') ?? 'TOF',
+            'segment' => in_array($s = strtolower(request()->cookie('pp_segment') ?? 'tof'), ['tof', 'mof', 'bof']) ? $s : 'tof',
             'first_session_id' => request()->cookie('pp_session_id'),
             'first_landing_page' => url()->current(),
         ]);

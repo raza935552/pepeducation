@@ -42,6 +42,7 @@ class ProfileService
             $subscriber->update([
                 'klaviyo_id' => $klaviyoId,
                 'klaviyo_synced_at' => now(),
+                'needs_klaviyo_sync' => false,
             ]);
             return $klaviyoId;
         }
@@ -94,7 +95,7 @@ class ProfileService
         ]);
 
         if ($response !== null) {
-            $subscriber->update(['klaviyo_synced_at' => now()]);
+            $subscriber->update(['klaviyo_synced_at' => now(), 'needs_klaviyo_sync' => false]);
             return $subscriber->klaviyo_id;
         }
 
@@ -109,7 +110,7 @@ class ProfileService
 
         if (!$subscriber->klaviyo_id) return false;
 
-        $response = $this->client->post("/profiles/{$subscriber->klaviyo_id}", [
+        $response = $this->client->patch("/profiles/{$subscriber->klaviyo_id}/", [
             'data' => [
                 'type' => 'profile',
                 'id' => $subscriber->klaviyo_id,
@@ -124,6 +125,7 @@ class ProfileService
             $subscriber->update([
                 'klaviyo_properties' => array_merge($existing, $properties),
                 'klaviyo_synced_at' => now(),
+                'needs_klaviyo_sync' => false,
             ]);
             return true;
         }

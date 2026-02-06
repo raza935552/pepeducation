@@ -29,3 +29,6 @@ window.darkMode.init();
 
 // ProfessorPeptides Tracker
 import './tracker';
+
+// Page components (carousels, FAQ accordions)
+import './page-components';

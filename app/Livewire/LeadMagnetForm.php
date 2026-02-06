@@ -35,13 +35,12 @@ class LeadMagnetForm extends Component
 
         // Create or update subscriber
         $subscriberService = app(SubscriberService::class);
-        $subscriber = $subscriberService->subscribe(
-            email: $this->email,
-            name: $this->name ?: null,
-            source: 'lead_magnet:' . $this->leadMagnet->slug,
-            segment: $this->leadMagnet->segment !== 'all' ? $this->leadMagnet->segment : null,
-            sessionId: $session->session_id
-        );
+        $subscriber = $subscriberService->subscribe($this->email, [
+            'name' => $this->name ?: null,
+            'source' => 'lead_magnet:' . $this->leadMagnet->slug,
+            'segment' => $this->leadMagnet->segment !== 'all' ? $this->leadMagnet->segment : null,
+            'first_session_id' => $session->session_id,
+        ]);
 
         // Link subscriber to session
         if ($subscriber && !$session->subscriber_id) {

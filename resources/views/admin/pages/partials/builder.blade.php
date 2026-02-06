@@ -3,7 +3,7 @@
 <!-- Autosave Recovery Banner (hidden by default) -->
 <div id="recovery-banner" class="hidden fixed top-0 left-0 right-0 z-50 bg-amber-600 text-white px-4 py-3 flex items-center justify-between shadow-lg">
     <div class="flex items-center gap-3">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
         </svg>
         <span id="recovery-message">Unsaved changes found from a previous session</span>
@@ -23,7 +23,7 @@
     <!-- Left: Back & Title -->
     <div class="flex items-center gap-4">
         <a href="{{ route('admin.pages.index') }}" class="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
             <span class="text-sm">Back to Pages</span>
@@ -41,14 +41,14 @@
             <button type="button" onclick="editorUndo()" id="btn-undo"
                     class="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                     title="Undo (Ctrl+Z)">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
                 </svg>
             </button>
             <button type="button" onclick="editorRedo()" id="btn-redo"
                     class="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                     title="Redo (Ctrl+Y)">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10h-10a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6"/>
                 </svg>
             </button>
@@ -60,19 +60,19 @@
         <div class="flex items-center gap-1 bg-gray-900 rounded-lg p-1">
             <button type="button" onclick="setDevice('Desktop')" id="btn-desktop"
                     class="device-btn active px-3 py-1.5 rounded text-sm font-medium transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
             </button>
             <button type="button" onclick="setDevice('Tablet')" id="btn-tablet"
                     class="device-btn px-3 py-1.5 rounded text-sm font-medium transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                 </svg>
             </button>
             <button type="button" onclick="setDevice('Mobile')" id="btn-mobile"
                     class="device-btn px-3 py-1.5 rounded text-sm font-medium transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                 </svg>
             </button>
@@ -85,7 +85,7 @@
         <div id="autosave-status" class="flex items-center gap-2 text-sm text-gray-400">
             <span id="autosave-indicator" class="hidden">
                 <span class="autosave-saving hidden flex items-center gap-1">
-                    <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <svg aria-hidden="true" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
@@ -96,7 +96,7 @@
                     Unsaved
                 </span>
                 <span class="autosave-saved hidden flex items-center gap-1 text-green-500">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>
                     <span class="autosave-time">Saved</span>
@@ -104,26 +104,69 @@
             </span>
         </div>
 
+        <button type="button" onclick="openMediaLibrary()" class="text-gray-400 hover:text-white p-2 rounded transition-colors" title="Media Library">
+            <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+        </button>
+        <button type="button" onclick="openUnsplashModal()" class="text-gray-400 hover:text-white p-2 rounded transition-colors" title="Stock Photos (Unsplash)">
+            <svg aria-hidden="true" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M7.5 6.75V0h9v6.75h-9zm9 3.75H24V24H0V10.5h7.5v6.75h9V10.5z"/></svg>
+        </button>
+        <button type="button" onclick="openSavedSections()" class="text-gray-400 hover:text-white p-2 rounded transition-colors" title="Saved Sections">
+            <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+        </button>
+        <button type="button" onclick="openVersionHistory()" class="text-gray-400 hover:text-white p-2 rounded transition-colors" title="Version History">
+            <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+        </button>
+        <button type="button" onclick="openPageAnalytics()" class="text-gray-400 hover:text-white p-2 rounded transition-colors" title="Page Analytics">
+            <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+        </button>
+        <button type="button" onclick="openMobilePreview()" class="text-gray-400 hover:text-white p-2 rounded transition-colors" title="Mobile Preview">
+            <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+            </svg>
+        </button>
+        <button type="button" onclick="exportPageHtml()" class="text-gray-400 hover:text-white p-2 rounded transition-colors" title="Export HTML">
+            <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+        </button>
+        <button type="button" onclick="importPageHtml()" class="text-gray-400 hover:text-white p-2 rounded transition-colors" title="Import HTML">
+            <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+            </svg>
+        </button>
+        <button type="button" onclick="openAiContent()" class="text-gray-400 hover:text-white p-2 rounded transition-colors" title="AI Content">
+            <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+            </svg>
+        </button>
         <button type="button" onclick="openSaveTemplateModal()" class="text-gray-400 hover:text-white p-2 rounded transition-colors" title="Save as Template">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
             </svg>
         </button>
         <button type="button" onclick="toggleSettingsPanel()" class="text-gray-400 hover:text-white p-2 rounded transition-colors" title="Page Settings">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
             </svg>
         </button>
         @if($page && $page->isPublished())
-        <a href="{{ route('page.show', $page->slug) }}" target="_blank"
+        <a href="{{ route('page.show', $page->slug) }}" target="_blank" rel="noopener"
            class="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white border border-gray-600 rounded-lg hover:border-gray-500 transition-colors">
             Preview
         </a>
         @endif
         <button type="button" onclick="savePage()" id="save-btn"
                 class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
             </svg>
             Save
@@ -151,11 +194,11 @@
             <div class="relative">
                 <input type="text" id="block-search" placeholder="Search blocks..."
                        class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg pl-9 pr-8 py-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400">
-                <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg aria-hidden="true" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
                 <button type="button" id="block-search-clear" class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
@@ -198,7 +241,7 @@
         <div class="p-4 border-b border-gray-700 flex items-center justify-between">
             <h3 class="font-semibold text-white">Page Settings</h3>
             <button type="button" onclick="toggleSettingsPanel()" class="text-gray-400 hover:text-white">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
@@ -246,6 +289,30 @@
                                   placeholder="Brief description for search engines">{{ $page->meta_description ?? '' }}</textarea>
                     </div>
                 </div>
+            </div>
+            <!-- OG Image -->
+            <div class="pt-4 border-t border-gray-700">
+                <h4 class="font-medium text-white mb-4">Social Image (OG)</h4>
+                <p class="text-xs text-gray-500 mb-3">Shown when shared on Facebook, Twitter, LinkedIn, etc. Recommended: 1200x630px</p>
+                <div id="og-image-preview" class="{{ ($page->featured_image ?? null) ? '' : 'hidden' }} mb-3">
+                    <div class="relative rounded-lg overflow-hidden bg-gray-700 aspect-[1200/630]">
+                        <img id="og-image-img" src="{{ ($page->featured_image ?? null) ? url($page->featured_image) : '' }}"
+                             alt="OG Image" class="w-full h-full object-cover">
+                        <button type="button" onclick="removeOgImage()" class="absolute top-2 right-2 p-1.5 bg-red-600 hover:bg-red-700 rounded text-white" title="Remove">
+                            <svg aria-hidden="true" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <input type="hidden" id="page-featured-image" value="{{ $page->featured_image ?? '' }}">
+                <label class="cursor-pointer px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 text-sm font-medium rounded-lg transition-colors inline-flex items-center gap-2">
+                    <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                    </svg>
+                    Upload Image
+                    <input type="file" accept="image/jpeg,image/png,image/webp" class="hidden" id="og-image-upload">
+                </label>
             </div>
         </div>
     </div>
@@ -326,6 +393,13 @@ document.addEventListener('DOMContentLoaded', function() {
     let editor = null;
     let autosave = null;
 
+    // Generate unique autosave key for new pages to avoid collisions
+    const autosaveId = pageId || (sessionStorage.getItem('gjs_new_page_id') || (() => {
+        const id = 'new_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+        sessionStorage.setItem('gjs_new_page_id', id);
+        return id;
+    })());
+
     // Load templates on page load
     loadTemplates();
 
@@ -337,7 +411,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize Autosave
     autosave = new window.GrapesJSAutosave(editor, {
-        pageId: pageId || 'new',
+        pageId: autosaveId,
         interval: 30000, // 30 seconds
         onStatusChange: updateAutosaveUI,
     });
@@ -373,7 +447,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (autosave.hasRecoveryData()) {
             const meta = autosave.getRecoveryMeta();
             // Only show recovery if it's for the same page (or if creating new and recovery is from new)
-            if (meta && (meta.pageId === (pageId || 'new'))) {
+            if (meta && (meta.pageId === autosaveId)) {
                 const banner = document.getElementById('recovery-banner');
                 const message = document.getElementById('recovery-message');
                 const timeAgo = window.formatTimeAgo(new Date(meta.timestamp));
@@ -558,7 +632,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Save page
     window.savePage = function() {
         const btn = document.getElementById('save-btn');
-        btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Saving...';
+        btn.innerHTML = '<svg aria-hidden="true" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Saving...';
         btn.disabled = true;
 
         const data = window.getGrapesJSData();
@@ -569,6 +643,7 @@ document.addEventListener('DOMContentLoaded', function() {
             template: document.getElementById('page-template').value,
             meta_title: document.getElementById('page-meta-title').value,
             meta_description: document.getElementById('page-meta-description').value,
+            featured_image: document.getElementById('page-featured-image').value,
             content: JSON.stringify(data.projectData),
             html: data.html + '<style>' + data.css + '</style>',
         };
@@ -585,11 +660,14 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify(formData),
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) return response.json().then(err => Promise.reject(err));
+            return response.json();
+        })
         .then(result => {
-            btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Saved!';
+            btn.innerHTML = '<svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Saved!';
             setTimeout(() => {
-                btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Save';
+                btn.innerHTML = '<svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Save';
                 btn.disabled = false;
             }, 2000);
 
@@ -601,6 +679,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Redirect to edit page if new
             if (!isEdit && result.page && result.page.id) {
                 window.history.replaceState({}, '', `/admin/pages/${result.page.id}/edit`);
+                // Clear the temporary new-page session key
+                sessionStorage.removeItem('gjs_new_page_id');
                 // Update autosave key for the new page ID
                 if (autosave) {
                     autosave.pageId = result.page.id;
@@ -611,10 +691,19 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Save error:', error);
+            // Show specific validation errors if available
+            let errorMsg = 'Error! Try again';
+            if (error?.errors) {
+                const firstField = Object.keys(error.errors)[0];
+                errorMsg = error.errors[firstField][0] || errorMsg;
+            } else if (error?.message) {
+                errorMsg = error.message;
+            }
+            showToast(errorMsg, 'error');
             btn.innerHTML = 'Error! Try again';
             btn.classList.add('bg-red-600');
             setTimeout(() => {
-                btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Save';
+                btn.innerHTML = '<svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Save';
                 btn.classList.remove('bg-red-600');
                 btn.disabled = false;
             }, 3000);
@@ -711,7 +800,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     ${template.thumbnail
                         ? `<img src="${template.thumbnail}" class="w-full h-full object-cover" />`
                         : `<div class="w-full h-full flex items-center justify-center">
-                               <svg class="w-16 h-16 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               <svg aria-hidden="true" class="w-16 h-16 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                </svg>
                            </div>`
@@ -767,6 +856,38 @@ document.addEventListener('DOMContentLoaded', function() {
     window.closeSaveTemplateModal = function() {
         document.getElementById('save-template-modal').classList.add('hidden');
         document.getElementById('save-template-modal').classList.remove('flex');
+    };
+
+    // OG Image upload
+    document.getElementById('og-image-upload').addEventListener('change', async function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const fd = new FormData();
+        fd.append('image', file);
+        try {
+            const r = await fetch('/admin/pages/upload-image', {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+                body: fd,
+            });
+            if (r.ok) {
+                const result = await r.json();
+                const url = result.data[0];
+                document.getElementById('page-featured-image').value = url;
+                document.getElementById('og-image-img').src = url;
+                document.getElementById('og-image-preview').classList.remove('hidden');
+                showToast('OG image uploaded', 'success');
+            } else {
+                showToast('Upload failed (max 5MB, JPG/PNG/WebP)', 'error');
+            }
+        } catch { showToast('Upload failed', 'error'); }
+        e.target.value = '';
+    });
+
+    window.removeOgImage = function() {
+        document.getElementById('page-featured-image').value = '';
+        document.getElementById('og-image-preview').classList.add('hidden');
+        document.getElementById('og-image-img').src = '';
     };
 
     window.saveAsTemplate = async function() {

@@ -52,28 +52,43 @@ class OutboundLink extends Model
         if ($this->utm_campaign) $params['utm_campaign'] = $this->utm_campaign;
         if ($this->utm_content) $params['utm_content'] = $this->utm_content;
 
-        // ProfessorPeptides tracking params
-        if ($this->append_session && isset($trackingData['session_id'])) {
-            $params['pp_session'] = $trackingData['session_id'];
+        // Pass through all pp_* params from getCrossDomainData()
+        if ($this->append_session && isset($trackingData['pp_session'])) {
+            $params['pp_session'] = $trackingData['pp_session'];
         }
-        if ($this->append_segment && isset($trackingData['segment'])) {
-            $params['pp_segment'] = $trackingData['segment'];
+        if ($this->append_segment && isset($trackingData['pp_segment'])) {
+            $params['pp_segment'] = $trackingData['pp_segment'];
         }
         if ($this->append_email && isset($trackingData['email'])) {
             $params['pp_email_hash'] = hash('sha256', $trackingData['email']);
+        } elseif (isset($trackingData['pp_email_hash'])) {
+            $params['pp_email_hash'] = $trackingData['pp_email_hash'];
         }
-        if ($this->append_quiz_data && isset($trackingData['quiz_data'])) {
-            foreach ($trackingData['quiz_data'] as $key => $value) {
-                $params["pp_{$key}"] = $value;
+
+        // Quiz data fields
+        if ($this->append_quiz_data) {
+            foreach (['pp_health_goal', 'pp_experience_level', 'pp_recommended_peptide', 'pp_quiz_completed'] as $key) {
+                if (isset($trackingData[$key])) {
+                    $params[$key] = $trackingData[$key];
+                }
             }
         }
 
         // Engagement score
-        if (isset($trackingData['engagement_score'])) {
-            $params['pp_engagement_score'] = $trackingData['engagement_score'];
+        if (isset($trackingData['pp_engagement_score'])) {
+            $params['pp_engagement_score'] = $trackingData['pp_engagement_score'];
         }
 
-        $separator = str_contains($url, '?') ? '&' : '?';
-        return $url . $separator . http_build_query($params);
+        if (empty($params)) {
+            return $url;
+        }
+
+        // Parse URL properly to preserve fragments
+        $parsed = parse_url($url);
+        $fragment = isset($parsed['fragment']) ? '#' . $parsed['fragment'] : '';
+        $baseUrl = str_replace($fragment, '', $url);
+        $separator = str_contains($baseUrl, '?') ? '&' : '?';
+
+        return $baseUrl . $separator . http_build_query($params) . $fragment;
     }
 }

@@ -21,9 +21,10 @@ class EventService
 
     public function track(Subscriber $subscriber, string $eventName, array $properties = []): bool
     {
-        // Ensure profile exists
+        // Ensure profile exists (refresh to get klaviyo_id set by createOrUpdate)
         if (!$subscriber->klaviyo_id) {
             $this->profileService->createOrUpdate($subscriber);
+            $subscriber->refresh();
         }
 
         if (!$subscriber->klaviyo_id) return false;
@@ -60,7 +61,7 @@ class EventService
             'quiz_name' => $response->quiz?->name,
             'segment' => $response->segment,
             'outcome' => $response->outcome?->name,
-            'time_to_complete' => $response->time_to_complete,
+            'time_to_complete' => $response->duration_seconds,
         ], $response->klaviyo_properties ?? []);
 
         $success = $this->track($response->subscriber, 'Completed Quiz', $properties);
@@ -79,6 +80,7 @@ class EventService
         if (!$download->subscriber) return false;
 
         $leadMagnet = $download->leadMagnet;
+        if (!$leadMagnet) return false;
 
         $success = $this->track($download->subscriber, $leadMagnet->klaviyo_event ?? 'Downloaded Lead Magnet', [
             'lead_magnet_id' => $leadMagnet->id,

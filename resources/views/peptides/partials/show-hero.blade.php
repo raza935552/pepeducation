@@ -3,7 +3,7 @@
         <!-- Breadcrumb -->
         <nav class="flex items-center gap-2 text-sm text-cream-400 mb-4">
             <a href="{{ route('peptides.index') }}" class="hover:text-white transition-colors">Peptides</a>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
             </svg>
             <span class="text-white">{{ $peptide->name }}</span>
@@ -47,7 +47,7 @@
             <form action="{{ route('bookmarks.toggle', $peptide) }}" method="POST">
                 @csrf
                 <button type="submit" class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition-all {{ $isBookmarked ? 'bg-gold-500 text-white hover:bg-gold-600' : 'bg-white/10 text-cream-200 hover:bg-white/20 border border-white/10' }}">
-                    <svg class="w-5 h-5" fill="{{ $isBookmarked ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg aria-hidden="true" class="w-5 h-5" fill="{{ $isBookmarked ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
                     </svg>
                     {{ $isBookmarked ? 'Saved' : 'Save' }}
@@ -55,7 +55,7 @@
             </form>
         @else
             <a href="{{ route('login') }}" class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 text-cream-200 hover:bg-white/20 border border-white/10 transition-all">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
                 </svg>
                 Save
@@ -67,7 +67,7 @@
                     onclick="Livewire.dispatch('openEditSuggestionModal', { peptideId: {{ $peptide->id }}, section: '' })"
                     class="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 text-cream-200 hover:bg-white/20 border border-white/10 transition-all"
                     title="Suggest an edit">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                 </svg>
             </button>

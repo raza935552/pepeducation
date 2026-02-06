@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Page;
+use App\Http\Controllers\Admin\PageVersionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -28,12 +29,13 @@ class PageController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:pages,slug',
-            'content' => 'nullable|string',
-            'html' => 'nullable|string',
+            'content' => 'nullable|string|max:2000000',
+            'html' => 'nullable|string|max:2000000',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
             'status' => 'required|in:draft,published',
             'template' => 'nullable|string|max:50',
+            'featured_image' => 'nullable|string|max:500',
         ]);
 
         $slug = $validated['slug'] ?: Page::generateSlug($validated['title']);
@@ -46,6 +48,7 @@ class PageController extends Controller
             'html' => $validated['html'] ?? null,
             'meta_title' => $validated['meta_title'],
             'meta_description' => $validated['meta_description'],
+            'featured_image' => $validated['featured_image'] ?? null,
             'status' => $validated['status'],
             'template' => $validated['template'] ?? 'default',
             'created_by' => auth()->id(),
@@ -75,16 +78,22 @@ class PageController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:pages,slug,' . $page->id,
-            'content' => 'nullable|string',
-            'html' => 'nullable|string',
+            'content' => 'nullable|string|max:2000000',
+            'html' => 'nullable|string|max:2000000',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
             'status' => 'required|in:draft,published',
             'template' => 'nullable|string|max:50',
+            'featured_image' => 'nullable|string|max:500',
         ]);
 
         $slug = $validated['slug'] ?: Page::generateSlug($validated['title']);
         $content = $validated['content'] ? json_decode($validated['content'], true) : null;
+
+        // Auto-create version before updating
+        if ($page->content || $page->html) {
+            PageVersionController::createVersion($page);
+        }
 
         $wasPublished = $page->isPublished();
         $isNowPublished = $validated['status'] === 'published';
@@ -96,6 +105,7 @@ class PageController extends Controller
             'html' => $validated['html'] ?? null,
             'meta_title' => $validated['meta_title'],
             'meta_description' => $validated['meta_description'],
+            'featured_image' => $validated['featured_image'] ?? null,
             'status' => $validated['status'],
             'template' => $validated['template'] ?? 'default',
             'published_at' => !$wasPublished && $isNowPublished ? now() : $page->published_at,
@@ -137,16 +147,62 @@ class PageController extends Controller
             ->with('success', 'Page duplicated successfully.');
     }
 
+    public function createVariant(Page $page)
+    {
+        $variant = $page->replicate(['published_at']);
+        $variant->title = $page->title . ' (Variant)';
+        $variant->slug = Page::generateSlug($variant->title);
+        $variant->status = 'draft';
+        $variant->variant_of = $page->id;
+        $variant->variant_weight = 50;
+        $variant->created_by = auth()->id();
+        $variant->save();
+
+        return redirect()
+            ->route('admin.pages.edit', $variant)
+            ->with('success', 'A/B variant created. Edit and publish to start testing.');
+    }
+
     public function uploadImage(Request $request)
     {
-        $request->validate([
-            'image' => 'required|image|max:5120',
-        ]);
+        // GrapesJS sends file as array (image[]) when multiUpload is true
+        $file = $request->file('image');
+        if (is_array($file)) {
+            $file = $file[0] ?? null;
+        }
 
-        $path = $request->file('image')->store('pages', 'public');
-        $url = Storage::url($path);
+        if (!$file || !$file->isValid()) {
+            return response()->json([
+                'errors' => ['image' => ['Please upload a valid image file.']],
+            ], 422);
+        }
 
-        // GrapesJS asset manager format
+        $allowed = ['jpeg', 'jpg', 'png', 'webp', 'gif'];
+        $ext = strtolower($file->getClientOriginalExtension());
+        if (!in_array($ext, $allowed) || !in_array($file->getMimeType(), ['image/jpeg', 'image/png', 'image/webp', 'image/gif'])) {
+            return response()->json([
+                'errors' => ['image' => ['File must be JPG, PNG, WebP, or GIF.']],
+            ], 422);
+        }
+
+        if ($file->getSize() > 5 * 1024 * 1024) {
+            return response()->json([
+                'errors' => ['image' => ['Image must be under 5MB.']],
+            ], 422);
+        }
+        $name = \Illuminate\Support\Str::random(40) . '.' . $file->getClientOriginalExtension();
+
+        // Use move instead of store() to avoid getRealPath() issues on Windows
+        $disk = Storage::disk('public');
+        $dir = storage_path('app/public/pages');
+
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        $file->move($dir, $name);
+        $url = $disk->url('pages/' . $name);
+
         return response()->json([
             'data' => [$url],
         ]);

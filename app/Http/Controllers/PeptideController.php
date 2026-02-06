@@ -13,7 +13,8 @@ class PeptideController extends Controller
         $query = Peptide::with('categories')->published();
 
         // Search
-        if ($search = $request->get('search')) {
+        if ($rawSearch = $request->get('search')) {
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $rawSearch);
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('full_name', 'like', "%{$search}%")
@@ -49,6 +50,7 @@ class PeptideController extends Controller
         $peptide->load('categories');
 
         $relatedPeptides = Peptide::published()
+            ->with('categories')
             ->whereHas('categories', fn($q) => $q->whereIn('categories.id', $peptide->categories->pluck('id')))
             ->where('peptides.id', '!=', $peptide->id)
             ->limit(4)

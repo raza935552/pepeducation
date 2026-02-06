@@ -59,6 +59,11 @@ class LoginRequest extends FormRequest
      */
     public function ensureIsNotRateLimited(): void
     {
+        // Bypass rate limiting on .test domains
+        if (\App\Providers\AppServiceProvider::isTestEnv()) {
+            return;
+        }
+
         if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }

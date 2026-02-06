@@ -71,7 +71,7 @@ class User extends Authenticatable
 
     public function getOrCreatePreferences(): UserPreference
     {
-        return $this->preferences ?? $this->preferences()->create([
+        return $this->preferences()->firstOrCreate([], [
             'notify_edit_status' => true,
             'notify_marketing' => false,
             'notify_weekly_digest' => false,

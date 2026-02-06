@@ -27,7 +27,12 @@ class PopupManager extends Component
 
     public function loadEligiblePopups(): void
     {
-        $this->popups = Popup::where('is_active', true)
+        $this->popups = Popup::select([
+                'id', 'name', 'slug', 'type', 'design', 'triggers', 'targeting',
+                'headline', 'body', 'button_text', 'image',
+                'views_count', 'conversions_count', 'dismissals_count',
+            ])
+            ->where('is_active', true)
             ->get()
             ->filter(fn($popup) => $this->isEligible($popup));
     }
@@ -123,7 +128,7 @@ class PopupManager extends Component
 
         $service->subscribe($this->email, [
             'source' => 'popup:' . $popup->slug,
-            'segment' => request()->cookie('pp_segment') ?? $this->currentSegment ?? 'TOF',
+            'segment' => in_array($s = strtolower(request()->cookie('pp_segment') ?? $this->currentSegment ?? 'tof'), ['tof', 'mof', 'bof']) ? $s : 'tof',
             'first_session_id' => request()->cookie('pp_session_id'),
             'first_landing_page' => url()->current(),
         ]);
@@ -136,18 +141,25 @@ class PopupManager extends Component
         $this->dispatch('popup-conversion', popupId: $popup->id, email: $this->email);
     }
 
-    private function recordInteraction(Popup $popup, string $action, array $data = []): void
+    private function recordInteraction(Popup $popup, string $type, array $data = []): void
     {
         $sessionId = request()->cookie('pp_session_id') ?? session()->getId();
+
+        // Map internal types to schema enum values (view, dismiss, convert)
+        $interactionType = match ($type) {
+            'impression' => 'view',
+            'conversion' => 'convert',
+            default => $type, // close → dismiss
+        };
 
         PopupInteraction::create([
             'popup_id' => $popup->id,
             'session_id' => $sessionId,
-            'action' => $action,
-            'data' => $data,
+            'interaction_type' => $interactionType,
+            'form_data' => !empty($data) ? $data : null,
         ]);
 
-        $popup->increment($action === 'impression' ? 'impressions_count' : 'conversions_count');
+        $popup->increment($type === 'impression' ? 'views_count' : ($type === 'conversion' ? 'conversions_count' : 'dismissals_count'));
     }
 
     public function getActivePopupProperty(): ?Popup

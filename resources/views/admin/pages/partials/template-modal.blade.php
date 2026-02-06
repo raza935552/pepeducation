@@ -9,7 +9,7 @@
                 <p class="text-sm text-gray-400 mt-1">Start with a pre-built template or begin from scratch</p>
             </div>
             <button type="button" class="close-modal-btn text-gray-400 hover:text-white p-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
@@ -42,7 +42,7 @@
                 <div class="template-card cursor-pointer group" data-template-id="blank">
                     <div class="aspect-[4/3] bg-gray-700 rounded-lg border-2 border-dashed border-gray-600 flex items-center justify-center group-hover:border-blue-500 transition-colors">
                         <div class="text-center">
-                            <svg class="w-12 h-12 mx-auto text-gray-500 group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg aria-hidden="true" class="w-12 h-12 mx-auto text-gray-500 group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                             </svg>
                             <p class="mt-2 text-sm text-gray-400">Start Fresh</p>
@@ -54,7 +54,7 @@
 
                 <!-- Loading placeholder -->
                 <div id="templates-loading" class="col-span-2 flex items-center justify-center py-12">
-                    <svg class="w-8 h-8 animate-spin text-blue-500" fill="none" viewBox="0 0 24 24">
+                    <svg aria-hidden="true" class="w-8 h-8 animate-spin text-blue-500" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                     </svg>

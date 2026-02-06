@@ -37,6 +37,16 @@ class PeptideRequestModal extends Component
     {
         $this->validate();
 
+        // Simple rate limit: max 3 per hour (bypassed on .test domains)
+        if (! \App\Providers\AppServiceProvider::isTestEnv()) {
+            $key = 'peptide_request_' . request()->ip();
+            if (cache()->get($key, 0) >= 3) {
+                $this->addError('peptideName', 'Too many requests. Please try again later.');
+                return;
+            }
+            cache()->put($key, cache()->get($key, 0) + 1, 3600);
+        }
+
         $links = array_filter(array_map('trim', explode("\n", $this->sourceLinks)));
 
         PeptideRequest::create([

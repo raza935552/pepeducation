@@ -22,12 +22,10 @@ class PeptideRequestController extends Controller
         }
 
         $requests = $query->paginate(20)->withQueryString();
-        $counts = [
-            'pending' => PeptideRequest::where('status', 'pending')->count(),
-            'in_progress' => PeptideRequest::where('status', 'in_progress')->count(),
-            'published' => PeptideRequest::where('status', 'published')->count(),
-            'rejected' => PeptideRequest::where('status', 'rejected')->count(),
-        ];
+        $counts = array_merge(
+            ['pending' => 0, 'in_progress' => 0, 'published' => 0, 'rejected' => 0],
+            PeptideRequest::selectRaw('status, COUNT(*) as count')->groupBy('status')->pluck('count', 'status')->toArray()
+        );
 
         return view('admin.requests.index', compact('requests', 'counts'));
     }

@@ -26,12 +26,10 @@ class ContributionController extends Controller
         }
 
         $contributions = $query->paginate(20)->withQueryString();
-        $counts = [
-            'pending' => Contribution::where('status', 'pending')->count(),
-            'under_review' => Contribution::where('status', 'under_review')->count(),
-            'approved' => Contribution::where('status', 'approved')->count(),
-            'rejected' => Contribution::where('status', 'rejected')->count(),
-        ];
+        $counts = array_merge(
+            ['pending' => 0, 'under_review' => 0, 'approved' => 0, 'rejected' => 0],
+            Contribution::selectRaw('status, COUNT(*) as count')->groupBy('status')->pluck('count', 'status')->toArray()
+        );
 
         return view('admin.contributions.index', compact('contributions', 'counts'));
     }
@@ -52,8 +50,15 @@ class ContributionController extends Controller
             'published_at' => now(),
         ]);
 
+        // Apply the approved changes to the peptide
+        if ($contribution->peptide && $contribution->section && $contribution->new_content !== null) {
+            $contribution->peptide->update([
+                $contribution->section => $contribution->new_content,
+            ]);
+        }
+
         return redirect()->route('admin.contributions.index')
-            ->with('success', 'Contribution approved successfully.');
+            ->with('success', 'Contribution approved and applied successfully.');
     }
 
     public function reject(Request $request, Contribution $contribution)

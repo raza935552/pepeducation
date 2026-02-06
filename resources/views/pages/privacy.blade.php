@@ -1,11 +1,11 @@
 <x-public-layout title="Privacy Policy">
     {{-- Hero --}}
-    <section class="bg-gradient-to-b from-cream-100 to-cream-50 dark:from-brown-900 dark:to-brown-900 py-16 lg:py-20">
+    <section class="bg-gradient-to-b from-cream-100 to-cream-50 py-16 lg:py-20">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-cream-100 mb-4">
+            <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
                 Privacy Policy
             </h1>
-            <p class="text-gray-500 dark:text-cream-400">
+            <p class="text-gray-500">
                 Last updated: {{ date('F j, Y') }}
             </p>
         </div>
@@ -14,8 +14,8 @@
     {{-- Content --}}
     <section class="py-16">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-brown-800 rounded-2xl p-8 lg:p-12 border border-cream-200 dark:border-brown-700">
-                <div class="prose prose-lg dark:prose-invert max-w-none prose-headings:text-gray-900 dark:prose-headings:text-cream-100 prose-p:text-gray-600 dark:prose-p:text-cream-300 prose-li:text-gray-600 dark:prose-li:text-cream-300">
+            <div class="bg-white rounded-2xl p-8 lg:p-12 border border-cream-200">
+                <div class="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-600 prose-li:text-gray-600">
 
                     <h2>1. Information We Collect</h2>
                     <p>We collect information you provide directly to us, such as when you:</p>
@@ -79,7 +79,7 @@
                     </ul>
 
                     <h2>8. Contact Us</h2>
-                    <p>If you have questions about this Privacy Policy, please contact us through our <button onclick="Livewire.dispatch('openContactModal')" class="text-gold-600 dark:text-gold-400 hover:underline">contact form</button>.</p>
+                    <p>If you have questions about this Privacy Policy, please contact us through our <button onclick="Livewire.dispatch('openContactModal')" class="text-gold-600 hover:underline">contact form</button>.</p>
 
                 </div>
             </div>

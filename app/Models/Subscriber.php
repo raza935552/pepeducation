@@ -13,7 +13,7 @@ class Subscriber extends Model
         // Segmentation
         'segment', 'quiz_completed', 'quiz_completed_at',
         // Klaviyo
-        'klaviyo_id', 'klaviyo_synced_at', 'klaviyo_properties',
+        'klaviyo_id', 'klaviyo_synced_at', 'klaviyo_properties', 'needs_klaviyo_sync',
         // First Touch Attribution
         'first_session_id', 'first_utm_source', 'first_utm_medium',
         'first_utm_campaign', 'first_utm_content', 'first_referrer', 'first_landing_page',
@@ -36,6 +36,7 @@ class Subscriber extends Model
         'quiz_completed_at' => 'datetime',
         'klaviyo_synced_at' => 'datetime',
         'klaviyo_properties' => 'array',
+        'needs_klaviyo_sync' => 'boolean',
         'last_activity_at' => 'datetime',
         'lead_magnets_downloaded' => 'array',
         'peptides_viewed' => 'array',
@@ -100,8 +101,7 @@ class Subscriber extends Model
 
     public function scopeNeedsSyncToKlaviyo($query)
     {
-        return $query->whereNull('klaviyo_synced_at')
-            ->orWhereColumn('updated_at', '>', 'klaviyo_synced_at');
+        return $query->where('needs_klaviyo_sync', true);
     }
 
     // Methods
@@ -131,5 +131,21 @@ class Subscriber extends Model
     {
         $this->increment('engagement_score', $points);
         $this->updateEngagementTier();
+    }
+
+    /**
+     * Batch update engagement tiers for all subscribers (for scheduled task)
+     */
+    public static function recalculateAllTiers(): int
+    {
+        $hot = (int) Setting::getValue('scoring', 'tier_hot_threshold', 40);
+        $warm = (int) Setting::getValue('scoring', 'tier_warm_threshold', 15);
+
+        $updated = 0;
+        $updated += self::where('engagement_score', '>=', $hot)->where('engagement_tier', '!=', 'hot')->update(['engagement_tier' => 'hot']);
+        $updated += self::where('engagement_score', '>=', $warm)->where('engagement_score', '<', $hot)->where('engagement_tier', '!=', 'warm')->update(['engagement_tier' => 'warm']);
+        $updated += self::where('engagement_score', '<', $warm)->where('engagement_tier', '!=', 'cold')->update(['engagement_tier' => 'cold']);
+
+        return $updated;
     }
 }

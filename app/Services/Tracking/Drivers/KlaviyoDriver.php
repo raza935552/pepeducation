@@ -13,7 +13,7 @@ class KlaviyoDriver implements TrackingDriver
 
     public function __construct()
     {
-        $this->klaviyo = new KlaviyoService();
+        $this->klaviyo = app(KlaviyoService::class);
     }
 
     public function isEnabled(): bool

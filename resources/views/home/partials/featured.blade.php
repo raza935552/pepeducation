@@ -1,17 +1,17 @@
-<section class="py-16 lg:py-20 bg-white dark:bg-brown-800">
+<section class="py-16 lg:py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {{-- Section Header --}}
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
             <div>
-                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-cream-100 mb-2">
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
                     Featured Peptides
                 </h2>
-                <p class="text-gray-600 dark:text-cream-400">Most studied compounds in our database</p>
+                <p class="text-gray-600">Most studied compounds in our database</p>
             </div>
             <a href="{{ route('peptides.index') }}"
-               class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gray-900 dark:bg-cream-100 hover:bg-gray-800 dark:hover:bg-cream-200 text-white dark:text-brown-900 font-medium text-sm transition-all duration-300 hover:shadow-lg">
+               class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gray-900 hover:bg-gray-800 text-white font-medium text-sm transition-all duration-300 hover:shadow-lg">
                 Browse All
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                 </svg>
             </a>

@@ -14,7 +14,8 @@ class SupporterController extends Controller
         $query = Supporter::query();
 
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->search);
+            $query->where('name', 'like', '%' . $search . '%');
         }
 
         if ($request->filled('tier')) {
@@ -39,7 +40,7 @@ class SupporterController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'logo' => 'nullable|image|mimes:jpg,jpeg,png,gif,svg,webp|max:2048',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
             'website_url' => 'nullable|url|max:255',
             'tier' => 'required|in:platinum,gold,silver,bronze',
             'is_featured' => 'boolean',
@@ -68,7 +69,7 @@ class SupporterController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'logo' => 'nullable|image|mimes:jpg,jpeg,png,gif,svg,webp|max:2048',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
             'website_url' => 'nullable|url|max:255',
             'tier' => 'required|in:platinum,gold,silver,bronze',
             'is_featured' => 'boolean',

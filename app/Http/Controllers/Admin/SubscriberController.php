@@ -14,7 +14,8 @@ class SubscriberController extends Controller
 
         // Search
         if ($request->filled('search')) {
-            $query->where('email', 'like', '%' . $request->search . '%');
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->search);
+            $query->where('email', 'like', '%' . $search . '%');
         }
 
         // Status filter
@@ -67,15 +68,26 @@ class SubscriberController extends Controller
 
     public function export()
     {
-        $subscribers = Subscriber::active()->get();
+        return response()->streamDownload(function () {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['Email', 'Name', 'Source', 'Subscribed At']);
 
-        $csv = "Email,Name,Source,Subscribed At\n";
-        foreach ($subscribers as $sub) {
-            $csv .= "{$sub->email},{$sub->name},{$sub->source},{$sub->subscribed_at}\n";
-        }
+            Subscriber::active()
+                ->select(['email', 'name', 'source', 'subscribed_at'])
+                ->chunk(500, function ($subscribers) use ($handle) {
+                    foreach ($subscribers as $sub) {
+                        fputcsv($handle, [
+                            $sub->email,
+                            $sub->name,
+                            $sub->source,
+                            $sub->subscribed_at,
+                        ]);
+                    }
+                });
 
-        return response($csv)
-            ->header('Content-Type', 'text/csv')
-            ->header('Content-Disposition', 'attachment; filename="subscribers.csv"');
+            fclose($handle);
+        }, 'subscribers.csv', [
+            'Content-Type' => 'text/csv',
+        ]);
     }
 }

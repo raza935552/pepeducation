@@ -1,11 +1,11 @@
 <x-public-layout title="Disclaimer">
     {{-- Hero --}}
-    <section class="bg-gradient-to-b from-cream-100 to-cream-50 dark:from-brown-900 dark:to-brown-900 py-16 lg:py-20">
+    <section class="bg-gradient-to-b from-cream-100 to-cream-50 py-16 lg:py-20">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-cream-100 mb-4">
+            <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
                 Disclaimer
             </h1>
-            <p class="text-gray-500 dark:text-cream-400">
+            <p class="text-gray-500">
                 Please read this disclaimer carefully before using our website.
             </p>
         </div>
@@ -15,24 +15,24 @@
     <section class="py-16">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             {{-- Important Warning Box --}}
-            <div class="bg-red-50 dark:bg-red-900/20 rounded-2xl p-8 border border-red-200 dark:border-red-800 mb-8">
+            <div class="bg-red-50 rounded-2xl p-8 border border-red-200 mb-8">
                 <div class="flex items-start gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center shrink-0">
-                        <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center shrink-0">
+                        <svg aria-hidden="true" class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                         </svg>
                     </div>
                     <div>
-                        <h2 class="text-xl font-bold text-red-800 dark:text-red-300 mb-2">Important Warning</h2>
-                        <p class="text-red-700 dark:text-red-300 m-0">
+                        <h2 class="text-xl font-bold text-red-800 mb-2">Important Warning</h2>
+                        <p class="text-red-700 m-0">
                             PepProfesor does not sell, supply, or recommend any peptides for human consumption. The information on this website is strictly for educational and research purposes only.
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-brown-800 rounded-2xl p-8 lg:p-12 border border-cream-200 dark:border-brown-700">
-                <div class="prose prose-lg dark:prose-invert max-w-none prose-headings:text-gray-900 dark:prose-headings:text-cream-100 prose-p:text-gray-600 dark:prose-p:text-cream-300 prose-li:text-gray-600 dark:prose-li:text-cream-300">
+            <div class="bg-white rounded-2xl p-8 lg:p-12 border border-cream-200">
+                <div class="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-600 prose-li:text-gray-600">
 
                     <h2>Educational Purpose</h2>
                     <p>All content provided on PepProfesor is intended solely for educational and informational purposes. This website serves as a research reference and should not be interpreted as:</p>

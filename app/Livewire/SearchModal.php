@@ -65,11 +65,16 @@ class SearchModal extends Component
 
         $results = [];
 
-        // Search peptides
-        $peptides = Peptide::where('name', 'like', "%{$this->search}%")
-            ->orWhere('abbreviation', 'like', "%{$this->search}%")
-            ->orWhere('type', 'like', "%{$this->search}%")
-            ->orWhere('overview', 'like', "%{$this->search}%")
+        $search = str_replace(['%', '_'], ['\\%', '\\_'], $this->search);
+
+        // Search peptides (name, abbreviation, type only - not overview for performance)
+        $peptides = Peptide::select(['id', 'name', 'slug', 'abbreviation', 'type'])
+            ->where('is_published', true)
+            ->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('abbreviation', 'like', "%{$search}%")
+                  ->orWhere('type', 'like', "%{$search}%");
+            })
             ->limit(5)
             ->get();
 
@@ -83,7 +88,8 @@ class SearchModal extends Component
         }
 
         // Search categories
-        $categories = Category::where('name', 'like', "%{$this->search}%")
+        $categories = Category::select(['id', 'name', 'slug'])
+            ->where('name', 'like', "%{$search}%")
             ->withCount('peptides')
             ->having('peptides_count', '>', 0)
             ->limit(3)

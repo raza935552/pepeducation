@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="text-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-cream-100">Create an account</h1>
-        <p class="text-sm text-gray-600 dark:text-cream-400 mt-1">Join the peptide research community</p>
+        <h1 class="text-2xl font-bold text-gray-900">Create an account</h1>
+        <p class="text-sm text-gray-600 mt-1">Join the peptide research community</p>
     </div>
 
     <form method="POST" action="{{ route('register') }}">
@@ -46,10 +46,10 @@
             </x-primary-button>
         </div>
 
-        <div class="text-center mt-6 pt-6 border-t border-cream-200 dark:border-brown-700">
-            <p class="text-sm text-gray-600 dark:text-cream-400">
+        <div class="text-center mt-6 pt-6 border-t border-cream-200">
+            <p class="text-sm text-gray-600">
                 Already have an account?
-                <a href="{{ route('login') }}" class="text-gold-600 dark:text-gold-400 hover:text-gold-700 dark:hover:text-gold-300 font-medium hover:underline">
+                <a href="{{ route('login') }}" class="text-gold-600 hover:text-gold-700 font-medium hover:underline">
                     Sign in
                 </a>
             </p>
