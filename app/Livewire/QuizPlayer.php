@@ -27,6 +27,12 @@ class QuizPlayer extends Component
     {
         $this->quiz = $quiz->load('questions', 'outcomes');
         $this->questions = $this->quiz->questions->sortBy('order')->values()->toArray();
+
+        if (count($this->questions) === 0) {
+            $this->completed = true;
+            return;
+        }
+
         $this->startQuiz();
     }
 
@@ -68,6 +74,11 @@ class QuizPlayer extends Component
     public function selectAnswer(int $questionIndex, string $optionId): void
     {
         if ($questionIndex < 0 || $questionIndex >= count($this->questions)) {
+            return;
+        }
+
+        // Only allow answering the current question (prevent out-of-order submissions)
+        if ($questionIndex !== $this->currentStep) {
             return;
         }
 

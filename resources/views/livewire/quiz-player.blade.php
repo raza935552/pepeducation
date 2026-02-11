@@ -1,7 +1,7 @@
 <div class="quiz-player max-w-2xl mx-auto">
     @if(!$completed)
         <!-- Progress Bar -->
-        @if($quiz->settings['show_progress_bar'] ?? true)
+        @if(($quiz->settings ?? [])['show_progress_bar'] ?? true)
             <div class="mb-6">
                 <div class="flex justify-between text-sm text-gray-600 mb-2">
                     <span>Question {{ $currentStep + 1 }} of {{ count($questions) }}</span>
@@ -65,7 +65,7 @@
                 </div>
 
                 <!-- Navigation -->
-                @if(($quiz->settings['allow_back'] ?? true) && $currentStep > 0)
+                @if((($quiz->settings ?? [])['allow_back'] ?? true) && $currentStep > 0)
                     <div class="flex justify-start mt-8">
                         <button wire:click="previousStep" class="btn bg-gray-200 text-gray-700 hover:bg-gray-300">
                             <svg aria-hidden="true" class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
