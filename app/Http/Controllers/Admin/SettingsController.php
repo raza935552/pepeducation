@@ -8,27 +8,31 @@ use Illuminate\Http\Request;
 
 class SettingsController extends Controller
 {
+    private const ALLOWED_GROUPS = ['integrations', 'tracking', 'scoring', 'general'];
+
     public function index()
     {
-        $groups = [
-            'integrations' => Setting::getGroup('integrations'),
-            'tracking' => Setting::getGroup('tracking'),
-            'scoring' => Setting::getGroup('scoring'),
-            'general' => Setting::getGroup('general'),
-        ];
+        $groups = [];
+        foreach (self::ALLOWED_GROUPS as $group) {
+            $groups[$group] = Setting::getGroup($group);
+        }
 
-        $settings = Setting::all()->groupBy('group');
+        $settings = Setting::whereIn('group', self::ALLOWED_GROUPS)
+            ->get()
+            ->groupBy('group');
 
         return view('admin.settings.index', compact('groups', 'settings'));
     }
 
     public function update(Request $request)
     {
+        $allowedGroups = implode(',', self::ALLOWED_GROUPS);
+
         $validated = $request->validate([
             'settings' => 'required|array',
-            'settings.*.group' => 'required|string',
-            'settings.*.key' => 'required|string',
-            'settings.*.value' => 'nullable|string',
+            'settings.*.group' => "required|string|in:{$allowedGroups}",
+            'settings.*.key' => 'required|string|max:100|regex:/^[a-z0-9_]+$/',
+            'settings.*.value' => 'nullable|string|max:2000',
         ]);
 
         foreach ($validated['settings'] as $setting) {

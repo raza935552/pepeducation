@@ -187,52 +187,60 @@ class QuizPlayer extends Component
             return;
         }
 
-        // Refresh from DB to catch concurrent completion attempts
-        $this->response->refresh();
-        if ($this->response->status === 'completed') {
-            $this->completed = true;
-            return;
-        }
-
         $segment = $this->determineSegment();
         $this->outcome = $this->determineOutcome($segment);
-
-        // Build Klaviyo properties from answers
         $klaviyoProperties = $this->buildKlaviyoProperties();
 
-        // Use transaction with conditional update to prevent double-completion
-        $updated = DB::table('quiz_responses')
-            ->where('id', $this->response->id)
-            ->where('status', 'in_progress')
-            ->update([
-                'outcome_id' => $this->outcome?->id,
-                'outcome_name' => $this->outcome?->name,
-                'score_tof' => $this->segmentScores['tof'],
-                'score_mof' => $this->segmentScores['mof'],
-                'score_bof' => $this->segmentScores['bof'],
-                'total_score' => array_sum($this->segmentScores),
-                'segment' => $segment,
-                'status' => 'completed',
-                'completed_at' => now(),
-                'duration_seconds' => now()->diffInSeconds($this->response->started_at),
-                'klaviyo_properties' => json_encode($klaviyoProperties),
-                'updated_at' => now(),
-            ]);
+        // Wrap everything in a transaction with pessimistic locking
+        // to prevent race conditions on concurrent completion attempts
+        $updated = DB::transaction(function () use ($segment, $klaviyoProperties) {
+            // Lock the row to prevent concurrent completion
+            $lockedResponse = DB::table('quiz_responses')
+                ->where('id', $this->response->id)
+                ->lockForUpdate()
+                ->first();
+
+            if (!$lockedResponse || $lockedResponse->status !== 'in_progress') {
+                return false;
+            }
+
+            DB::table('quiz_responses')
+                ->where('id', $this->response->id)
+                ->update([
+                    'outcome_id' => $this->outcome?->id,
+                    'outcome_name' => $this->outcome?->name,
+                    'score_tof' => $this->segmentScores['tof'],
+                    'score_mof' => $this->segmentScores['mof'],
+                    'score_bof' => $this->segmentScores['bof'],
+                    'total_score' => array_sum($this->segmentScores),
+                    'segment' => $segment,
+                    'status' => 'completed',
+                    'completed_at' => now(),
+                    'duration_seconds' => now()->diffInSeconds($this->response->started_at),
+                    'klaviyo_properties' => json_encode($klaviyoProperties),
+                    'updated_at' => now(),
+                ]);
+
+            // Increment inside transaction so it's atomic with the completion
+            $this->quiz->increment('completions_count');
+
+            return true;
+        });
+
+        $this->completed = true;
 
         if (!$updated) {
-            $this->completed = true;
+            $this->response->refresh();
             return;
         }
 
         $this->response->refresh();
-        $this->quiz->increment('completions_count');
-        $this->completed = true;
 
         // Store segment in session/cookie for targeting
         session(['pp_segment' => $segment]);
         cookie()->queue('pp_segment', $segment, 60 * 24 * 30);
 
-        // Sync to Klaviyo if subscriber exists
+        // Sync to Klaviyo outside transaction (external API call)
         if ($this->response->subscriber_id) {
             $this->syncToKlaviyo();
         }

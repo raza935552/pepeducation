@@ -2,16 +2,60 @@
 
 namespace App\Services;
 
+use HTMLPurifier;
+use HTMLPurifier_Config;
+
 class HtmlSanitizer
 {
-    /** Tags that are always stripped (with their content) */
-    private const DANGEROUS_TAGS = [
-        'script', 'iframe', 'object', 'embed', 'applet',
-        'meta', 'link', 'base', 'noscript',
-    ];
+    private HTMLPurifier $purifier;
 
-    /** Event handler attributes (on*) are stripped via regex */
-    private const DANGEROUS_ATTR_PATTERN = '/\s+on\w+\s*=\s*["\'][^"\']*["\']/i';
+    public function __construct()
+    {
+        $config = HTMLPurifier_Config::createDefault();
+
+        // Allow safe HTML tags for page builder content
+        $config->set('HTML.Allowed', implode(',', [
+            'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+            'p', 'br', 'hr',
+            'strong', 'em', 'b', 'i', 'u', 's', 'sub', 'sup', 'mark',
+            'a[href|target|rel|title|class]',
+            'img[src|alt|title|width|height|class|loading]',
+            'ul', 'ol', 'li',
+            'blockquote', 'pre', 'code',
+            'table', 'thead', 'tbody', 'tfoot', 'tr', 'th[colspan|rowspan]', 'td[colspan|rowspan]',
+            'div[class|id|style]', 'span[class|style]', 'section[class|id|style]',
+            'figure', 'figcaption', 'picture', 'source[srcset|media|type]',
+            'video[src|controls|autoplay|muted|loop|poster|width|height|class]',
+            'audio[src|controls|class]',
+        ]));
+
+        // Allow safe CSS properties for page builder styling
+        $config->set('CSS.AllowedProperties', implode(',', [
+            'color', 'background-color', 'background',
+            'font-size', 'font-weight', 'font-style', 'font-family',
+            'text-align', 'text-decoration', 'text-transform', 'line-height', 'letter-spacing',
+            'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
+            'padding', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
+            'border', 'border-radius', 'border-color', 'border-width', 'border-style',
+            'width', 'max-width', 'min-width', 'height', 'max-height', 'min-height',
+            'display', 'opacity',
+        ]));
+
+        // Allow data URIs for inline images (base64)
+        $config->set('URI.AllowedSchemes', ['http' => true, 'https' => true, 'mailto' => true, 'data' => true]);
+
+        // Allow target="_blank" on links
+        $config->set('Attr.AllowedFrameTargets', ['_blank']);
+
+        // Set serializer path for caching
+        $cachePath = storage_path('app/htmlpurifier');
+        if (!is_dir($cachePath)) {
+            mkdir($cachePath, 0755, true);
+        }
+        $config->set('Cache.SerializerPath', $cachePath);
+
+        $this->purifier = new HTMLPurifier($config);
+    }
 
     public function sanitize(string $html): string
     {
@@ -19,46 +63,6 @@ class HtmlSanitizer
             return '';
         }
 
-        $html = $this->stripDangerousTags($html);
-        $html = $this->stripEventHandlers($html);
-        $html = $this->stripJavascriptUris($html);
-
-        return $html;
-    }
-
-    private function stripDangerousTags(string $html): string
-    {
-        $tags = implode('|', self::DANGEROUS_TAGS);
-
-        // Strip tags and their content
-        $html = preg_replace(
-            '#<\s*(' . $tags . ')[\s>].*?</\s*\1\s*>#si',
-            '',
-            $html
-        );
-
-        // Strip self-closing / unclosed dangerous tags
-        $html = preg_replace(
-            '#<\s*/?\s*(' . $tags . ')(?:\s[^>]*)?\s*/?\s*>#si',
-            '',
-            $html
-        );
-
-        return $html;
-    }
-
-    private function stripEventHandlers(string $html): string
-    {
-        return preg_replace(self::DANGEROUS_ATTR_PATTERN, '', $html);
-    }
-
-    private function stripJavascriptUris(string $html): string
-    {
-        // Strip javascript: in href/src/action attributes
-        return preg_replace(
-            '/(href|src|action)\s*=\s*["\']?\s*javascript\s*:/i',
-            '$1="',
-            $html
-        );
+        return $this->purifier->purify($html);
     }
 }

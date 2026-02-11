@@ -72,11 +72,16 @@ class GA4Driver implements TrackingDriver
     protected function send(array $payload): void
     {
         try {
-            Http::timeout(5)->post(
-                "{$this->endpoint}?measurement_id={$this->measurementId}&api_secret={$this->apiSecret}",
-                $payload
-            );
+            // GA4 Measurement Protocol requires api_secret as query parameter.
+            // Using withQueryParameters keeps secrets out of string interpolation and logs.
+            Http::timeout(5)
+                ->withQueryParameters([
+                    'measurement_id' => $this->measurementId,
+                    'api_secret' => $this->apiSecret,
+                ])
+                ->post($this->endpoint, $payload);
         } catch (\Exception $e) {
+            // Log only the error message, never the URL (contains api_secret)
             Log::warning('GA4 tracking failed', ['error' => $e->getMessage()]);
         }
     }
