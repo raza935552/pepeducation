@@ -10,6 +10,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\OutboundController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\LeadMagnetController;
+use App\Http\Controllers\BlogController;
 use App\Models\StackGoal;
 use Illuminate\Support\Facades\Route;
 
@@ -77,6 +78,12 @@ require __DIR__.'/admin.php';
 // Stack Builder
 Route::get('/stack-builder', fn() => view('stack-builder.index'))->name('stack-builder');
 Route::get('/stack-builder/{goal:slug}', fn(StackGoal $goal) => view('stack-builder.index', ['goalSlug' => $goal->slug]))->name('stack-builder.goal');
+
+// Blog
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/category/{category}', [BlogController::class, 'category'])->name('blog.category');
+Route::get('/blog/tag/{tag}', [BlogController::class, 'tag'])->name('blog.tag');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->where('slug', '[a-z0-9][a-z0-9\-]*')->name('blog.show');
 
 // Dynamic Pages (must be last to not conflict with other routes)
 Route::get('/{slug}', [PageController::class, 'show'])

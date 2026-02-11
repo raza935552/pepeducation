@@ -18,6 +18,9 @@ use App\Http\Controllers\Admin\PopupController;
 use App\Http\Controllers\Admin\LeadMagnetController;
 use App\Http\Controllers\Admin\OutboundLinkController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\BlogPostController;
+use App\Http\Controllers\Admin\BlogCategoryController;
+use App\Http\Controllers\Admin\BlogPostVersionController;
 use App\Http\Controllers\Admin\StackGoalController;
 use App\Http\Controllers\Admin\StackProductController;
 use App\Http\Controllers\Admin\StackBundleController;
@@ -143,6 +146,20 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('stack-bundles/{stackBundle}/items', [StackBundleController::class, 'storeItem'])->name('stack-bundles.items.store');
     Route::put('stack-bundles/{stackBundle}/items/{item}', [StackBundleController::class, 'updateItem'])->name('stack-bundles.items.update');
     Route::delete('stack-bundles/{stackBundle}/items/{item}', [StackBundleController::class, 'destroyItem'])->name('stack-bundles.items.destroy');
+
+    // Blog
+    Route::resource('blog-posts', BlogPostController::class);
+    Route::post('blog-posts/{blogPost}/duplicate', [BlogPostController::class, 'duplicate'])->name('blog-posts.duplicate');
+    Route::patch('blog-posts/{blogPost}/toggle-featured', [BlogPostController::class, 'toggleFeatured'])->name('blog-posts.toggle-featured');
+    Route::post('blog-posts/upload-image', [BlogPostController::class, 'uploadImage'])->name('blog-posts.upload-image')->middleware('throttle:30,1');
+    Route::get('blog-posts/{blogPost}/versions', [BlogPostVersionController::class, 'index'])->name('blog-posts.versions');
+    Route::post('blog-posts/{blogPost}/versions/{version}/restore', [BlogPostVersionController::class, 'restore'])->name('blog-posts.versions.restore');
+
+    // Blog Categories
+    Route::get('blog-categories', [BlogCategoryController::class, 'index'])->name('blog-categories.index');
+    Route::post('blog-categories', [BlogCategoryController::class, 'store'])->name('blog-categories.store');
+    Route::put('blog-categories/{blogCategory}', [BlogCategoryController::class, 'update'])->name('blog-categories.update');
+    Route::delete('blog-categories/{blogCategory}', [BlogCategoryController::class, 'destroy'])->name('blog-categories.destroy');
 
     // Media Library (Page Builder)
     Route::get('media', [MediaController::class, 'index'])->name('media.index');

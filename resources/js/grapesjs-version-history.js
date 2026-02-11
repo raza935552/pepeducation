@@ -37,7 +37,7 @@ export default function registerVersionHistory(editor) {
         modal.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => modal.classList.add('hidden')));
 
         try {
-            const r = await fetch(`/admin/pages/${pageId}/versions`, { headers: { Accept: 'application/json' } });
+            const r = await fetch(`${getBaseUrl()}/${pageId}/versions`, { headers: { Accept: 'application/json' } });
             const data = await r.json();
             renderVersions(data.versions || [], pageId, modal);
         } catch {
@@ -72,7 +72,7 @@ export default function registerVersionHistory(editor) {
     async function restoreVersion(pageId, versionId, modal) {
         if (!confirm('Restore this version? Your current work will be saved as a new version first.')) return;
         try {
-            const r = await fetch(`/admin/pages/${pageId}/versions/${versionId}/restore`, {
+            const r = await fetch(`${getBaseUrl()}/${pageId}/versions/${versionId}/restore`, {
                 method: 'POST',
                 headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
             });
@@ -88,8 +88,17 @@ export default function registerVersionHistory(editor) {
     }
 
     function getPageId() {
-        const m = location.pathname.match(/\/admin\/pages\/(\d+)\/edit/);
-        return m ? m[1] : null;
+        // Support both pages (numeric ID) and blog posts (slug)
+        const pageMatch = location.pathname.match(/\/admin\/pages\/(\d+)\/edit/);
+        if (pageMatch) return pageMatch[1];
+        const blogMatch = location.pathname.match(/\/admin\/blog-posts\/([^/]+)\/edit/);
+        if (blogMatch) return blogMatch[1];
+        return null;
+    }
+
+    function getBaseUrl() {
+        if (location.pathname.includes('/admin/blog-posts/')) return '/admin/blog-posts';
+        return '/admin/pages';
     }
 
     function timeAgo(date) {

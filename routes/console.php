@@ -10,3 +10,6 @@ Artisan::command('inspire', function () {
 
 // Schedule Klaviyo sync every 5 minutes for missed events
 Schedule::command('klaviyo:sync --limit=50')->everyFiveMinutes();
+
+// Publish scheduled blog posts every minute
+Schedule::command('blog:publish-scheduled')->everyMinute();
