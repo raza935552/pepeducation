@@ -281,6 +281,7 @@ class PPTracker {
         'page_view', 'click', 'cta_click', 'scroll', 'js_error',
         'page_exit', 'identify', 'quiz_start', 'quiz_answer', 'quiz_complete',
         'popup_view', 'popup_convert', 'outbound_click', 'rage_click',
+        'stack_start', 'stack_goal_selected', 'stack_bundle_viewed', 'stack_complete',
     ]);
 
     // Truncate string to max length
@@ -375,6 +376,22 @@ class PPTracker {
 
     trackPopupConvert(popupId) {
         this.send('popup_convert', { popup_id: popupId });
+    }
+
+    trackStackStart() {
+        this.send('stack_start', { page_url: window.location.href });
+    }
+
+    trackStackGoalSelected(goalSlug, goalName) {
+        this.send('stack_goal_selected', { goal_slug: goalSlug, goal_name: goalName });
+    }
+
+    trackStackBundleViewed(bundleName) {
+        this.send('stack_bundle_viewed', { bundle_name: bundleName });
+    }
+
+    trackStackComplete(goalSlug, goalName) {
+        this.send('stack_complete', { goal_slug: goalSlug, goal_name: goalName });
     }
 
     identifyUser(email) {

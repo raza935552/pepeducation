@@ -151,6 +151,32 @@ class TrackingManager
         ]);
     }
 
+    public function trackStackStartLocal(): UserEvent
+    {
+        return $this->eventRecorder->record($this->getSession(), UserEvent::TYPE_STACK_START, []);
+    }
+
+    public function trackStackGoalSelectedLocal(string $goalSlug, string $goalName): UserEvent
+    {
+        return $this->eventRecorder->record($this->getSession(), UserEvent::TYPE_STACK_GOAL_SELECTED, [
+            'extra' => ['goal_slug' => $goalSlug, 'goal_name' => $goalName],
+        ]);
+    }
+
+    public function trackStackBundleViewedLocal(string $bundleName): UserEvent
+    {
+        return $this->eventRecorder->record($this->getSession(), UserEvent::TYPE_STACK_BUNDLE_VIEWED, [
+            'extra' => ['bundle_name' => $bundleName],
+        ]);
+    }
+
+    public function trackStackCompleteLocal(string $goalSlug, string $goalName): UserEvent
+    {
+        return $this->eventRecorder->record($this->getSession(), UserEvent::TYPE_STACK_COMPLETE, [
+            'extra' => ['goal_slug' => $goalSlug, 'goal_name' => $goalName],
+        ]);
+    }
+
     // Broadcast methods (send to all drivers including external)
     public function trackQuizStart(int $quizId, ?string $quizName = null): void
     {
@@ -174,6 +200,22 @@ class TrackingManager
         $klaviyoService = $this->getKlaviyoService();
         if ($klaviyoService) {
             $klaviyoService->trackQuizCompleted($response);
+        }
+    }
+
+    public function trackStackComplete(string $goalSlug, string $goalName): void
+    {
+        $this->track('Completed Stack Builder', [
+            'goal_slug' => $goalSlug,
+            'goal_name' => $goalName,
+        ]);
+
+        $klaviyoService = $this->getKlaviyoService();
+        if ($klaviyoService) {
+            $subscriber = $this->getSession()->subscriber;
+            if ($subscriber) {
+                $klaviyoService->trackStackCompleted($subscriber, $goalSlug, $goalName);
+            }
         }
     }
 

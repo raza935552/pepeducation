@@ -76,6 +76,11 @@ class KlaviyoService
         return $this->events->trackOutboundClick($click);
     }
 
+    public function trackStackCompleted(Subscriber $subscriber, string $goalSlug, string $goalName): bool
+    {
+        return $this->events->trackStackCompleted($subscriber, $goalSlug, $goalName);
+    }
+
     public function trackSubscribed(Subscriber $subscriber, string $source, ?string $popupSlug = null): bool
     {
         return $this->events->trackSubscribed($subscriber, $source, $popupSlug);

@@ -54,6 +54,44 @@ class HtmlSanitizer
         }
         $config->set('Cache.SerializerPath', $cachePath);
 
+        // Register HTML5 elements not in HTMLPurifier's default definition
+        $config->set('HTML.DefinitionID', 'pepprofesor-html5');
+        $config->set('HTML.DefinitionRev', 2);
+        if ($def = $config->maybeGetRawHTMLDefinition()) {
+            // HTML5 inline elements
+            $def->addElement('mark', 'Inline', 'Inline', 'Common');
+
+            // HTML5 structural elements
+            $def->addElement('figure', 'Block', 'Optional: (figcaption, Flow) | (Flow, figcaption) | Flow', 'Common');
+            $def->addElement('figcaption', 'Inline', 'Flow', 'Common');
+            $def->addElement('section', 'Block', 'Flow', 'Common');
+
+            // HTML5 media elements
+            $def->addElement('picture', 'Block', 'Optional: (source, Flow) | Flow', 'Common');
+            $def->addElement('source', 'Block', 'Empty', 'Common', [
+                'srcset' => 'Text',
+                'media' => 'Text',
+                'type' => 'Text',
+            ]);
+            $def->addElement('video', 'Block', 'Optional: (source, Flow) | Flow', 'Common', [
+                'src' => 'URI',
+                'controls' => 'Bool',
+                'autoplay' => 'Bool',
+                'muted' => 'Bool',
+                'loop' => 'Bool',
+                'poster' => 'URI',
+                'width' => 'Length',
+                'height' => 'Length',
+            ]);
+            $def->addElement('audio', 'Block', 'Optional: (source, Flow) | Flow', 'Common', [
+                'src' => 'URI',
+                'controls' => 'Bool',
+            ]);
+
+            // HTML5 attributes on existing elements
+            $def->addAttribute('img', 'loading', 'Enum#lazy,eager');
+        }
+
         $this->purifier = new HTMLPurifier($config);
     }
 
@@ -63,6 +101,20 @@ class HtmlSanitizer
             return '';
         }
 
-        return $this->purifier->purify($html);
+        // Suppress HTMLPurifier E_USER_WARNING about unsupported CSS/HTML5
+        // features — Laravel's error handler converts these to ErrorException.
+        // Unsupported properties are silently stripped instead of crashing.
+        $prev = set_error_handler(function (int $severity, string $message, string $file) use (&$prev) {
+            if ($severity === E_USER_WARNING && str_contains($file, 'HTMLPurifier') && str_contains($message, 'not supported')) {
+                return true;
+            }
+            return $prev ? $prev($severity, $message, $file, '') : false;
+        });
+
+        try {
+            return $this->purifier->purify($html);
+        } finally {
+            restore_error_handler();
+        }
     }
 }

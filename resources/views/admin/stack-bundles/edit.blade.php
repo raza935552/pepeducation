@@ -1,0 +1,25 @@
+<x-admin-layout>
+    <x-slot name="header">
+        <div class="flex items-center gap-4">
+            <a href="{{ route('admin.stack-bundles.index') }}" class="text-gray-400 hover:text-gray-600">
+                <svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </a>
+            <span>Edit: {{ $stackBundle->name }}</span>
+        </div>
+    </x-slot>
+
+    @if(session('success'))
+        <div class="mb-6 rounded-lg bg-green-50 p-4 text-green-700">{{ session('success') }}</div>
+    @endif
+    @if(session('error'))
+        <div class="mb-6 rounded-lg bg-red-50 p-4 text-red-700">{{ session('error') }}</div>
+    @endif
+
+    @include('admin.stack-bundles.partials.form', ['bundle' => $stackBundle])
+
+    <div class="mt-6">
+        @include('admin.stack-bundles.partials.items', ['bundle' => $stackBundle])
+    </div>
+</x-admin-layout>

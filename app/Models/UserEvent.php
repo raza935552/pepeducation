@@ -93,4 +93,8 @@ class UserEvent extends Model
     public const TYPE_CTA_CLICK = 'cta_click';
     public const TYPE_OUTBOUND_CLICK = 'outbound_click';
     public const TYPE_RAGE_CLICK = 'rage_click';
+    public const TYPE_STACK_START = 'stack_start';
+    public const TYPE_STACK_GOAL_SELECTED = 'stack_goal_selected';
+    public const TYPE_STACK_BUNDLE_VIEWED = 'stack_bundle_viewed';
+    public const TYPE_STACK_COMPLETE = 'stack_complete';
 }

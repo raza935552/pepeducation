@@ -5,6 +5,7 @@ namespace App\Services\Tracking;
 use App\Models\UserSession;
 use App\Models\Subscriber;
 use App\Models\Setting;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -61,30 +62,35 @@ class SessionManager
             ->where('created_at', '>=', now()->subDays(30))
             ->count() + 1;
 
-        return UserSession::create([
-            'session_id' => $sessionId,
-            'user_id' => auth()->id(),
-            'subscriber_id' => $this->findSubscriberId(),
-            'started_at' => now(),
-            'entry_url' => $this->request->fullUrl(),
-            'referrer' => $this->request->header('referer'),
-            'referrer_domain' => $this->extractDomain($this->request->header('referer')),
-            'utm_source' => $this->request->get('utm_source'),
-            'utm_medium' => $this->request->get('utm_medium'),
-            'utm_campaign' => $this->request->get('utm_campaign'),
-            'utm_content' => $this->request->get('utm_content'),
-            'utm_term' => $this->request->get('utm_term'),
-            'ip_address' => $this->request->ip(),
-            'device_type' => $this->detectDeviceType($userAgent),
-            'browser' => $this->detectBrowser($userAgent),
-            'os' => $this->detectOS($userAgent),
-            'is_mobile' => $this->detectDeviceType($userAgent) === 'mobile',
-            'is_returning' => $isReturning,
-            'session_number' => $sessionNumber,
-            'pages_viewed' => 0,
-            'events_count' => 0,
-            'engagement_score' => 0,
-        ]);
+        try {
+            return UserSession::create([
+                'session_id' => $sessionId,
+                'user_id' => auth()->id(),
+                'subscriber_id' => $this->findSubscriberId(),
+                'started_at' => now(),
+                'entry_url' => $this->request->fullUrl(),
+                'referrer' => $this->request->header('referer'),
+                'referrer_domain' => $this->extractDomain($this->request->header('referer')),
+                'utm_source' => $this->request->get('utm_source'),
+                'utm_medium' => $this->request->get('utm_medium'),
+                'utm_campaign' => $this->request->get('utm_campaign'),
+                'utm_content' => $this->request->get('utm_content'),
+                'utm_term' => $this->request->get('utm_term'),
+                'ip_address' => $this->request->ip(),
+                'device_type' => $this->detectDeviceType($userAgent),
+                'browser' => $this->detectBrowser($userAgent),
+                'os' => $this->detectOS($userAgent),
+                'is_mobile' => $this->detectDeviceType($userAgent) === 'mobile',
+                'is_returning' => $isReturning,
+                'session_number' => $sessionNumber,
+                'pages_viewed' => 0,
+                'events_count' => 0,
+                'engagement_score' => 0,
+            ]);
+        } catch (UniqueConstraintViolationException) {
+            // Concurrent request already created this session — fetch and return it
+            return UserSession::where('session_id', $sessionId)->firstOrFail();
+        }
     }
 
     protected function updateActivity(UserSession $session): UserSession

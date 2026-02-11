@@ -121,6 +121,22 @@ class EventService
         ]);
     }
 
+    public function trackStackCompleted(Subscriber $subscriber, string $goalSlug, string $goalName): bool
+    {
+        $success = $this->track($subscriber, 'Completed Stack Builder', [
+            'goal_slug' => $goalSlug,
+            'goal_name' => $goalName,
+        ]);
+
+        if ($success && $goalName) {
+            $this->profileService->updateProperties($subscriber, [
+                'pp_stack_goal' => $goalName,
+            ]);
+        }
+
+        return $success;
+    }
+
     public function trackSubscribed(Subscriber $subscriber, string $source, ?string $popupSlug = null): bool
     {
         return $this->track($subscriber, 'Subscribed', [

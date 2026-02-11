@@ -69,6 +69,8 @@ export default {
                     900: '#1A1714',
                     950: '#0F0D0B',
                 },
+                // Semantic alias used across 28+ files
+                'brand-gold': '#9A7B4F',
             },
             fontFamily: {
                 sans: ['Inter', 'Figtree', ...defaultTheme.fontFamily.sans],

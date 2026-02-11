@@ -10,6 +10,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\OutboundController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\LeadMagnetController;
+use App\Models\StackGoal;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -72,6 +73,10 @@ require __DIR__.'/auth.php';
 
 // Admin routes (must come before catch-all)
 require __DIR__.'/admin.php';
+
+// Stack Builder
+Route::get('/stack-builder', fn() => view('stack-builder.index'))->name('stack-builder');
+Route::get('/stack-builder/{goal:slug}', fn(StackGoal $goal) => view('stack-builder.index', ['goalSlug' => $goal->slug]))->name('stack-builder.goal');
 
 // Dynamic Pages (must be last to not conflict with other routes)
 Route::get('/{slug}', [PageController::class, 'show'])

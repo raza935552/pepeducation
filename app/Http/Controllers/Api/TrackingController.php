@@ -34,6 +34,10 @@ class TrackingController extends Controller
             'quiz_answer' => $this->trackQuizAnswer($data),
             'popup_view' => $this->trackPopupView($data),
             'popup_convert' => $this->trackPopupConvert($data),
+            'stack_start' => $this->trackStackStart($data),
+            'stack_goal_selected' => $this->trackStackGoalSelected($data),
+            'stack_bundle_viewed' => $this->trackStackBundleViewed($data),
+            'stack_complete' => $this->trackStackComplete($data),
             default => null,
         };
 
@@ -153,6 +157,27 @@ class TrackingController extends Controller
     protected function trackCTAClick(array $data): void
     {
         $this->tracking->trackCTAClick($data);
+    }
+
+    protected function trackStackStart(array $data): void
+    {
+        $this->tracking->trackStackStartLocal();
+    }
+
+    protected function trackStackGoalSelected(array $data): void
+    {
+        $this->tracking->trackStackGoalSelectedLocal($data['goal_slug'] ?? '', $data['goal_name'] ?? '');
+    }
+
+    protected function trackStackBundleViewed(array $data): void
+    {
+        $this->tracking->trackStackBundleViewedLocal($data['bundle_name'] ?? '');
+    }
+
+    protected function trackStackComplete(array $data): void
+    {
+        $this->tracking->trackStackCompleteLocal($data['goal_slug'] ?? '', $data['goal_name'] ?? '');
+        $this->tracking->trackStackComplete($data['goal_slug'] ?? '', $data['goal_name'] ?? '');
     }
 
     public function getSession(Request $request): JsonResponse

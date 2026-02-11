@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class SettingsController extends Controller
 {
-    private const ALLOWED_GROUPS = ['integrations', 'tracking', 'scoring', 'general'];
+    private const ALLOWED_GROUPS = ['integrations', 'tracking', 'scoring', 'general', 'stack_builder'];
 
     public function index()
     {

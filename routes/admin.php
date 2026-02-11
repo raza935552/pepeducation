@@ -18,6 +18,10 @@ use App\Http\Controllers\Admin\PopupController;
 use App\Http\Controllers\Admin\LeadMagnetController;
 use App\Http\Controllers\Admin\OutboundLinkController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\StackGoalController;
+use App\Http\Controllers\Admin\StackProductController;
+use App\Http\Controllers\Admin\StackBundleController;
+use App\Http\Controllers\Admin\StackStoreController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\UnsplashController;
 use App\Http\Controllers\Admin\MediaController;
@@ -129,6 +133,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Marketing: Outbound Links
     Route::resource('outbound-links', OutboundLinkController::class);
+
+    // Stack Builder
+    Route::resource('stack-goals', StackGoalController::class)->except(['show']);
+    Route::resource('stack-products', StackProductController::class)->except(['show']);
+    Route::resource('stack-stores', StackStoreController::class)->except(['show']);
+    Route::post('stack-products/upload-image', [StackProductController::class, 'uploadImage'])->name('stack-products.upload-image');
+    Route::resource('stack-bundles', StackBundleController::class)->except(['show']);
+    Route::post('stack-bundles/{stackBundle}/items', [StackBundleController::class, 'storeItem'])->name('stack-bundles.items.store');
+    Route::put('stack-bundles/{stackBundle}/items/{item}', [StackBundleController::class, 'updateItem'])->name('stack-bundles.items.update');
+    Route::delete('stack-bundles/{stackBundle}/items/{item}', [StackBundleController::class, 'destroyItem'])->name('stack-bundles.items.destroy');
 
     // Media Library (Page Builder)
     Route::get('media', [MediaController::class, 'index'])->name('media.index');

@@ -71,6 +71,10 @@ class EventRecorder
             UserEvent::TYPE_CTA_CLICK => (int) Setting::getValue('scoring', 'points_cta_click', 5),
             UserEvent::TYPE_OUTBOUND_CLICK => (int) Setting::getValue('scoring', 'points_product_click', 10),
             UserEvent::TYPE_POPUP_CONVERT => 5,
+            UserEvent::TYPE_STACK_START => 2,
+            UserEvent::TYPE_STACK_GOAL_SELECTED => 3,
+            UserEvent::TYPE_STACK_BUNDLE_VIEWED => 1,
+            UserEvent::TYPE_STACK_COMPLETE => 5,
             default => 0,
         };
 
@@ -97,6 +101,8 @@ class EventRecorder
             UserEvent::TYPE_FORM_FOCUS, UserEvent::TYPE_FORM_SUBMIT => 'form',
             UserEvent::TYPE_QUIZ_START, UserEvent::TYPE_QUIZ_ANSWER, UserEvent::TYPE_QUIZ_COMPLETE => 'quiz',
             UserEvent::TYPE_POPUP_VIEW, UserEvent::TYPE_POPUP_CONVERT => 'popup',
+            UserEvent::TYPE_STACK_START, UserEvent::TYPE_STACK_GOAL_SELECTED,
+            UserEvent::TYPE_STACK_BUNDLE_VIEWED, UserEvent::TYPE_STACK_COMPLETE => 'stack',
             UserEvent::TYPE_LEAD_MAGNET => 'conversion',
             UserEvent::TYPE_OUTBOUND_CLICK => 'outbound',
             default => 'other',

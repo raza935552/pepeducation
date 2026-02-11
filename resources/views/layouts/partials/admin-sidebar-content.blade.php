@@ -205,6 +205,49 @@
             </ul>
         </li>
 
+        {{-- Stack Builder section --}}
+        <li>
+            <div class="text-xs font-semibold leading-6 text-gray-400 uppercase tracking-wider">Stack Builder</div>
+            <ul role="list" class="-mx-2 mt-2 space-y-1">
+                <li>
+                    <a href="{{ route('admin.stack-goals.index') }}"
+                       class="{{ request()->routeIs('admin.stack-goals.*') ? 'bg-gray-100 text-primary-600' : 'text-gray-700 hover:bg-gray-100' }} group flex gap-x-3 rounded-lg p-2 text-sm font-semibold leading-6 transition-colors">
+                        <svg aria-hidden="true" class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 01-.005-10.499l-3.11.732a9 9 0 01-6.085-.711l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5" />
+                        </svg>
+                        Stack Goals
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.stack-products.index') }}"
+                       class="{{ request()->routeIs('admin.stack-products.*') ? 'bg-gray-100 text-primary-600' : 'text-gray-700 hover:bg-gray-100' }} group flex gap-x-3 rounded-lg p-2 text-sm font-semibold leading-6 transition-colors">
+                        <svg aria-hidden="true" class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                        </svg>
+                        Stack Products
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.stack-bundles.index') }}"
+                       class="{{ request()->routeIs('admin.stack-bundles.*') ? 'bg-gray-100 text-primary-600' : 'text-gray-700 hover:bg-gray-100' }} group flex gap-x-3 rounded-lg p-2 text-sm font-semibold leading-6 transition-colors">
+                        <svg aria-hidden="true" class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L12 12.75l-5.571-3m11.142 0l4.179 2.25L12 17.25l-9.75-5.25 4.179-2.25m11.142 0l4.179 2.25L12 22.5l-9.75-5.25 4.179-2.25" />
+                        </svg>
+                        Stack Bundles
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.stack-stores.index') }}"
+                       class="{{ request()->routeIs('admin.stack-stores.*') ? 'bg-gray-100 text-primary-600' : 'text-gray-700 hover:bg-gray-100' }} group flex gap-x-3 rounded-lg p-2 text-sm font-semibold leading-6 transition-colors">
+                        <svg aria-hidden="true" class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" />
+                        </svg>
+                        Stack Stores
+                    </a>
+                </li>
+            </ul>
+        </li>
+
         {{-- Settings section --}}
         <li>
             <div class="text-xs font-semibold leading-6 text-gray-400 uppercase tracking-wider">System</div>

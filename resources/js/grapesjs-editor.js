@@ -141,9 +141,17 @@ window.initGrapesJS = function(config = {}) {
         },
     });
 
-    // Load existing content if provided
+    // Load existing content if provided (defer to ensure Canvas is ready)
     if (config.projectData) {
-        editor.loadProjectData(config.projectData);
+        editor.onReady(() => {
+            try {
+                editor.loadProjectData(config.projectData);
+            } catch (e) {
+                // GrapeJS 0.22.x race condition — Canvas.getFrames may not be ready
+                console.warn('GrapesJS loadProjectData deferred retry:', e.message);
+                setTimeout(() => editor.loadProjectData(config.projectData), 100);
+            }
+        });
     }
 
     // Handle image upload errors
@@ -867,7 +875,7 @@ window.captureCanvasThumbnail = async function(options = {}) {
 
     try {
         const editor = window.gjsEditor;
-        const frame = editor.Canvas.getFrameEl();
+        const frame = editor.Canvas?.getFrameEl?.();
         if (!frame || !frame.contentDocument) return null;
 
         const body = frame.contentDocument.body;
