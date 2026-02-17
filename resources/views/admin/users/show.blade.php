@@ -22,17 +22,6 @@
         </div>
     </x-slot>
 
-    {{-- Flash Messages --}}
-    @if(session('success'))
-        <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-green-700">
-            {{ session('success') }}
-        </div>
-    @endif
-    @if(session('error'))
-        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
-            {{ session('error') }}
-        </div>
-    @endif
 
     <div class="grid lg:grid-cols-3 gap-6">
         {{-- User Info --}}

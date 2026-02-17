@@ -3,8 +3,12 @@
 namespace App\Livewire;
 
 use App\Models\Quiz;
+use App\Models\QuizQuestion;
 use App\Models\QuizResponse;
 use App\Models\QuizOutcome;
+use App\Models\ResultsBank;
+use App\Models\StackProduct;
+use App\Services\Quiz\QuizFunnelEngine;
 use App\Services\SubscriberService;
 use App\Services\Klaviyo\KlaviyoService;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +26,12 @@ class QuizPlayer extends Component
     public bool $completed = false;
     public string $email = '';
     public bool $showEmailForm = false;
+
+    // Text input for question_text slides
+    public string $textAnswer = '';
+
+    // Navigation history for back button across non-linear slides
+    public array $navigationHistory = [];
 
     public function mount(Quiz $quiz)
     {
@@ -54,6 +64,11 @@ class QuizPlayer extends Component
                 $this->response = $existing;
                 $this->answers = $existing->answers ?? [];
                 $this->currentStep = max(0, count($this->answers) - 1);
+                // Trim navigation history to match resumed step
+                // (prevents back button jumping to slides beyond the resumed position)
+                $savedHistory = $existing->navigation_history ?? [];
+                $this->navigationHistory = array_filter($savedHistory, fn ($step) => $step <= $this->currentStep);
+                $this->navigationHistory = array_values($this->navigationHistory);
                 $this->recalculateScores();
                 return;
             }
@@ -71,6 +86,68 @@ class QuizPlayer extends Component
         $this->dispatch('quiz-started', quizId: $this->quiz->id);
     }
 
+    /**
+     * Get the current slide data.
+     */
+    public function getCurrentSlideProperty(): ?array
+    {
+        return $this->questions[$this->currentStep] ?? null;
+    }
+
+    /**
+     * Get slide type of current slide.
+     */
+    public function getCurrentSlideTypeProperty(): string
+    {
+        return $this->currentSlide['slide_type'] ?? QuizQuestion::SLIDE_QUESTION;
+    }
+
+    /**
+     * Resolve the Results Bank entry for the peptide reveal slide.
+     * Looks up health_goal and experience_level from quiz answers by klaviyo_property.
+     */
+    public function getResultsBankEntryProperty(): ?ResultsBank
+    {
+        $healthGoal = $this->getAnswerByKlaviyoProperty('health_goal');
+        $experienceLevel = $this->getAnswerByKlaviyoProperty('experience_level');
+
+        if (!$healthGoal) return null;
+
+        // Default to beginner if no experience question exists
+        $experienceLevel = $experienceLevel ?: 'beginner';
+
+        return ResultsBank::resolve($healthGoal, $experienceLevel);
+    }
+
+    /**
+     * Get the StackProduct linked to the resolved ResultsBank entry.
+     * Used by vendor-reveal and bridge slides for store comparison.
+     */
+    public function getStackProductProperty(): ?StackProduct
+    {
+        $entry = $this->resultsBankEntry;
+        if (!$entry || !$entry->stack_product_id) return null;
+
+        return $entry->stackProduct;
+    }
+
+    /**
+     * Find an answer's klaviyo_value by its klaviyo_property name.
+     */
+    private function getAnswerByKlaviyoProperty(string $property): ?string
+    {
+        foreach ($this->answers as $answer) {
+            if (($answer['klaviyo_property'] ?? null) === $property) {
+                return $answer['klaviyo_value'] ?? $answer['text_value'] ?? null;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Handle answer selection for choice-based question slides.
+     * This is the existing behavior — kept intact for backwards compatibility.
+     */
     public function selectAnswer(int $questionIndex, string $optionId): void
     {
         if ($questionIndex < 0 || $questionIndex >= count($this->questions)) {
@@ -86,13 +163,14 @@ class QuizPlayer extends Component
         if (!$question) return;
 
         $options = $question['options'] ?? [];
-        $selectedOption = collect($options)->firstWhere('id', $optionId);
+        // Support both old format (id key) and new format (value key)
+        $selectedOption = collect($options)->first(fn ($o) => ($o['value'] ?? $o['id'] ?? '') === $optionId);
         if (!$selectedOption) return;
 
         // Subtract old answer scores if changing answer (back button fix)
         if (isset($this->answers[$questionIndex])) {
             $oldOptionId = $this->answers[$questionIndex]['option_id'];
-            $oldOption = collect($options)->firstWhere('id', $oldOptionId);
+            $oldOption = collect($options)->first(fn ($o) => ($o['value'] ?? $o['id'] ?? '') === $oldOptionId);
             if ($oldOption) {
                 $this->segmentScores['tof'] -= (int) ($oldOption['score_tof'] ?? 0);
                 $this->segmentScores['mof'] -= (int) ($oldOption['score_mof'] ?? 0);
@@ -117,9 +195,10 @@ class QuizPlayer extends Component
         $this->response->update([
             'answers' => $this->answers,
             'questions_answered' => count($this->answers),
+            'navigation_history' => $this->navigationHistory,
         ]);
 
-        // Check if we should collect email now
+        // Check if we should collect email now (legacy setting — new system uses email_capture slides)
         if ($this->shouldCollectEmailNow()) {
             $this->showEmailForm = true;
             return;
@@ -128,6 +207,40 @@ class QuizPlayer extends Component
         $this->nextStep();
     }
 
+    /**
+     * Handle text input submission for question_text slides.
+     */
+    public function submitTextAnswer(): void
+    {
+        $question = $this->questions[$this->currentStep] ?? null;
+        if (!$question) return;
+
+        $slideType = $question['slide_type'] ?? QuizQuestion::SLIDE_QUESTION;
+        if ($slideType !== QuizQuestion::SLIDE_QUESTION_TEXT) return;
+
+        $this->validate(['textAnswer' => 'required|string|max:1000']);
+
+        $this->answers[$this->currentStep] = [
+            'question_id' => $question['id'] ?? null,
+            'question_text' => $question['question_text'] ?? '',
+            'text_value' => $this->textAnswer,
+            'klaviyo_property' => $question['klaviyo_property'] ?? null,
+            'klaviyo_value' => $this->textAnswer,
+        ];
+
+        $this->response->update([
+            'answers' => $this->answers,
+            'questions_answered' => count($this->answers),
+            'navigation_history' => $this->navigationHistory,
+        ]);
+
+        $this->textAnswer = '';
+        $this->nextStep();
+    }
+
+    /**
+     * Handle email submission from email_capture slides.
+     */
     public function submitEmail(): void
     {
         $this->validate(['email' => 'required|email']);
@@ -149,6 +262,21 @@ class QuizPlayer extends Component
 
         $service->setEmailCookie($this->email);
 
+        // Store answer for email capture slides
+        $question = $this->questions[$this->currentStep] ?? null;
+        if ($question) {
+            $slideType = $question['slide_type'] ?? QuizQuestion::SLIDE_QUESTION;
+            if ($slideType === QuizQuestion::SLIDE_EMAIL_CAPTURE) {
+                $this->answers[$this->currentStep] = [
+                    'question_id' => $question['id'] ?? null,
+                    'question_text' => $question['question_text'] ?? 'Email',
+                    'text_value' => $this->email,
+                    'klaviyo_property' => $question['klaviyo_property'] ?? 'email',
+                    'klaviyo_value' => $this->email,
+                ];
+            }
+        }
+
         $this->showEmailForm = false;
         $this->nextStep();
     }
@@ -159,10 +287,25 @@ class QuizPlayer extends Component
         $this->nextStep();
     }
 
+    /**
+     * Advance from non-question slides (intermission, loading, reveals, bridge).
+     * Called by "Next" buttons and auto-advance timers.
+     */
+    public function advanceSlide(): void
+    {
+        $this->nextStep();
+    }
+
     private function shouldCollectEmailNow(): bool
     {
         $settings = $this->quiz->settings ?? [];
         if (!($settings['require_email'] ?? false)) return false;
+
+        // If there's an email_capture slide in the quiz, don't use legacy email gate
+        $hasEmailSlide = collect($this->questions)->contains(fn ($q) =>
+            ($q['slide_type'] ?? 'question') === QuizQuestion::SLIDE_EMAIL_CAPTURE
+        );
+        if ($hasEmailSlide) return false;
 
         $emailStep = $settings['email_step'] ?? 'before_results';
 
@@ -174,10 +317,36 @@ class QuizPlayer extends Component
         return false;
     }
 
-    public function nextStep(): void
+    public function nextStep(?string $skipToQuestionId = null): void
     {
-        if ($this->currentStep < count($this->questions) - 1) {
-            $this->currentStep++;
+        // Track navigation for back button
+        $this->navigationHistory[] = $this->currentStep;
+
+        // Persist navigation history for session resume
+        if ($this->response) {
+            $this->response->update(['navigation_history' => $this->navigationHistory]);
+        }
+
+        $engine = app(QuizFunnelEngine::class);
+
+        // If no explicit skip_to, check if current answer has one
+        if (!$skipToQuestionId) {
+            $currentAnswer = $this->answers[$this->currentStep] ?? null;
+            $currentQuestion = $this->questions[$this->currentStep] ?? null;
+            if ($currentAnswer && $currentQuestion) {
+                $skipToQuestionId = $engine->getSkipToFromAnswer($currentAnswer, $currentQuestion);
+            }
+        }
+
+        $nextIndex = $engine->resolveNextSlide(
+            $this->questions,
+            $this->currentStep,
+            $this->answers,
+            $skipToQuestionId
+        );
+
+        if ($nextIndex !== null) {
+            $this->currentStep = $nextIndex;
         } else {
             $this->completeQuiz();
         }
@@ -186,8 +355,19 @@ class QuizPlayer extends Component
     public function previousStep(): void
     {
         $settings = $this->quiz->settings ?? [];
-        if (($settings['allow_back'] ?? true) && $this->currentStep > 0) {
+        if (!($settings['allow_back'] ?? true)) return;
+
+        // Use navigation history if available (respects non-linear flow)
+        if (!empty($this->navigationHistory)) {
+            $this->currentStep = array_pop($this->navigationHistory);
+        } elseif ($this->currentStep > 0) {
             $this->currentStep--;
+        }
+
+        // Pre-fill text answer if going back to a text question
+        $question = $this->questions[$this->currentStep] ?? null;
+        if ($question && ($question['slide_type'] ?? 'question') === QuizQuestion::SLIDE_QUESTION_TEXT) {
+            $this->textAnswer = $this->answers[$this->currentStep]['text_value'] ?? '';
         }
     }
 
@@ -321,7 +501,7 @@ class QuizPlayer extends Component
         foreach ($this->answers as $questionIndex => $answer) {
             $question = $this->questions[$questionIndex] ?? null;
             if (!$question) continue;
-            $option = collect($question['options'] ?? [])->firstWhere('id', $answer['option_id']);
+            $option = collect($question['options'] ?? [])->first(fn ($o) => ($o['value'] ?? $o['id'] ?? '') === ($answer['option_id'] ?? ''));
             if (!$option) continue;
             $this->segmentScores['tof'] += (int) ($option['score_tof'] ?? 0);
             $this->segmentScores['mof'] += (int) ($option['score_mof'] ?? 0);

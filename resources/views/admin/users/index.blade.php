@@ -35,13 +35,6 @@
         </form>
     </div>
 
-    {{-- Flash Messages --}}
-    @if(session('success'))
-        <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-green-700">
-            {{ session('success') }}
-        </div>
-    @endif
-
     {{-- Users Table --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <table class="min-w-full divide-y divide-gray-200">

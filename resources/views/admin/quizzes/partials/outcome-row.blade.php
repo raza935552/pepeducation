@@ -1,30 +1,44 @@
+@php
+    $conditions = $outcome->conditions ?? [];
+    $condSegment = $conditions['segment'] ?? null;
+    $condMinScore = $conditions['min_score'] ?? 0;
+    $outcomeJson = json_encode([
+        'name' => $outcome->name,
+        'conditions' => $conditions,
+        'result_title' => $outcome->result_title,
+        'result_message' => $outcome->result_message,
+        'redirect_url' => $outcome->redirect_url,
+    ]);
+@endphp
 <div class="border rounded-lg p-4 bg-gray-50" data-outcome-id="{{ $outcome->id }}">
     <div class="flex items-start justify-between">
         <div class="flex-1">
             <div class="flex items-center gap-2 mb-2">
                 <span class="font-medium text-gray-900">{{ $outcome->name }}</span>
-                @if($outcome->segment)
+                @if($condSegment)
                     <span class="px-2 py-0.5 text-xs rounded
-                        {{ $outcome->segment === 'bof' ? 'bg-green-100 text-green-800' : '' }}
-                        {{ $outcome->segment === 'mof' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                        {{ $outcome->segment === 'tof' ? 'bg-blue-100 text-blue-800' : '' }}">
-                        {{ strtoupper($outcome->segment) }}
+                        {{ $condSegment === 'bof' ? 'bg-green-100 text-green-800' : '' }}
+                        {{ $condSegment === 'mof' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                        {{ $condSegment === 'tof' ? 'bg-blue-100 text-blue-800' : '' }}">
+                        {{ strtoupper($condSegment) }}
                     </span>
                 @endif
-                <span class="text-sm text-gray-500">Min score: {{ $outcome->min_score }}</span>
+                @if($condMinScore > 0)
+                    <span class="text-sm text-gray-500">Min score: {{ $condMinScore }}</span>
+                @endif
             </div>
-            @if($outcome->headline)
-                <p class="text-sm text-gray-600 mb-1">{{ $outcome->headline }}</p>
+            @if($outcome->result_title)
+                <p class="text-sm text-gray-600 mb-1">{{ $outcome->result_title }}</p>
             @endif
-            @if($outcome->recommended_peptides)
+            @if($outcome->recommended_peptide_id)
                 <div class="text-xs text-gray-500">
-                    Recommends: {{ implode(', ', $outcome->recommended_peptides) }}
+                    Recommends: {{ $outcome->recommendedPeptide?->name ?? 'Peptide #'.$outcome->recommended_peptide_id }}
                 </div>
             @endif
-            <div class="text-xs text-gray-400 mt-2">Shown {{ number_format($outcome->shown_count) }} times</div>
+            <div class="text-xs text-gray-400 mt-2">Shown {{ number_format($outcome->shown_count ?? 0) }} times</div>
         </div>
         <div class="flex items-center gap-2 ml-4">
-            <button type="button" onclick="editOutcome({{ $outcome->id }})" class="text-gray-400 hover:text-gray-600">
+            <button type="button" onclick='editOutcome({{ $outcome->id }}, {!! e($outcomeJson) !!})' class="text-gray-400 hover:text-gray-600">
                 <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                 </svg>

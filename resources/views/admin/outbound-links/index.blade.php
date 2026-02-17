@@ -6,10 +6,6 @@
         </div>
     </x-slot>
 
-    @if(session('success'))
-        <div class="mb-6 rounded-lg bg-green-50 p-4 text-green-700">{{ session('success') }}</div>
-    @endif
-
     <div class="card overflow-hidden">
         <table class="w-full">
             <thead class="bg-gray-50">

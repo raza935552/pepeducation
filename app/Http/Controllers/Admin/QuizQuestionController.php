@@ -11,73 +11,59 @@ class QuizQuestionController extends Controller
 {
     public function store(Request $request, Quiz $quiz)
     {
-        $rules = [
-            'question_text' => 'required|string',
-            'question_type' => 'required|in:single_choice,multiple_choice,text,email,scale',
-            'options' => 'nullable|array',
-            'options.*.value' => 'required|string',
-            'options.*.label' => 'required|string',
-            'options.*.klaviyo_value' => 'nullable|string',
-            'options.*.score_tof' => 'nullable|integer',
-            'options.*.score_mof' => 'nullable|integer',
-            'options.*.score_bof' => 'nullable|integer',
-            'klaviyo_property' => 'nullable|string|max:255',
-            'is_required' => 'boolean',
-        ];
-
-        if (in_array($request->input('question_type'), ['single_choice', 'multiple_choice'])) {
-            $rules['options'] = 'required|array|min:2';
-        }
-
-        $validated = $request->validate($rules);
+        $validated = $request->validate($this->slideRules($request));
 
         $maxOrder = $quiz->questions()->max('order') ?? 0;
 
         $question = $quiz->questions()->create([
-            'question_text' => $validated['question_text'],
-            'question_type' => $validated['question_type'],
+            'slide_type' => $validated['slide_type'] ?? 'question',
+            'question_text' => $validated['question_text'] ?? $validated['content_title'] ?? 'Slide',
+            'question_type' => $validated['question_type'] ?? 'single_choice',
             'order' => $maxOrder + 1,
             'options' => $validated['options'] ?? [],
-            'klaviyo_property' => $validated['klaviyo_property'],
+            'klaviyo_property' => $validated['klaviyo_property'] ?? null,
             'is_required' => $validated['is_required'] ?? true,
+            'show_conditions' => $this->parseShowConditions($request),
+            'content_title' => $validated['content_title'] ?? null,
+            'content_body' => $validated['content_body'] ?? null,
+            'content_source' => $validated['content_source'] ?? null,
+            'auto_advance_seconds' => $validated['auto_advance_seconds'] ?? null,
+            'cta_text' => $validated['cta_text'] ?? null,
+            'cta_url' => $validated['cta_url'] ?? null,
         ]);
 
         if ($request->wantsJson()) {
             return response()->json(['success' => true, 'question' => $question]);
         }
 
-        return back()->with('success', 'Question added.');
+        return back()->with('success', 'Slide added.');
     }
 
     public function update(Request $request, Quiz $quiz, QuizQuestion $question)
     {
-        $rules = [
-            'question_text' => 'required|string',
-            'question_type' => 'required|in:single_choice,multiple_choice,text,email,scale',
-            'options' => 'nullable|array',
-            'klaviyo_property' => 'nullable|string|max:255',
-            'is_required' => 'boolean',
-        ];
-
-        if (in_array($request->input('question_type'), ['single_choice', 'multiple_choice'])) {
-            $rules['options'] = 'required|array|min:2';
-        }
-
-        $validated = $request->validate($rules);
+        $validated = $request->validate($this->slideRules($request));
 
         $question->update([
-            'question_text' => $validated['question_text'],
-            'question_type' => $validated['question_type'],
+            'slide_type' => $validated['slide_type'] ?? $question->slide_type,
+            'question_text' => $validated['question_text'] ?? $validated['content_title'] ?? $question->question_text,
+            'question_type' => $validated['question_type'] ?? $question->question_type,
             'options' => $validated['options'] ?? [],
-            'klaviyo_property' => $validated['klaviyo_property'],
+            'klaviyo_property' => $validated['klaviyo_property'] ?? null,
             'is_required' => $validated['is_required'] ?? true,
+            'show_conditions' => $this->parseShowConditions($request),
+            'content_title' => $validated['content_title'] ?? null,
+            'content_body' => $validated['content_body'] ?? null,
+            'content_source' => $validated['content_source'] ?? null,
+            'auto_advance_seconds' => $validated['auto_advance_seconds'] ?? null,
+            'cta_text' => $validated['cta_text'] ?? null,
+            'cta_url' => $validated['cta_url'] ?? null,
         ]);
 
         if ($request->wantsJson()) {
             return response()->json(['success' => true, 'question' => $question]);
         }
 
-        return back()->with('success', 'Question updated.');
+        return back()->with('success', 'Slide updated.');
     }
 
     public function destroy(Quiz $quiz, QuizQuestion $question)
@@ -105,5 +91,88 @@ class QuizQuestionController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+    /**
+     * Build validation rules based on slide_type.
+     */
+    private function slideRules(Request $request): array
+    {
+        $slideType = $request->input('slide_type', 'question');
+        $validSlideTypes = implode(',', QuizQuestion::SLIDE_TYPES);
+
+        $rules = [
+            'slide_type' => "required|string|in:{$validSlideTypes}",
+            'klaviyo_property' => 'nullable|string|max:255',
+            'is_required' => 'boolean',
+            'content_title' => 'nullable|string|max:500',
+            'content_body' => 'nullable|string|max:5000',
+            'content_source' => 'nullable|string|max:500',
+            'auto_advance_seconds' => 'nullable|integer|min:1|max:30',
+            'cta_text' => 'nullable|string|max:255',
+            'cta_url' => 'nullable|string|max:2048',
+            // Show conditions
+            'show_conditions_type' => 'nullable|in:and,or',
+            'show_conditions_question_id' => 'nullable|array',
+            'show_conditions_question_id.*' => 'nullable|integer',
+            'show_conditions_option_value' => 'nullable|array',
+            'show_conditions_option_value.*' => 'nullable|string',
+        ];
+
+        if (in_array($slideType, ['question', 'question_text'])) {
+            $rules['question_text'] = 'required|string';
+            $rules['question_type'] = 'required|in:single_choice,multiple_choice,text,email,scale';
+        } else {
+            $rules['question_text'] = 'nullable|string';
+            $rules['question_type'] = 'nullable|in:single_choice,multiple_choice,text,email,scale';
+        }
+
+        if ($slideType === 'question' && in_array($request->input('question_type'), ['single_choice', 'multiple_choice'])) {
+            $rules['options'] = 'required|array|min:2';
+            $rules['options.*.value'] = 'required|string';
+            $rules['options.*.label'] = 'required|string';
+            $rules['options.*.klaviyo_value'] = 'nullable|string';
+            $rules['options.*.score_tof'] = 'nullable|integer';
+            $rules['options.*.score_mof'] = 'nullable|integer';
+            $rules['options.*.score_bof'] = 'nullable|integer';
+            $rules['options.*.skip_to_question'] = 'nullable|integer';
+        } else {
+            $rules['options'] = 'nullable|array';
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Parse show_conditions from flat form inputs into structured JSON.
+     */
+    private function parseShowConditions(Request $request): ?array
+    {
+        $type = $request->input('show_conditions_type');
+        $questionIds = $request->input('show_conditions_question_id', []);
+        $optionValues = $request->input('show_conditions_option_value', []);
+
+        if (!$type || empty($questionIds)) {
+            return null;
+        }
+
+        $conditions = [];
+        foreach ($questionIds as $i => $qId) {
+            if ($qId && !empty($optionValues[$i] ?? '')) {
+                $conditions[] = [
+                    'question_id' => (int) $qId,
+                    'option_value' => $optionValues[$i],
+                ];
+            }
+        }
+
+        if (empty($conditions)) {
+            return null;
+        }
+
+        return [
+            'type' => $type,
+            'conditions' => $conditions,
+        ];
     }
 }

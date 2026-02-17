@@ -6,10 +6,6 @@
         </div>
     </x-slot>
 
-    @if(session('success'))
-        <div class="mb-6 rounded-lg bg-green-50 p-4 text-green-700">{{ session('success') }}</div>
-    @endif
-
     <div class="mb-6 flex items-center gap-4">
         <form method="GET" class="flex items-center gap-4 flex-1">
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Search products..."

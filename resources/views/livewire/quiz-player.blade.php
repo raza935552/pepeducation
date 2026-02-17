@@ -4,7 +4,7 @@
         @if(($quiz->settings ?? [])['show_progress_bar'] ?? true)
             <div class="mb-6">
                 <div class="flex justify-between text-sm text-gray-600 mb-2">
-                    <span>Question {{ $currentStep + 1 }} of {{ count($questions) }}</span>
+                    <span>Step {{ $currentStep + 1 }} of {{ count($questions) }}</span>
                     <span>{{ $this->progress }}%</span>
                 </div>
                 <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -13,18 +13,17 @@
             </div>
         @endif
 
+        {{-- Legacy email form (for quizzes without email_capture slide) --}}
         @if($showEmailForm)
-            <!-- Email Collection Form -->
-            <div class="card p-8" wire:key="email-capture">
+            <div class="card p-8" wire:key="email-capture-legacy">
                 <h3 class="text-xl font-semibold mb-4">Get your personalized results via email</h3>
-                <form wire:submit="submitEmail" class="space-y-4">
+                <form wire:submit="submitEmail" class="space-y-4" novalidate>
                     <input
                         type="email"
                         wire:model="email"
                         placeholder="Enter your email"
                         autocomplete="email"
-                        required
-                        class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold disabled:opacity-50"
+                        class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold disabled:opacity-50 @error('email') border-red-500 ring-red-500 @enderror"
                         wire:loading.attr="disabled"
                     >
                     @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -37,45 +36,45 @@
                     </div>
                 </form>
             </div>
-        @elseif($this->currentQuestion)
-            <!-- Question -->
-            <div class="card p-8" wire:key="question-{{ $currentStep }}">
-                <h2 class="text-2xl font-semibold mb-6">{{ $this->currentQuestion['question_text'] }}</h2>
+        @elseif($this->currentSlide)
+            {{-- Slide Type Router --}}
+            @switch($this->currentSlideType)
+                @case('question')
+                    @include('livewire.quiz-slides.question')
+                    @break
 
-                @if(!empty($this->currentQuestion['question_subtext']))
-                    <p class="text-gray-600 mb-6">{{ $this->currentQuestion['question_subtext'] }}</p>
-                @endif
+                @case('question_text')
+                    @include('livewire.quiz-slides.question-text')
+                    @break
 
-                <!-- Options -->
-                <div class="space-y-3">
-                    @foreach($this->currentQuestion['options'] ?? [] as $option)
-                        <button
-                            wire:click="selectAnswer({{ $currentStep }}, '{{ $option['id'] }}')"
-                            class="w-full text-left p-4 rounded-lg border-2 transition-all
-                                {{ isset($answers[$currentStep]) && $answers[$currentStep]['option_id'] === $option['id']
-                                    ? 'border-brand-gold bg-brand-gold/10'
-                                    : 'border-gray-200 hover:border-brand-gold/50 hover:bg-gray-50' }}"
-                        >
-                            <span class="font-medium">{{ $option['text'] }}</span>
-                            @if(!empty($option['subtext']))
-                                <span class="block text-sm text-gray-500 mt-1">{{ $option['subtext'] }}</span>
-                            @endif
-                        </button>
-                    @endforeach
-                </div>
+                @case('intermission')
+                    @include('livewire.quiz-slides.intermission')
+                    @break
 
-                <!-- Navigation -->
-                @if((($quiz->settings ?? [])['allow_back'] ?? true) && $currentStep > 0)
-                    <div class="flex justify-start mt-8">
-                        <button wire:click="previousStep" class="btn bg-gray-200 text-gray-700 hover:bg-gray-300">
-                            <svg aria-hidden="true" class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                            </svg>
-                            Back
-                        </button>
-                    </div>
-                @endif
-            </div>
+                @case('loading')
+                    @include('livewire.quiz-slides.loading')
+                    @break
+
+                @case('email_capture')
+                    @include('livewire.quiz-slides.email-capture')
+                    @break
+
+                @case('peptide_reveal')
+                    @include('livewire.quiz-slides.peptide-reveal')
+                    @break
+
+                @case('vendor_reveal')
+                    @include('livewire.quiz-slides.vendor-reveal')
+                    @break
+
+                @case('bridge')
+                    @include('livewire.quiz-slides.bridge')
+                    @break
+
+                @default
+                    {{-- Fallback: render as question (backwards compatible) --}}
+                    @include('livewire.quiz-slides.question')
+            @endswitch
         @endif
 
     @else
@@ -95,15 +94,17 @@
                     </a>
                 @endif
 
-                <!-- Segment Badge -->
-                <div class="mt-8 pt-6 border-t">
-                    <p class="text-sm text-gray-500 mb-2">Your profile:</p>
-                    <span class="inline-block px-4 py-2 rounded-full text-sm font-medium
-                        {{ $response->segment === 'bof' ? 'bg-green-100 text-green-800' :
-                           ($response->segment === 'mof' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800') }}">
-                        {{ $response->getSegmentLabel() }}
-                    </span>
-                </div>
+                <!-- Segment Badge — only for segmentation quizzes -->
+                @if($quiz->type === 'segmentation' && $response->segment)
+                    <div class="mt-8 pt-6 border-t">
+                        <p class="text-sm text-gray-500 mb-2">Your profile:</p>
+                        <span class="inline-block px-4 py-2 rounded-full text-sm font-medium
+                            {{ $response->segment === 'bof' ? 'bg-green-100 text-green-800' :
+                               ($response->segment === 'mof' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800') }}">
+                            {{ $response->getSegmentLabel() }}
+                        </span>
+                    </div>
+                @endif
             @else
                 <h2 class="text-2xl font-bold mb-4">Thank you for completing the quiz!</h2>
                 <p class="text-gray-600">Your results have been recorded.</p>

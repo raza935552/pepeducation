@@ -13,6 +13,7 @@ class QuizResponse extends Model
         'user_id',
         'subscriber_id',
         'answers',
+        'navigation_history',
         'score_tof',
         'score_mof',
         'score_bof',
@@ -37,6 +38,7 @@ class QuizResponse extends Model
 
     protected $casts = [
         'answers' => 'array',
+        'navigation_history' => 'array',
         'klaviyo_properties' => 'array',
         'started_at' => 'datetime',
         'completed_at' => 'datetime',

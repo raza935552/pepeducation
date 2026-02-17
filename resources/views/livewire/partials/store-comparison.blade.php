@@ -18,6 +18,8 @@
                     }
                 } elseif ($store->pivot->url) {
                     $visitUrl = $store->pivot->url;
+                } elseif ($store->website_url) {
+                    $visitUrl = $store->website_url;
                 }
 
                 // Row styling priority: cheapest (green) > recommended (amber) > default

@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\StackProductController;
 use App\Http\Controllers\Admin\StackBundleController;
 use App\Http\Controllers\Admin\StackStoreController;
 use App\Http\Controllers\Admin\AnalyticsController;
+use App\Http\Controllers\Admin\ResultsBankController;
 use App\Http\Controllers\Admin\UnsplashController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\PageVersionController;
@@ -114,6 +115,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Supporters
     Route::resource('supporters', SupporterController::class)->except(['show']);
+
+    // Quiz Results Bank (Peptide Recommendations)
+    Route::resource('results-bank', ResultsBankController::class)->except(['show']);
 
     // Marketing: Quizzes
     Route::resource('quizzes', QuizController::class);

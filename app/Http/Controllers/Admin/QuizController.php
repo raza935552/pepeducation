@@ -37,12 +37,12 @@ class QuizController extends Controller
 
         $quiz = Quiz::create([
             'name' => $validated['name'],
-            'slug' => $validated['slug'] ?: \Str::slug($validated['name']),
+            'slug' => !empty($validated['slug']) ? $validated['slug'] : \Str::slug($validated['name']),
             'type' => $validated['type'],
-            'description' => $validated['description'],
+            'description' => $validated['description'] ?? null,
             'settings' => $validated['settings'] ?? $this->defaultSettings(),
             'design' => $validated['design'] ?? $this->defaultDesign(),
-            'klaviyo_list_id' => $validated['klaviyo_list_id'],
+            'klaviyo_list_id' => $validated['klaviyo_list_id'] ?? null,
             'is_active' => $validated['is_active'] ?? false,
         ]);
 
@@ -67,19 +67,17 @@ class QuizController extends Controller
             'settings' => 'nullable|array',
             'design' => 'nullable|array',
             'klaviyo_list_id' => 'nullable|string',
-            'redirect_url' => 'nullable|url',
             'is_active' => 'boolean',
         ]);
 
         $quiz->update([
             'name' => $validated['name'],
-            'slug' => $validated['slug'] ?: \Str::slug($validated['name']),
+            'slug' => !empty($validated['slug']) ? $validated['slug'] : \Str::slug($validated['name']),
             'type' => $validated['type'],
-            'description' => $validated['description'],
+            'description' => $validated['description'] ?? null,
             'settings' => $validated['settings'] ?? $quiz->settings,
             'design' => $validated['design'] ?? $quiz->design,
-            'klaviyo_list_id' => $validated['klaviyo_list_id'],
-            'redirect_url' => $validated['redirect_url'],
+            'klaviyo_list_id' => $validated['klaviyo_list_id'] ?? null,
             'is_active' => $validated['is_active'] ?? false,
         ]);
 

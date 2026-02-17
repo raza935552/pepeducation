@@ -300,6 +300,45 @@ class StackBuilderDataSeeder extends Seeder
                 'order' => 16,
                 'goals' => ['sexual-health'],
             ],
+            [
+                'name' => 'Tirzepatide',
+                'slug' => 'tirzepatide',
+                'subtitle' => 'Dual GIP/GLP-1 Receptor Agonist',
+                'description' => 'A dual GIP/GLP-1 receptor agonist that has shown remarkable results for weight management by reducing appetite and improving metabolic function.',
+                'price' => 149.99,
+                'sale_price' => null,
+                'dosing_info' => '2.5mg–15mg/week subcutaneous',
+                'key_benefits' => ['Significant weight loss', 'Dual receptor action', 'Improved insulin sensitivity', 'Reduced appetite'],
+                'is_featured' => true,
+                'order' => 17,
+                'goals' => ['fat-loss'],
+            ],
+            [
+                'name' => 'LL-37',
+                'slug' => 'll-37',
+                'subtitle' => 'Antimicrobial Peptide',
+                'description' => 'A human cathelicidin antimicrobial peptide with broad-spectrum antimicrobial, anti-biofilm, and immunomodulatory properties.',
+                'price' => 54.99,
+                'sale_price' => null,
+                'dosing_info' => '50–100mcg/day subcutaneous',
+                'key_benefits' => ['Broad-spectrum antimicrobial', 'Biofilm disruption', 'Immune modulation', 'Mucosal immunity support'],
+                'is_featured' => false,
+                'order' => 18,
+                'goals' => ['immune-health'],
+            ],
+            [
+                'name' => 'Larazotide',
+                'slug' => 'larazotide',
+                'subtitle' => 'Tight Junction Regulator',
+                'description' => 'Larazotide acetate is a tight junction regulator that helps seal intestinal permeability, ideal for advanced gut healing protocols.',
+                'price' => 59.99,
+                'sale_price' => null,
+                'dosing_info' => '0.5mg three times daily oral',
+                'key_benefits' => ['Seals tight junctions', 'Reduces intestinal permeability', 'Targets leaky gut', 'Well-tolerated'],
+                'is_featured' => false,
+                'order' => 19,
+                'goals' => ['recovery'],
+            ],
         ];
 
         $productModels = [];
@@ -367,10 +406,13 @@ class StackBuilderDataSeeder extends Seeder
             'semax'                => ['store1' => 39.99, 'store2' => 37.99],
             'pt-141'               => ['store1' => 44.99, 'store2' => 46.99],
             'kisspeptin-10'        => ['store1' => 42.99, 'store2' => 39.99],
+            'tirzepatide'          => ['store1' => 149.99, 'store2' => 154.99],
+            'll-37'                => ['store1' => 54.99, 'store2' => 52.99],
+            'larazotide'           => ['store1' => 59.99, 'store2' => 62.99],
         ];
 
         // Per-product recommendation overrides for SwissChems (cheaper products get recommended at that store)
-        $swisschemsRecommended = ['aod-9604', 'cjc-1295-ipamorelin', 'tb-500', 'mk-677', 'dsip', 'kisspeptin-10'];
+        $swisschemsRecommended = ['aod-9604', 'cjc-1295-ipamorelin', 'tb-500', 'mk-677', 'dsip', 'kisspeptin-10', 'll-37'];
 
         foreach ($storePricing as $slug => $prices) {
             if (!isset($productModels[$slug])) continue;

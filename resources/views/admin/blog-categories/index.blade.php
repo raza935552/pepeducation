@@ -1,18 +1,6 @@
 <x-admin-layout>
     <x-slot name="header">Blog Categories</x-slot>
 
-    @if(session('error'))
-        <div class="mb-6 rounded-lg bg-red-50 p-4 text-red-700">
-            {{ session('error') }}
-        </div>
-    @endif
-
-    @if(session('success'))
-        <div class="mb-6 rounded-lg bg-green-50 p-4 text-green-700">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Add Category Form -->
         <div class="card h-fit">
