@@ -1,7 +1,10 @@
 @php
     $conditions = $outcome->conditions ?? [];
+    $condType = $conditions['type'] ?? null;
     $condSegment = $conditions['segment'] ?? null;
     $condMinScore = $conditions['min_score'] ?? 0;
+    $condQuestion = $conditions['question'] ?? null;
+    $condValue = $conditions['value'] ?? null;
     $outcomeJson = json_encode([
         'name' => $outcome->name,
         'conditions' => $conditions,
@@ -25,6 +28,11 @@
                 @endif
                 @if($condMinScore > 0)
                     <span class="text-sm text-gray-500">Min score: {{ $condMinScore }}</span>
+                @endif
+                @if($condType === 'answer' && $condQuestion)
+                    <span class="px-2 py-0.5 text-xs rounded bg-purple-100 text-purple-800">
+                        {{ $condQuestion }} = {{ $condValue }}
+                    </span>
                 @endif
             </div>
             @if($outcome->result_title)

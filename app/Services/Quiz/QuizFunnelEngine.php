@@ -131,6 +131,61 @@ class QuizFunnelEngine
     }
 
     /**
+     * Resolve dynamic content for a slide based on user answers.
+     *
+     * Looks up the user's answer value for the configured dynamic_content_key
+     * (matched by klaviyo_property), then returns the matching variant from
+     * dynamic_content_map, or the _default fallback.
+     *
+     * @return array|null  ['title' => ..., 'body' => ...] or null if no dynamic content
+     */
+    public function resolveDynamicContent(array $slide, array $answers): ?array
+    {
+        $key = $slide['dynamic_content_key'] ?? null;
+        $map = $slide['dynamic_content_map'] ?? null;
+
+        if (!$key || !$map || !is_array($map)) return null;
+
+        // Find the user's answer value for this key (by klaviyo_property)
+        $answerValue = null;
+        foreach ($answers as $answer) {
+            if (($answer['klaviyo_property'] ?? null) === $key) {
+                $answerValue = $answer['klaviyo_value'] ?? $answer['text_value'] ?? null;
+                break;
+            }
+        }
+
+        if ($answerValue && isset($map[$answerValue])) {
+            return $map[$answerValue];
+        }
+
+        return $map['_default'] ?? null;
+    }
+
+    /**
+     * Replace {{token}} placeholders in text with values from quiz answers + context.
+     *
+     * Tokens are matched by klaviyo_property name. Additional context (like peptide_name
+     * from ResultsBank) can be passed in the $context array.
+     * Unmatched tokens are left as-is (rendered literally).
+     */
+    public function interpolateTokens(string $text, array $answers, array $context = []): string
+    {
+        // Build token map from answers (klaviyo_property => display value)
+        $tokens = $context;
+        foreach ($answers as $answer) {
+            $prop = $answer['klaviyo_property'] ?? null;
+            if ($prop) {
+                $tokens[$prop] = $answer['option_text'] ?? $answer['klaviyo_value'] ?? $answer['text_value'] ?? '';
+            }
+        }
+
+        return preg_replace_callback('/\{\{(\w+)\}\}/', function ($matches) use ($tokens) {
+            return $tokens[$matches[1]] ?? $matches[0];
+        }, $text);
+    }
+
+    /**
      * Get the skip_to_question ID from the selected option in the current answer.
      */
     public function getSkipToFromAnswer(array $answer, array $question): ?string

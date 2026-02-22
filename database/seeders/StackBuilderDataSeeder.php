@@ -339,6 +339,58 @@ class StackBuilderDataSeeder extends Seeder
                 'order' => 19,
                 'goals' => ['recovery'],
             ],
+            [
+                'name' => 'Retatrutide',
+                'slug' => 'retatrutide',
+                'subtitle' => 'Triple Hormone Receptor Agonist',
+                'description' => 'A next-generation triple agonist (GIP/GLP-1/glucagon) showing up to 24% body weight loss in clinical trials — the most potent weight loss peptide in development.',
+                'price' => 169.99,
+                'sale_price' => null,
+                'dosing_info' => '4–12mg/week subcutaneous',
+                'key_benefits' => ['Triple receptor action', 'Up to 24% weight loss', 'Superior to dual agonists', 'Enhanced metabolic effects'],
+                'is_featured' => false,
+                'order' => 20,
+                'goals' => ['fat-loss'],
+            ],
+            [
+                'name' => 'IGF1-LR3',
+                'slug' => 'igf1-lr3',
+                'subtitle' => 'Long-Acting IGF-1 Analog',
+                'description' => 'A modified form of IGF-1 with an extended half-life, promoting significant muscle hypertrophy and enhanced protein synthesis for advanced users.',
+                'price' => 79.99,
+                'sale_price' => null,
+                'dosing_info' => '20–50mcg/day subcutaneous',
+                'key_benefits' => ['Potent muscle growth', 'Enhanced protein synthesis', 'Extended half-life', 'Hyperplasia potential'],
+                'is_featured' => false,
+                'order' => 21,
+                'goals' => ['muscle-growth'],
+            ],
+            [
+                'name' => 'NAD+',
+                'slug' => 'nad-plus',
+                'subtitle' => 'Nicotinamide Adenine Dinucleotide',
+                'description' => 'A critical coenzyme found in every cell that supports energy production, DNA repair, and cognitive function. Levels decline with age.',
+                'price' => 64.99,
+                'sale_price' => null,
+                'dosing_info' => '100–250mg IV or subcutaneous',
+                'key_benefits' => ['Cellular energy production', 'DNA repair support', 'Cognitive enhancement', 'Anti-aging at cellular level'],
+                'is_featured' => false,
+                'order' => 22,
+                'goals' => ['cognitive', 'anti-aging'],
+            ],
+            [
+                'name' => 'MOTS-C',
+                'slug' => 'mots-c',
+                'subtitle' => 'Mitochondrial-Derived Peptide',
+                'description' => 'A mitochondrial-derived peptide that enhances metabolic homeostasis, improves exercise capacity, and supports overall cellular energy and wellness.',
+                'price' => 54.99,
+                'sale_price' => null,
+                'dosing_info' => '5–10mg/week subcutaneous',
+                'key_benefits' => ['Metabolic optimization', 'Improved exercise capacity', 'Mitochondrial support', 'Cellular energy boost'],
+                'is_featured' => false,
+                'order' => 23,
+                'goals' => ['fat-loss'],
+            ],
         ];
 
         $productModels = [];
@@ -409,10 +461,14 @@ class StackBuilderDataSeeder extends Seeder
             'tirzepatide'          => ['store1' => 149.99, 'store2' => 154.99],
             'll-37'                => ['store1' => 54.99, 'store2' => 52.99],
             'larazotide'           => ['store1' => 59.99, 'store2' => 62.99],
+            'retatrutide'          => ['store1' => 169.99, 'store2' => 174.99],
+            'igf1-lr3'             => ['store1' => 79.99, 'store2' => 76.99],
+            'nad-plus'             => ['store1' => 64.99, 'store2' => 61.99],
+            'mots-c'               => ['store1' => 54.99, 'store2' => 51.99],
         ];
 
         // Per-product recommendation overrides for SwissChems (cheaper products get recommended at that store)
-        $swisschemsRecommended = ['aod-9604', 'cjc-1295-ipamorelin', 'tb-500', 'mk-677', 'dsip', 'kisspeptin-10', 'll-37'];
+        $swisschemsRecommended = ['aod-9604', 'cjc-1295-ipamorelin', 'tb-500', 'mk-677', 'dsip', 'kisspeptin-10', 'll-37', 'igf1-lr3', 'nad-plus', 'mots-c'];
 
         foreach ($storePricing as $slug => $prices) {
             if (!isset($productModels[$slug])) continue;

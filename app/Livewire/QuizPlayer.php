@@ -95,6 +95,45 @@ class QuizPlayer extends Component
     }
 
     /**
+     * Get the current slide with dynamic content resolved and tokens interpolated.
+     * Views should use this instead of currentSlide for rendering text.
+     */
+    public function getResolvedSlideProperty(): ?array
+    {
+        $slide = $this->currentSlide;
+        if (!$slide) return null;
+
+        $engine = app(QuizFunnelEngine::class);
+
+        // Build extra context tokens (peptide name, etc.)
+        $context = [];
+        $entry = $this->resultsBankEntry;
+        if ($entry) {
+            $context['peptide_name'] = $entry->peptide_name;
+            $context['star_rating'] = (string) $entry->star_rating;
+            $context['rating_label'] = $entry->rating_label;
+        }
+
+        // Resolve dynamic content (swap title/body if map matches)
+        $dynamic = $engine->resolveDynamicContent($slide, $this->answers);
+        if ($dynamic) {
+            if (!empty($dynamic['title'])) $slide['content_title'] = $dynamic['title'];
+            if (!empty($dynamic['body'])) $slide['content_body'] = $dynamic['body'];
+            if (!empty($dynamic['source'])) $slide['content_source'] = $dynamic['source'];
+        }
+
+        // Interpolate tokens in all text fields
+        $textFields = ['content_title', 'content_body', 'content_source', 'question_text', 'cta_text'];
+        foreach ($textFields as $field) {
+            if (!empty($slide[$field])) {
+                $slide[$field] = $engine->interpolateTokens($slide[$field], $this->answers, $context);
+            }
+        }
+
+        return $slide;
+    }
+
+    /**
      * Get slide type of current slide.
      */
     public function getCurrentSlideTypeProperty(): string
@@ -113,8 +152,11 @@ class QuizPlayer extends Component
 
         if (!$healthGoal) return null;
 
-        // Default to beginner if no experience question exists
-        $experienceLevel = $experienceLevel ?: 'beginner';
+        // BOF-C stackers are experienced — default to advanced
+        $bofIntent = $this->getAnswerByKlaviyoProperty('bof_intent');
+        if (!$experienceLevel) {
+            $experienceLevel = ($bofIntent === 'want_to_stack') ? 'advanced' : 'beginner';
+        }
 
         return ResultsBank::resolve($healthGoal, $experienceLevel);
     }
@@ -125,6 +167,16 @@ class QuizPlayer extends Component
      */
     public function getStackProductProperty(): ?StackProduct
     {
+        // BOF-A: user selected a specific peptide — look up StackProduct by slug directly
+        $selectedPeptide = $this->getAnswerByKlaviyoProperty('selected_peptide');
+        if ($selectedPeptide) {
+            $slugMap = ['kisspeptin' => 'kisspeptin-10'];
+            $slug = $slugMap[$selectedPeptide] ?? $selectedPeptide;
+            $product = StackProduct::where('slug', $slug)->first();
+            if ($product) return $product;
+        }
+
+        // Standard path: via ResultsBank entry
         $entry = $this->resultsBankEntry;
         if (!$entry || !$entry->stack_product_id) return null;
 
@@ -523,7 +575,41 @@ class QuizPlayer extends Component
     public function getProgressProperty(): int
     {
         if (count($this->questions) === 0) return 0;
-        return round(($this->currentStep + 1) / count($this->questions) * 100);
+
+        // Estimate journey length from first answer (journey selector)
+        $journeyLength = $this->estimateJourneyLength();
+        $stepsCompleted = count($this->navigationHistory) + 1; // history + current
+
+        return min(100, round($stepsCompleted / $journeyLength * 100));
+    }
+
+    private function estimateJourneyLength(): int
+    {
+        // Check first answer to determine journey path
+        $journeyAnswer = $this->answers[0]['option_id'] ?? null;
+        $subPathAnswer = null;
+
+        // Find sub-path answer if BOF
+        if ($journeyAnswer === 'ready_to_buy') {
+            foreach ($this->answers as $a) {
+                if (in_array($a['option_id'] ?? '', ['know_what_i_want', 'know_my_goal', 'want_to_stack'])) {
+                    $subPathAnswer = $a['option_id'];
+                    break;
+                }
+            }
+        }
+
+        return match ($journeyAnswer) {
+            'brand_new' => 16,   // TOF
+            'researching' => 16, // MOF
+            'ready_to_buy' => match ($subPathAnswer) {
+                'know_what_i_want' => 8,  // BOF-A
+                'know_my_goal' => 9,      // BOF-B
+                'want_to_stack' => 10,    // BOF-C
+                default => 9,             // BOF default before sub-path chosen
+            },
+            default => count($this->questions), // Fallback for non-funnel quizzes
+        };
     }
 
     public function getCurrentQuestionProperty(): ?array

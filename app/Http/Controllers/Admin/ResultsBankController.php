@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\QuizQuestion;
 use App\Models\ResultsBank;
 use App\Models\StackProduct;
 use Illuminate\Http\Request;
@@ -23,8 +24,8 @@ class ResultsBankController extends Controller
     {
         return view('admin.results-bank.form', [
             'result' => null,
-            'healthGoals' => ResultsBank::HEALTH_GOALS,
-            'experienceLevels' => ResultsBank::EXPERIENCE_LEVELS,
+            'healthGoals' => $this->getHealthGoalOptions(),
+            'experienceLevels' => $this->getExperienceLevelOptions(),
             'stackProducts' => StackProduct::active()->ordered()->get(),
         ]);
     }
@@ -45,8 +46,8 @@ class ResultsBankController extends Controller
     {
         return view('admin.results-bank.form', [
             'result' => $results_bank,
-            'healthGoals' => ResultsBank::HEALTH_GOALS,
-            'experienceLevels' => ResultsBank::EXPERIENCE_LEVELS,
+            'healthGoals' => $this->getHealthGoalOptions(),
+            'experienceLevels' => $this->getExperienceLevelOptions(),
             'stackProducts' => StackProduct::active()->ordered()->get(),
         ]);
     }
@@ -90,6 +91,52 @@ class ResultsBankController extends Controller
             'description' => 'nullable|string|max:2000',
             'is_active' => 'boolean',
         ];
+    }
+
+    /**
+     * Pull health goal options from quiz questions (by klaviyo_property).
+     * Falls back to hardcoded constants if no quiz data exists.
+     */
+    private function getHealthGoalOptions(): array
+    {
+        $options = $this->getOptionsFromQuiz('health_goal');
+
+        return !empty($options) ? $options : ResultsBank::HEALTH_GOALS;
+    }
+
+    /**
+     * Pull experience level options from quiz questions (by klaviyo_property).
+     * Falls back to hardcoded constants if no quiz data exists.
+     */
+    private function getExperienceLevelOptions(): array
+    {
+        $options = $this->getOptionsFromQuiz('experience_level');
+
+        return !empty($options) ? $options : ResultsBank::EXPERIENCE_LEVELS;
+    }
+
+    /**
+     * Extract unique option value => label pairs from quiz questions
+     * that have the given klaviyo_property.
+     */
+    private function getOptionsFromQuiz(string $klaviyoProperty): array
+    {
+        $questions = QuizQuestion::where('klaviyo_property', $klaviyoProperty)
+            ->whereNotNull('options')
+            ->get();
+
+        $options = [];
+        foreach ($questions as $question) {
+            foreach ($question->options ?? [] as $option) {
+                $value = $option['value'] ?? null;
+                $label = $option['label'] ?? $option['klaviyo_value'] ?? null;
+                if ($value && $label && !isset($options[$value])) {
+                    $options[$value] = $label;
+                }
+            }
+        }
+
+        return $options;
     }
 
     private function parseBenefits(?string $text): array

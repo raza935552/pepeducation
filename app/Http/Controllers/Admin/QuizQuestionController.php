@@ -30,6 +30,8 @@ class QuizQuestionController extends Controller
             'auto_advance_seconds' => $validated['auto_advance_seconds'] ?? null,
             'cta_text' => $validated['cta_text'] ?? null,
             'cta_url' => $validated['cta_url'] ?? null,
+            'dynamic_content_key' => $validated['dynamic_content_key'] ?? null,
+            'dynamic_content_map' => $this->parseDynamicContentMap($request),
         ]);
 
         if ($request->wantsJson()) {
@@ -57,6 +59,8 @@ class QuizQuestionController extends Controller
             'auto_advance_seconds' => $validated['auto_advance_seconds'] ?? null,
             'cta_text' => $validated['cta_text'] ?? null,
             'cta_url' => $validated['cta_url'] ?? null,
+            'dynamic_content_key' => $validated['dynamic_content_key'] ?? null,
+            'dynamic_content_map' => $this->parseDynamicContentMap($request),
         ]);
 
         if ($request->wantsJson()) {
@@ -111,6 +115,12 @@ class QuizQuestionController extends Controller
             'auto_advance_seconds' => 'nullable|integer|min:1|max:30',
             'cta_text' => 'nullable|string|max:255',
             'cta_url' => 'nullable|string|max:2048',
+            // Dynamic content
+            'dynamic_content_key' => 'nullable|string|max:255',
+            'dynamic_variants' => 'nullable|array',
+            'dynamic_variants.*.key' => 'nullable|string|max:255',
+            'dynamic_variants.*.title' => 'nullable|string|max:500',
+            'dynamic_variants.*.body' => 'nullable|string|max:5000',
             // Show conditions
             'show_conditions_type' => 'nullable|in:and,or',
             'show_conditions_question_id' => 'nullable|array',
@@ -141,6 +151,28 @@ class QuizQuestionController extends Controller
         }
 
         return $rules;
+    }
+
+    /**
+     * Parse dynamic_variants array from form into the dynamic_content_map JSON format.
+     */
+    private function parseDynamicContentMap(Request $request): ?array
+    {
+        $variants = $request->input('dynamic_variants', []);
+        if (empty($variants)) return null;
+
+        $map = [];
+        foreach ($variants as $v) {
+            $key = trim($v['key'] ?? '');
+            if ($key) {
+                $map[$key] = array_filter([
+                    'title' => $v['title'] ?? '',
+                    'body' => $v['body'] ?? '',
+                ]);
+            }
+        }
+
+        return !empty($map) ? $map : null;
     }
 
     /**

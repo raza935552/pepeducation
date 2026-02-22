@@ -196,6 +196,45 @@
                         </div>
                     </div>
 
+                    <!-- Dynamic Content (for intermission slides) -->
+                    <div x-show="question.slide_type === 'intermission'" class="border-t pt-4 mt-4">
+                        <h4 class="text-sm font-semibold text-gray-700 mb-2">Dynamic Content (optional)</h4>
+                        <p class="text-xs text-gray-400 mb-3">Make this slide show different content based on a previous answer. Leave empty to always show the same content.</p>
+
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Answer Key</label>
+                            <input type="text" name="dynamic_content_key" x-model="question.dynamic_content_key"
+                                placeholder="e.g. health_goal"
+                                class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                            <p class="text-xs text-gray-400 mt-1">The <code>klaviyo_property</code> name of the question whose answer determines which content to show. Must match exactly (e.g. "health_goal").</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Content Variants</label>
+                            <template x-for="(variant, vi) in question.dynamic_variants" :key="vi">
+                                <div class="border rounded-lg p-3 mb-2 bg-gray-50/50">
+                                    <div class="flex gap-2 items-center mb-2">
+                                        <input type="text" x-model="variant.key" placeholder="Answer value (e.g. fat_loss)"
+                                            class="w-40 rounded-lg border-gray-300 text-sm">
+                                        <span class="text-xs text-gray-400 flex-1">or use <code>_default</code> for fallback</span>
+                                        <button type="button" @click="question.dynamic_variants.splice(vi, 1)" class="text-red-500 p-1">
+                                            <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <input type="text" x-model="variant.title" placeholder="Title for this variant"
+                                        class="w-full rounded-lg border-gray-300 text-sm mb-2">
+                                    <textarea x-model="variant.body" placeholder="Body content for this variant" rows="2"
+                                        class="w-full rounded-lg border-gray-300 text-sm"></textarea>
+                                </div>
+                            </template>
+                            <button type="button" @click="question.dynamic_variants.push({ key: '', title: '', body: '' })"
+                                class="text-sm text-brand-gold hover:underline">+ Add Variant</button>
+                            <p class="text-xs text-gray-400 mt-2">Tip: Use <code>@{{health_goal}}</code> or <code>@{{peptide_name}}</code> tokens in titles/bodies &mdash; they'll be replaced with the user's actual answers at runtime.</p>
+                        </div>
+                    </div>
+
                     <!-- Show Conditions (Branching) -->
                     <div class="border-t pt-4 mt-4">
                         <div class="flex items-center justify-between mb-2">
@@ -348,6 +387,8 @@ function questionModal() {
                 auto_advance_seconds: 5,
                 cta_text: '',
                 cta_url: '',
+                dynamic_content_key: '',
+                dynamic_variants: [],
                 show_conditions: { type: 'and', conditions: [] },
             };
         },
@@ -364,6 +405,19 @@ function questionModal() {
             formData.append('auto_advance_seconds', this.question.auto_advance_seconds || '');
             formData.append('cta_text', this.question.cta_text || '');
             formData.append('cta_url', this.question.cta_url || '');
+
+            // Dynamic content fields (intermission slides)
+            if (this.question.dynamic_content_key) {
+                formData.append('dynamic_content_key', this.question.dynamic_content_key);
+            }
+            if (this.question.dynamic_variants && this.question.dynamic_variants.length > 0) {
+                const validVariants = this.question.dynamic_variants.filter(v => v.key);
+                validVariants.forEach((v, i) => {
+                    formData.append(`dynamic_variants[${i}][key]`, v.key);
+                    formData.append(`dynamic_variants[${i}][title]`, v.title || '');
+                    formData.append(`dynamic_variants[${i}][body]`, v.body || '');
+                });
+            }
 
             // Only send options for choice questions
             if (this.question.slide_type === 'question') {
@@ -423,6 +477,14 @@ function editQuestion(id, questionData) {
         })),
     };
 
+    // Parse dynamic_content_map back into variants array for the editor
+    const dynamicMap = questionData.dynamic_content_map || {};
+    const dynamicVariants = Object.entries(dynamicMap).map(([key, val]) => ({
+        key: key,
+        title: val.title || '',
+        body: val.body || '',
+    }));
+
     // Populate form with existing data
     data.question = {
         slide_type: questionData.slide_type || 'question',
@@ -445,6 +507,8 @@ function editQuestion(id, questionData) {
         auto_advance_seconds: questionData.auto_advance_seconds || 5,
         cta_text: questionData.cta_text || '',
         cta_url: questionData.cta_url || '',
+        dynamic_content_key: questionData.dynamic_content_key || '',
+        dynamic_variants: dynamicVariants,
         show_conditions: parsedConds,
     };
 

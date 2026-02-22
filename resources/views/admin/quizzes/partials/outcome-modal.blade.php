@@ -18,21 +18,58 @@
                             class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
+                    <!-- Condition Type Selector -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Condition Type</label>
+                        <div class="flex gap-4">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="condition_type_radio" value="" onchange="switchConditionType(this.value)" class="text-brand-gold focus:ring-brand-gold">
+                                <span class="ml-1.5 text-sm">None</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="condition_type_radio" value="segment" onchange="switchConditionType(this.value)" class="text-brand-gold focus:ring-brand-gold">
+                                <span class="ml-1.5 text-sm">Segment</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="condition_type_radio" value="score" onchange="switchConditionType(this.value)" class="text-brand-gold focus:ring-brand-gold">
+                                <span class="ml-1.5 text-sm">Score</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="condition_type_radio" value="answer" onchange="switchConditionType(this.value)" class="text-brand-gold focus:ring-brand-gold">
+                                <span class="ml-1.5 text-sm">Answer</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Segment fields -->
+                    <div id="condition-segment-fields" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Segment</label>
+                        <select name="segment" id="outcome-segment"
+                            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                            <option value="">Select segment</option>
+                            <option value="tof">TOF (Top of Funnel)</option>
+                            <option value="mof">MOF (Middle of Funnel)</option>
+                            <option value="bof">BOF (Bottom of Funnel)</option>
+                        </select>
+                    </div>
+
+                    <!-- Score fields -->
+                    <div id="condition-score-fields" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Min Score</label>
+                        <input type="number" name="min_score" id="outcome-min-score" value="0" min="0"
+                            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                    </div>
+
+                    <!-- Answer fields -->
+                    <div id="condition-answer-fields" class="hidden space-y-3">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Segment</label>
-                            <select name="segment" id="outcome-segment" onchange="updateConditionType()"
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Answer Question <span class="text-xs text-gray-400">(klaviyo_property)</span></label>
+                            <input type="text" name="answer_question" id="outcome-answer-question" placeholder="e.g. awareness_level"
                                 class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
-                                <option value="">No segment</option>
-                                <option value="tof">TOF (Top of Funnel)</option>
-                                <option value="mof">MOF (Middle of Funnel)</option>
-                                <option value="bof">BOF (Bottom of Funnel)</option>
-                            </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Min Score</label>
-                            <input type="number" name="min_score" id="outcome-min-score" value="0" min="0"
-                                onchange="updateConditionType()"
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Answer Value</label>
+                            <input type="text" name="answer_value" id="outcome-answer-value" placeholder="e.g. brand_new"
                                 class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
                         </div>
                     </div>
@@ -66,18 +103,11 @@
 </div>
 
 <script>
-function updateConditionType() {
-    var segment = document.getElementById('outcome-segment').value;
-    var minScore = parseInt(document.getElementById('outcome-min-score').value) || 0;
-    var condType = document.getElementById('outcome-condition-type');
-
-    if (segment) {
-        condType.value = 'segment';
-    } else if (minScore > 0) {
-        condType.value = 'score';
-    } else {
-        condType.value = '';
-    }
+function switchConditionType(type) {
+    document.getElementById('outcome-condition-type').value = type;
+    document.getElementById('condition-segment-fields').classList.toggle('hidden', type !== 'segment');
+    document.getElementById('condition-score-fields').classList.toggle('hidden', type !== 'score');
+    document.getElementById('condition-answer-fields').classList.toggle('hidden', type !== 'answer');
 }
 
 function showAddOutcome() {
@@ -90,9 +120,16 @@ function showAddOutcome() {
     document.getElementById('outcome-name').value = '';
     document.getElementById('outcome-segment').value = '';
     document.getElementById('outcome-min-score').value = '0';
+    document.getElementById('outcome-answer-question').value = '';
+    document.getElementById('outcome-answer-value').value = '';
     document.getElementById('outcome-headline').value = '';
     document.getElementById('outcome-body').value = '';
     document.getElementById('outcome-redirect-url').value = '';
+
+    // Reset radio buttons and hide all condition fields
+    var radios = document.querySelectorAll('input[name="condition_type_radio"]');
+    radios.forEach(function(r) { r.checked = r.value === ''; });
+    switchConditionType('');
 }
 
 function closeOutcomeModal() {
@@ -112,8 +149,15 @@ function editOutcome(id, outcomeData) {
     document.getElementById('outcome-name').value = outcomeData.name || '';
     document.getElementById('outcome-segment').value = conditions.segment || '';
     document.getElementById('outcome-min-score').value = conditions.min_score || 0;
+    document.getElementById('outcome-answer-question').value = conditions.question || '';
+    document.getElementById('outcome-answer-value').value = conditions.value || '';
     document.getElementById('outcome-headline').value = outcomeData.result_title || '';
     document.getElementById('outcome-body').value = outcomeData.result_message || '';
     document.getElementById('outcome-redirect-url').value = outcomeData.redirect_url || '';
+
+    // Set the correct radio button and show matching fields
+    var radios = document.querySelectorAll('input[name="condition_type_radio"]');
+    radios.forEach(function(r) { r.checked = r.value === condType; });
+    switchConditionType(condType);
 }
 </script>

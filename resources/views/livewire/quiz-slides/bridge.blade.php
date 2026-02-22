@@ -2,12 +2,13 @@
 <div class="card p-8 text-center" wire:key="slide-bridge-{{ $currentStep }}">
 
     @php
+        $resolved = $this->resolvedSlide;
         $result = $this->resultsBankEntry;
         $stackProduct = $this->stackProduct;
-        $slideTitle = $this->currentSlide['content_title'] ?? null;
-        $slideBody = $this->currentSlide['content_body'] ?? null;
-        $slideCta = $this->currentSlide['cta_text'] ?? null;
-        $slideCtaUrl = $this->currentSlide['cta_url'] ?? null;
+        $slideTitle = $resolved['content_title'] ?? null;
+        $slideBody = $resolved['content_body'] ?? null;
+        $slideCta = $resolved['cta_text'] ?? null;
+        $slideCtaUrl = $resolved['cta_url'] ?? null;
     @endphp
 
     {{-- Icon --}}

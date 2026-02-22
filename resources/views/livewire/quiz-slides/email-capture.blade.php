@@ -1,13 +1,14 @@
 {{-- Email Capture Slide --}}
+@php $resolved = $this->resolvedSlide; @endphp
 <div class="card p-8" wire:key="slide-email-{{ $currentStep }}">
-    @if(!empty($this->currentSlide['content_title']))
-        <h3 class="text-xl font-semibold mb-4">{{ $this->currentSlide['content_title'] }}</h3>
+    @if(!empty($resolved['content_title']))
+        <h3 class="text-xl font-semibold mb-4">{{ $resolved['content_title'] }}</h3>
     @else
         <h3 class="text-xl font-semibold mb-4">Get your personalized results via email</h3>
     @endif
 
-    @if(!empty($this->currentSlide['content_body']))
-        <p class="text-gray-600 mb-6">{{ $this->currentSlide['content_body'] }}</p>
+    @if(!empty($resolved['content_body']))
+        <p class="text-gray-600 mb-6">{{ $resolved['content_body'] }}</p>
     @endif
 
     <form wire:submit="submitEmail" class="space-y-4">

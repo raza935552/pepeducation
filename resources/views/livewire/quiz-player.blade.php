@@ -3,8 +3,7 @@
         <!-- Progress Bar -->
         @if(($quiz->settings ?? [])['show_progress_bar'] ?? true)
             <div class="mb-6">
-                <div class="flex justify-between text-sm text-gray-600 mb-2">
-                    <span>Step {{ $currentStep + 1 }} of {{ count($questions) }}</span>
+                <div class="flex justify-end text-sm text-gray-600 mb-2">
                     <span>{{ $this->progress }}%</span>
                 </div>
                 <div class="h-2 bg-gray-200 rounded-full overflow-hidden">

@@ -1,17 +1,18 @@
 {{-- Intermission Slide — informational content + Next button --}}
+@php $resolved = $this->resolvedSlide; @endphp
 <div class="card p-8" wire:key="slide-intermission-{{ $currentStep }}">
-    @if(!empty($this->currentSlide['content_title']))
-        <h2 class="text-2xl font-bold mb-4">{{ $this->currentSlide['content_title'] }}</h2>
+    @if(!empty($resolved['content_title']))
+        <h2 class="text-2xl font-bold mb-4">{{ $resolved['content_title'] }}</h2>
     @endif
 
-    @if(!empty($this->currentSlide['content_body']))
+    @if(!empty($resolved['content_body']))
         <div class="text-gray-700 leading-relaxed space-y-3 mb-6">
-            {!! nl2br(e($this->currentSlide['content_body'])) !!}
+            {!! nl2br(e($resolved['content_body'])) !!}
         </div>
     @endif
 
-    @if(!empty($this->currentSlide['content_source']))
-        <p class="text-xs text-gray-400 mb-6 italic">Source: {{ $this->currentSlide['content_source'] }}</p>
+    @if(!empty($resolved['content_source']))
+        <p class="text-xs text-gray-400 mb-6 italic">Source: {{ $resolved['content_source'] }}</p>
     @endif
 
     <div class="flex items-center justify-between">
