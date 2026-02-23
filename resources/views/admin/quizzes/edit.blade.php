@@ -116,6 +116,10 @@
                         <dd class="font-medium">{{ $quiz->getCompletionRate() }}%</dd>
                     </div>
                 </dl>
+                <a href="{{ route('admin.quizzes.analytics', $quiz) }}"
+                    class="mt-4 block text-center btn btn-secondary text-sm w-full">
+                    View Full Analytics
+                </a>
             </div>
 
             <form action="{{ route('admin.quizzes.destroy', $quiz) }}" method="POST" class="card p-6"

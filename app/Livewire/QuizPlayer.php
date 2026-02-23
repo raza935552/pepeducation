@@ -382,7 +382,10 @@ class QuizPlayer extends Component
      */
     public function submitEmail(): void
     {
-        $this->validate(['email' => 'required|email']);
+        $this->validate(
+            ['email' => 'required|email:rfc'],
+            ['email.required' => 'Please enter your email address.', 'email.email' => 'Please enter a valid email address.']
+        );
 
         $service = app(SubscriberService::class);
 
@@ -648,6 +651,11 @@ class QuizPlayer extends Component
         // Then try segment-based matching (for segmentation quizzes)
         $segmentMatch = $outcomes->first(fn ($o) => $o->matchesSegment($segment));
         if ($segmentMatch) return $segmentMatch;
+
+        // Then try score-based matching (min_score thresholds)
+        $totalScore = array_sum($this->segmentScores);
+        $scoreMatch = $outcomes->first(fn ($o) => $o->matchesScore($totalScore, 'total'));
+        if ($scoreMatch) return $scoreMatch;
 
         // Fallback to first outcome
         return $outcomes->first();

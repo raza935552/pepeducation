@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Quiz;
+use App\Models\QuizResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class QuizController extends Controller
 {
@@ -88,6 +90,60 @@ class QuizController extends Controller
     {
         $quiz->delete();
         return redirect()->route('admin.quizzes.index')->with('success', 'Quiz deleted.');
+    }
+
+    public function analytics(Quiz $quiz)
+    {
+        $quiz->load('questions', 'outcomes');
+        $responses = QuizResponse::where('quiz_id', $quiz->id);
+
+        // Summary stats
+        $totalStarted = (clone $responses)->count();
+        $totalCompleted = (clone $responses)->completed()->count();
+        $completionRate = $totalStarted > 0 ? round($totalCompleted / $totalStarted * 100, 1) : 0;
+        $avgDuration = (clone $responses)->completed()->avg('duration_seconds');
+
+        // Drop-off per question: count how many respondents answered each question index
+        $allResponses = (clone $responses)->whereNotNull('answers')->get(['answers', 'status']);
+        $inputQuestions = $quiz->questions->filter(fn ($q) => in_array($q->slide_type, ['question', 'question_text', 'email_capture']))->values();
+        $dropoff = [];
+        foreach ($inputQuestions as $i => $question) {
+            $answeredCount = $allResponses->filter(fn ($r) => isset($r->answers[$i]))->count();
+            $prevCount = $i === 0 ? $totalStarted : ($dropoff[$i - 1]['answered'] ?? $totalStarted);
+            $dropoffPct = $prevCount > 0 ? round((1 - $answeredCount / $prevCount) * 100, 1) : 0;
+            $dropoff[] = [
+                'order' => $question->order,
+                'label' => \Str::limit($question->question_text, 50),
+                'answered' => $answeredCount,
+                'dropoff_pct' => $i === 0 ? 0 : $dropoffPct,
+            ];
+        }
+
+        // Outcome distribution
+        $outcomeDistribution = $quiz->outcomes->map(fn ($o) => [
+            'name' => $o->name,
+            'segment' => $o->conditions['segment'] ?? $o->conditions['type'] ?? '-',
+            'count' => $o->shown_count,
+        ]);
+
+        // Segment breakdown
+        $segmentBreakdown = (clone $responses)->completed()
+            ->select('segment', DB::raw('count(*) as count'))
+            ->groupBy('segment')
+            ->pluck('count', 'segment')
+            ->toArray();
+
+        // Recent responses
+        $recentResponses = QuizResponse::where('quiz_id', $quiz->id)
+            ->latest()
+            ->limit(20)
+            ->get();
+
+        return view('admin.quizzes.analytics', compact(
+            'quiz', 'totalStarted', 'totalCompleted', 'completionRate',
+            'avgDuration', 'dropoff', 'outcomeDistribution',
+            'segmentBreakdown', 'recentResponses'
+        ));
     }
 
     public function duplicate(Quiz $quiz)
