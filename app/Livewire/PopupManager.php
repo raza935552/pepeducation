@@ -44,6 +44,14 @@ class PopupManager extends Component
             return false;
         }
 
+        // Hide from known subscribers when popup has hide_if_subscribed rule
+        $displayRules = $popup->display_rules ?? [];
+        if ($displayRules['hide_if_subscribed'] ?? false) {
+            if (request()->cookie('pp_email')) {
+                return false;
+            }
+        }
+
         $targeting = $popup->targeting ?? [];
 
         if (!empty($targeting['segments'])) {

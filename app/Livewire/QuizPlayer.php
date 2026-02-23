@@ -448,8 +448,54 @@ class QuizPlayer extends Component
         $this->nextStep();
     }
 
+    /**
+     * Auto-skip email_capture slides when user is already a known subscriber.
+     * Silently records the email as an answer, links the subscriber, and advances.
+     */
+    private function autoSkipEmailCaptureIfKnown(): void
+    {
+        $slide = $this->questions[$this->currentStep] ?? null;
+        if (!$slide) return;
+
+        $slideType = $slide['slide_type'] ?? QuizQuestion::SLIDE_QUESTION;
+        if ($slideType !== QuizQuestion::SLIDE_EMAIL_CAPTURE) return;
+
+        $ppEmail = request()->cookie('pp_email');
+        if (!$ppEmail) return;
+
+        $service = app(SubscriberService::class);
+        $subscriber = $service->findByEmail($ppEmail);
+        if (!$subscriber) return;
+
+        // Known subscriber — link to response and record answer
+        $this->response->update([
+            'email' => $ppEmail,
+            'subscriber_id' => $subscriber->id,
+        ]);
+
+        $this->answers[$this->currentStep] = [
+            'question_id' => $slide['id'] ?? null,
+            'question_text' => $slide['question_text'] ?? 'Email',
+            'text_value' => $ppEmail,
+            'klaviyo_property' => $slide['klaviyo_property'] ?? 'email',
+            'klaviyo_value' => $ppEmail,
+        ];
+
+        $this->response->update([
+            'answers' => $this->answers,
+            'questions_answered' => count($this->answers),
+            'navigation_history' => $this->navigationHistory,
+        ]);
+
+        // Advance past the email slide
+        $this->nextStep();
+    }
+
     private function shouldCollectEmailNow(): bool
     {
+        // Skip for known subscribers
+        if (request()->cookie('pp_email')) return false;
+
         $settings = $this->quiz->settings ?? [];
         if (!($settings['require_email'] ?? false)) return false;
 
@@ -499,6 +545,8 @@ class QuizPlayer extends Component
 
         if ($nextIndex !== null) {
             $this->currentStep = $nextIndex;
+            // Auto-skip email_capture for known subscribers
+            $this->autoSkipEmailCaptureIfKnown();
         } else {
             $this->completeQuiz();
         }

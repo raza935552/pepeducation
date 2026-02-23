@@ -11,10 +11,19 @@ class SubscribeForm extends Component
     public string $source = 'footer';
     public bool $success = false;
     public string $message = '';
+    public bool $alreadySubscribed = false;
 
     protected $rules = [
         'email' => 'required|email',
     ];
+
+    public function mount()
+    {
+        $ppEmail = request()->cookie('pp_email');
+        if ($ppEmail) {
+            $this->alreadySubscribed = true;
+        }
+    }
 
     public function subscribe()
     {

@@ -1,5 +1,12 @@
 <div>
-    @if($success)
+    @if($alreadySubscribed)
+        <div class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-900/50 border border-emerald-700 text-emerald-400 text-sm">
+            <svg aria-hidden="true" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            You're subscribed!
+        </div>
+    @elseif($success)
         <div class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-900/50 border border-emerald-700 text-emerald-400 text-sm">
             <svg aria-hidden="true" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
