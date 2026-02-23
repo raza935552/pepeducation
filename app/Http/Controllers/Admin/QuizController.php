@@ -100,8 +100,11 @@ class QuizController extends Controller
         // Summary stats
         $totalStarted = (clone $responses)->count();
         $totalCompleted = (clone $responses)->completed()->count();
+        $totalAbandoned = (clone $responses)->abandoned()->count();
         $completionRate = $totalStarted > 0 ? round($totalCompleted / $totalStarted * 100, 1) : 0;
+        $abandonmentRate = $totalStarted > 0 ? round($totalAbandoned / $totalStarted * 100, 1) : 0;
         $avgDuration = (clone $responses)->completed()->avg('duration_seconds');
+        $avgQuestionsBeforeAbandon = (clone $responses)->abandoned()->avg('questions_answered');
 
         // Drop-off per question: count how many respondents answered each question index
         $allResponses = (clone $responses)->whereNotNull('answers')->get(['answers', 'status']);
@@ -140,8 +143,9 @@ class QuizController extends Controller
             ->get();
 
         return view('admin.quizzes.analytics', compact(
-            'quiz', 'totalStarted', 'totalCompleted', 'completionRate',
-            'avgDuration', 'dropoff', 'outcomeDistribution',
+            'quiz', 'totalStarted', 'totalCompleted', 'totalAbandoned',
+            'completionRate', 'abandonmentRate', 'avgDuration',
+            'avgQuestionsBeforeAbandon', 'dropoff', 'outcomeDistribution',
             'segmentBreakdown', 'recentResponses'
         ));
     }

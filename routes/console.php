@@ -13,3 +13,6 @@ Schedule::command('klaviyo:sync --limit=50')->everyFiveMinutes();
 
 // Publish scheduled blog posts every minute
 Schedule::command('blog:publish-scheduled')->everyMinute();
+
+// Mark stale in-progress quiz responses as abandoned (older than 24h)
+Schedule::command('quiz:cleanup-abandoned')->daily();

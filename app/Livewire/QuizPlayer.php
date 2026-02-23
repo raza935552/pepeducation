@@ -36,6 +36,9 @@ class QuizPlayer extends Component
     // UTM parameters captured from the URL
     public array $utmParams = [];
 
+    // Response ID exposed to JS for abandon beacon
+    public ?int $responseId = null;
+
     // Navigation history for back button across non-linear slides
     public array $navigationHistory = [];
 
@@ -63,18 +66,24 @@ class QuizPlayer extends Component
     {
         $trackingSessionId = request()->cookie('pp_session_id') ?? session()->getId();
 
-        // Check for existing in-progress response to prevent duplicate starts on refresh
+        // Check for existing resumable response (in_progress, or recently abandoned by beacon on page refresh)
         $existing = QuizResponse::where('quiz_id', $this->quiz->id)
             ->where('session_id', $trackingSessionId)
-            ->where('status', 'in_progress')
+            ->whereIn('status', ['in_progress', 'abandoned'])
+            ->latest('started_at')
             ->first();
 
         if ($existing) {
             // Expire stale responses older than 24 hours
             if ($existing->started_at && $existing->started_at->diffInHours(now()) > 24) {
-                $existing->update(['status' => 'abandoned']);
+                if ($existing->status !== 'abandoned') {
+                    $existing->update(['status' => 'abandoned']);
+                }
             } else {
+                // Resume: restore progress and mark back to in_progress
+                $existing->update(['status' => 'in_progress']);
                 $this->response = $existing;
+                $this->responseId = $existing->id;
                 $this->answers = $existing->answers ?? [];
                 $this->currentStep = max(0, count($this->answers) - 1);
                 // Trim navigation history to match resumed step
@@ -94,6 +103,7 @@ class QuizPlayer extends Component
             'started_at' => now(),
             'status' => 'in_progress',
         ], $this->utmParams));
+        $this->responseId = $this->response->id;
 
         $this->quiz->increment('starts_count');
         $this->dispatch('quiz-started', quizId: $this->quiz->id);

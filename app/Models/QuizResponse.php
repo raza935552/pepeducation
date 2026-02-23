@@ -89,6 +89,11 @@ class QuizResponse extends Model
         return $query->where('status', 'in_progress');
     }
 
+    public function scopeAbandoned($query)
+    {
+        return $query->where('status', 'abandoned');
+    }
+
     public function scopeSegment($query, string $segment)
     {
         return $query->where('segment', strtolower($segment));

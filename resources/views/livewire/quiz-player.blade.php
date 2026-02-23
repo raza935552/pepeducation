@@ -129,6 +129,19 @@
             const payload = Array.isArray(data) ? data[0] : data;
             window.PPTracker.trackQuizComplete(payload.quizId, payload);
         }
+        // Quiz completed — disable abandonment beacon
+        window.__quizCompleted = true;
+    });
+
+    // Mark quiz as abandoned when user navigates away mid-quiz
+    window.addEventListener('beforeunload', () => {
+        if (window.__quizCompleted) return;
+        const responseId = $wire.responseId;
+        if (!responseId) return;
+        const data = new FormData();
+        data.append('response_id', responseId);
+        data.append('_token', document.querySelector('meta[name="csrf-token"]')?.content || '');
+        navigator.sendBeacon('{{ route("quiz.abandon") }}', data);
     });
 </script>
 @endscript

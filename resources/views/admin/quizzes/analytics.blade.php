@@ -24,12 +24,31 @@
             <div class="text-sm text-gray-500">Completed</div>
         </div>
         <div class="card p-4">
+            <div class="text-2xl font-bold text-red-500">{{ number_format($totalAbandoned) }}</div>
+            <div class="text-sm text-gray-500">Abandoned</div>
+        </div>
+        <div class="card p-4">
             <div class="text-2xl font-bold">{{ $completionRate }}%</div>
             <div class="text-sm text-gray-500">Completion Rate</div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="card p-4">
+            <div class="text-2xl font-bold">{{ $abandonmentRate }}%</div>
+            <div class="text-sm text-gray-500">Abandonment Rate</div>
+        </div>
+        <div class="card p-4">
+            <div class="text-2xl font-bold">{{ $avgQuestionsBeforeAbandon ? round($avgQuestionsBeforeAbandon, 1) : '--' }}</div>
+            <div class="text-sm text-gray-500">Avg Qs Before Abandon</div>
         </div>
         <div class="card p-4">
             <div class="text-2xl font-bold">{{ $avgDuration ? gmdate('i:s', (int) $avgDuration) : '--' }}</div>
             <div class="text-sm text-gray-500">Avg Duration</div>
+        </div>
+        <div class="card p-4">
+            <div class="text-2xl font-bold">{{ $totalStarted > 0 ? number_format($totalStarted - $totalCompleted - $totalAbandoned) : 0 }}</div>
+            <div class="text-sm text-gray-500">In Progress</div>
         </div>
     </div>
 
@@ -140,6 +159,8 @@
                                 <td class="py-2 px-3">
                                     @if($response->status === 'completed')
                                         <span class="inline-block px-2 py-0.5 text-xs rounded-full bg-green-100 text-green-800">Completed</span>
+                                    @elseif($response->status === 'abandoned')
+                                        <span class="inline-block px-2 py-0.5 text-xs rounded-full bg-red-100 text-red-800">Abandoned</span>
                                     @else
                                         <span class="inline-block px-2 py-0.5 text-xs rounded-full bg-yellow-100 text-yellow-800">In Progress</span>
                                     @endif

@@ -59,6 +59,7 @@ Route::get('/go/{slug}', [OutboundController::class, 'track'])->name('outbound.t
 // Quizzes
 Route::get('/quiz/{slug}', [QuizController::class, 'show'])->name('quiz.show');
 Route::get('/quiz/{slug}/embed', [QuizController::class, 'embed'])->name('quiz.embed');
+Route::post('/quiz/abandon', [QuizController::class, 'abandon'])->name('quiz.abandon');
 
 // Lead Magnets
 Route::get('/lead-magnet/{slug}', [LeadMagnetController::class, 'landing'])->name('lead-magnet.landing');
