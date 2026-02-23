@@ -30,6 +30,12 @@ class QuizPlayer extends Component
     // Text input for question_text slides
     public string $textAnswer = '';
 
+    // Multiple-choice selections (temporary until confirmed)
+    public array $multiSelections = [];
+
+    // UTM parameters captured from the URL
+    public array $utmParams = [];
+
     // Navigation history for back button across non-linear slides
     public array $navigationHistory = [];
 
@@ -37,6 +43,13 @@ class QuizPlayer extends Component
     {
         $this->quiz = $quiz->load('questions', 'outcomes');
         $this->questions = $this->quiz->questions->sortBy('order')->values()->toArray();
+
+        // Capture UTM parameters from the URL
+        $this->utmParams = array_filter([
+            'utm_source' => request()->query('utm_source'),
+            'utm_medium' => request()->query('utm_medium'),
+            'utm_campaign' => request()->query('utm_campaign'),
+        ]);
 
         if (count($this->questions) === 0) {
             $this->completed = true;
@@ -74,13 +87,13 @@ class QuizPlayer extends Component
             }
         }
 
-        $this->response = QuizResponse::create([
+        $this->response = QuizResponse::create(array_merge([
             'quiz_id' => $this->quiz->id,
             'session_id' => $trackingSessionId,
             'answers' => [],
             'started_at' => now(),
             'status' => 'in_progress',
-        ]);
+        ], $this->utmParams));
 
         $this->quiz->increment('starts_count');
         $this->dispatch('quiz-started', quizId: $this->quiz->id);
@@ -237,6 +250,7 @@ class QuizPlayer extends Component
             'option_text' => $selectedOption['text'] ?? $selectedOption['label'] ?? '',
             'klaviyo_property' => $question['klaviyo_property'] ?? null,
             'klaviyo_value' => $selectedOption['klaviyo_value'] ?? $selectedOption['text'] ?? $selectedOption['label'] ?? '',
+            'tags' => $selectedOption['tags'] ?? [],
         ];
 
         // Add new answer scores
@@ -256,6 +270,79 @@ class QuizPlayer extends Component
             return;
         }
 
+        $this->nextStep();
+    }
+
+    /**
+     * Toggle an option for multiple-choice questions (does not advance).
+     */
+    public function toggleMultipleAnswer(int $questionIndex, string $optionId): void
+    {
+        if ($questionIndex !== $this->currentStep) return;
+
+        if (in_array($optionId, $this->multiSelections)) {
+            $this->multiSelections = array_values(array_diff($this->multiSelections, [$optionId]));
+        } else {
+            $this->multiSelections[] = $optionId;
+        }
+    }
+
+    /**
+     * Commit multiple-choice selections and advance to next slide.
+     */
+    public function submitMultipleAnswer(): void
+    {
+        $questionIndex = $this->currentStep;
+        $question = $this->questions[$questionIndex] ?? null;
+        if (!$question || empty($this->multiSelections)) return;
+
+        $options = $question['options'] ?? [];
+
+        // Subtract old answer scores if re-answering (back button)
+        if (isset($this->answers[$questionIndex]) && !empty($this->answers[$questionIndex]['option_ids'])) {
+            foreach ($this->answers[$questionIndex]['option_ids'] as $oldId) {
+                $oldOption = collect($options)->first(fn ($o) => ($o['value'] ?? $o['id'] ?? '') === $oldId);
+                if ($oldOption) {
+                    $this->segmentScores['tof'] -= (int) ($oldOption['score_tof'] ?? 0);
+                    $this->segmentScores['mof'] -= (int) ($oldOption['score_mof'] ?? 0);
+                    $this->segmentScores['bof'] -= (int) ($oldOption['score_bof'] ?? 0);
+                }
+            }
+        }
+
+        $selectedOptions = collect($options)->filter(
+            fn ($o) => in_array($o['value'] ?? $o['id'] ?? '', $this->multiSelections)
+        );
+
+        $tags = [];
+        foreach ($selectedOptions as $opt) {
+            foreach ($opt['tags'] ?? [] as $tag) {
+                $tags[] = $tag;
+            }
+            $this->segmentScores['tof'] += (int) ($opt['score_tof'] ?? 0);
+            $this->segmentScores['mof'] += (int) ($opt['score_mof'] ?? 0);
+            $this->segmentScores['bof'] += (int) ($opt['score_bof'] ?? 0);
+        }
+
+        $this->answers[$questionIndex] = [
+            'question_id' => $question['id'] ?? null,
+            'question_text' => $question['question_text'] ?? '',
+            'option_ids' => $this->multiSelections,
+            'option_texts' => $selectedOptions->map(fn ($o) => $o['text'] ?? $o['label'] ?? '')->values()->toArray(),
+            'option_id' => implode(',', $this->multiSelections),
+            'option_text' => $selectedOptions->map(fn ($o) => $o['text'] ?? $o['label'] ?? '')->implode(', '),
+            'klaviyo_property' => $question['klaviyo_property'] ?? null,
+            'klaviyo_value' => $selectedOptions->map(fn ($o) => $o['klaviyo_value'] ?? $o['text'] ?? $o['label'] ?? '')->implode(', '),
+            'tags' => array_values(array_unique($tags)),
+        ];
+
+        $this->response->update([
+            'answers' => $this->answers,
+            'questions_answered' => count($this->answers),
+            'navigation_history' => $this->navigationHistory,
+        ]);
+
+        $this->multiSelections = [];
         $this->nextStep();
     }
 
@@ -421,6 +508,13 @@ class QuizPlayer extends Component
         if ($question && ($question['slide_type'] ?? 'question') === QuizQuestion::SLIDE_QUESTION_TEXT) {
             $this->textAnswer = $this->answers[$this->currentStep]['text_value'] ?? '';
         }
+
+        // Pre-fill multi selections if going back to a multiple-choice question
+        if ($question && ($question['question_type'] ?? '') === QuizQuestion::TYPE_MULTIPLE) {
+            $this->multiSelections = $this->answers[$this->currentStep]['option_ids'] ?? [];
+        } else {
+            $this->multiSelections = [];
+        }
     }
 
     public function completeQuiz(): void
@@ -461,11 +555,17 @@ class QuizPlayer extends Component
                     'completed_at' => now(),
                     'duration_seconds' => now()->diffInSeconds($this->response->started_at),
                     'klaviyo_properties' => json_encode($klaviyoProperties),
+                    'tags' => json_encode($this->collectAllTags()),
                     'updated_at' => now(),
                 ]);
 
             // Increment inside transaction so it's atomic with the completion
             $this->quiz->increment('completions_count');
+
+            // Increment outcome shown_count
+            if ($this->outcome) {
+                $this->outcome->increment('shown_count');
+            }
 
             return true;
         });
@@ -507,6 +607,12 @@ class QuizPlayer extends Component
             if (!empty($answer['klaviyo_property'])) {
                 $properties[$answer['klaviyo_property']] = $answer['klaviyo_value'];
             }
+        }
+
+        // Add collected tags
+        $tags = $this->collectAllTags();
+        if (!empty($tags)) {
+            $properties['pp_tags'] = $tags;
         }
 
         // Add outcome properties
@@ -559,6 +665,17 @@ class QuizPlayer extends Component
             $this->segmentScores['mof'] += (int) ($option['score_mof'] ?? 0);
             $this->segmentScores['bof'] += (int) ($option['score_bof'] ?? 0);
         }
+    }
+
+    private function collectAllTags(): array
+    {
+        $tags = [];
+        foreach ($this->answers as $answer) {
+            foreach ($answer['tags'] ?? [] as $tag) {
+                $tags[] = $tag;
+            }
+        }
+        return array_values(array_unique($tags));
     }
 
     private function determineSegment(): string

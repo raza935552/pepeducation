@@ -1,3 +1,17 @@
+@php
+    // Build question data for outcome answer dropdowns
+    $outcomeSlides = $quiz->questions->sortBy('order')->values()->filter(fn ($q) =>
+        in_array($q->slide_type, ['question', 'question_text']) && $q->klaviyo_property
+    )->map(fn ($q) => [
+        'klaviyo_property' => $q->klaviyo_property,
+        'label' => '#' . $q->order . ' — ' . Str::limit($q->question_text, 40) . ' (' . $q->klaviyo_property . ')',
+        'options' => collect($q->options ?? [])->map(fn ($o) => [
+            'value' => $o['klaviyo_value'] ?? $o['label'] ?? $o['value'] ?? '',
+            'label' => ($o['label'] ?? $o['text'] ?? $o['value'] ?? ''),
+        ])->values()->toArray(),
+    ])->values()->toArray();
+@endphp
+
 <!-- Outcome Modal -->
 <div id="outcome-modal" class="fixed inset-0 bg-black/50 z-50 hidden">
     <div class="flex items-center justify-center min-h-screen p-4">
@@ -60,17 +74,21 @@
                             class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
                     </div>
 
-                    <!-- Answer fields -->
+                    <!-- Answer fields (dynamic dropdowns) -->
                     <div id="condition-answer-fields" class="hidden space-y-3">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Answer Question <span class="text-xs text-gray-400">(klaviyo_property)</span></label>
-                            <input type="text" name="answer_question" id="outcome-answer-question" placeholder="e.g. awareness_level"
+                            <select name="answer_question" id="outcome-answer-question" onchange="onOutcomeQuestionChange()"
                                 class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                                <option value="">Select question...</option>
+                            </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Answer Value</label>
-                            <input type="text" name="answer_value" id="outcome-answer-value" placeholder="e.g. brand_new"
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Answer Value <span class="text-xs text-gray-400">(klaviyo_value)</span></label>
+                            <select name="answer_value" id="outcome-answer-value"
                                 class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                                <option value="">Select question first...</option>
+                            </select>
                         </div>
                     </div>
 
@@ -103,11 +121,56 @@
 </div>
 
 <script>
+var outcomeSlides = @json($outcomeSlides);
+
 function switchConditionType(type) {
     document.getElementById('outcome-condition-type').value = type;
     document.getElementById('condition-segment-fields').classList.toggle('hidden', type !== 'segment');
     document.getElementById('condition-score-fields').classList.toggle('hidden', type !== 'score');
     document.getElementById('condition-answer-fields').classList.toggle('hidden', type !== 'answer');
+}
+
+function populateOutcomeQuestionDropdown() {
+    var sel = document.getElementById('outcome-answer-question');
+    // Clear existing options using safe DOM methods
+    while (sel.options.length > 1) {
+        sel.remove(1);
+    }
+    outcomeSlides.forEach(function(slide) {
+        var opt = document.createElement('option');
+        opt.value = slide.klaviyo_property;
+        opt.textContent = slide.label;
+        sel.appendChild(opt);
+    });
+}
+
+function onOutcomeQuestionChange() {
+    var questionProp = document.getElementById('outcome-answer-question').value;
+    var valueSel = document.getElementById('outcome-answer-value');
+
+    // Clear existing options using safe DOM methods
+    while (valueSel.options.length > 0) {
+        valueSel.remove(0);
+    }
+
+    // Add default option
+    var defaultOpt = document.createElement('option');
+    defaultOpt.value = '';
+    defaultOpt.textContent = questionProp ? 'Select answer...' : 'Select question first...';
+    valueSel.appendChild(defaultOpt);
+
+    if (!questionProp) return;
+
+    // Find matching slide and populate value options
+    var slide = outcomeSlides.find(function(s) { return s.klaviyo_property === questionProp; });
+    if (slide && slide.options) {
+        slide.options.forEach(function(o) {
+            var opt = document.createElement('option');
+            opt.value = o.value;
+            opt.textContent = o.label + (o.value !== o.label ? ' (' + o.value + ')' : '');
+            valueSel.appendChild(opt);
+        });
+    }
 }
 
 function showAddOutcome() {
@@ -121,10 +184,13 @@ function showAddOutcome() {
     document.getElementById('outcome-segment').value = '';
     document.getElementById('outcome-min-score').value = '0';
     document.getElementById('outcome-answer-question').value = '';
-    document.getElementById('outcome-answer-value').value = '';
     document.getElementById('outcome-headline').value = '';
     document.getElementById('outcome-body').value = '';
     document.getElementById('outcome-redirect-url').value = '';
+
+    // Populate question dropdown and reset value dropdown
+    populateOutcomeQuestionDropdown();
+    onOutcomeQuestionChange();
 
     // Reset radio buttons and hide all condition fields
     var radios = document.querySelectorAll('input[name="condition_type_radio"]');
@@ -149,11 +215,15 @@ function editOutcome(id, outcomeData) {
     document.getElementById('outcome-name').value = outcomeData.name || '';
     document.getElementById('outcome-segment').value = conditions.segment || '';
     document.getElementById('outcome-min-score').value = conditions.min_score || 0;
-    document.getElementById('outcome-answer-question').value = conditions.question || '';
-    document.getElementById('outcome-answer-value').value = conditions.value || '';
     document.getElementById('outcome-headline').value = outcomeData.result_title || '';
     document.getElementById('outcome-body').value = outcomeData.result_message || '';
     document.getElementById('outcome-redirect-url').value = outcomeData.redirect_url || '';
+
+    // Populate question dropdown, set value, then populate value dropdown
+    populateOutcomeQuestionDropdown();
+    document.getElementById('outcome-answer-question').value = conditions.question || '';
+    onOutcomeQuestionChange();
+    document.getElementById('outcome-answer-value').value = conditions.value || '';
 
     // Set the correct radio button and show matching fields
     var radios = document.querySelectorAll('input[name="condition_type_radio"]');

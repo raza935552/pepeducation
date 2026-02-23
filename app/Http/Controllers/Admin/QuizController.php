@@ -106,11 +106,47 @@ class QuizController extends Controller
         $newQuiz->completions_count = 0;
         $newQuiz->save();
 
-        // Duplicate questions
-        foreach ($quiz->questions as $question) {
+        // Duplicate questions and build old→new ID mapping
+        $idMap = [];
+        foreach ($quiz->questions()->orderBy('order')->get() as $question) {
             $newQuestion = $question->replicate();
             $newQuestion->quiz_id = $newQuiz->id;
             $newQuestion->save();
+            $idMap[$question->id] = $newQuestion->id;
+        }
+
+        // Remap skip_to_question in options and question_id in show_conditions
+        foreach ($newQuiz->questions as $newQuestion) {
+            $changed = false;
+
+            // Remap skip_to_question inside options JSON
+            $options = $newQuestion->options ?? [];
+            foreach ($options as &$option) {
+                if (!empty($option['skip_to_question']) && isset($idMap[$option['skip_to_question']])) {
+                    $option['skip_to_question'] = $idMap[$option['skip_to_question']];
+                    $changed = true;
+                }
+            }
+            unset($option);
+
+            // Remap question_id inside show_conditions JSON
+            $showConditions = $newQuestion->show_conditions;
+            if (!empty($showConditions['conditions'])) {
+                foreach ($showConditions['conditions'] as &$cond) {
+                    if (!empty($cond['question_id']) && isset($idMap[$cond['question_id']])) {
+                        $cond['question_id'] = $idMap[$cond['question_id']];
+                        $changed = true;
+                    }
+                }
+                unset($cond);
+            }
+
+            if ($changed) {
+                $newQuestion->update([
+                    'options' => $options,
+                    'show_conditions' => $showConditions,
+                ]);
+            }
         }
 
         // Duplicate outcomes

@@ -28,6 +28,73 @@ class QuizQuestion extends Model
         self::SLIDE_BRIDGE,
     ];
 
+    // Predefined marketing/Klaviyo segmentation tags for answer options
+    public const OPTION_TAGS = [
+        // Health Goal Interest
+        'interested_weight_loss',
+        'interested_muscle_growth',
+        'interested_anti_aging',
+        'interested_cognitive',
+        'interested_sleep',
+        'interested_injury_recovery',
+        'interested_general_wellness',
+        'interested_immune',
+        'interested_sexual_health',
+        'interested_gut_health',
+        // Experience Level
+        'beginner',
+        'intermediate',
+        'advanced',
+        // Purchase Intent
+        'ready_to_buy',
+        'researching',
+        'just_curious',
+        // Funnel Signals
+        'high_intent',
+        'needs_education',
+        'price_sensitive',
+        'wants_to_stack',
+        // Barrier / Hesitation
+        'barrier_education',
+        'barrier_sourcing',
+        'barrier_safety',
+        'barrier_needles',
+        'hesitation_too_many_choices',
+        'hesitation_vendor_trust',
+        'hesitation_hype_vs_real',
+        // Vendor Preference
+        'prefers_telehealth',
+        'prefers_research_grade',
+        'prefers_affordable',
+        'values_lab_reports',
+        'values_reviews',
+        // Stacking Behavior
+        'wants_to_add',
+        'wants_to_upgrade',
+        'wants_fresh_start',
+        'just_browsing',
+        // Product Interest
+        'interested_bpc157',
+        'interested_tirzepatide',
+        'interested_ghk_cu',
+        'interested_semaglutide',
+        'interested_pt141',
+        'interested_epithalon',
+        'interested_tb500',
+        'interested_semax',
+        'interested_dsip',
+        'interested_thymosin_alpha1',
+        'interested_cjc1295_ipamorelin',
+        // Demographics
+        'male',
+        'female',
+        'age_18_29',
+        'age_30_39',
+        'age_40_49',
+        'age_50_59',
+        'age_60_plus',
+    ];
+
     // Slide types that collect user input (need answer storage)
     public const INPUT_SLIDE_TYPES = [
         self::SLIDE_QUESTION,

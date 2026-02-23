@@ -146,6 +146,8 @@ class QuizQuestionController extends Controller
             $rules['options.*.score_mof'] = 'nullable|integer';
             $rules['options.*.score_bof'] = 'nullable|integer';
             $rules['options.*.skip_to_question'] = 'nullable|integer';
+            $rules['options.*.tags'] = 'nullable|array';
+            $rules['options.*.tags.*'] = 'nullable|string|max:100';
         } else {
             $rules['options'] = 'nullable|array';
         }

@@ -1,5 +1,8 @@
 <!-- Question / Slide Modal -->
 @php
+    // Available tags for option tagging (Klaviyo segmentation)
+    $availableTagsJson = json_encode(\App\Models\QuizQuestion::OPTION_TAGS);
+
     // Build slide list for skip_to and show_conditions dropdowns
     // IDs are cast to string for consistent Alpine x-model matching
     $allSlides = $quiz->questions->sortBy('order')->values();
@@ -90,31 +93,45 @@
                         <p class="text-xs text-gray-400 mb-2">Add at least 2 options. <strong>Label</strong> = text shown to the user. <strong>Value</strong> = internal key (auto-generated from label if blank). <strong>TOF/MOF/BOF</strong> = funnel segment scores (higher score = stronger signal for that segment).</p>
                         <template x-for="(option, index) in question.options" :key="index">
                             <div class="border rounded-lg p-3 mb-2 bg-gray-50/50">
-                                <div class="flex gap-2 items-start">
-                                    <input type="text" x-model="option.label" placeholder="Label (shown to user)" required
-                                        title="The answer text displayed to the quiz taker"
-                                        class="flex-1 rounded-lg border-gray-300 text-sm">
-                                    <input type="text" x-model="option.value" placeholder="Value (key)"
-                                        title="Internal value stored in the database. Auto-generated from label if left blank"
-                                        class="w-24 rounded-lg border-gray-300 text-sm">
-                                    <input type="number" x-model.number="option.score_tof" placeholder="TOF"
-                                        title="Top of Funnel score: Higher = user is early-stage (just learning, curious)"
-                                        class="w-16 rounded-lg border-gray-300 text-sm">
-                                    <input type="number" x-model.number="option.score_mof" placeholder="MOF"
-                                        title="Middle of Funnel score: Higher = user is researching and comparing options"
-                                        class="w-16 rounded-lg border-gray-300 text-sm">
-                                    <input type="number" x-model.number="option.score_bof" placeholder="BOF"
-                                        title="Bottom of Funnel score: Higher = user is ready to buy or take action"
-                                        class="w-16 rounded-lg border-gray-300 text-sm">
-                                    <button type="button" @click="removeOption(index)" class="text-red-500 p-2" title="Remove this option">
+                                <!-- Row 1: Label + Value + Delete -->
+                                <div class="flex gap-2 items-end">
+                                    <div class="flex-1">
+                                        <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Answer Text <span class="font-normal text-gray-400">— what the quiz taker sees</span></label>
+                                        <input type="text" x-model="option.label" placeholder="e.g. Weight Loss" required
+                                            class="w-full rounded-lg border-gray-300 text-sm">
+                                    </div>
+                                    <div class="w-28">
+                                        <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Value <span class="font-normal text-gray-400">— auto from label</span></label>
+                                        <input type="text" x-model="option.value" placeholder="weight_loss"
+                                            class="w-full rounded-lg border-gray-300 text-sm">
+                                    </div>
+                                    <button type="button" @click="removeOption(index)" class="text-red-500 p-2 mb-0.5" title="Remove this option">
                                         <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                         </svg>
                                     </button>
                                 </div>
-                                <!-- Skip-to dropdown per option -->
+                                <!-- Row 2: Funnel Scores -->
+                                <div class="flex gap-2 mt-2">
+                                    <div class="w-20">
+                                        <label class="block text-[10px] font-medium text-gray-500 mb-0.5">TOF <span class="font-normal text-gray-400">— just learning</span></label>
+                                        <input type="number" x-model.number="option.score_tof" placeholder="0"
+                                            class="w-full rounded-lg border-gray-300 text-sm">
+                                    </div>
+                                    <div class="w-20">
+                                        <label class="block text-[10px] font-medium text-gray-500 mb-0.5">MOF <span class="font-normal text-gray-400">— researching</span></label>
+                                        <input type="number" x-model.number="option.score_mof" placeholder="0"
+                                            class="w-full rounded-lg border-gray-300 text-sm">
+                                    </div>
+                                    <div class="w-20">
+                                        <label class="block text-[10px] font-medium text-gray-500 mb-0.5">BOF <span class="font-normal text-gray-400">— ready to buy</span></label>
+                                        <input type="number" x-model.number="option.score_bof" placeholder="0"
+                                            class="w-full rounded-lg border-gray-300 text-sm">
+                                    </div>
+                                </div>
+                                <!-- Row 3: Skip-to -->
                                 <div class="mt-2 flex items-center gap-2">
-                                    <label class="text-xs text-gray-500 whitespace-nowrap" title="When a user selects this option, jump directly to a specific slide instead of going to the next one in order">Skip to:</label>
+                                    <label class="text-xs text-gray-500 whitespace-nowrap">Skip to:</label>
                                     <select x-model="option.skip_to_question"
                                         x-init="$nextTick(() => { if(option.skip_to_question) $el.value = option.skip_to_question })"
                                         class="flex-1 rounded border-gray-300 text-xs py-1">
@@ -124,7 +141,36 @@
                                         </template>
                                     </select>
                                 </div>
-                                <p class="text-xs text-gray-400 mt-1" x-show="option.skip_to_question">This option will jump directly to the selected slide, skipping everything in between.</p>
+                                <p class="text-[10px] text-gray-400 mt-0.5" x-show="option.skip_to_question">Jumps to selected slide, skipping everything in between.</p>
+                                <!-- Row 4: Tags (searchable multi-select) -->
+                                <div class="mt-2" x-data="{ tagSearch: '', tagOpen: false }">
+                                    <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Tags <span class="font-normal text-gray-400">— Klaviyo segmentation labels for this answer</span></label>
+                                    <!-- Selected tags as chips -->
+                                    <div class="flex flex-wrap gap-1 mb-1" x-show="option.tags && option.tags.length > 0">
+                                        <template x-for="(tag, ti) in (option.tags || [])" :key="ti">
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded text-xs">
+                                                <span x-text="tag"></span>
+                                                <button type="button" @click="option.tags.splice(ti, 1)" class="hover:text-red-500">&times;</button>
+                                            </span>
+                                        </template>
+                                    </div>
+                                    <!-- Search input -->
+                                    <div class="relative">
+                                        <input type="text" x-model="tagSearch" @focus="tagOpen = true" @click.away="tagOpen = false"
+                                            placeholder="Search tags..." class="w-full rounded border-gray-300 text-xs py-1">
+                                        <!-- Dropdown -->
+                                        <div x-show="tagOpen" x-cloak class="absolute z-20 w-full mt-1 bg-white border rounded shadow-lg max-h-40 overflow-y-auto">
+                                            <template x-for="t in availableTags.filter(t => t.includes(tagSearch.toLowerCase()) && !(option.tags || []).includes(t))" :key="t">
+                                                <button type="button"
+                                                    @mousedown.prevent="if(!option.tags) option.tags = []; option.tags.push(t); tagSearch = '';"
+                                                    class="block w-full text-left px-3 py-1.5 text-xs hover:bg-indigo-50 cursor-pointer"
+                                                    x-text="t"></button>
+                                            </template>
+                                            <div x-show="availableTags.filter(t => t.includes(tagSearch.toLowerCase()) && !(option.tags || []).includes(t)).length === 0"
+                                                class="px-3 py-2 text-xs text-gray-400">No matching tags</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </template>
                         <button type="button" @click="addOption" class="text-sm text-brand-gold hover:underline">+ Add Option</button>
@@ -308,12 +354,13 @@ function questionModal() {
         isEdit: false,
         formAction: '{{ route("admin.quizzes.questions.store", $quiz) }}',
         allSlides: {!! $slidesJson !!},
+        availableTags: {!! $availableTagsJson !!},
         question: {
             slide_type: 'question',
             question_text: '',
             question_type: 'single_choice',
             klaviyo_property: '',
-            options: [{ label: '', value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '' }],
+            options: [{ label: '', value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [] }],
             content_title: '',
             content_body: '',
             content_source: '',
@@ -355,7 +402,7 @@ function questionModal() {
             bridge: 'Numbered steps or bullet points explaining what the user should do next. Builds confidence before the final CTA click.',
         },
         addOption() {
-            this.question.options.push({ label: '', value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '' });
+            this.question.options.push({ label: '', value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [] });
         },
         removeOption(index) {
             this.question.options.splice(index, 1);
@@ -380,7 +427,7 @@ function questionModal() {
                 question_text: '',
                 question_type: 'single_choice',
                 klaviyo_property: '',
-                options: [{ label: '', value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '' }],
+                options: [{ label: '', value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [] }],
                 content_title: '',
                 content_body: '',
                 content_source: '',
@@ -429,6 +476,11 @@ function questionModal() {
                     formData.append(`options[${i}][score_bof]`, opt.score_bof || 0);
                     if (opt.skip_to_question) {
                         formData.append(`options[${i}][skip_to_question]`, opt.skip_to_question);
+                    }
+                    if (opt.tags && opt.tags.length > 0) {
+                        opt.tags.forEach((tag, ti) => {
+                            formData.append(`options[${i}][tags][${ti}]`, tag);
+                        });
                     }
                 });
             }
@@ -499,8 +551,9 @@ function editQuestion(id, questionData) {
                 score_mof: o.score_mof || 0,
                 score_bof: o.score_bof || 0,
                 skip_to_question: o.skip_to_question ? String(o.skip_to_question) : '',
+                tags: o.tags || [],
             }))
-            : [{ label: '', value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '' }],
+            : [{ label: '', value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [] }],
         content_title: questionData.content_title || '',
         content_body: questionData.content_body || '',
         content_source: questionData.content_source || '',

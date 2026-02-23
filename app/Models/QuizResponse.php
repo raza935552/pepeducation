@@ -23,6 +23,7 @@ class QuizResponse extends Model
         'outcome_name',
         'recommended_peptide_id',
         'klaviyo_properties',
+        'tags',
         'email',
         'phone',
         'started_at',
@@ -40,6 +41,7 @@ class QuizResponse extends Model
         'answers' => 'array',
         'navigation_history' => 'array',
         'klaviyo_properties' => 'array',
+        'tags' => 'array',
         'started_at' => 'datetime',
         'completed_at' => 'datetime',
         'synced_to_klaviyo' => 'boolean',
@@ -133,6 +135,10 @@ class QuizResponse extends Model
         $properties['pp_quiz_completed'] = true;
         $properties['pp_quiz_name'] = $this->quiz?->name;
         $properties['pp_segment'] = $this->segment;
+
+        if (!empty($this->tags)) {
+            $properties['pp_tags'] = $this->tags;
+        }
 
         return $properties;
     }
