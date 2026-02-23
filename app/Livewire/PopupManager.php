@@ -29,10 +29,11 @@ class PopupManager extends Component
     {
         $this->popups = Popup::select([
                 'id', 'name', 'slug', 'type', 'design', 'triggers', 'targeting',
-                'headline', 'body', 'button_text', 'image',
+                'headline', 'body', 'button_text', 'image', 'success_message',
+                'form_fields', 'display_rules',
                 'views_count', 'conversions_count', 'dismissals_count',
             ])
-            ->where('is_active', true)
+            ->active()
             ->get()
             ->filter(fn($popup) => $this->isEligible($popup));
     }
@@ -149,7 +150,8 @@ class PopupManager extends Component
         $interactionType = match ($type) {
             'impression' => 'view',
             'conversion' => 'convert',
-            default => $type, // close → dismiss
+            'close' => 'dismiss',
+            default => $type,
         };
 
         PopupInteraction::create([

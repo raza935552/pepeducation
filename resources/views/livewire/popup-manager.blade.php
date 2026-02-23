@@ -47,11 +47,11 @@
                         @endif
 
                         <h2 id="popup-title" class="text-2xl font-bold mb-2" style="color: {{ $this->activePopup->design['text_color'] ?? '#1f2937' }}">
-                            {{ $this->activePopup->design['headline'] ?? $this->activePopup->name }}
+                            {{ $this->activePopup->headline ?? $this->activePopup->name }}
                         </h2>
 
-                        @if($this->activePopup->design['subheadline'] ?? null)
-                            <p class="text-gray-600 mb-6">{{ $this->activePopup->design['subheadline'] }}</p>
+                        @if($this->activePopup->body)
+                            <p class="text-gray-600 mb-6">{{ $this->activePopup->body }}</p>
                         @endif
 
                         @if($this->activePopup->type === 'lead_capture')
@@ -73,7 +73,7 @@
                                     class="w-full py-3 px-6 rounded-lg font-semibold transition-colors disabled:opacity-50"
                                     style="background-color: {{ $this->activePopup->design['button_color'] ?? '#D4A35A' }}; color: {{ $this->activePopup->design['button_text_color'] ?? '#ffffff' }}"
                                 >
-                                    <span wire:loading.remove>{{ $this->activePopup->design['button_text'] ?? 'Subscribe' }}</span>
+                                    <span wire:loading.remove>{{ $this->activePopup->button_text ?? $this->activePopup->design['button_text'] ?? 'Subscribe' }}</span>
                                     <span wire:loading>Submitting...</span>
                                 </button>
                             </form>
@@ -112,7 +112,7 @@
                             </svg>
                         </div>
                         <h3 class="text-xl font-bold mb-2">{{ $this->activePopup->design['success_headline'] ?? 'Thank you!' }}</h3>
-                        <p class="text-gray-600">{{ $this->activePopup->design['success_message'] ?? 'You\'ve been subscribed successfully.' }}</p>
+                        <p class="text-gray-600">{{ $this->activePopup->success_message ?? $this->activePopup->design['success_message'] ?? 'You\'ve been subscribed successfully.' }}</p>
                     </div>
                 @endif
             </div>
@@ -134,20 +134,20 @@
                 const triggers = config.triggers || {};
 
                 // Time-based trigger
-                if (triggers.delay_seconds) {
+                if (triggers.time_delay) {
                     setTimeout(() => {
                         if (!triggeredPopups.has(config.id)) {
                             triggeredPopups.add(config.id);
                             $wire.showPopup(config.id);
                         }
-                    }, triggers.delay_seconds * 1000);
+                    }, triggers.time_delay * 1000);
                 }
 
                 // Scroll-based trigger
-                if (triggers.scroll_percent) {
+                if (triggers.scroll_depth) {
                     const checkScroll = () => {
                         const scrolled = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
-                        if (scrolled >= triggers.scroll_percent && !triggeredPopups.has(config.id)) {
+                        if (scrolled >= triggers.scroll_depth && !triggeredPopups.has(config.id)) {
                             triggeredPopups.add(config.id);
                             $wire.showPopup(config.id);
                             window.removeEventListener('scroll', checkScroll);
