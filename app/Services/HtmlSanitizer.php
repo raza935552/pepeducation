@@ -21,9 +21,9 @@ class HtmlSanitizer
             'strong[id|style]', 'em[id|style]', 'b[id]', 'i[id]', 'u[id]', 's[id]', 'sub', 'sup', 'mark',
             'a[id|href|target|rel|title|class|style]',
             'img[id|src|alt|title|width|height|class|loading|style]',
-            'ul[id|style]', 'ol[id|style]', 'li[id|style]',
+            'ul[id|class|style]', 'ol[id|class|style]', 'li[id|class|style]',
             'blockquote[id|style]', 'pre[id|style]', 'code[id]',
-            'table[id|style]', 'thead[id]', 'tbody[id]', 'tfoot[id]', 'tr[id|style]', 'th[id|colspan|rowspan|style]', 'td[id|colspan|rowspan|style]',
+            'table[id|class|style]', 'thead[id|class]', 'tbody[id|class]', 'tfoot[id|class]', 'tr[id|class|style]', 'th[id|class|colspan|rowspan|style]', 'td[id|class|colspan|rowspan|style]',
             'div[class|id|style]', 'span[id|class|style]', 'section[class|id|style]',
             'figure[id|style]', 'figcaption[id|style]', 'picture[id]', 'source[id|srcset|media|type]',
             'video[id|src|controls|autoplay|muted|loop|poster|width|height|class|style]',
@@ -73,7 +73,7 @@ class HtmlSanitizer
 
         // Register HTML5 elements not in HTMLPurifier's default definition
         $config->set('HTML.DefinitionID', 'pepprofesor-html5');
-        $config->set('HTML.DefinitionRev', 4);
+        $config->set('HTML.DefinitionRev', 5);
         if ($def = $config->maybeGetRawHTMLDefinition()) {
             // HTML5 inline elements
             $def->addElement('mark', 'Inline', 'Inline', 'Common');
