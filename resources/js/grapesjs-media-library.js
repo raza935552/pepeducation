@@ -72,6 +72,7 @@ export default function registerMediaLibrary(editor) {
 
         try {
             const r = await fetch('/admin/media', { headers: { Accept: 'application/json' } });
+            if (!r.ok) throw new Error(r.status);
             const data = await r.json();
             renderMedia(data.media || []);
         } catch {

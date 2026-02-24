@@ -15,6 +15,7 @@ class Page extends Model
         'slug',
         'content',
         'html',
+        'css',
         'meta_title',
         'meta_description',
         'featured_image',
@@ -90,5 +91,39 @@ class Page extends Model
         }
 
         return app(HtmlSanitizer::class)->sanitize($this->html);
+    }
+
+    /**
+     * Return CSS with dangerous at-rules and expressions stripped.
+     * Prevents @import data exfiltration, expression() XSS, and style-tag breakout.
+     */
+    public function sanitizedCss(): string
+    {
+        if (!$this->css) {
+            return '';
+        }
+
+        $css = $this->css;
+
+        // Strip </style> breakout attempts (case-insensitive)
+        $css = preg_replace('#</\s*style\s*>#i', '', $css);
+
+        // Strip @import rules (data exfiltration vector)
+        $css = preg_replace('/@import\b[^;]*;?/i', '', $css);
+
+        // Strip @charset (not needed, can cause issues)
+        $css = preg_replace('/@charset\b[^;]*;?/i', '', $css);
+
+        // Strip expression() and similar IE/legacy script vectors
+        $css = preg_replace('/expression\s*\(/i', '(', $css);
+        $css = preg_replace('/-moz-binding\s*:/i', '-blocked:', $css);
+
+        // Strip javascript: and vbscript: URL schemes in url()
+        $css = preg_replace('/url\s*\(\s*["\']?\s*(javascript|vbscript)\s*:/i', 'url(blocked:', $css);
+
+        // Strip behavior: property (IE HTCs)
+        $css = preg_replace('/behavior\s*:/i', '-blocked:', $css);
+
+        return $css;
     }
 }

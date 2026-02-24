@@ -645,7 +645,8 @@ document.addEventListener('DOMContentLoaded', function() {
             meta_description: document.getElementById('page-meta-description').value,
             featured_image: document.getElementById('page-featured-image').value,
             content: JSON.stringify(data.projectData),
-            html: data.html + '<style>' + data.css + '</style>',
+            html: data.html,
+            css: data.css,
         };
 
         const url = isEdit ? `/admin/pages/${pageId}` : '/admin/pages';

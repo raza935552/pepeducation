@@ -647,7 +647,7 @@ function cleanExportedCss(css) {
 function cleanExportedHtml(html) {
     html = html.replace(/\s*data-gjs-type="[^"]*"/g, '');
     html = html.replace(/\s*data-highlightable="[^"]*"/g, '');
-    html = html.replace(/\s*id="i[a-z0-9]+"/g, '');
+    // Keep GrapesJS-generated IDs — CSS rules reference them via selectors
     return html;
 }
 

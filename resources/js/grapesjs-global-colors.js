@@ -78,7 +78,7 @@ export default function registerGlobalColors(editor) {
             btn.addEventListener('click', () => applyColor(colors[btn.dataset.index].hex));
         });
         box.querySelectorAll('.gc-del').forEach(btn => {
-            btn.addEventListener('click', e => { e.stopPropagation(); removeColor(parseInt(btn.dataset.del)); });
+            btn.addEventListener('click', e => { e.stopPropagation(); removeColor(parseInt(btn.dataset.del, 10)); });
         });
     }
 

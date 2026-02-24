@@ -14,31 +14,45 @@ class HtmlSanitizer
         $config = HTMLPurifier_Config::createDefault();
 
         // Allow safe HTML tags for page builder content
+        // Note: style attribute is needed on most tags for GrapesJS inline styles
         $config->set('HTML.Allowed', implode(',', [
-            'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-            'p', 'br', 'hr',
-            'strong', 'em', 'b', 'i', 'u', 's', 'sub', 'sup', 'mark',
-            'a[href|target|rel|title|class]',
-            'img[src|alt|title|width|height|class|loading]',
-            'ul', 'ol', 'li',
-            'blockquote', 'pre', 'code',
-            'table', 'thead', 'tbody', 'tfoot', 'tr', 'th[colspan|rowspan]', 'td[colspan|rowspan]',
-            'div[class|id|style]', 'span[class|style]', 'section[class|id|style]',
-            'figure', 'figcaption', 'picture', 'source[srcset|media|type]',
-            'video[src|controls|autoplay|muted|loop|poster|width|height|class]',
-            'audio[src|controls|class]',
+            'h1[id|style]', 'h2[id|style]', 'h3[id|style]', 'h4[id|style]', 'h5[id|style]', 'h6[id|style]',
+            'p[id|style]', 'br', 'hr[id|style]',
+            'strong[id|style]', 'em[id|style]', 'b[id]', 'i[id]', 'u[id]', 's[id]', 'sub', 'sup', 'mark',
+            'a[id|href|target|rel|title|class|style]',
+            'img[id|src|alt|title|width|height|class|loading|style]',
+            'ul[id|style]', 'ol[id|style]', 'li[id|style]',
+            'blockquote[id|style]', 'pre[id|style]', 'code[id]',
+            'table[id|style]', 'thead[id]', 'tbody[id]', 'tfoot[id]', 'tr[id|style]', 'th[id|colspan|rowspan|style]', 'td[id|colspan|rowspan|style]',
+            'div[class|id|style]', 'span[id|class|style]', 'section[class|id|style]',
+            'figure[id|style]', 'figcaption[id|style]', 'picture[id]', 'source[id|srcset|media|type]',
+            'video[id|src|controls|autoplay|muted|loop|poster|width|height|class|style]',
+            'audio[id|src|controls|class|style]',
         ]));
 
         // Allow safe CSS properties for page builder styling
         $config->set('CSS.AllowedProperties', implode(',', [
-            'color', 'background-color', 'background',
+            'color', 'background-color', 'background', 'background-image', 'background-size', 'background-position', 'background-repeat',
             'font-size', 'font-weight', 'font-style', 'font-family',
             'text-align', 'text-decoration', 'text-transform', 'line-height', 'letter-spacing',
             'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
             'padding', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
-            'border', 'border-radius', 'border-color', 'border-width', 'border-style',
+            'border', 'border-top', 'border-right', 'border-bottom', 'border-left',
+            'border-radius', 'border-color', 'border-width', 'border-style',
             'width', 'max-width', 'min-width', 'height', 'max-height', 'min-height',
             'display', 'opacity',
+            // Flexbox (used by all GrapesJS blocks)
+            'flex', 'flex-direction', 'flex-wrap', 'flex-grow', 'flex-shrink', 'flex-basis',
+            'align-items', 'align-self', 'justify-content', 'gap', 'order',
+            // Grid
+            'grid-template-columns', 'grid-template-rows', 'grid-column', 'grid-row', 'grid-gap',
+            // Positioning & overflow
+            'position', 'top', 'right', 'bottom', 'left', 'z-index', 'overflow',
+            // Visual
+            'box-shadow', 'object-fit', 'cursor', 'list-style', 'list-style-type',
+            'vertical-align', 'white-space', 'word-break', 'overflow-wrap',
+            // Transitions
+            'transition', 'transform',
         ]));
 
         // Allow data URIs for inline images (base64)
@@ -46,6 +60,9 @@ class HtmlSanitizer
 
         // Allow target="_blank" on links
         $config->set('Attr.AllowedFrameTargets', ['_blank']);
+
+        // Allow id attributes (required for GrapesJS CSS selectors)
+        $config->set('Attr.EnableID', true);
 
         // Set serializer path for caching
         $cachePath = storage_path('app/htmlpurifier');
@@ -56,7 +73,7 @@ class HtmlSanitizer
 
         // Register HTML5 elements not in HTMLPurifier's default definition
         $config->set('HTML.DefinitionID', 'pepprofesor-html5');
-        $config->set('HTML.DefinitionRev', 2);
+        $config->set('HTML.DefinitionRev', 4);
         if ($def = $config->maybeGetRawHTMLDefinition()) {
             // HTML5 inline elements
             $def->addElement('mark', 'Inline', 'Inline', 'Common');

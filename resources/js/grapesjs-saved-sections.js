@@ -41,7 +41,10 @@ export default function registerSavedSections(editor) {
                 },
                 body: JSON.stringify({ name: name.trim(), content }),
             })
-            .then(r => r.json())
+            .then(r => {
+                if (!r.ok) throw new Error(r.status);
+                return r.json();
+            })
             .then(data => {
                 if (data.success) {
                     window.showEditorToast?.('Section saved!', 'success');
@@ -55,6 +58,7 @@ export default function registerSavedSections(editor) {
     window.openSavedSections = async function() {
         try {
             const r = await fetch('/admin/sections', { headers: { Accept: 'application/json' } });
+            if (!r.ok) throw new Error(r.status);
             const data = await r.json();
             showSectionsModal(data.sections || []);
         } catch {
@@ -103,6 +107,7 @@ export default function registerSavedSections(editor) {
     async function loadSection(id, modal) {
         try {
             const r = await fetch(`/admin/sections/${id}`, { headers: { Accept: 'application/json' } });
+            if (!r.ok) throw new Error(r.status);
             const data = await r.json();
             if (data.section?.content?.html) {
                 const parent = editor.getSelected() || editor.getWrapper();
@@ -122,10 +127,11 @@ export default function registerSavedSections(editor) {
     async function deleteSection(id, modal) {
         if (!confirm('Delete this section?')) return;
         try {
-            await fetch(`/admin/sections/${id}`, {
+            const r = await fetch(`/admin/sections/${id}`, {
                 method: 'DELETE',
                 headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
             });
+            if (!r.ok) throw new Error(r.status);
             window.openSavedSections();
         } catch {
             window.showEditorToast?.('Delete failed', 'error');

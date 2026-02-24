@@ -36,6 +36,7 @@ export default function registerPageAnalytics(editor) {
 
         try {
             const r = await fetch(`/admin/pages/${pageId}/analytics`, { headers: { Accept: 'application/json' } });
+            if (!r.ok) throw new Error(r.status);
             const data = await r.json();
             renderAnalytics(data);
         } catch {

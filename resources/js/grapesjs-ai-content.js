@@ -78,6 +78,7 @@ export default function registerAiContent(editor) {
                         headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
                         body: JSON.stringify({ type, prompt, tone }),
                     });
+                    if (!r.ok) throw new Error(r.status);
                     const data = await r.json();
                     if (data.content) {
                         panel.querySelector('#pp-ai-output').textContent = data.content;

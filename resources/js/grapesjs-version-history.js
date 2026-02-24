@@ -38,6 +38,7 @@ export default function registerVersionHistory(editor) {
 
         try {
             const r = await fetch(`${getBaseUrl()}/${pageId}/versions`, { headers: { Accept: 'application/json' } });
+            if (!r.ok) throw new Error(r.status);
             const data = await r.json();
             renderVersions(data.versions || [], pageId, modal);
         } catch {
@@ -76,6 +77,7 @@ export default function registerVersionHistory(editor) {
                 method: 'POST',
                 headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
             });
+            if (!r.ok) throw new Error(r.status);
             const data = await r.json();
             if (data.success) {
                 window.showEditorToast?.(data.message, 'success');
