@@ -76,6 +76,70 @@
             @endswitch
         @endif
 
+        {{-- Save Progress Indicator --}}
+        @if($currentStep > 0 && $this->currentSlideType !== 'loading')
+            <div
+                class="flex justify-center mt-4"
+                x-data="{ state: 'idle', timer: null }"
+                x-init="
+                    Livewire.hook('commit', ({ succeed }) => {
+                        state = 'saving';
+                        clearTimeout(timer);
+                        succeed(() => {
+                            state = 'saved';
+                            timer = setTimeout(() => state = 'idle', 3000);
+                        });
+                    })
+                "
+            >
+                {{-- Saving... --}}
+                <span
+                    x-show="state === 'saving'"
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 scale-95"
+                    x-transition:enter-end="opacity-100 scale-100"
+                    class="inline-flex items-center gap-1.5 text-xs text-gray-400"
+                >
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                    </span>
+                    Saving...
+                </span>
+
+                {{-- Saved --}}
+                <span
+                    x-show="state === 'saved'"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 scale-95"
+                    x-transition:enter-end="opacity-100 scale-100"
+                    x-transition:leave="transition ease-in duration-500"
+                    x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0"
+                    class="inline-flex items-center gap-1.5 text-xs text-gray-400"
+                >
+                    <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Progress saved
+                </span>
+
+                {{-- Idle (muted) --}}
+                <span
+                    x-show="state === 'idle'"
+                    x-transition:enter="transition ease-in duration-700"
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100"
+                    class="inline-flex items-center gap-1.5 text-xs text-gray-300"
+                >
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    Your progress is saved
+                </span>
+            </div>
+        @endif
+
     @else
         <!-- Results -->
         <div class="card p-8 text-center" wire:key="results">
