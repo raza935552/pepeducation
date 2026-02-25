@@ -151,8 +151,21 @@ window.initGrapesJS = function(config = {}) {
                 console.warn('GrapesJS loadProjectData deferred retry:', e.message);
                 setTimeout(() => editor.loadProjectData(config.projectData), 100);
             }
+
+            // Inject page base CSS into the canvas iframe so class-based styles
+            // (e.g. .pfd-tier, .pfd-compare) render correctly in the editor.
+            // GrapesJS only tracks component inline styles; the base CSS from
+            // the database would otherwise be invisible inside the canvas.
+            injectBaseCssIntoCanvas(editor, config.pageBaseCss);
+        });
+    } else if (config.pageBaseCss) {
+        editor.onReady(() => {
+            injectBaseCssIntoCanvas(editor, config.pageBaseCss);
         });
     }
+
+    // Store base CSS globally so getGrapesJSData() can preserve it on save
+    window.__pageBaseCss = extractBaseCss(config.pageBaseCss || '');
 
     // Handle image upload errors
     editor.on('asset:upload:error', (error) => {
@@ -625,6 +638,62 @@ function addCustomBlocks(editor) {
     });
 }
 
+// ===== BASE CSS PRESERVATION =====
+// Comment markers used to separate seeder/base CSS from GrapesJS-managed CSS.
+// On save, we prepend the base CSS (wrapped in markers) before editor CSS so
+// the DB `css` column always retains class-based styles the editor can't track.
+const BASE_CSS_START = '/* PAGE_BASE_CSS_START */';
+const BASE_CSS_END   = '/* PAGE_BASE_CSS_END */';
+
+/**
+ * Extract the "base CSS" portion from a stored CSS string.
+ * - If the string contains our markers, return only the content between them.
+ * - Otherwise treat the entire string as base CSS (first load from seeder).
+ */
+function extractBaseCss(storedCss) {
+    if (!storedCss) return '';
+    const startIdx = storedCss.indexOf(BASE_CSS_START);
+    const endIdx   = storedCss.indexOf(BASE_CSS_END);
+    if (startIdx !== -1 && endIdx !== -1) {
+        return storedCss.substring(startIdx + BASE_CSS_START.length, endIdx).trim();
+    }
+    // No markers — entire CSS is base CSS (seeder's first save)
+    return storedCss.trim();
+}
+
+/**
+ * Inject a <style> tag with base CSS into the GrapesJS canvas iframe <head>
+ * so that class-based styles (e.g. .pfd-tier, .pfd-compare) render correctly
+ * while editing.  Uses a stable id so repeated calls replace rather than stack.
+ */
+function injectBaseCssIntoCanvas(editor, css) {
+    if (!css) return;
+    const baseCss = extractBaseCss(css);
+    if (!baseCss) return;
+
+    const frame = editor.Canvas.getFrames()[0];
+    if (!frame) return;
+
+    const doc = frame.view?.getEl()?.contentDocument
+             || frame.view?.getWindow()?.document;
+    if (!doc) return;
+
+    let styleEl = doc.getElementById('page-base-css');
+    if (!styleEl) {
+        styleEl = doc.createElement('style');
+        styleEl.id = 'page-base-css';
+        doc.head.appendChild(styleEl);
+    }
+    styleEl.textContent = baseCss;
+}
+
+// Merge base CSS with editor CSS for saving.
+// Returns: markers + baseCss + markers + editorCss
+function mergeBaseCssForSave(baseCss, editorCss) {
+    if (!baseCss) return editorCss || '';
+    return `${BASE_CSS_START}\n${baseCss}\n${BASE_CSS_END}\n${editorCss || ''}`;
+}
+
 // Helper function to clean CSS - removes editor-only placeholder styles
 function cleanExportedCss(css) {
     // Remove dashed border placeholder styles (editor visual aids)
@@ -657,11 +726,15 @@ window.getGrapesJSData = function() {
 
     const editor = window.gjsEditor;
     const rawCss = editor.getCss();
-    const cleanedCss = cleanExportedCss(rawCss);
+    const editorCss = cleanExportedCss(rawCss);
+
+    // Preserve base CSS (class-based styles from seeders) that GrapesJS doesn't track
+    const baseCss = window.__pageBaseCss || '';
+    const mergedCss = mergeBaseCssForSave(baseCss, editorCss);
 
     return {
         html: cleanExportedHtml(editor.getHtml()),
-        css: cleanedCss,
+        css: mergedCss,
         projectData: editor.getProjectData(),
     };
 };

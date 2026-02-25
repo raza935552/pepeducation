@@ -389,6 +389,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const pageId = {{ $page->id ?? 'null' }};
     const isEdit = pageId !== null;
     const projectData = @json($page->content ?? null);
+    const pageBaseCss = @json($page->css ?? '');
     let allTemplates = [];
     let editor = null;
     let autosave = null;
@@ -406,6 +407,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize GrapesJS
     editor = window.initGrapesJS({
         projectData: projectData,
+        pageBaseCss: pageBaseCss,
         assets: [],
     });
 
