@@ -79,64 +79,82 @@
         {{-- Save Progress Indicator --}}
         @if($currentStep > 0 && $this->currentSlideType !== 'loading')
             <div
-                class="flex justify-center mt-4"
-                x-data="{ state: 'idle', timer: null }"
+                class="flex justify-center mt-6"
+                x-data="{
+                    state: 'idle',
+                    timer: null,
+                    count: 0,
+                    msgs: [
+                        'Nice choice! Locked in.',
+                        'Got it! Moving right along.',
+                        'Noted! You are on a roll.',
+                        'Saved! Keep going, almost there.',
+                        'Great pick! Progress secured.',
+                        'Boom! Answer saved.',
+                        'Locked and loaded!',
+                        'Smart choice! All saved.',
+                    ],
+                    get funMsg() { return this.msgs[this.count % this.msgs.length]; }
+                }"
                 x-init="
                     Livewire.hook('commit', ({ succeed }) => {
                         state = 'saving';
                         clearTimeout(timer);
                         succeed(() => {
+                            count++;
                             state = 'saved';
-                            timer = setTimeout(() => state = 'idle', 3000);
+                            timer = setTimeout(() => state = 'idle', 3500);
                         });
                     })
                 "
             >
                 {{-- Saving... --}}
-                <span
+                <div
                     x-show="state === 'saving'"
-                    x-transition:enter="transition ease-out duration-200"
-                    x-transition:enter-start="opacity-0 scale-95"
-                    x-transition:enter-end="opacity-100 scale-100"
-                    class="inline-flex items-center gap-1.5 text-xs text-gray-400"
+                    x-transition:enter="transition ease-out duration-150"
+                    x-transition:enter-start="opacity-0 translate-y-1"
+                    x-transition:enter-end="opacity-100 translate-y-0"
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50/80 border border-amber-200/50 backdrop-blur-sm"
                 >
                     <span class="relative flex h-2 w-2">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
                     </span>
-                    Saving...
-                </span>
+                    <span class="text-xs font-medium text-amber-700 tracking-wide">Saving...</span>
+                </div>
 
-                {{-- Saved --}}
-                <span
+                {{-- Saved (fun rotating messages) --}}
+                <div
                     x-show="state === 'saved'"
                     x-transition:enter="transition ease-out duration-300"
-                    x-transition:enter-start="opacity-0 scale-95"
-                    x-transition:enter-end="opacity-100 scale-100"
-                    x-transition:leave="transition ease-in duration-500"
+                    x-transition:enter-start="opacity-0 -translate-y-1 scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave="transition ease-in duration-400"
                     x-transition:leave-start="opacity-100"
-                    x-transition:leave-end="opacity-0"
-                    class="inline-flex items-center gap-1.5 text-xs text-gray-400"
+                    x-transition:leave-end="opacity-0 translate-y-1"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200/50 shadow-sm shadow-emerald-100/50"
                 >
-                    <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-                    </svg>
-                    Progress saved
-                </span>
+                    <span class="flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 shadow-sm">
+                        <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </span>
+                    <span class="text-xs font-semibold text-emerald-700" x-text="funMsg"></span>
+                </div>
 
-                {{-- Idle (muted) --}}
-                <span
+                {{-- Idle --}}
+                <div
                     x-show="state === 'idle'"
-                    x-transition:enter="transition ease-in duration-700"
+                    x-transition:enter="transition ease-in duration-600"
                     x-transition:enter-start="opacity-0"
                     x-transition:enter-end="opacity-100"
-                    class="inline-flex items-center gap-1.5 text-xs text-gray-300"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5"
                 >
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    <svg class="w-3 h-3 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
                     </svg>
-                    Your progress is saved
-                </span>
+                    <span class="text-[11px] text-gray-300 font-medium">Progress saved &middot; come back anytime</span>
+                </div>
             </div>
         @endif
 
