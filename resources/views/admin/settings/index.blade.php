@@ -39,9 +39,9 @@
                     {{-- QA Password --}}
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">QA Password</label>
-                        <input type="text" name="settings[701][value]"
+                        <input type="password" name="settings[701][value]"
                             value="{{ $mPassword->value ?? '' }}"
-                            placeholder="Set a team password"
+                            placeholder="••••••••"
                             class="w-full rounded-lg border-gray-300 focus:border-amber-500 focus:ring-amber-500">
                         <input type="hidden" name="settings[701][group]" value="general">
                         <input type="hidden" name="settings[701][key]" value="maintenance_password">

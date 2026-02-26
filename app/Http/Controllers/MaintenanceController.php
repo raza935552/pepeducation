@@ -15,11 +15,21 @@ class MaintenanceController extends Controller
 
         $correctPassword = Setting::getValue('general', 'maintenance_password', '');
 
-        if (!$correctPassword || $request->password !== $correctPassword) {
+        if (!$correctPassword || !hash_equals($correctPassword, $request->password)) {
             return back()->withErrors(['password' => 'Incorrect password.']);
         }
 
-        $cookie = cookie('pp_maintenance_bypass', hash('sha256', $correctPassword), 60 * 24); // 24 hours
+        $cookie = cookie(
+            'pp_maintenance_bypass',
+            hash('sha256', $correctPassword),
+            60 * 24,     // 24 hours
+            '/',         // path
+            null,        // domain (use default)
+            true,        // secure (HTTPS only)
+            true,        // httpOnly
+            false,       // raw
+            'Lax'        // sameSite
+        );
 
         return redirect('/')
             ->withCookie($cookie);

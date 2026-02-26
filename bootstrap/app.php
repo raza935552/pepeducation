@@ -28,7 +28,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->encryptCookies(except: [
             'pp_session_id',
             'pp_segment',
-            'pp_maintenance_bypass',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

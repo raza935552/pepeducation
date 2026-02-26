@@ -15,8 +15,10 @@ use App\Http\Controllers\MaintenanceController;
 use App\Models\StackGoal;
 use Illuminate\Support\Facades\Route;
 
-// Maintenance mode bypass
-Route::post('/maintenance/unlock', [MaintenanceController::class, 'unlock'])->name('maintenance.unlock');
+// Maintenance mode bypass (rate-limited to prevent brute force)
+Route::post('/maintenance/unlock', [MaintenanceController::class, 'unlock'])
+    ->middleware('throttle:5,1')
+    ->name('maintenance.unlock');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 

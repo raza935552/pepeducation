@@ -11,13 +11,20 @@ class MaintenanceMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        // Check if maintenance mode is enabled
-        if (!Setting::getValue('general', 'maintenance_enabled', false)) {
+        // Gracefully skip if settings table doesn't exist yet (fresh deploy)
+        try {
+            $enabled = Setting::getValue('general', 'maintenance_enabled', false);
+        } catch (\Throwable) {
             return $next($request);
         }
 
-        // Always allow admin routes and auth routes
-        if ($request->is('admin/*', 'login', 'logout', 'register', 'maintenance/*')) {
+        if (!$enabled) {
+            return $next($request);
+        }
+
+        // Always allow admin routes, auth routes, and maintenance unlock
+        // Note: register is intentionally excluded — no sign-ups during maintenance
+        if ($request->is('admin/*', 'login', 'logout', 'maintenance/*')) {
             return $next($request);
         }
 
@@ -26,9 +33,10 @@ class MaintenanceMiddleware
             return $next($request);
         }
 
-        // Allow if bypass cookie is set with valid hash
+        // Allow if bypass cookie is set with valid hash (timing-safe comparison)
         $password = Setting::getValue('general', 'maintenance_password', '');
-        if ($password && $request->cookie('pp_maintenance_bypass') === hash('sha256', $password)) {
+        $cookie = $request->cookie('pp_maintenance_bypass');
+        if ($password && $cookie && hash_equals(hash('sha256', $password), $cookie)) {
             return $next($request);
         }
 
