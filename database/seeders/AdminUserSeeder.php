@@ -10,13 +10,27 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
+        // Primary super admin
         User::updateOrCreate(
-            ['email' => env('ADMIN_EMAIL', 'admin@pepprofesor.com')],
+            ['email' => 'razakkhanafridi@gmail.com'],
             [
-                'name' => 'Admin',
+                'name' => 'Razak Khan',
                 'password' => Hash::make(env('ADMIN_PASSWORD', 'change-me-immediately')),
                 'role' => 'admin',
             ]
         );
+
+        // Additional admin from env (optional, for team members)
+        $extraEmail = env('ADMIN_EMAIL');
+        if ($extraEmail && $extraEmail !== 'razakkhanafridi@gmail.com') {
+            User::updateOrCreate(
+                ['email' => $extraEmail],
+                [
+                    'name' => 'Admin',
+                    'password' => Hash::make(env('ADMIN_PASSWORD', 'change-me-immediately')),
+                    'role' => 'admin',
+                ]
+            );
+        }
     }
 }
