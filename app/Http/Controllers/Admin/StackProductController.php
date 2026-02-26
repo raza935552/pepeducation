@@ -18,7 +18,8 @@ class StackProductController extends Controller
     {
         $query = StackProduct::with('goals');
 
-        if ($search = $request->get('search')) {
+        if ($rawSearch = $request->get('search')) {
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $rawSearch);
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('subtitle', 'like', "%{$search}%");

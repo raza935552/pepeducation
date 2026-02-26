@@ -13,7 +13,8 @@ class StackGoalController extends Controller
     {
         $query = StackGoal::query();
 
-        if ($search = $request->get('search')) {
+        if ($rawSearch = $request->get('search')) {
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $rawSearch);
             $query->where('name', 'like', "%{$search}%");
         }
 

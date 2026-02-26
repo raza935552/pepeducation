@@ -17,7 +17,8 @@ class BlogPostController extends Controller
     {
         $query = BlogPost::with(['author', 'categories']);
 
-        if ($search = $request->get('search')) {
+        if ($rawSearch = $request->get('search')) {
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $rawSearch);
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
                   ->orWhere('excerpt', 'like', "%{$search}%");

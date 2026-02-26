@@ -13,7 +13,8 @@ class PeptideController extends Controller
         $query = Peptide::with('categories');
 
         // Search
-        if ($search = $request->get('search')) {
+        if ($rawSearch = $request->get('search')) {
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $rawSearch);
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('full_name', 'like', "%{$search}%")

@@ -18,7 +18,8 @@ class PeptideRequestController extends Controller
         }
 
         if ($request->filled('search')) {
-            $query->where('peptide_name', 'like', "%{$request->search}%");
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->search);
+            $query->where('peptide_name', 'like', "%{$search}%");
         }
 
         $requests = $query->paginate(20)->withQueryString();

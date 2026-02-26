@@ -13,7 +13,8 @@ class StackStoreController extends Controller
     {
         $query = StackStore::query();
 
-        if ($search = $request->get('search')) {
+        if ($rawSearch = $request->get('search')) {
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $rawSearch);
             $query->where('name', 'like', "%{$search}%");
         }
 

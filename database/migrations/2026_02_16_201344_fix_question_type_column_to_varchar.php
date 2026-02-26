@@ -14,8 +14,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Change enum to varchar to remove constraint
-        DB::statement("ALTER TABLE quiz_questions MODIFY question_type VARCHAR(50) NOT NULL DEFAULT 'single_choice'");
+        // Change enum to varchar to remove constraint (cross-DB compatible)
+        Schema::table('quiz_questions', function (Blueprint $table) {
+            $table->string('question_type', 50)->default('single_choice')->change();
+        });
 
         // Normalize existing values to match the form convention
         DB::table('quiz_questions')->where('question_type', 'single')->update(['question_type' => 'single_choice']);
@@ -27,6 +29,8 @@ return new class extends Migration
         DB::table('quiz_questions')->where('question_type', 'single_choice')->update(['question_type' => 'single']);
         DB::table('quiz_questions')->where('question_type', 'multiple_choice')->update(['question_type' => 'multiple']);
 
-        DB::statement("ALTER TABLE quiz_questions MODIFY question_type ENUM('single','multiple','scale','text','email') NOT NULL DEFAULT 'single'");
+        Schema::table('quiz_questions', function (Blueprint $table) {
+            $table->string('question_type', 50)->default('single')->change();
+        });
     }
 };

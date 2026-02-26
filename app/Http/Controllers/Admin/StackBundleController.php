@@ -18,7 +18,8 @@ class StackBundleController extends Controller
     {
         $query = StackBundle::with('goal', 'items.product');
 
-        if ($search = $request->get('search')) {
+        if ($rawSearch = $request->get('search')) {
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $rawSearch);
             $query->where('name', 'like', "%{$search}%");
         }
 
