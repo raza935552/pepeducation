@@ -112,4 +112,9 @@ class Setting extends Model
     {
         return (int) self::getValue('scoring', 'points_' . $action, 0);
     }
+
+    public static function isMaintenanceEnabled(): bool
+    {
+        return (bool) self::getValue('general', 'maintenance_enabled', false);
+    }
 }

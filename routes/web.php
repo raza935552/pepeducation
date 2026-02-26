@@ -11,8 +11,12 @@ use App\Http\Controllers\OutboundController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\LeadMagnetController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\MaintenanceController;
 use App\Models\StackGoal;
 use Illuminate\Support\Facades\Route;
+
+// Maintenance mode bypass
+Route::post('/maintenance/unlock', [MaintenanceController::class, 'unlock'])->name('maintenance.unlock');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 

@@ -4,6 +4,64 @@
     <form action="{{ route('admin.settings.update') }}" method="POST" class="space-y-6">
         @csrf
 
+        <!-- Maintenance Mode -->
+        <div class="card p-6 border-l-4 border-amber-400">
+            <h3 class="text-lg font-semibold mb-1 flex items-center gap-2">
+                <svg aria-hidden="true" class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                Maintenance Mode
+            </h3>
+            <p class="text-sm text-gray-500 mb-4">Block public access while the team tests behind a password.</p>
+
+            <div class="space-y-4">
+                @php
+                    $mEnabled = ($settings['general'] ?? collect())->firstWhere('key', 'maintenance_enabled');
+                    $mPassword = ($settings['general'] ?? collect())->firstWhere('key', 'maintenance_password');
+                    $mMessage = ($settings['general'] ?? collect())->firstWhere('key', 'maintenance_message');
+                @endphp
+
+                {{-- Enable toggle --}}
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="hidden" name="settings[700][value]" value="0">
+                    <input type="checkbox" name="settings[700][value]" value="1"
+                        {{ $mEnabled && filter_var($mEnabled->value, FILTER_VALIDATE_BOOLEAN) ? 'checked' : '' }}
+                        class="w-5 h-5 rounded border-gray-300 text-amber-500 focus:ring-amber-500">
+                    <input type="hidden" name="settings[700][group]" value="general">
+                    <input type="hidden" name="settings[700][key]" value="maintenance_enabled">
+                    <div>
+                        <span class="font-medium text-gray-700">Enable Maintenance Mode</span>
+                        <p class="text-sm text-gray-500">When ON, all public pages show a maintenance screen.</p>
+                    </div>
+                </label>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {{-- QA Password --}}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">QA Password</label>
+                        <input type="text" name="settings[701][value]"
+                            value="{{ $mPassword->value ?? '' }}"
+                            placeholder="Set a team password"
+                            class="w-full rounded-lg border-gray-300 focus:border-amber-500 focus:ring-amber-500">
+                        <input type="hidden" name="settings[701][group]" value="general">
+                        <input type="hidden" name="settings[701][key]" value="maintenance_password">
+                        <p class="text-xs text-gray-500 mt-1">Team enters this to bypass maintenance page</p>
+                    </div>
+
+                    {{-- Custom message --}}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Maintenance Message</label>
+                        <input type="text" name="settings[702][value]"
+                            value="{{ $mMessage->value ?? 'We are getting things ready. Check back soon!' }}"
+                            placeholder="Custom maintenance message"
+                            class="w-full rounded-lg border-gray-300 focus:border-amber-500 focus:ring-amber-500">
+                        <input type="hidden" name="settings[702][group]" value="general">
+                        <input type="hidden" name="settings[702][key]" value="maintenance_message">
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Klaviyo Integration -->
         <div class="card p-6">
             <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">

@@ -18,11 +18,17 @@ return Application::configure(basePath: dirname(__DIR__))
             'throttle' => \App\Http\Middleware\ThrottleRequestsTest::class,
         ]);
 
+        // Maintenance mode — check on every web request
+        $middleware->web(append: [
+            \App\Http\Middleware\MaintenanceMiddleware::class,
+        ]);
+
         // Exclude tracking cookies from encryption (session/segment only)
         // pp_email removed - should not be stored in plain cookie
         $middleware->encryptCookies(except: [
             'pp_session_id',
             'pp_segment',
+            'pp_maintenance_bypass',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
