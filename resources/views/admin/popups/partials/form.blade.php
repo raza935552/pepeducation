@@ -82,7 +82,7 @@
             <div class="card p-6">
                 <h3 class="text-lg font-semibold mb-4">Status</h3>
                 <label class="flex items-center gap-2">
-                    <input type="checkbox" name="is_active" value="1" {{ ($popup?->is_active ?? false) ? 'checked' : '' }}
+                    <input type="checkbox" name="is_active" value="1" {{ old('is_active', $popup?->is_active ?? true) ? 'checked' : '' }}
                         class="rounded border-gray-300 text-brand-gold focus:ring-brand-gold">
                     <span>Active</span>
                 </label>

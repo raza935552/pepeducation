@@ -88,7 +88,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('pages', PageController::class);
     Route::post('pages/{page}/duplicate', [PageController::class, 'duplicate'])->name('pages.duplicate');
     Route::post('pages/{page}/variant', [PageController::class, 'createVariant'])->name('pages.variant');
-    Route::post('pages/upload-image', [PageController::class, 'uploadImage'])->name('pages.upload-image')->middleware('throttle:30,1');
+    Route::post('pages/upload-image', [PageController::class, 'uploadImage'])->name('pages.upload-image');
 
     // Page Versions
     Route::get('pages/{page}/versions', [PageVersionController::class, 'index'])->name('pages.versions');
@@ -156,7 +156,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('blog-posts', BlogPostController::class);
     Route::post('blog-posts/{blogPost}/duplicate', [BlogPostController::class, 'duplicate'])->name('blog-posts.duplicate');
     Route::patch('blog-posts/{blogPost}/toggle-featured', [BlogPostController::class, 'toggleFeatured'])->name('blog-posts.toggle-featured');
-    Route::post('blog-posts/upload-image', [BlogPostController::class, 'uploadImage'])->name('blog-posts.upload-image')->middleware('throttle:30,1');
+    Route::post('blog-posts/upload-image', [BlogPostController::class, 'uploadImage'])->name('blog-posts.upload-image');
     Route::get('blog-posts/{blogPost}/versions', [BlogPostVersionController::class, 'index'])->name('blog-posts.versions');
     Route::post('blog-posts/{blogPost}/versions/{version}/restore', [BlogPostVersionController::class, 'restore'])->name('blog-posts.versions.restore');
 
@@ -171,11 +171,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('media', [MediaController::class, 'destroy'])->name('media.destroy');
 
     // Unsplash (Stock Photos for Page Builder)
-    Route::get('unsplash/search', [UnsplashController::class, 'search'])->name('unsplash.search')->middleware('throttle:60,1');
+    Route::get('unsplash/search', [UnsplashController::class, 'search'])->name('unsplash.search');
     Route::post('unsplash/track-download', [UnsplashController::class, 'trackDownload'])->name('unsplash.track-download');
 
     // AI Content Generation (Page Builder)
-    Route::post('ai-content/generate', [AiContentController::class, 'generate'])->name('ai-content.generate')->middleware('throttle:20,1');
+    Route::post('ai-content/generate', [AiContentController::class, 'generate'])->name('ai-content.generate');
 
     // Settings (Integrations)
     Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');

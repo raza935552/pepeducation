@@ -31,6 +31,7 @@ class PopupController extends Controller
         $popup = Popup::create([
             'name' => $validated['name'],
             'slug' => $validated['slug'] ?: \Str::slug($validated['name']),
+            'type' => $validated['type'] ?? 'lead_capture',
             'headline' => $validated['headline'],
             'body' => $validated['body'] ?? null,
             'image' => $validated['image'] ?? null,
@@ -63,6 +64,7 @@ class PopupController extends Controller
         $popup->update([
             'name' => $validated['name'],
             'slug' => $validated['slug'] ?: \Str::slug($validated['name']),
+            'type' => $validated['type'] ?? $popup->type,
             'headline' => $validated['headline'],
             'body' => $validated['body'] ?? null,
             'image' => $validated['image'] ?? null,
@@ -109,6 +111,7 @@ class PopupController extends Controller
         return $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:popups,slug' . ($id ? ",$id" : ''),
+            'type' => 'nullable|string|in:lead_capture,cta,announcement',
             'headline' => 'required|string|max:255',
             'body' => 'nullable|string',
             'image' => 'nullable|string',

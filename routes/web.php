@@ -15,9 +15,8 @@ use App\Http\Controllers\MaintenanceController;
 use App\Models\StackGoal;
 use Illuminate\Support\Facades\Route;
 
-// Maintenance mode bypass (rate-limited to prevent brute force)
+// Maintenance mode bypass
 Route::post('/maintenance/unlock', [MaintenanceController::class, 'unlock'])
-    ->middleware('throttle:5,1')
     ->name('maintenance.unlock');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -73,8 +72,7 @@ Route::get('/lead-magnet/{slug}/download', [LeadMagnetController::class, 'downlo
 
 // Public form submissions (from page builder forms)
 Route::post('/form-submit', [\App\Http\Controllers\FormSubmitController::class, 'store'])
-    ->name('form.submit')
-    ->middleware('throttle:10,1');
+    ->name('form.submit');
 
 // Auth routes (must come before catch-all)
 require __DIR__.'/auth.php';
