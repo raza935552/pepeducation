@@ -21,6 +21,10 @@
                    class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('calculator') ? 'text-gold-600 bg-gold-500/10' : 'text-gray-600 hover:text-gold-600 hover:bg-cream-200' }} transition-colors">
                     Calculator
                 </a>
+                <a href="{{ route('stack-builder') }}"
+                   class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('stack-builder*') ? 'text-gold-600 bg-gold-500/10' : 'text-gray-600 hover:text-gold-600 hover:bg-cream-200' }} transition-colors">
+                    Stack Builder
+                </a>
                 <button type="button"
                         onclick="Livewire.dispatch('openPeptideRequestModal')"
                         class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-gold-600 hover:bg-cream-200 transition-colors">
@@ -139,6 +143,10 @@
             <a href="{{ route('calculator') }}"
                class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('calculator') ? 'text-gold-600 bg-gold-500/10' : 'text-gray-700 hover:bg-cream-200' }} transition-colors">
                 Calculator
+            </a>
+            <a href="{{ route('stack-builder') }}"
+               class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('stack-builder*') ? 'text-gold-600 bg-gold-500/10' : 'text-gray-700 hover:bg-cream-200' }} transition-colors">
+                Stack Builder
             </a>
             <button type="button"
                     onclick="Livewire.dispatch('openPeptideRequestModal'); mobileOpen = false;"
