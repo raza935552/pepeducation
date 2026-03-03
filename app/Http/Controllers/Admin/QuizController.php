@@ -7,6 +7,7 @@ use App\Models\Quiz;
 use App\Models\QuizResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class QuizController extends Controller
 {
@@ -65,6 +66,41 @@ class QuizController extends Controller
             $q->id => '#' . $q->order . ' ' . \Str::limit($q->question_text ?: $q->content_title ?: \App\Models\QuizQuestion::getSlideTypeLabel($q->slide_type), 40),
         ])->toArray();
 
+        // Serialize questions for simulator
+        $questionsJson = $questions->map(fn($q) => [
+            'id' => $q->id,
+            'order' => $q->order,
+            'slide_type' => $q->slide_type ?? 'question',
+            'question_text' => $q->question_text,
+            'question_type' => $q->question_type,
+            'options' => $q->options ?? [],
+            'content_title' => $q->content_title,
+            'content_body' => $q->content_body,
+            'content_source' => $q->content_source,
+            'auto_advance_seconds' => $q->auto_advance_seconds ?? 5,
+            'cta_text' => $q->cta_text,
+            'cta_url' => $q->cta_url,
+            'show_conditions' => $q->show_conditions,
+            'dynamic_content_key' => $q->dynamic_content_key,
+            'dynamic_content_map' => $q->dynamic_content_map ?? [],
+            'klaviyo_property' => $q->klaviyo_property,
+        ])->values();
+
+        // Serialize outcomes for simulator (sorted by priority like determineOutcome())
+        $outcomesJson = $quiz->outcomes->sortBy('priority')->values()->map(fn($o) => [
+            'id' => $o->id,
+            'name' => $o->name,
+            'conditions' => $o->conditions ?? [],
+            'result_title' => $o->result_title,
+            'result_message' => $o->result_message,
+            'result_image' => $o->result_image ? Storage::url($o->result_image) : null,
+            'redirect_url' => $o->redirect_url,
+            'redirect_type' => $o->redirect_type,
+            'product_link' => $o->product_link,
+            'priority' => $o->priority,
+            'is_active' => $o->is_active,
+        ]);
+
         // Group outcomes by segment for sidebar display
         $outcomesBySegment = $quiz->outcomes->groupBy(function ($outcome) {
             $conditions = $outcome->conditions ?? [];
@@ -97,7 +133,7 @@ class QuizController extends Controller
             return 'other';
         });
 
-        return view('admin.quizzes.edit', compact('quiz', 'phases', 'slideLabels', 'outcomesBySegment'));
+        return view('admin.quizzes.edit', compact('quiz', 'phases', 'slideLabels', 'outcomesBySegment', 'questionsJson', 'outcomesJson'));
     }
 
     /**
