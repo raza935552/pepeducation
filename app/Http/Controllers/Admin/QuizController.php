@@ -68,7 +68,33 @@ class QuizController extends Controller
         // Group outcomes by segment for sidebar display
         $outcomesBySegment = $quiz->outcomes->groupBy(function ($outcome) {
             $conditions = $outcome->conditions ?? [];
-            return $conditions['segment'] ?? 'other';
+
+            // Direct segment condition
+            if (!empty($conditions['segment'])) {
+                return $conditions['segment'];
+            }
+
+            // Infer segment from answer-based conditions
+            if (($conditions['type'] ?? '') === 'answer') {
+                $question = $conditions['question'] ?? '';
+                $value = $conditions['value'] ?? '';
+
+                if ($question === 'awareness_level') {
+                    return match ($value) {
+                        'brand_new' => 'tof',
+                        'researching' => 'mof',
+                        'ready_to_buy' => 'bof',
+                        default => 'other',
+                    };
+                }
+
+                // bof_intent questions are always BOF
+                if ($question === 'bof_intent') {
+                    return 'bof';
+                }
+            }
+
+            return 'other';
         });
 
         return view('admin.quizzes.edit', compact('quiz', 'phases', 'slideLabels', 'outcomesBySegment'));
