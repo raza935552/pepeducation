@@ -55,8 +55,84 @@ class QuizController extends Controller
 
     public function edit(Quiz $quiz)
     {
-        $quiz->load('questions', 'outcomes');
-        return view('admin.quizzes.edit', compact('quiz'));
+        $quiz->load(['questions' => fn($q) => $q->orderBy('order'), 'outcomes']);
+
+        $questions = $quiz->questions;
+        $phases = $this->buildPhaseGroups($questions);
+
+        // Build a lookup map: question ID → readable label (for "leads to" display)
+        $slideLabels = $questions->mapWithKeys(fn($q) => [
+            $q->id => '#' . $q->order . ' ' . \Str::limit($q->question_text ?: $q->content_title ?: \App\Models\QuizQuestion::getSlideTypeLabel($q->slide_type), 40),
+        ])->toArray();
+
+        // Group outcomes by segment for sidebar display
+        $outcomesBySegment = $quiz->outcomes->groupBy(function ($outcome) {
+            $conditions = $outcome->conditions ?? [];
+            return $conditions['segment'] ?? 'other';
+        });
+
+        return view('admin.quizzes.edit', compact('quiz', 'phases', 'slideLabels', 'outcomesBySegment'));
+    }
+
+    /**
+     * Group quiz slides into journey phases based on show_conditions.
+     */
+    private function buildPhaseGroups($questions): array
+    {
+        // Find the segmentation question (first question-type slide)
+        $segQuestion = $questions->first(fn($q) => $q->slide_type === 'question');
+        $segId = $segQuestion?->id;
+
+        $valueToPhase = [
+            'brand_new' => 'tof',
+            'researching' => 'mof',
+            'ready_to_buy' => 'bof',
+        ];
+
+        $phases = [
+            'shared' => ['label' => 'Shared Start', 'description' => 'Seen by everyone', 'slides' => collect()],
+            'tof' => ['label' => 'TOF Path', 'description' => 'Top of Funnel — Brand new to peptides', 'slides' => collect()],
+            'mof' => ['label' => 'MOF Path', 'description' => 'Middle of Funnel — Researching', 'slides' => collect()],
+            'bof' => ['label' => 'BOF Path', 'description' => 'Bottom of Funnel — Ready to buy', 'slides' => collect()],
+        ];
+
+        foreach ($questions as $slide) {
+            $conditions = $slide->show_conditions['conditions'] ?? [];
+
+            if (empty($conditions)) {
+                $phases['shared']['slides']->push($slide);
+                continue;
+            }
+
+            // Check if any condition references the segmentation question
+            $phase = null;
+            foreach ($conditions as $cond) {
+                if (($cond['question_id'] ?? null) == $segId) {
+                    $phase = $valueToPhase[$cond['option_value'] ?? ''] ?? null;
+                    break;
+                }
+            }
+
+            // Transitive grouping: if conditions reference a slide already in a phase
+            if (!$phase) {
+                foreach ($conditions as $cond) {
+                    $referencedSlide = $questions->firstWhere('id', $cond['question_id'] ?? null);
+                    if ($referencedSlide) {
+                        foreach ($phases as $key => $p) {
+                            if ($p['slides']->contains('id', $referencedSlide->id)) {
+                                $phase = $key;
+                                break 2;
+                            }
+                        }
+                    }
+                }
+            }
+
+            $phases[$phase ?? 'shared']['slides']->push($slide);
+        }
+
+        // Remove empty phases (except shared which always shows)
+        return collect($phases)->filter(fn($p, $key) => $key === 'shared' || $p['slides']->isNotEmpty())->toArray();
     }
 
     public function update(Request $request, Quiz $quiz)
