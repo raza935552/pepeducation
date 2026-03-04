@@ -177,6 +177,9 @@
                     @endif
                 </div>
 
+                {{-- Product Mapping --}}
+                @include('admin.quizzes.partials.product-mapping-panel')
+
                 {{-- Delete --}}
                 <form action="{{ route('admin.quizzes.destroy', $quiz) }}" method="POST" class="card p-4" onsubmit="return confirm('Delete this quiz and all its questions?')">
                     @csrf @method('DELETE')

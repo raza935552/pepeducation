@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Quiz;
 use App\Models\QuizResponse;
+use App\Models\ResultsBank;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -133,7 +134,15 @@ class QuizController extends Controller
             return 'other';
         });
 
-        return view('admin.quizzes.edit', compact('quiz', 'phases', 'slideLabels', 'outcomesBySegment', 'questionsJson', 'outcomesJson'));
+        // Load Results Bank entries for the product mapping panel
+        $resultsBankEntries = ResultsBank::where('is_active', true)
+            ->with('stackProduct')
+            ->orderBy('health_goal')
+            ->orderBy('experience_level')
+            ->get()
+            ->groupBy('experience_level');
+
+        return view('admin.quizzes.edit', compact('quiz', 'phases', 'slideLabels', 'outcomesBySegment', 'questionsJson', 'outcomesJson', 'resultsBankEntries'));
     }
 
     /**
