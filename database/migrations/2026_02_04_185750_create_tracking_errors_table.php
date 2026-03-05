@@ -35,8 +35,8 @@ return new class extends Migration
 
             // Frequency
             $table->integer('occurrence_count')->default(1);
-            $table->timestamp('first_occurred_at');
-            $table->timestamp('last_occurred_at');
+            $table->timestamp('first_occurred_at')->useCurrent();
+            $table->timestamp('last_occurred_at')->useCurrent();
 
             // Status
             $table->enum('status', ['new', 'acknowledged', 'resolved', 'ignored'])->default('new');
