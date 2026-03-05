@@ -24,6 +24,10 @@ class StackStoreController extends Controller
             $query->where('is_active', false);
         }
 
+        if ($category = $request->get('category')) {
+            $query->where('category', $category);
+        }
+
         $stores = $query->ordered()->paginate(15)->withQueryString();
 
         return view('admin.stack-stores.index', compact('stores'));
@@ -46,14 +50,16 @@ class StackStoreController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
         $validated['is_recommended'] = $request->boolean('is_recommended');
 
-        StackStore::create($validated);
+        $store = StackStore::create($validated);
+        $this->syncPeptideLinks($store, $request->get('peptide_links', []));
 
         return redirect()->route('admin.stack-stores.index')
-            ->with('success', 'Stack store created successfully.');
+            ->with('success', 'Vendor created successfully.');
     }
 
     public function edit(StackStore $stackStore)
     {
+        $stackStore->load('peptideLinks');
         return view('admin.stack-stores.edit', compact('stackStore'));
     }
 
@@ -69,9 +75,10 @@ class StackStoreController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
         $validated['is_recommended'] = $request->boolean('is_recommended');
         $stackStore->update($validated);
+        $this->syncPeptideLinks($stackStore, $request->get('peptide_links', []));
 
         return redirect()->route('admin.stack-stores.index')
-            ->with('success', 'Stack store updated successfully.');
+            ->with('success', 'Vendor updated successfully.');
     }
 
     public function destroy(StackStore $stackStore)
@@ -79,7 +86,7 @@ class StackStoreController extends Controller
         $stackStore->delete();
 
         return redirect()->route('admin.stack-stores.index')
-            ->with('success', 'Stack store deleted successfully.');
+            ->with('success', 'Vendor deleted successfully.');
     }
 
     protected function validateStore(Request $request, ?int $ignoreId = null): array
@@ -90,9 +97,32 @@ class StackStoreController extends Controller
             'website_url' => 'nullable|url|max:2000',
             'description' => 'nullable|string|max:1000',
             'logo' => 'nullable|image|max:2048',
+            'category' => 'nullable|string|in:research_grade,telehealth,affordable',
             'order' => 'nullable|integer|min:0',
             'is_active' => 'nullable',
             'is_recommended' => 'nullable',
+            'peptide_links' => 'nullable|array',
+            'peptide_links.*.peptide_name' => 'required_with:peptide_links.*|string|max:255',
+            'peptide_links.*.url' => 'required_with:peptide_links.*|string|max:2000',
+            'peptide_links.*.price' => 'nullable|numeric|min:0',
+            'peptide_links.*.is_in_stock' => 'nullable',
         ]);
+    }
+
+    protected function syncPeptideLinks(StackStore $store, array $links): void
+    {
+        $store->peptideLinks()->delete();
+
+        foreach ($links as $i => $link) {
+            if (empty($link['peptide_name']) || empty($link['url'])) continue;
+
+            $store->peptideLinks()->create([
+                'peptide_name' => $link['peptide_name'],
+                'url' => $link['url'],
+                'price' => $link['price'] ?: null,
+                'is_in_stock' => isset($link['is_in_stock']),
+                'order' => $i,
+            ]);
+        }
     }
 }

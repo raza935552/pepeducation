@@ -15,6 +15,11 @@ class QuizQuestionController extends Controller
 
         $maxOrder = $quiz->questions()->max('order') ?? 0;
 
+        $klaviyoProperty = $validated['klaviyo_property'] ?? null;
+        if (empty($klaviyoProperty) && ($validated['slide_type'] ?? '') === 'email_capture') {
+            $klaviyoProperty = 'email';
+        }
+
         $question = $quiz->questions()->create([
             'slide_type' => $validated['slide_type'] ?? 'question',
             'question_text' => $validated['question_text'] ?? $validated['content_title'] ?? 'Slide',
@@ -22,7 +27,7 @@ class QuizQuestionController extends Controller
             'question_type' => $validated['question_type'] ?? 'single_choice',
             'order' => $maxOrder + 1,
             'options' => $validated['options'] ?? [],
-            'klaviyo_property' => $validated['klaviyo_property'] ?? null,
+            'klaviyo_property' => $klaviyoProperty,
             'is_required' => $validated['is_required'] ?? true,
             'max_selections' => $validated['max_selections'] ?? null,
             'settings' => $validated['settings'] ?? null,
@@ -48,13 +53,18 @@ class QuizQuestionController extends Controller
     {
         $validated = $request->validate($this->slideRules($request));
 
+        $klaviyoProperty = $validated['klaviyo_property'] ?? null;
+        if (empty($klaviyoProperty) && ($validated['slide_type'] ?? $question->slide_type) === 'email_capture') {
+            $klaviyoProperty = 'email';
+        }
+
         $question->update([
             'slide_type' => $validated['slide_type'] ?? $question->slide_type,
             'question_text' => $validated['question_text'] ?? $validated['content_title'] ?? $question->question_text,
             'question_subtext' => $validated['question_subtext'] ?? null,
             'question_type' => $validated['question_type'] ?? $question->question_type,
             'options' => $validated['options'] ?? [],
-            'klaviyo_property' => $validated['klaviyo_property'] ?? null,
+            'klaviyo_property' => $klaviyoProperty,
             'is_required' => $validated['is_required'] ?? true,
             'max_selections' => $validated['max_selections'] ?? null,
             'settings' => $validated['settings'] ?? null,

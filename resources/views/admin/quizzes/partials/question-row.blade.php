@@ -10,11 +10,12 @@
         'peptide_reveal' => 'bg-pink-100 text-pink-700 border-pink-200',
         'vendor_reveal' => 'bg-indigo-100 text-indigo-700 border-indigo-200',
         'bridge' => 'bg-orange-100 text-orange-700 border-orange-200',
+        'peptide_search' => 'bg-teal-100 text-teal-700 border-teal-200',
     ];
     $typeAbbrev = [
         'question' => 'Q', 'question_text' => 'Qt', 'intermission' => 'I',
         'loading' => 'L', 'email_capture' => 'E', 'peptide_reveal' => 'P',
-        'vendor_reveal' => 'V', 'bridge' => 'B',
+        'vendor_reveal' => 'V', 'bridge' => 'B', 'peptide_search' => 'S',
     ];
     $badgeColor = $slideColors[$slideType] ?? 'bg-gray-200 text-gray-700 border-gray-300';
     $abbr = $typeAbbrev[$slideType] ?? '?';
@@ -88,8 +89,14 @@
         'peptide_reveal' => 'border-l-pink-300',
         'vendor_reveal'  => 'border-l-indigo-300',
         'bridge'         => 'border-l-orange-300',
+        'peptide_search' => 'border-l-teal-300',
     ];
     $leftBorder = $leftBorderColors[$slideType] ?? 'border-l-gray-300';
+
+    // Determine the next slide in order for routing indicator
+    $allSlides = $quiz->questions->sortBy('order');
+    $nextSlide = $allSlides->first(fn($s) => $s->order > $question->order);
+    $hasSkipTo = $slideType === 'question' && $question->options && collect($question->options)->contains(fn($o) => !empty($o['skip_to_question']));
 
     // Hide redundant conditions: if slide is inside a segment phase (tof/mof/bof),
     // and the only condition is the branching question that routes to this phase,
@@ -101,9 +108,13 @@
     }
 @endphp
 
-<div class="group border border-l-2 {{ $leftBorder }} rounded-lg bg-white hover:shadow-sm transition-shadow" data-question-id="{{ $question->id }}" x-data="{ expanded: false }">
+<div class="group border border-l-2 {{ $leftBorder }} rounded-lg bg-white hover:shadow-sm transition-shadow" data-question-id="{{ $question->id }}" data-slide-type="{{ $slideType }}" x-data="{ expanded: false }">
     {{-- Compact row --}}
     <div class="flex items-center gap-3 px-3 py-2.5 cursor-pointer" @click="expanded = !expanded">
+        {{-- Drag handle --}}
+        <span class="drag-handle flex-shrink-0 cursor-grab active:cursor-grabbing text-gray-300 hover:text-gray-500" @click.stop>
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M7 2a2 2 0 10.001 4.001A2 2 0 007 2zm0 6a2 2 0 10.001 4.001A2 2 0 007 8zm0 6a2 2 0 10.001 4.001A2 2 0 007 14zm6-8a2 2 0 10-.001-4.001A2 2 0 0013 6zm0 2a2 2 0 10.001 4.001A2 2 0 0013 8zm0 6a2 2 0 10.001 4.001A2 2 0 0013 14z"/></svg>
+        </span>
         {{-- Type badge --}}
         <span class="inline-flex items-center justify-center w-7 h-7 rounded-md text-xs font-bold border flex-shrink-0 {{ $badgeColor }}">{{ $abbr }}</span>
 
@@ -131,6 +142,14 @@
             @endif
             @if($slideType === 'loading' && $question->auto_advance_seconds)
                 <span class="text-[10px] text-purple-500">{{ $question->auto_advance_seconds }}s</span>
+            @endif
+            {{-- Next-slide routing indicator --}}
+            @if($hasSkipTo)
+                <span class="text-[10px] text-yellow-600" title="Has conditional routing">&#8644;</span>
+            @elseif($nextSlide)
+                <span class="text-[10px] text-gray-400" title="Next: {{ Str::limit($nextSlide->question_text ?: $nextSlide->content_title ?: 'Slide #'.$nextSlide->order, 30) }}">&rarr; #{{ $nextSlide->order }}</span>
+            @else
+                <span class="text-[10px] text-green-500" title="Final slide">&#10003; End</span>
             @endif
         </div>
 

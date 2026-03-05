@@ -36,7 +36,7 @@
                         <div class="grid grid-cols-4 gap-2">
                             <template x-for="st in slideTypes" :key="st.value">
                                 <button type="button"
-                                    @click="question.slide_type = st.value"
+                                    @click="question.slide_type = st.value; if (st.value === 'email_capture' && !question.klaviyo_property) question.klaviyo_property = 'email';"
                                     :class="question.slide_type === st.value
                                         ? 'border-brand-gold bg-brand-gold/5 ring-1 ring-brand-gold/30'
                                         : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'"
@@ -162,6 +162,25 @@
                                 </p>
                             </div>
                         </div>
+
+                        {{-- Peptide Search — configurable headline/body --}}
+                        <div x-show="question.slide_type === 'peptide_search'" class="space-y-3">
+                            <div class="rounded-lg bg-teal-50 border border-teal-200 px-4 py-3 mb-3">
+                                <p class="text-sm text-teal-700">This slide lets users search and browse peptides across vendors with live pricing. Data comes from vendor peptide links.</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Headline <span class="font-normal text-gray-400">(optional)</span></label>
+                                <input type="text" name="content_title" x-model="question.content_title"
+                                    placeholder="e.g. Find Your Peptide"
+                                    class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Description <span class="font-normal text-gray-400">(optional)</span></label>
+                                <textarea name="content_body" x-model="question.content_body" rows="2"
+                                    placeholder="Search for any peptide to compare prices across trusted vendors..."
+                                    class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold"></textarea>
+                            </div>
+                        </div>
                     </div>
 
                     {{-- ═══════════ ANSWERS SECTION (question type only) ═══════════ --}}
@@ -221,10 +240,17 @@
                                     <div x-show="option._expanded" x-collapse class="border-t border-gray-100 bg-gray-50/70 px-3 py-3 space-y-3">
 
                                         {{-- Internal value (power users) --}}
-                                        <div>
-                                            <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Internal Value <span class="font-normal text-gray-400">auto-generated if blank</span></label>
-                                            <input type="text" x-model="option.value" placeholder="auto from label"
-                                                class="w-40 rounded border-gray-200 text-xs py-1">
+                                        <div class="flex gap-3">
+                                            <div>
+                                                <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Internal Value <span class="font-normal text-gray-400">auto-generated if blank</span></label>
+                                                <input type="text" x-model="option.value" placeholder="auto from label"
+                                                    class="w-40 rounded border-gray-200 text-xs py-1">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Klaviyo Value <span class="font-normal text-gray-400">override for profile sync</span></label>
+                                                <input type="text" x-model="option.klaviyo_value" placeholder="same as value if blank"
+                                                    class="w-40 rounded border-gray-200 text-xs py-1">
+                                            </div>
                                         </div>
 
                                         {{-- Funnel Scoring --}}
@@ -305,7 +331,7 @@
                     </div>
 
                     {{-- ═══════════ BUTTON SECTION (CTA slides) ═══════════ --}}
-                    <div x-show="['peptide_reveal', 'vendor_reveal', 'bridge', 'intermission'].includes(question.slide_type)" x-cloak>
+                    <div x-show="question.slide_type !== 'loading'" x-cloak>
                         <div class="flex items-center gap-2 mb-3">
                             <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Button</span>
                             <div class="flex-1 h-px bg-gray-200"></div>
@@ -443,10 +469,37 @@
                             {{-- Klaviyo Sync --}}
                             <div x-show="['question', 'question_text', 'email_capture'].includes(question.slide_type)">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Sync Answer to Profile</label>
-                                <input type="text" name="klaviyo_property" x-model="question.klaviyo_property"
-                                    placeholder="e.g. pp_health_goal"
-                                    class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
-                                <p class="text-xs text-gray-400 mt-1">Store the user's answer in their Klaviyo profile. Use snake_case with <code class="bg-gray-100 px-1 rounded">pp_</code> prefix.</p>
+                                <div class="relative">
+                                    <input type="text" name="klaviyo_property" x-model="question.klaviyo_property"
+                                        list="klaviyo-property-suggestions"
+                                        placeholder="e.g. health_goal"
+                                        class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                                    <datalist id="klaviyo-property-suggestions">
+                                        <option value="health_goal">Health Goal</option>
+                                        <option value="experience_level">Experience Level</option>
+                                        <option value="awareness_level">Awareness Level</option>
+                                        <option value="gender">Gender</option>
+                                        <option value="age_range">Age Range</option>
+                                        <option value="barrier">Barrier</option>
+                                        <option value="hesitation">Hesitation</option>
+                                        <option value="buying_priority">Buying Priority</option>
+                                        <option value="buying_confidence">Buying Confidence</option>
+                                        <option value="buying_context">Buying Context</option>
+                                        <option value="selected_peptide">Selected Peptide</option>
+                                        <option value="current_peptide">Current Peptide</option>
+                                        <option value="stacking_intent">Stacking Intent</option>
+                                        <option value="content_interest">Content Interest</option>
+                                        <option value="bof_intent">BOF Intent</option>
+                                        <option value="email">Email</option>
+                                    </datalist>
+                                </div>
+                                <template x-if="suggestedKlaviyoProperty && !question.klaviyo_property">
+                                    <p class="text-xs text-amber-600 mt-1 flex items-center gap-1 cursor-pointer" @click="question.klaviyo_property = suggestedKlaviyoProperty">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                        Auto-detected: <strong x-text="suggestedKlaviyoProperty" class="underline"></strong> — click to apply
+                                    </p>
+                                </template>
+                                <p class="text-xs text-gray-400 mt-1" x-show="!suggestedKlaviyoProperty || question.klaviyo_property">Store the user's answer in their Klaviyo profile under this property name.</p>
                             </div>
 
                             {{-- Dynamic Content Variants (intermission) --}}
@@ -518,6 +571,7 @@ function questionModal() {
             { value: 'peptide_reveal', label: 'Peptide', sub: 'Recommendation', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>' },
             { value: 'vendor_reveal', label: 'Vendor', sub: 'Product details', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>' },
             { value: 'bridge', label: 'Next Steps', sub: 'Final CTA', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>' },
+            { value: 'peptide_search', label: 'Peptide Search', sub: 'Browse & compare', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>' },
         ],
         question: {
             slide_type: 'question',
@@ -528,7 +582,7 @@ function questionModal() {
             is_required: true,
             max_selections: null,
             settings: {},
-            options: [{ label: '', value: '', subtext: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: false }],
+            options: [{ label: '', value: '', subtext: '', klaviyo_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: false }],
             content_title: '',
             content_body: '',
             content_source: '',
@@ -548,6 +602,7 @@ function questionModal() {
             peptide_reveal: 'Shows the personalized peptide recommendation based on answers. Powered by the Results Bank.',
             vendor_reveal: 'Shows the recommended vendor with product details, pricing, and a link to their site.',
             bridge: 'Final slide with next-steps content and a call-to-action button.',
+            peptide_search: 'Interactive search slide where users can browse and compare peptides across vendors with pricing.',
         },
         titlePlaceholders: {
             intermission: 'e.g. Did You Know?',
@@ -571,8 +626,45 @@ function questionModal() {
             loading: 'One checklist item per line. 3-5 items that suggest thorough analysis.',
             bridge: 'Steps or bullet points explaining what happens next.',
         },
+        get suggestedKlaviyoProperty() {
+            const st = this.question.slide_type;
+            // Auto-detect for email_capture slides
+            if (st === 'email_capture') return 'email';
+            // Only suggest for input slide types
+            if (!['question', 'question_text'].includes(st)) return '';
+            // Try to detect from option values
+            const values = (this.question.options || []).map(o => o.value).filter(Boolean);
+            if (values.length === 0) return '';
+            const patterns = {
+                health_goal: ['fat_loss', 'muscle_growth', 'anti_aging', 'injury_recovery', 'cognitive', 'sleep', 'immune', 'sexual_health', 'gut_health', 'general_wellness'],
+                awareness_level: ['brand_new', 'researching', 'ready_to_buy'],
+                experience_level: ['beginner', 'intermediate', 'advanced'],
+                gender: ['male', 'female', 'prefer_not'],
+                age_range: ['18-29', '30-39', '40-49', '50-59', '60+'],
+                barrier: ['education', 'sourcing', 'safety', 'needles'],
+                hesitation: ['too_many_choices', 'vendor_trust', 'hype_vs_real'],
+                buying_priority: ['doctor_guidance', 'research_grade', 'affordable'],
+                buying_confidence: ['price', 'lab_reports', 'reviews', 'doctor'],
+                buying_context: ['first_time', 'restocking', 'switching'],
+                bof_intent: ['know_what_i_want', 'know_my_goal', 'want_to_stack'],
+                stacking_intent: ['add_to_stack', 'upgrade', 'restart', 'browsing'],
+                content_interest: ['dosing', 'stacking', 'research', 'community'],
+                selected_peptide: ['bpc-157', 'tirzepatide', 'semaglutide', 'cjc-1295-ipamorelin', 'epithalon', 'tb-500'],
+            };
+            let bestMatch = '';
+            let bestScore = 0;
+            for (const [prop, keywords] of Object.entries(patterns)) {
+                const matches = values.filter(v => keywords.includes(v)).length;
+                const score = matches / Math.max(values.length, keywords.length);
+                if (matches >= 2 && score > bestScore) {
+                    bestScore = score;
+                    bestMatch = prop;
+                }
+            }
+            return bestMatch;
+        },
         addOption() {
-            this.question.options.push({ label: '', value: '', subtext: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: false });
+            this.question.options.push({ label: '', value: '', subtext: '', klaviyo_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: false });
         },
         removeOption(index) {
             this.question.options.splice(index, 1);
@@ -603,7 +695,7 @@ function questionModal() {
                 is_required: true,
                 max_selections: null,
                 settings: {},
-                options: [{ label: '', value: '', subtext: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: false }],
+                options: [{ label: '', value: '', subtext: '', klaviyo_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: false }],
                 content_title: '',
                 content_body: '',
                 content_source: '',
@@ -655,6 +747,9 @@ function questionModal() {
                 this.question.options.forEach((opt, i) => {
                     formData.append(`options[${i}][label]`, opt.label);
                     formData.append(`options[${i}][value]`, opt.value || opt.label.toLowerCase().replace(/\s+/g, '_'));
+                    if (opt.klaviyo_value) {
+                        formData.append(`options[${i}][klaviyo_value]`, opt.klaviyo_value);
+                    }
                     if (opt.subtext) {
                         formData.append(`options[${i}][subtext]`, opt.subtext);
                     }
@@ -747,6 +842,7 @@ function editQuestion(id, questionData) {
                 label: o.label || o.text || '',
                 value: o.value || '',
                 subtext: o.subtext || '',
+                klaviyo_value: o.klaviyo_value || '',
                 score_tof: o.score_tof || 0,
                 score_mof: o.score_mof || 0,
                 score_bof: o.score_bof || 0,
@@ -754,7 +850,7 @@ function editQuestion(id, questionData) {
                 tags: o.tags || [],
                 _expanded: false,
             }))
-            : [{ label: '', value: '', subtext: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: false }],
+            : [{ label: '', value: '', subtext: '', klaviyo_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: false }],
         content_title: questionData.content_title || '',
         content_body: questionData.content_body || '',
         content_source: questionData.content_source || '',

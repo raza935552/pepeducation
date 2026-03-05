@@ -15,6 +15,21 @@
         <p class="text-xs text-gray-400 mb-6 italic">Source: {{ $resolved['content_source'] }}</p>
     @endif
 
+    {{-- Optional CTA --}}
+    @if(!empty($this->currentSlide['cta_text']))
+        <div class="text-center mb-6">
+            @if(!empty($this->currentSlide['cta_url']))
+                <a href="{{ $this->currentSlide['cta_url'] }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary inline-block text-lg px-8 py-3">
+                    {{ $this->currentSlide['cta_text'] }}
+                </a>
+            @else
+                <button wire:click="advanceSlide" class="btn btn-primary text-lg px-8 py-3">
+                    {{ $this->currentSlide['cta_text'] }}
+                </button>
+            @endif
+        </div>
+    @endif
+
     <div class="flex items-center justify-between">
         @if((($quiz->settings ?? [])['allow_back'] ?? true) && $currentStep > 0)
             <button wire:click="previousStep" class="btn bg-gray-200 text-gray-700 hover:bg-gray-300">

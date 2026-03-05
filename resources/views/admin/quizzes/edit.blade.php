@@ -49,7 +49,7 @@
 
                 {{-- Phase Tabs --}}
                 @foreach($phases as $key => $phase)
-                    <div x-show="activeTab === '{{ $key }}'" x-cloak>
+                    <div x-show="activeTab === '{{ $key }}'" x-cloak x-data="{ slideFilter: '' }">
                         <div class="card p-6">
                             <div class="flex items-center justify-between mb-4">
                                 <div>
@@ -58,16 +58,26 @@
                                         <p class="text-sm text-gray-500 mt-1">{{ $phase['description'] }}</p>
                                     @endif
                                 </div>
-                                <button type="button" onclick="showAddQuestion()" class="btn btn-secondary text-sm">+ Add Slide</button>
+                                <div class="flex items-center gap-2">
+                                    <select x-model="slideFilter" class="rounded-lg border-gray-300 text-xs py-1.5 pl-2 pr-7 focus:border-brand-gold focus:ring-brand-gold">
+                                        <option value="">All types</option>
+                                        @foreach(\App\Models\QuizQuestion::SLIDE_TYPES as $type)
+                                            <option value="{{ $type }}">{{ \App\Models\QuizQuestion::getSlideTypeLabel($type) }}</option>
+                                        @endforeach
+                                    </select>
+                                    <button type="button" onclick="showAddQuestion()" class="btn btn-secondary text-sm">+ Add Slide</button>
+                                </div>
                             </div>
 
                             <div class="space-y-1.5" data-phase="{{ $key }}">
                                 @forelse($phase['slides'] as $question)
-                                    @include('admin.quizzes.partials.question-row', [
-                                        'question' => $question,
-                                        'slideLabels' => $slideLabels,
-                                        'phaseKey' => $key,
-                                    ])
+                                    <div x-show="!slideFilter || slideFilter === '{{ $question->slide_type ?? 'question' }}'">
+                                        @include('admin.quizzes.partials.question-row', [
+                                            'question' => $question,
+                                            'slideLabels' => $slideLabels,
+                                            'phaseKey' => $key,
+                                        ])
+                                    </div>
                                 @empty
                                     <div class="text-center py-8 text-gray-400">
                                         <p>No slides in this phase yet.</p>
@@ -204,4 +214,36 @@
         };
     }
     </script>
+
+    @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('[data-phase]').forEach(container => {
+            new Sortable(container, {
+                handle: '.drag-handle',
+                animation: 150,
+                ghostClass: 'opacity-30',
+                chosenClass: 'ring-2 ring-brand-gold/50',
+                onEnd: function() {
+                    const ids = [...container.querySelectorAll('[data-question-id]')]
+                        .map(el => parseInt(el.dataset.questionId));
+
+                    fetch('{{ route("admin.quizzes.questions.reorder", $quiz) }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                        },
+                        body: JSON.stringify({ questions: ids }),
+                    }).then(r => {
+                        if (!r.ok) console.error('Reorder failed');
+                    });
+                }
+            });
+        });
+    });
+    </script>
+    @endpush
 </x-admin-layout>

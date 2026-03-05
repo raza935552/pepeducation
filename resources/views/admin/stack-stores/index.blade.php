@@ -1,8 +1,8 @@
 <x-admin-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <span>Stack Stores</span>
-            <a href="{{ route('admin.stack-stores.create') }}" class="btn btn-primary">+ New Store</a>
+            <span>Vendor Bank</span>
+            <a href="{{ route('admin.stack-stores.create') }}" class="btn btn-primary">+ Add Vendor</a>
         </div>
     </x-slot>
 
@@ -10,6 +10,13 @@
         <form method="GET" class="flex items-center gap-4 flex-1">
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Search stores..."
                 class="rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold w-64">
+            <select name="category" onchange="this.form.submit()"
+                class="rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                <option value="">All Categories</option>
+                @foreach(\App\Models\StackStore::CATEGORIES as $value => $label)
+                    <option value="{{ $value }}" {{ request('category') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                @endforeach
+            </select>
             <select name="status" onchange="this.form.submit()"
                 class="rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
                 <option value="">All Status</option>
@@ -26,6 +33,7 @@
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Order</th>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Store</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Category</th>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Website</th>
                     <th class="px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase">Products</th>
                     <th class="px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase">Status</th>
@@ -49,6 +57,11 @@
                                 </div>
                             </div>
                         </td>
+                        <td class="px-6 py-4 text-sm">
+                            <span class="px-2 py-1 text-xs rounded-full {{ $store->category === 'telehealth' ? 'bg-blue-100 text-blue-800' : ($store->category === 'affordable' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800') }}">
+                                {{ \App\Models\StackStore::CATEGORIES[$store->category] ?? ucfirst($store->category ?? 'research_grade') }}
+                            </span>
+                        </td>
                         <td class="px-6 py-4 text-sm text-gray-500">
                             @if($store->website_url)
                                 <a href="{{ $store->website_url }}" target="_blank" class="text-brand-gold hover:underline">{{ Str::limit($store->website_url, 30) }}</a>
@@ -69,7 +82,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="6" class="px-6 py-12 text-center text-gray-500">No stack stores found.</td></tr>
+                    <tr><td colspan="7" class="px-6 py-12 text-center text-gray-500">No stores found.</td></tr>
                 @endforelse
             </tbody>
         </table>

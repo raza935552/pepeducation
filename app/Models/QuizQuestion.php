@@ -16,6 +16,7 @@ class QuizQuestion extends Model
     public const SLIDE_PEPTIDE_REVEAL = 'peptide_reveal';
     public const SLIDE_VENDOR_REVEAL = 'vendor_reveal';
     public const SLIDE_BRIDGE = 'bridge';
+    public const SLIDE_PEPTIDE_SEARCH = 'peptide_search';
 
     public const SLIDE_TYPES = [
         self::SLIDE_QUESTION,
@@ -26,6 +27,7 @@ class QuizQuestion extends Model
         self::SLIDE_PEPTIDE_REVEAL,
         self::SLIDE_VENDOR_REVEAL,
         self::SLIDE_BRIDGE,
+        self::SLIDE_PEPTIDE_SEARCH,
     ];
 
     // Predefined marketing/Klaviyo segmentation tags for answer options
@@ -205,6 +207,7 @@ class QuizQuestion extends Model
             self::SLIDE_PEPTIDE_REVEAL => 'Peptide Reveal',
             self::SLIDE_VENDOR_REVEAL => 'Vendor Reveal',
             self::SLIDE_BRIDGE => 'Bridge (CTA)',
+            self::SLIDE_PEPTIDE_SEARCH => 'Peptide Search',
             default => ucfirst($type),
         };
     }

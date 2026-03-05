@@ -1,0 +1,163 @@
+{{-- Peptide Search Slide --}}
+<div class="card p-8" wire:key="slide-peptide-search-{{ $currentStep }}"
+    x-data="{
+        search: '',
+        peptides: @js($this->peptideSearchData),
+        get filteredPeptides() {
+            if (!this.search.trim()) return Object.keys(this.peptides);
+            const q = this.search.toLowerCase();
+            return Object.keys(this.peptides).filter(name => name.toLowerCase().includes(q));
+        },
+        get hasResults() {
+            return this.filteredPeptides.length > 0;
+        }
+    }">
+
+    {{-- Header --}}
+    <div class="text-center mb-6">
+        <div class="w-14 h-14 bg-teal-50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-7 h-7 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+        </div>
+        @if($this->currentSlide['content_title'] ?? null)
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ $this->currentSlide['content_title'] }}</h2>
+        @else
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Find Your Peptide</h2>
+        @endif
+        @if($this->currentSlide['content_body'] ?? null)
+            <p class="text-gray-600">{{ $this->currentSlide['content_body'] }}</p>
+        @else
+            <p class="text-gray-600">Search for any peptide to compare prices across trusted vendors.</p>
+        @endif
+    </div>
+
+    {{-- Search Input --}}
+    <div class="relative mb-6 max-w-md mx-auto">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+        </div>
+        <input type="text" x-model="search"
+            placeholder="Type a peptide name (e.g. BPC-157, Semaglutide)..."
+            class="w-full pl-10 pr-4 py-3 rounded-xl border-gray-300 focus:border-teal-500 focus:ring-teal-500 text-sm">
+        <button x-show="search" @click="search = ''" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+
+    {{-- Results --}}
+    <div class="space-y-4 max-w-lg mx-auto">
+        <template x-for="peptideName in filteredPeptides" :key="peptideName">
+            <div class="border border-gray-200 rounded-xl overflow-hidden" x-data="{ open: filteredPeptides.length === 1 }">
+                {{-- Peptide Name Header --}}
+                <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-teal-100 flex items-center justify-center">
+                            <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                            </svg>
+                        </span>
+                        <span class="font-semibold text-gray-900" x-text="peptideName"></span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-gray-500" x-text="peptides[peptideName].length + ' vendor' + (peptides[peptideName].length !== 1 ? 's' : '')"></span>
+                        <svg :class="open ? 'rotate-180' : ''" class="w-4 h-4 text-gray-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                </button>
+
+                {{-- Vendor List --}}
+                <div x-show="open" x-collapse>
+                    <div class="divide-y divide-gray-100">
+                        <template x-for="(vendor, vi) in peptides[peptideName]" :key="vi">
+                            <div class="flex items-center justify-between px-4 py-3">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <template x-if="vendor.store_logo">
+                                        <img :src="'/storage/' + vendor.store_logo" :alt="vendor.store_name" class="w-8 h-8 rounded-lg object-contain bg-gray-50 p-0.5 flex-shrink-0">
+                                    </template>
+                                    <template x-if="!vendor.store_logo">
+                                        <span class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                                            </svg>
+                                        </span>
+                                    </template>
+                                    <div class="min-w-0">
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="text-sm font-medium text-gray-900 truncate" x-text="vendor.store_name"></span>
+                                            <template x-if="vendor.is_recommended">
+                                                <span class="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-amber-100 text-amber-700">Recommended</span>
+                                            </template>
+                                        </div>
+                                        <span class="text-xs text-gray-500 capitalize" x-text="vendor.store_category ? vendor.store_category.replace('_', ' ') : ''"></span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3 flex-shrink-0">
+                                    <template x-if="vendor.price">
+                                        <span class="text-sm font-bold text-gray-900" x-text="'$' + parseFloat(vendor.price).toFixed(2)"></span>
+                                    </template>
+                                    <a :href="vendor.url" target="_blank" rel="noopener noreferrer"
+                                        class="px-3 py-1.5 text-xs font-medium rounded-lg bg-teal-600 text-white hover:bg-teal-700 transition-colors">
+                                        Visit
+                                    </a>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        {{-- No results --}}
+        <div x-show="search && !hasResults" class="text-center py-8">
+            <p class="text-gray-500">No peptides found matching "<span class="font-medium" x-text="search"></span>"</p>
+        </div>
+
+        {{-- Empty state --}}
+        <div x-show="!search && Object.keys(peptides).length === 0" class="text-center py-8">
+            <p class="text-gray-400">No peptide links available yet.</p>
+        </div>
+    </div>
+
+    {{-- Optional CTA --}}
+    @if(!empty($this->currentSlide['cta_text']))
+        <div class="text-center mt-8">
+            @if(!empty($this->currentSlide['cta_url']))
+                <a href="{{ $this->currentSlide['cta_url'] }}" target="_blank" rel="noopener noreferrer"
+                    class="btn btn-primary inline-block text-lg px-8 py-3">
+                    {{ $this->currentSlide['cta_text'] }}
+                </a>
+            @else
+                <button wire:click="advanceSlide" class="btn btn-primary text-lg px-8 py-3">
+                    {{ $this->currentSlide['cta_text'] }}
+                </button>
+            @endif
+        </div>
+    @endif
+
+    {{-- Navigation --}}
+    <div class="flex items-center justify-between mt-6">
+        @if((($quiz->settings ?? [])['allow_back'] ?? true) && $currentStep > 0)
+            <button wire:click="previousStep" class="btn bg-gray-200 text-gray-700 hover:bg-gray-300">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                Back
+            </button>
+        @else
+            <div></div>
+        @endif
+
+        <button wire:click="advanceSlide" class="btn btn-primary">
+            Continue
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+        </button>
+    </div>
+</div>

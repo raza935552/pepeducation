@@ -113,15 +113,27 @@
                 {{-- Rating & Testimonial --}}
                 <div class="card p-6">
                     <h3 class="text-lg font-semibold mb-4">Rating & Social Proof</h3>
+                    <p class="text-sm text-gray-500 mb-4">All fields are optional. Use the toggles to control what shows on the quiz reveal slide.</p>
 
                     <div class="space-y-4">
+                        @php $displayFields = old('display_fields', $result?->display_fields ?? []); @endphp
+
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label for="star_rating" class="block text-sm font-medium text-gray-700 mb-1">Star Rating (1.0 - 5.0)</label>
+                                <div class="flex items-center justify-between mb-1">
+                                    <label for="star_rating" class="text-sm font-medium text-gray-700">Star Rating (1.0 - 5.0)</label>
+                                    <label class="flex items-center gap-1 text-xs text-gray-500">
+                                        <input type="hidden" name="display_fields[star_rating]" value="0">
+                                        <input type="checkbox" name="display_fields[star_rating]" value="1"
+                                               {{ ($displayFields['star_rating'] ?? true) ? 'checked' : '' }}
+                                               class="rounded border-gray-300 text-brand-gold focus:ring-brand-gold h-3.5 w-3.5">
+                                        Show
+                                    </label>
+                                </div>
                                 <input type="number" name="star_rating" id="star_rating"
                                        value="{{ old('star_rating', $result?->star_rating ?? '4.8') }}"
                                        step="0.1" min="1" max="5"
-                                       class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold" required>
+                                       class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
                                 @error('star_rating') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                             </div>
 
@@ -130,16 +142,25 @@
                                 <input type="text" name="rating_label" id="rating_label"
                                        value="{{ old('rating_label', $result?->rating_label ?? 'Excellent Match') }}"
                                        placeholder="e.g. Excellent Match, Strong Match"
-                                       class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold" required>
+                                       class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
                                 @error('rating_label') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                             </div>
                         </div>
 
                         <div>
-                            <label for="testimonial" class="block text-sm font-medium text-gray-700 mb-1">Testimonial</label>
+                            <div class="flex items-center justify-between mb-1">
+                                <label for="testimonial" class="text-sm font-medium text-gray-700">Testimonial</label>
+                                <label class="flex items-center gap-1 text-xs text-gray-500">
+                                    <input type="hidden" name="display_fields[testimonial]" value="0">
+                                    <input type="checkbox" name="display_fields[testimonial]" value="1"
+                                           {{ ($displayFields['testimonial'] ?? true) ? 'checked' : '' }}
+                                           class="rounded border-gray-300 text-brand-gold focus:ring-brand-gold h-3.5 w-3.5">
+                                    Show
+                                </label>
+                            </div>
                             <textarea name="testimonial" id="testimonial" rows="3"
                                       placeholder="Real user quote about their experience with this peptide..."
-                                      class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold" required>{{ old('testimonial', $result?->testimonial) }}</textarea>
+                                      class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">{{ old('testimonial', $result?->testimonial) }}</textarea>
                             @error('testimonial') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 

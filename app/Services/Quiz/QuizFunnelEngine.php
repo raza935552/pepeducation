@@ -146,17 +146,23 @@ class QuizFunnelEngine
 
         if (!$key || !$map || !is_array($map)) return null;
 
-        // Find the user's answer value for this key (by klaviyo_property)
+        // Find the user's answer for this key (by klaviyo_property)
         $answerValue = null;
+        $optionId = null;
         foreach ($answers as $answer) {
             if (($answer['klaviyo_property'] ?? null) === $key) {
                 $answerValue = $answer['klaviyo_value'] ?? $answer['text_value'] ?? null;
+                $optionId = $answer['option_id'] ?? null;
                 break;
             }
         }
 
+        // Try klaviyo_value first, then fall back to option_id (internal value)
         if ($answerValue && isset($map[$answerValue])) {
             return $map[$answerValue];
+        }
+        if ($optionId && $optionId !== $answerValue && isset($map[$optionId])) {
+            return $map[$optionId];
         }
 
         return $map['_default'] ?? null;

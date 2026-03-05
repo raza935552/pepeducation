@@ -22,13 +22,24 @@ class ResultsBank extends Model
         'description',
         'benefits',
         'is_active',
+        'display_fields',
     ];
 
     protected $casts = [
         'star_rating' => 'decimal:1',
         'benefits' => 'array',
         'is_active' => 'boolean',
+        'display_fields' => 'array',
     ];
+
+    public function shouldDisplay(string $field): bool
+    {
+        $fields = $this->display_fields;
+        if (empty($fields)) {
+            return true; // Show everything by default
+        }
+        return !empty($fields[$field]);
+    }
 
     // Health goal constants (match option values from quiz)
     public const GOAL_FAT_LOSS = 'fat_loss';

@@ -4,13 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class StackStore extends Model
 {
+    public const CATEGORY_RESEARCH_GRADE = 'research_grade';
+    public const CATEGORY_TELEHEALTH = 'telehealth';
+    public const CATEGORY_AFFORDABLE = 'affordable';
+
+    public const CATEGORIES = [
+        self::CATEGORY_RESEARCH_GRADE => 'Research Grade',
+        self::CATEGORY_TELEHEALTH => 'Telehealth',
+        self::CATEGORY_AFFORDABLE => 'Affordable',
+    ];
+
     protected $fillable = [
         'name', 'slug', 'logo', 'website_url', 'description',
-        'is_active', 'is_recommended', 'order',
+        'category', 'is_active', 'is_recommended', 'order',
     ];
 
     protected $casts = [
@@ -49,6 +60,11 @@ class StackStore extends Model
             ->withTimestamps();
     }
 
+    public function peptideLinks(): HasMany
+    {
+        return $this->hasMany(StackStorePeptideLink::class)->orderBy('order');
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
@@ -57,5 +73,10 @@ class StackStore extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('order');
+    }
+
+    public function scopeCategory($query, string $category)
+    {
+        return $query->where('category', $category);
     }
 }

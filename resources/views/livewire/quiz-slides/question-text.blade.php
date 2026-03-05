@@ -33,4 +33,13 @@
             </button>
         </div>
     </form>
+
+    {{-- Optional CTA --}}
+    @if(!empty($this->currentSlide['cta_text']) && !empty($this->currentSlide['cta_url']))
+        <div class="text-center mt-4">
+            <a href="{{ $this->currentSlide['cta_url'] }}" target="_blank" rel="noopener noreferrer" class="text-sm text-brand-gold hover:underline">
+                {{ $this->currentSlide['cta_text'] }}
+            </a>
+        </div>
+    @endif
 </div>

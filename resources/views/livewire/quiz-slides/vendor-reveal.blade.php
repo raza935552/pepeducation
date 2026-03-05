@@ -4,6 +4,19 @@
     @php
         $result = $this->resultsBankEntry;
         $stackProduct = $this->stackProduct;
+        $preferredCategory = $this->preferredStoreCategory;
+
+        // Filter stores: prefer user's buying priority category, fall back to all in-stock
+        if ($stackProduct) {
+            $inStockStores = $stackProduct->stores->where('pivot.is_in_stock', true);
+            if ($preferredCategory) {
+                $filtered = $inStockStores->where('category', $preferredCategory);
+                // Only use filtered if it has results; otherwise show all
+                if ($filtered->count()) {
+                    $stackProduct->setRelation('stores', $filtered);
+                }
+            }
+        }
     @endphp
 
     @if($stackProduct && $stackProduct->stores->where('pivot.is_in_stock', true)->count())

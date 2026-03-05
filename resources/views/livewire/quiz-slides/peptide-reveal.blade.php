@@ -16,6 +16,7 @@
         </div>
 
         {{-- Star Rating --}}
+        @if($result->shouldDisplay('star_rating') && $result->star_rating)
         <div class="flex items-center justify-center gap-2 mb-6">
             <div class="flex items-center">
                 @for($i = 1; $i <= 5; $i++)
@@ -42,8 +43,11 @@
                 @endfor
             </div>
             <span class="text-lg font-bold text-gray-900">{{ $result->star_rating }}</span>
-            <span class="text-sm text-gray-500">&mdash; {{ $result->rating_label }}</span>
+            @if($result->rating_label)
+                <span class="text-sm text-gray-500">&mdash; {{ $result->rating_label }}</span>
+            @endif
         </div>
+        @endif
 
         {{-- Description --}}
         @if($result->description)
@@ -51,7 +55,7 @@
         @endif
 
         {{-- Benefits --}}
-        @if(!empty($result->benefits))
+        @if($result->shouldDisplay('benefits') && !empty($result->benefits))
             <div class="bg-green-50 rounded-lg p-6 mb-6 max-w-md mx-auto">
                 <h3 class="text-sm font-semibold text-green-800 uppercase tracking-wide mb-3">Key Benefits</h3>
                 <ul class="space-y-2">
@@ -68,7 +72,7 @@
         @endif
 
         {{-- Testimonial --}}
-        @if($result->testimonial)
+        @if($result->shouldDisplay('testimonial') && $result->testimonial)
             <div class="bg-gray-50 rounded-lg p-6 mb-8 max-w-lg mx-auto">
                 <svg class="w-8 h-8 text-gray-300 mb-3" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151C7.546 6.068 5.983 8.789 5.983 11h4v10H0z"/>

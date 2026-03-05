@@ -78,6 +78,17 @@
         </div>
     @endif
 
+    {{-- Optional CTA --}}
+    @if(!empty($this->currentSlide['cta_text']))
+        <div class="text-center mt-6">
+            @if(!empty($this->currentSlide['cta_url']))
+                <a href="{{ $this->currentSlide['cta_url'] }}" target="_blank" rel="noopener noreferrer" class="text-sm text-brand-gold hover:underline">
+                    {{ $this->currentSlide['cta_text'] }}
+                </a>
+            @endif
+        </div>
+    @endif
+
     <!-- Back Button -->
     @if((($quiz->settings ?? [])['allow_back'] ?? true) && $currentStep > 0)
         <div class="flex justify-start mt-8">

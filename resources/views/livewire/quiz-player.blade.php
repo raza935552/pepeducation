@@ -70,6 +70,10 @@
                     @include('livewire.quiz-slides.bridge')
                     @break
 
+                @case('peptide_search')
+                    @include('livewire.quiz-slides.peptide-search')
+                    @break
+
                 @default
                     {{-- Fallback: render as question (backwards compatible) --}}
                     @include('livewire.quiz-slides.question')

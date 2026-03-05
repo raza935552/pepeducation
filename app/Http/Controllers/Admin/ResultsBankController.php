@@ -84,12 +84,16 @@ class ResultsBankController extends Controller
             'peptide_name' => 'required|string|max:255',
             'peptide_slug' => 'nullable|string|max:255',
             'stack_product_id' => 'nullable|exists:stack_products,id',
-            'star_rating' => 'required|numeric|min:1|max:5',
-            'rating_label' => 'required|string|max:255',
-            'testimonial' => 'required|string|max:2000',
+            'star_rating' => 'nullable|numeric|min:1|max:5',
+            'rating_label' => 'nullable|string|max:255',
+            'testimonial' => 'nullable|string|max:2000',
             'testimonial_author' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:2000',
             'is_active' => 'boolean',
+            'display_fields' => 'nullable|array',
+            'display_fields.star_rating' => 'nullable|boolean',
+            'display_fields.testimonial' => 'nullable|boolean',
+            'display_fields.benefits' => 'nullable|boolean',
         ];
     }
 
@@ -99,9 +103,10 @@ class ResultsBankController extends Controller
      */
     private function getHealthGoalOptions(): array
     {
-        $options = $this->getOptionsFromQuiz('health_goal');
+        $quizOptions = $this->getOptionsFromQuiz('health_goal');
 
-        return !empty($options) ? $options : ResultsBank::HEALTH_GOALS;
+        // Merge: quiz values get constant labels where available, quiz-only values keep quiz labels
+        return $this->mergeWithConstants($quizOptions, ResultsBank::HEALTH_GOALS);
     }
 
     /**
@@ -110,9 +115,29 @@ class ResultsBankController extends Controller
      */
     private function getExperienceLevelOptions(): array
     {
-        $options = $this->getOptionsFromQuiz('experience_level');
+        $quizOptions = $this->getOptionsFromQuiz('experience_level');
 
-        return !empty($options) ? $options : ResultsBank::EXPERIENCE_LEVELS;
+        return $this->mergeWithConstants($quizOptions, ResultsBank::EXPERIENCE_LEVELS);
+    }
+
+    /**
+     * Merge quiz-derived options with hardcoded constants.
+     * Constants provide authoritative labels; quiz adds any extra values.
+     */
+    private function mergeWithConstants(array $quizOptions, array $constants): array
+    {
+        if (empty($quizOptions)) {
+            return $constants;
+        }
+
+        $merged = $constants;
+        foreach ($quizOptions as $value => $label) {
+            if (!isset($merged[$value])) {
+                $merged[$value] = $label;
+            }
+        }
+
+        return $merged;
     }
 
     /**

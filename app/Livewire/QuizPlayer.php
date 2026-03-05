@@ -8,6 +8,8 @@ use App\Models\QuizResponse;
 use App\Models\QuizOutcome;
 use App\Models\ResultsBank;
 use App\Models\StackProduct;
+use App\Models\StackStore;
+use App\Models\StackStorePeptideLink;
 use App\Services\Quiz\QuizFunnelEngine;
 use App\Services\SubscriberService;
 use App\Services\Klaviyo\KlaviyoService;
@@ -207,6 +209,55 @@ class QuizPlayer extends Component
     }
 
     /**
+     * Get the user's preferred store category based on their buying_priority answer.
+     * Maps buying_priority values to StackStore categories.
+     */
+    public function getPreferredStoreCategoryProperty(): ?string
+    {
+        $buyingPriority = $this->getAnswerByKlaviyoProperty('buying_priority');
+        if (!$buyingPriority) return null;
+
+        return match ($buyingPriority) {
+            'doctor_guidance' => StackStore::CATEGORY_TELEHEALTH,
+            'research_grade'  => StackStore::CATEGORY_RESEARCH_GRADE,
+            'affordable'      => StackStore::CATEGORY_AFFORDABLE,
+            default           => null,
+        };
+    }
+
+    /**
+     * Get all peptide links grouped by peptide name for the peptide search slide.
+     * Returns a collection of peptide names, each with their vendor links.
+     */
+    public function getPeptideSearchDataProperty(): array
+    {
+        $links = StackStorePeptideLink::with('store')
+            ->whereHas('store', fn($q) => $q->where('is_active', true))
+            ->where('is_in_stock', true)
+            ->orderBy('peptide_name')
+            ->orderBy('price')
+            ->get();
+
+        $grouped = [];
+        foreach ($links as $link) {
+            $name = $link->peptide_name;
+            if (!isset($grouped[$name])) {
+                $grouped[$name] = [];
+            }
+            $grouped[$name][] = [
+                'store_name' => $link->store->name,
+                'store_logo' => $link->store->logo,
+                'store_category' => $link->store->category,
+                'price' => $link->price,
+                'url' => $link->url,
+                'is_recommended' => $link->store->is_recommended,
+            ];
+        }
+
+        return $grouped;
+    }
+
+    /**
      * Find an answer's klaviyo_value by its klaviyo_property name.
      */
     private function getAnswerByKlaviyoProperty(string $property): ?string
@@ -259,7 +310,9 @@ class QuizPlayer extends Component
             'option_id' => $optionId,
             'option_text' => $selectedOption['text'] ?? $selectedOption['label'] ?? '',
             'klaviyo_property' => $question['klaviyo_property'] ?? null,
-            'klaviyo_value' => $selectedOption['klaviyo_value'] ?? $selectedOption['text'] ?? $selectedOption['label'] ?? '',
+            'klaviyo_value' => (!empty($selectedOption['klaviyo_value']))
+                ? $selectedOption['klaviyo_value']
+                : ($selectedOption['value'] ?? $selectedOption['text'] ?? $selectedOption['label'] ?? ''),
             'tags' => $selectedOption['tags'] ?? [],
         ];
 
@@ -342,7 +395,9 @@ class QuizPlayer extends Component
             'option_id' => implode(',', $this->multiSelections),
             'option_text' => $selectedOptions->map(fn ($o) => $o['text'] ?? $o['label'] ?? '')->implode(', '),
             'klaviyo_property' => $question['klaviyo_property'] ?? null,
-            'klaviyo_value' => $selectedOptions->map(fn ($o) => $o['klaviyo_value'] ?? $o['text'] ?? $o['label'] ?? '')->implode(', '),
+            'klaviyo_value' => $selectedOptions->map(fn ($o) =>
+                (!empty($o['klaviyo_value'])) ? $o['klaviyo_value'] : ($o['value'] ?? $o['text'] ?? $o['label'] ?? '')
+            )->implode(', '),
             'tags' => array_values(array_unique($tags)),
         ];
 
