@@ -44,7 +44,7 @@
             <div class="lg:col-span-2 space-y-6">
                 {{-- Journey Map Tab --}}
                 <div x-show="activeTab === 'map'" x-cloak>
-                    @include('admin.quizzes.partials.journey-map', ['phases' => $phases, 'quiz' => $quiz])
+                    @include('admin.quizzes.partials.journey-map', ['phases' => $phases, 'quiz' => $quiz, 'outcomesBySegment' => $outcomesBySegment, 'slideLabels' => $slideLabels])
                 </div>
 
                 {{-- Phase Tabs --}}
@@ -61,11 +61,12 @@
                                 <button type="button" onclick="showAddQuestion()" class="btn btn-secondary text-sm">+ Add Slide</button>
                             </div>
 
-                            <div class="space-y-3" data-phase="{{ $key }}">
+                            <div class="space-y-1.5" data-phase="{{ $key }}">
                                 @forelse($phase['slides'] as $question)
                                     @include('admin.quizzes.partials.question-row', [
                                         'question' => $question,
                                         'slideLabels' => $slideLabels,
+                                        'phaseKey' => $key,
                                     ])
                                 @empty
                                     <div class="text-center py-8 text-gray-400">

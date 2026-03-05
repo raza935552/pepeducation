@@ -18,11 +18,14 @@ class QuizQuestionController extends Controller
         $question = $quiz->questions()->create([
             'slide_type' => $validated['slide_type'] ?? 'question',
             'question_text' => $validated['question_text'] ?? $validated['content_title'] ?? 'Slide',
+            'question_subtext' => $validated['question_subtext'] ?? null,
             'question_type' => $validated['question_type'] ?? 'single_choice',
             'order' => $maxOrder + 1,
             'options' => $validated['options'] ?? [],
             'klaviyo_property' => $validated['klaviyo_property'] ?? null,
             'is_required' => $validated['is_required'] ?? true,
+            'max_selections' => $validated['max_selections'] ?? null,
+            'settings' => $validated['settings'] ?? null,
             'show_conditions' => $this->parseShowConditions($request),
             'content_title' => $validated['content_title'] ?? null,
             'content_body' => $validated['content_body'] ?? null,
@@ -48,10 +51,13 @@ class QuizQuestionController extends Controller
         $question->update([
             'slide_type' => $validated['slide_type'] ?? $question->slide_type,
             'question_text' => $validated['question_text'] ?? $validated['content_title'] ?? $question->question_text,
+            'question_subtext' => $validated['question_subtext'] ?? null,
             'question_type' => $validated['question_type'] ?? $question->question_type,
             'options' => $validated['options'] ?? [],
             'klaviyo_property' => $validated['klaviyo_property'] ?? null,
             'is_required' => $validated['is_required'] ?? true,
+            'max_selections' => $validated['max_selections'] ?? null,
+            'settings' => $validated['settings'] ?? null,
             'show_conditions' => $this->parseShowConditions($request),
             'content_title' => $validated['content_title'] ?? null,
             'content_body' => $validated['content_body'] ?? null,
@@ -115,6 +121,11 @@ class QuizQuestionController extends Controller
             'auto_advance_seconds' => 'nullable|integer|min:1|max:30',
             'cta_text' => 'nullable|string|max:255',
             'cta_url' => 'nullable|string|max:2048',
+            // New fields
+            'question_subtext' => 'nullable|string|max:500',
+            'max_selections' => 'nullable|integer|min:1|max:20',
+            'settings' => 'nullable|array',
+            'settings.placeholder' => 'nullable|string|max:200',
             // Dynamic content
             'dynamic_content_key' => 'nullable|string|max:255',
             'dynamic_variants' => 'nullable|array',
@@ -146,6 +157,7 @@ class QuizQuestionController extends Controller
             $rules['options.*.score_mof'] = 'nullable|integer';
             $rules['options.*.score_bof'] = 'nullable|integer';
             $rules['options.*.skip_to_question'] = 'nullable|integer';
+            $rules['options.*.subtext'] = 'nullable|string|max:200';
             $rules['options.*.tags'] = 'nullable|array';
             $rules['options.*.tags.*'] = 'nullable|string|max:100';
         } else {

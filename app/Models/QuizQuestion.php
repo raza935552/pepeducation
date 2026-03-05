@@ -110,9 +110,10 @@ class QuizQuestion extends Model
     public const TYPE_SCALE = 'scale';
 
     protected $fillable = [
-        'quiz_id', 'slide_type', 'question_text', 'question_type', 'order',
-        'options', 'klaviyo_property', 'is_required', 'settings',
-        'show_conditions',
+        'quiz_id', 'slide_type', 'question_text', 'question_subtext',
+        'question_type', 'order',
+        'options', 'klaviyo_property', 'is_required', 'max_selections',
+        'settings', 'show_conditions',
         'content_title', 'content_body', 'content_source',
         'auto_advance_seconds', 'cta_text', 'cta_url',
         'dynamic_content_key', 'dynamic_content_map',

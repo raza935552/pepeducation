@@ -11,14 +11,24 @@
         'vendor_reveal' => 'bg-indigo-100 text-indigo-700 border-indigo-200',
         'bridge' => 'bg-orange-100 text-orange-700 border-orange-200',
     ];
+    $typeAbbrev = [
+        'question' => 'Q', 'question_text' => 'Qt', 'intermission' => 'I',
+        'loading' => 'L', 'email_capture' => 'E', 'peptide_reveal' => 'P',
+        'vendor_reveal' => 'V', 'bridge' => 'B',
+    ];
     $badgeColor = $slideColors[$slideType] ?? 'bg-gray-200 text-gray-700 border-gray-300';
+    $abbr = $typeAbbrev[$slideType] ?? '?';
 
     // Build JSON for edit modal
     $questionJson = json_encode([
         'slide_type' => $slideType,
         'question_text' => $question->question_text,
+        'question_subtext' => $question->question_subtext,
         'question_type' => $question->question_type,
         'klaviyo_property' => $question->klaviyo_property,
+        'is_required' => (bool) $question->is_required,
+        'max_selections' => $question->max_selections,
+        'settings' => $question->settings ?? [],
         'options' => $question->options ?? [],
         'content_title' => $question->content_title,
         'content_body' => $question->content_body,
@@ -61,83 +71,122 @@
         if ($bof === $max && $bof > 0) $labels[] = "BOF (+{$bof})";
         return 'Leans ' . implode(' / ', $labels);
     };
+
+    $title = in_array($slideType, ['question', 'question_text'])
+        ? $question->question_text
+        : ($question->content_title ?: null);
+
+    $optionCount = ($slideType === 'question' && $question->options) ? count($question->options) : 0;
+
+    // Left border color by slide type
+    $leftBorderColors = [
+        'question'       => 'border-l-blue-300',
+        'question_text'  => 'border-l-blue-300',
+        'intermission'   => 'border-l-amber-300',
+        'loading'        => 'border-l-purple-300',
+        'email_capture'  => 'border-l-green-300',
+        'peptide_reveal' => 'border-l-pink-300',
+        'vendor_reveal'  => 'border-l-indigo-300',
+        'bridge'         => 'border-l-orange-300',
+    ];
+    $leftBorder = $leftBorderColors[$slideType] ?? 'border-l-gray-300';
+
+    // Hide redundant conditions: if slide is inside a segment phase (tof/mof/bof),
+    // and the only condition is the branching question that routes to this phase,
+    // suppress it — the phase tab already implies this.
+    $phaseKey = $phaseKey ?? 'shared';
+    $isRedundantCondition = false;
+    if (in_array($phaseKey, ['tof', 'mof', 'bof']) && count($conditions) === 1 && $condType === 'and') {
+        $isRedundantCondition = true;
+    }
 @endphp
 
-<div class="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition-shadow" data-question-id="{{ $question->id }}" x-data="{ expanded: false }">
-    {{-- Header --}}
-    <div class="flex items-start justify-between">
+<div class="group border border-l-2 {{ $leftBorder }} rounded-lg bg-white hover:shadow-sm transition-shadow" data-question-id="{{ $question->id }}" x-data="{ expanded: false }">
+    {{-- Compact row --}}
+    <div class="flex items-center gap-3 px-3 py-2.5 cursor-pointer" @click="expanded = !expanded">
+        {{-- Type badge --}}
+        <span class="inline-flex items-center justify-center w-7 h-7 rounded-md text-xs font-bold border flex-shrink-0 {{ $badgeColor }}">{{ $abbr }}</span>
+
+        {{-- Order --}}
+        <span class="text-xs font-mono text-gray-400 flex-shrink-0 w-6 text-right">#{{ $question->order }}</span>
+
+        {{-- Title + meta --}}
         <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2 mb-1 flex-wrap">
-                <span class="text-xs font-mono text-gray-400">#{{ $question->order }}</span>
-                <span class="px-2 py-0.5 text-xs rounded-full font-medium border {{ $badgeColor }}">{{ $slideLabel }}</span>
-                @if($question->klaviyo_property)
-                    <span class="px-2 py-0.5 text-xs rounded bg-purple-50 text-purple-600 border border-purple-200">{{ $question->klaviyo_property }}</span>
+            <div class="flex items-center gap-2">
+                @if($title)
+                    <span class="text-sm text-gray-900 truncate">{{ $title }}</span>
+                @else
+                    <span class="text-sm text-gray-400 italic">{{ $slideLabel }} slide</span>
                 @endif
             </div>
+        </div>
 
-            {{-- Title --}}
-            @if(in_array($slideType, ['question', 'question_text']))
-                <p class="text-gray-900 font-medium">{{ $question->question_text }}</p>
-            @elseif($question->content_title)
-                <p class="text-gray-900 font-medium">{{ $question->content_title }}</p>
-            @else
-                <p class="text-gray-500 italic">{{ $slideLabel }} slide</p>
+        {{-- Inline meta chips --}}
+        <div class="hidden sm:flex items-center gap-1.5 flex-shrink-0">
+            @if($question->klaviyo_property)
+                <span class="px-1.5 py-0.5 text-[10px] rounded bg-purple-50 text-purple-600 border border-purple-200">{{ $question->klaviyo_property }}</span>
             @endif
-
-            {{-- Conditions (plain English) --}}
-            @if(!empty($conditionsText))
-                <div class="mt-2 flex items-start gap-1.5">
-                    <span class="text-xs text-gray-400 mt-0.5 flex-shrink-0">Visible when:</span>
-                    <span class="text-xs text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded">
-                        {{ implode(' ' . strtoupper($condType) . ' ', $conditionsText) }}
-                    </span>
-                </div>
+            @if($optionCount > 0)
+                <span class="text-[10px] text-gray-400">{{ $optionCount }} opts</span>
+            @endif
+            @if($slideType === 'loading' && $question->auto_advance_seconds)
+                <span class="text-[10px] text-purple-500">{{ $question->auto_advance_seconds }}s</span>
             @endif
         </div>
 
         {{-- Actions --}}
-        <div class="flex items-center gap-1 ml-4 flex-shrink-0">
-            <button type="button" @click="expanded = !expanded" class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100" :title="expanded ? 'Collapse' : 'Expand'">
-                <svg :class="expanded ? 'rotate-180' : ''" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        <div class="flex items-center gap-0.5 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button type="button" onclick='event.stopPropagation(); editQuestion({{ $question->id }}, {!! e($questionJson) !!})' class="p-1 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100" title="Edit">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             </button>
-            <button type="button" onclick='editQuestion({{ $question->id }}, {!! e($questionJson) !!})' class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100" title="Edit">
-                <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-            </button>
-            <form action="{{ route('admin.quizzes.questions.destroy', [$quiz, $question]) }}" method="POST" class="inline" onsubmit="return confirm('Delete this slide?')">
+            <form action="{{ route('admin.quizzes.questions.destroy', [$quiz, $question]) }}" method="POST" class="inline" onsubmit="event.stopPropagation(); return confirm('Delete this slide?')">
                 @csrf @method('DELETE')
-                <button type="submit" class="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50" title="Delete">
-                    <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                <button type="submit" class="p-1 rounded text-gray-400 hover:text-red-500 hover:bg-red-50" title="Delete">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                 </button>
             </form>
         </div>
+
+        {{-- Expand chevron --}}
+        <svg :class="expanded ? 'rotate-180' : ''" class="w-4 h-4 text-gray-300 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
     </div>
 
-    {{-- Expandable Content --}}
-    <div x-show="expanded" x-collapse class="mt-3">
+    {{-- Expandable details --}}
+    <div x-show="expanded" x-collapse class="border-t border-gray-100 px-3 py-3 bg-gray-50/50">
+        {{-- Conditions (hidden when redundant with phase) --}}
+        @if(!empty($conditionsText) && !$isRedundantCondition)
+            <div class="flex items-start gap-1.5 mb-3">
+                <span class="text-[10px] text-gray-400 mt-0.5 flex-shrink-0 uppercase tracking-wide">Show when</span>
+                <span class="text-xs text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded">
+                    {{ implode(' ' . strtoupper($condType) . ' ', $conditionsText) }}
+                </span>
+            </div>
+        @endif
+
         {{-- Options for choice questions --}}
         @if($slideType === 'question' && $question->options)
-            <div class="space-y-2">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                 @foreach($question->options as $option)
-                    <div class="rounded-lg border border-gray-200 bg-gray-50 p-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm font-medium text-gray-800">{{ $option['label'] ?? $option['text'] ?? $option['value'] ?? 'Option' }}</span>
+                    <div class="rounded border border-gray-200 bg-white px-2.5 py-2">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-xs font-medium text-gray-800 truncate">{{ $option['label'] ?? $option['text'] ?? $option['value'] ?? 'Option' }}</span>
                             @php $scoreLabel = $getScoreLabel($option); @endphp
                             @if($scoreLabel)
-                                <span class="text-xs px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">{{ $scoreLabel }}</span>
+                                <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 flex-shrink-0 whitespace-nowrap">{{ $scoreLabel }}</span>
                             @endif
                         </div>
                         @if(!empty($option['skip_to_question']))
                             <div class="mt-1 flex items-center gap-1">
-                                <span class="text-xs text-gray-400">Jumps to:</span>
-                                <span class="text-xs text-yellow-700 bg-yellow-50 px-1.5 py-0.5 rounded">
+                                <span class="text-[10px] text-gray-400">Jumps to:</span>
+                                <span class="text-[10px] text-yellow-700 bg-yellow-50 px-1.5 py-0.5 rounded">
                                     {{ $slideLabels[$option['skip_to_question']] ?? 'Slide #'.$option['skip_to_question'] }}
                                 </span>
                             </div>
                         @endif
                         @if(!empty($option['tags']))
-                            <div class="mt-1 flex flex-wrap gap-1">
+                            <div class="mt-1 flex flex-wrap gap-0.5">
                                 @foreach($option['tags'] as $tag)
-                                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-600">{{ $tag }}</span>
+                                    <span class="text-[9px] px-1 py-0.5 rounded bg-indigo-50 text-indigo-600">{{ $tag }}</span>
                                 @endforeach
                             </div>
                         @endif
@@ -148,10 +197,10 @@
 
         {{-- Content preview for non-question slides --}}
         @if(in_array($slideType, ['intermission', 'loading', 'bridge']) && $question->content_body)
-            <div class="rounded-lg border border-gray-200 bg-gray-50 p-3">
-                <p class="text-sm text-gray-600 whitespace-pre-line">{{ Str::limit($question->content_body, 200) }}</p>
+            <div class="rounded border border-gray-200 bg-white p-2.5">
+                <p class="text-xs text-gray-600 whitespace-pre-line">{{ Str::limit($question->content_body, 200) }}</p>
                 @if($question->content_source)
-                    <p class="text-xs text-gray-400 mt-1 italic">Source: {{ $question->content_source }}</p>
+                    <p class="text-[10px] text-gray-400 mt-1 italic">Source: {{ $question->content_source }}</p>
                 @endif
             </div>
         @endif
@@ -159,10 +208,10 @@
         {{-- CTA info --}}
         @if($question->cta_text)
             <div class="mt-2 flex items-center gap-2">
-                <span class="text-xs text-gray-400">CTA:</span>
+                <span class="text-[10px] text-gray-400 uppercase tracking-wide">CTA</span>
                 <span class="text-xs px-2 py-0.5 rounded bg-brand-gold/10 text-brand-gold font-medium">{{ $question->cta_text }}</span>
                 @if($question->cta_url)
-                    <span class="text-xs text-gray-400">→ {{ Str::limit($question->cta_url, 40) }}</span>
+                    <span class="text-xs text-gray-400">&rarr; {{ Str::limit($question->cta_url, 40) }}</span>
                 @endif
             </div>
         @endif
@@ -170,7 +219,14 @@
         {{-- Auto-advance --}}
         @if($slideType === 'loading' && $question->auto_advance_seconds)
             <div class="mt-2">
-                <span class="text-xs text-purple-600 bg-purple-50 px-2 py-0.5 rounded">Auto-advances in {{ $question->auto_advance_seconds }}s</span>
+                <span class="text-[10px] text-purple-600 bg-purple-50 px-2 py-0.5 rounded">Auto-advances in {{ $question->auto_advance_seconds }}s</span>
+            </div>
+        @endif
+
+        {{-- Klaviyo property (mobile fallback) --}}
+        @if($question->klaviyo_property)
+            <div class="sm:hidden mt-2">
+                <span class="px-1.5 py-0.5 text-[10px] rounded bg-purple-50 text-purple-600 border border-purple-200">{{ $question->klaviyo_property }}</span>
             </div>
         @endif
     </div>
