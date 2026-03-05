@@ -175,6 +175,14 @@ class QuizPlayer extends Component
         $healthGoal = $this->getAnswerByKlaviyoProperty('health_goal');
         $experienceLevel = $this->getAnswerByKlaviyoProperty('experience_level');
 
+        // Path 3 "same category": infer health goal from the peptide they were using
+        if (!$healthGoal) {
+            $peptidePref = $this->getAnswerByKlaviyoProperty('peptide_preference');
+            if ($peptidePref) {
+                $healthGoal = $this->inferHealthGoalFromPeptide($peptidePref);
+            }
+        }
+
         if (!$healthGoal) return null;
 
         // BOF-C stackers are experienced — default to advanced
@@ -192,8 +200,9 @@ class QuizPlayer extends Component
      */
     public function getStackProductProperty(): ?StackProduct
     {
-        // BOF-A: user selected a specific peptide — look up StackProduct by slug directly
-        $selectedPeptide = $this->getAnswerByKlaviyoProperty('selected_peptide');
+        // Direct peptide selection: BOF-A (selected_peptide) or Path 1/3 (peptide_preference)
+        $selectedPeptide = $this->getAnswerByKlaviyoProperty('selected_peptide')
+            ?? $this->getAnswerByKlaviyoProperty('peptide_preference');
         if ($selectedPeptide) {
             $slugMap = ['kisspeptin' => 'kisspeptin-10'];
             $slug = $slugMap[$selectedPeptide] ?? $selectedPeptide;
@@ -260,6 +269,18 @@ class QuizPlayer extends Component
     /**
      * Find an answer's klaviyo_value by its klaviyo_property name.
      */
+    /**
+     * Infer health goal from a peptide slug (for Path 3 "same category" logic).
+     */
+    private function inferHealthGoalFromPeptide(string $peptideSlug): ?string
+    {
+        $entry = ResultsBank::where('peptide_slug', $peptideSlug)
+            ->where('is_active', true)
+            ->first();
+
+        return $entry?->health_goal;
+    }
+
     private function getAnswerByKlaviyoProperty(string $property): ?string
     {
         foreach ($this->answers as $answer) {
