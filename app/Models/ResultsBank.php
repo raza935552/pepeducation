@@ -92,6 +92,30 @@ class ResultsBank extends Model
     }
 
     /**
+     * Resolve a recommendation excluding a specific peptide (Path 3 same-category).
+     * Falls back to any experience level if the exact match is the excluded peptide.
+     */
+    public static function resolveExcluding(string $healthGoal, string $experienceLevel, string $excludeSlug): ?self
+    {
+        // Try exact match first, excluding the unwanted peptide
+        $entry = static::where('health_goal', $healthGoal)
+            ->where('experience_level', $experienceLevel)
+            ->where('peptide_slug', '!=', $excludeSlug)
+            ->where('is_active', true)
+            ->with('stackProduct.stores')
+            ->first();
+
+        if ($entry) return $entry;
+
+        // Fall back to any experience level in the same category
+        return static::where('health_goal', $healthGoal)
+            ->where('peptide_slug', '!=', $excludeSlug)
+            ->where('is_active', true)
+            ->with('stackProduct.stores')
+            ->first();
+    }
+
+    /**
      * Get the human-readable health goal label.
      */
     public function getGoalLabelAttribute(): string

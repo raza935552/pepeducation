@@ -174,13 +174,12 @@ class QuizPlayer extends Component
     {
         $healthGoal = $this->getAnswerByKlaviyoProperty('health_goal');
         $experienceLevel = $this->getAnswerByKlaviyoProperty('experience_level');
+        $categoryPref = $this->getAnswerByKlaviyoProperty('category_preference');
+        $peptidePref = $this->getAnswerByKlaviyoProperty('peptide_preference');
 
         // Path 3 "same category": infer health goal from the peptide they were using
-        if (!$healthGoal) {
-            $peptidePref = $this->getAnswerByKlaviyoProperty('peptide_preference');
-            if ($peptidePref) {
-                $healthGoal = $this->inferHealthGoalFromPeptide($peptidePref);
-            }
+        if (!$healthGoal && $peptidePref) {
+            $healthGoal = $this->inferHealthGoalFromPeptide($peptidePref);
         }
 
         if (!$healthGoal) return null;
@@ -189,6 +188,11 @@ class QuizPlayer extends Component
         $bofIntent = $this->getAnswerByKlaviyoProperty('bof_intent');
         if (!$experienceLevel) {
             $experienceLevel = ($bofIntent === 'want_to_stack') ? 'advanced' : 'beginner';
+        }
+
+        // Path 3 same-category: exclude the peptide they're switching from
+        if ($categoryPref === 'same_category' && $peptidePref) {
+            return ResultsBank::resolveExcluding($healthGoal, $experienceLevel, $peptidePref);
         }
 
         return ResultsBank::resolve($healthGoal, $experienceLevel);
@@ -200,9 +204,14 @@ class QuizPlayer extends Component
      */
     public function getStackProductProperty(): ?StackProduct
     {
-        // Direct peptide selection: BOF-A (selected_peptide) or Path 1/3 (peptide_preference)
-        $selectedPeptide = $this->getAnswerByKlaviyoProperty('selected_peptide')
-            ?? $this->getAnswerByKlaviyoProperty('peptide_preference');
+        $categoryPref = $this->getAnswerByKlaviyoProperty('category_preference');
+
+        // Direct peptide selection: BOF-A (selected_peptide) or Path 1 (peptide_preference)
+        // Skip peptide_preference for Path 3 — it's the peptide they're switching FROM
+        $selectedPeptide = $this->getAnswerByKlaviyoProperty('selected_peptide');
+        if (!$categoryPref) {
+            $selectedPeptide = $selectedPeptide ?? $this->getAnswerByKlaviyoProperty('peptide_preference');
+        }
         if ($selectedPeptide) {
             $slugMap = ['kisspeptin' => 'kisspeptin-10'];
             $slug = $slugMap[$selectedPeptide] ?? $selectedPeptide;

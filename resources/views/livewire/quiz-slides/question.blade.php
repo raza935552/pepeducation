@@ -1,8 +1,15 @@
 {{-- Question (Choice) Slide --}}
 @php
     $isMultiple = ($this->currentSlide['question_type'] ?? '') === 'multiple_choice';
+    $options = $this->currentSlide['options'] ?? [];
+    $showSearch = count($options) >= 8;
 @endphp
-<div class="card p-8" wire:key="slide-question-{{ $currentStep }}">
+<div class="card p-8" wire:key="slide-question-{{ $currentStep }}"
+    @if($showSearch)
+        x-data="{ search: '' }"
+        x-init="search = ''"
+    @endif
+>
     <h2 class="text-2xl font-semibold mb-6">{{ $this->currentSlide['question_text'] }}</h2>
 
     @if(!empty($this->currentSlide['question_subtext']))
@@ -13,9 +20,24 @@
         <p class="text-sm text-gray-500 mb-4">Select all that apply</p>
     @endif
 
+    @if($showSearch)
+        <div class="relative mb-4">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <input
+                type="text"
+                x-model="search"
+                placeholder="Search options..."
+                class="w-full pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none"
+                style="padding-left: 2.5rem"
+            />
+        </div>
+    @endif
+
     <!-- Options -->
     <div class="space-y-3">
-        @foreach($this->currentSlide['options'] ?? [] as $option)
+        @foreach($options as $option)
             @php
                 $optionKey = $option['value'] ?? $option['id'] ?? '';
                 $optionLabel = $option['text'] ?? $option['label'] ?? '';
@@ -25,6 +47,7 @@
                 {{-- Multiple choice: toggle selection without advancing --}}
                 <button
                     wire:click="toggleMultipleAnswer({{ $currentStep }}, '{{ addslashes($optionKey) }}')"
+                    @if($showSearch) x-show="!search || '{{ strtolower(addslashes($optionLabel)) }}'.includes(search.toLowerCase())" @endif
                     class="w-full text-left p-4 rounded-lg border-2 transition-all flex items-center gap-3
                         {{ in_array($optionKey, $multiSelections)
                             ? 'border-brand-gold bg-brand-gold/10'
@@ -51,6 +74,7 @@
                 {{-- Single choice: select and advance immediately --}}
                 <button
                     wire:click="selectAnswer({{ $currentStep }}, '{{ addslashes($optionKey) }}')"
+                    @if($showSearch) x-show="!search || '{{ strtolower(addslashes($optionLabel)) }}'.includes(search.toLowerCase())" @endif
                     class="w-full text-left p-4 rounded-lg border-2 transition-all
                         {{ isset($answers[$currentStep]) && ($answers[$currentStep]['option_id'] ?? '') === $optionKey
                             ? 'border-brand-gold bg-brand-gold/10'
