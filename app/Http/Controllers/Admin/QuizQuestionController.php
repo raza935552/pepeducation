@@ -88,6 +88,19 @@ class QuizQuestionController extends Controller
 
     public function destroy(Quiz $quiz, QuizQuestion $question)
     {
+        // Check for cascade impacts before deleting
+        if (request()->wantsJson() && !request()->boolean('confirmed')) {
+            $quiz->loadMissing(['questions', 'outcomes']);
+            $warnings = $this->checkDeleteImpact($quiz, $question);
+
+            if (!empty($warnings)) {
+                return response()->json([
+                    'needs_confirmation' => true,
+                    'warnings' => $warnings,
+                ]);
+            }
+        }
+
         $question->delete();
 
         if (request()->wantsJson()) {
@@ -95,6 +108,58 @@ class QuizQuestionController extends Controller
         }
 
         return back()->with('success', 'Question deleted.');
+    }
+
+    private function checkDeleteImpact(Quiz $quiz, QuizQuestion $question): array
+    {
+        $warnings = [];
+        $slideId = $question->id;
+
+        // 1. Other slides with show_conditions referencing this slide
+        foreach ($quiz->questions as $otherQuestion) {
+            if ($otherQuestion->id === $slideId) continue;
+
+            $conditions = $otherQuestion->show_conditions['conditions'] ?? [];
+            foreach ($conditions as $cond) {
+                if (($cond['question_id'] ?? null) == $slideId) {
+                    $warnings[] = [
+                        'type' => 'show_condition',
+                        'message' => 'Slide #' . $otherQuestion->order . ' "' . \Str::limit($otherQuestion->question_text ?: $otherQuestion->content_title ?: 'Untitled', 40) . '" has a show condition referencing this slide',
+                    ];
+                    break;
+                }
+            }
+        }
+
+        // 2. Options on other slides with skip_to_question pointing here
+        foreach ($quiz->questions as $otherQuestion) {
+            if ($otherQuestion->id === $slideId) continue;
+
+            foreach ($otherQuestion->options ?? [] as $option) {
+                if (($option['skip_to_question'] ?? null) == $slideId) {
+                    $warnings[] = [
+                        'type' => 'skip_to',
+                        'message' => 'Slide #' . $otherQuestion->order . ' "' . \Str::limit($otherQuestion->question_text ?: $otherQuestion->content_title ?: 'Untitled', 40) . '" has an option that skips to this slide',
+                    ];
+                    break;
+                }
+            }
+        }
+
+        // 3. Outcomes with answer conditions matching this slide's klaviyo_property
+        if ($question->klaviyo_property) {
+            foreach ($quiz->outcomes as $outcome) {
+                $conditions = $outcome->conditions ?? [];
+                if (($conditions['type'] ?? null) === 'answer' && ($conditions['question'] ?? null) === $question->klaviyo_property) {
+                    $warnings[] = [
+                        'type' => 'outcome',
+                        'message' => 'Outcome "' . $outcome->name . '" has an answer condition on "' . $question->klaviyo_property . '"',
+                    ];
+                }
+            }
+        }
+
+        return $warnings;
     }
 
     public function reorder(Request $request, Quiz $quiz)

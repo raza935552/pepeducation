@@ -2,6 +2,7 @@
 @php
     $isMultiple = ($this->currentSlide['question_type'] ?? '') === 'multiple_choice';
     $options = $this->currentSlide['options'] ?? [];
+    $maxSelections = $this->currentSlide['max_selections'] ?? null;
     $showSearch = count($options) >= 8;
 @endphp
 <div class="card p-8" wire:key="slide-question-{{ $currentStep }}"
@@ -17,7 +18,13 @@
     @endif
 
     @if($isMultiple)
-        <p class="text-sm text-gray-500 mb-4">Select all that apply</p>
+        <p class="text-sm text-gray-500 mb-4">
+            @if($maxSelections)
+                Select up to {{ $maxSelections }}
+            @else
+                Select all that apply
+            @endif
+        </p>
     @endif
 
     @if($showSearch)
@@ -45,13 +52,15 @@
 
             @if($isMultiple)
                 {{-- Multiple choice: toggle selection without advancing --}}
+                @php $atLimit = $maxSelections && count($multiSelections) >= $maxSelections && !in_array($optionKey, $multiSelections); @endphp
                 <button
                     wire:click="toggleMultipleAnswer({{ $currentStep }}, '{{ addslashes($optionKey) }}')"
+                    @if($atLimit) disabled @endif
                     @if($showSearch) x-show="!search || '{{ strtolower(addslashes($optionLabel)) }}'.includes(search.toLowerCase())" @endif
                     class="w-full text-left p-4 rounded-lg border-2 transition-all flex items-center gap-3
                         {{ in_array($optionKey, $multiSelections)
                             ? 'border-brand-gold bg-brand-gold/10'
-                            : 'border-gray-200 hover:border-brand-gold/50 hover:bg-gray-50' }}"
+                            : ($atLimit ? 'border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed' : 'border-gray-200 hover:border-brand-gold/50 hover:bg-gray-50') }}"
                 >
                     <span class="flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center
                         {{ in_array($optionKey, $multiSelections)
@@ -91,13 +100,20 @@
 
     <!-- Continue button for multiple choice -->
     @if($isMultiple)
-        <div class="flex justify-end mt-6">
+        <div class="flex items-center justify-between mt-6">
+            @if($maxSelections)
+                <span class="text-xs text-gray-400">{{ count($multiSelections) }}/{{ $maxSelections }} selected</span>
+            @else
+                <span></span>
+            @endif
             <button
                 wire:click="submitMultipleAnswer"
+                wire:loading.attr="disabled"
                 @if(empty($multiSelections)) disabled @endif
-                class="btn {{ empty($multiSelections) ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-brand-gold text-white hover:bg-brand-gold/90' }}"
+                class="btn {{ empty($multiSelections) ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-brand-gold text-white hover:bg-brand-gold/90' }} disabled:opacity-50"
             >
-                Continue
+                <span wire:loading.remove wire:target="submitMultipleAnswer">Continue</span>
+                <span wire:loading wire:target="submitMultipleAnswer">Saving...</span>
             </button>
         </div>
     @endif

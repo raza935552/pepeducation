@@ -113,6 +113,22 @@ class QuizOutcomeController extends Controller
         };
     }
 
+    public function reorder(Request $request, Quiz $quiz)
+    {
+        $validated = $request->validate([
+            'outcomes' => 'required|array',
+            'outcomes.*' => 'integer|exists:quiz_outcomes,id',
+        ]);
+
+        foreach ($validated['outcomes'] as $priority => $outcomeId) {
+            QuizOutcome::where('id', $outcomeId)
+                ->where('quiz_id', $quiz->id)
+                ->update(['priority' => $priority + 1]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
     public function destroy(Quiz $quiz, QuizOutcome $outcome)
     {
         $outcome->delete();

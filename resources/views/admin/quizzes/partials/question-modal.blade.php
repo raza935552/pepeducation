@@ -13,6 +13,17 @@
             'label' => $o['text'] ?? $o['label'] ?? $o['value'] ?? '',
         ])->values()->toArray(),
     ])->toJson();
+
+    // ResultsBank data for smart dropdowns & validation
+    $resultsBankGoalsJson = json_encode(\App\Models\ResultsBank::HEALTH_GOALS);
+    $resultsBankLevelsJson = json_encode(\App\Models\ResultsBank::EXPERIENCE_LEVELS);
+    $resultsBankCoverageJson = json_encode(
+        \App\Models\ResultsBank::where('is_active', true)
+            ->get()
+            ->groupBy('health_goal')
+            ->map(fn($entries) => $entries->pluck('experience_level')->toArray())
+            ->toArray()
+    );
 @endphp
 
 <div id="question-modal" class="fixed inset-0 bg-black/50 z-50 hidden" x-data="questionModal()">
@@ -211,6 +222,15 @@
                                                 class="w-full rounded border-gray-200 text-xs py-1 text-gray-500 focus:border-brand-gold focus:ring-brand-gold">
                                         </div>
 
+                                        {{-- Results Bank match indicator (health_goal slides) --}}
+                                        <template x-if="question.klaviyo_property === 'health_goal' && option.klaviyo_value">
+                                            <span class="flex-shrink-0 text-[9px] px-1.5 py-0.5 rounded-full font-medium whitespace-nowrap"
+                                                :class="hasResultsBankEntry(option.klaviyo_value) ? 'bg-green-50 text-green-600 border border-green-200' : 'bg-yellow-50 text-yellow-600 border border-yellow-200'"
+                                                x-text="hasResultsBankEntry(option.klaviyo_value) ? 'RB' : 'No RB'"
+                                                :title="hasResultsBankEntry(option.klaviyo_value) ? 'Has Results Bank entry' : 'Missing Results Bank entry'">
+                                            </span>
+                                        </template>
+
                                         {{-- Scoring indicator (shows if any score > 0) --}}
                                         <template x-if="(option.score_tof || 0) + (option.score_mof || 0) + (option.score_bof || 0) > 0">
                                             <span class="flex-shrink-0 text-[9px] px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-600 border border-amber-200 font-medium whitespace-nowrap"
@@ -239,18 +259,68 @@
                                     {{-- Expanded panel: scoring + skip + tags --}}
                                     <div x-show="option._expanded" x-collapse class="border-t border-gray-100 bg-gray-50/70 px-3 py-3 space-y-3">
 
-                                        {{-- Internal value (power users) --}}
-                                        <div class="flex gap-3">
-                                            <div>
-                                                <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Internal Value <span class="font-normal text-gray-400">auto-generated if blank</span></label>
-                                                <input type="text" x-model="option.value" placeholder="auto from label"
-                                                    class="w-40 rounded border-gray-200 text-xs py-1">
-                                            </div>
-                                            <div>
-                                                <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Klaviyo Value <span class="font-normal text-gray-400">override for profile sync</span></label>
-                                                <input type="text" x-model="option.klaviyo_value" placeholder="same as value if blank"
-                                                    class="w-40 rounded border-gray-200 text-xs py-1">
-                                            </div>
+                                        {{-- Value fields — smart dropdown for health_goal / experience_level --}}
+                                        <div>
+                                            {{-- Health Goal dropdown --}}
+                                            <template x-if="question.klaviyo_property === 'health_goal'">
+                                                <div>
+                                                    <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Health Goal <span class="font-normal text-gray-400">maps to Results Bank</span></label>
+                                                    <div class="flex items-center gap-2">
+                                                        <select x-model="option.klaviyo_value"
+                                                            @change="option.value = option.klaviyo_value"
+                                                            class="flex-1 rounded border-gray-200 text-xs py-1">
+                                                            <option value="">Select goal...</option>
+                                                            <template x-for="[key, label] in Object.entries(resultsBankGoals)" :key="key">
+                                                                <option :value="key" x-text="label"></option>
+                                                            </template>
+                                                        </select>
+                                                        <template x-if="option.klaviyo_value && hasResultsBankEntry(option.klaviyo_value)">
+                                                            <span class="flex-shrink-0 text-green-500" title="Results Bank entry exists">
+                                                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                                            </span>
+                                                        </template>
+                                                        <template x-if="option.klaviyo_value && !hasResultsBankEntry(option.klaviyo_value)">
+                                                            <a :href="'{{ route('admin.results-bank.create') }}?health_goal=' + encodeURIComponent(option.klaviyo_value)"
+                                                                target="_blank"
+                                                                class="flex-shrink-0 text-yellow-500 hover:text-yellow-600"
+                                                                title="No Results Bank entry — click to create">
+                                                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"/></svg>
+                                                            </a>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </template>
+
+                                            {{-- Experience Level dropdown --}}
+                                            <template x-if="question.klaviyo_property === 'experience_level'">
+                                                <div>
+                                                    <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Experience Level <span class="font-normal text-gray-400">maps to Results Bank</span></label>
+                                                    <select x-model="option.klaviyo_value"
+                                                        @change="option.value = option.klaviyo_value"
+                                                        class="w-full rounded border-gray-200 text-xs py-1">
+                                                        <option value="">Select level...</option>
+                                                        <template x-for="[key, label] in Object.entries(resultsBankLevels)" :key="key">
+                                                            <option :value="key" x-text="label"></option>
+                                                        </template>
+                                                    </select>
+                                                </div>
+                                            </template>
+
+                                            {{-- Default free-text inputs --}}
+                                            <template x-if="question.klaviyo_property !== 'health_goal' && question.klaviyo_property !== 'experience_level'">
+                                                <div class="flex gap-3">
+                                                    <div>
+                                                        <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Internal Value <span class="font-normal text-gray-400">auto-generated if blank</span></label>
+                                                        <input type="text" x-model="option.value" placeholder="auto from label"
+                                                            class="w-40 rounded border-gray-200 text-xs py-1">
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Klaviyo Value <span class="font-normal text-gray-400">override for profile sync</span></label>
+                                                        <input type="text" x-model="option.klaviyo_value" placeholder="same as value if blank"
+                                                            class="w-40 rounded border-gray-200 text-xs py-1">
+                                                    </div>
+                                                </div>
+                                            </template>
                                         </div>
 
                                         {{-- Funnel Scoring --}}
@@ -524,9 +594,20 @@
                                 <template x-for="(variant, vi) in question.dynamic_variants" :key="vi">
                                     <div class="border rounded-lg p-3 mb-2 bg-gray-50/50">
                                         <div class="flex gap-2 items-center mb-2">
-                                            <input type="text" x-model="variant.key" placeholder="Answer value (e.g. fat_loss)"
-                                                class="w-40 rounded border-gray-200 text-sm">
-                                            <span class="text-[10px] text-gray-400 flex-1">or <code class="bg-gray-100 px-1 rounded">_default</code> for fallback</span>
+                                            <template x-if="question.dynamic_content_key === 'health_goal'">
+                                                <select x-model="variant.key" class="w-48 rounded border-gray-200 text-sm">
+                                                    <option value="">Select goal...</option>
+                                                    <option value="_default">_default (fallback)</option>
+                                                    <template x-for="[key, label] in Object.entries(resultsBankGoals)" :key="key">
+                                                        <option :value="key" x-text="label"></option>
+                                                    </template>
+                                                </select>
+                                            </template>
+                                            <template x-if="question.dynamic_content_key !== 'health_goal'">
+                                                <input type="text" x-model="variant.key" placeholder="Answer value (e.g. fat_loss)"
+                                                    class="w-40 rounded border-gray-200 text-sm">
+                                            </template>
+                                            <span class="text-[10px] text-gray-400 flex-1" x-show="question.dynamic_content_key !== 'health_goal'">or <code class="bg-gray-100 px-1 rounded">_default</code> for fallback</span>
                                             <button type="button" @click="question.dynamic_variants.splice(vi, 1)" class="text-red-400 hover:text-red-600 p-1">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                             </button>
@@ -562,6 +643,12 @@ function questionModal() {
         formAction: '{{ route("admin.quizzes.questions.store", $quiz) }}',
         allSlides: {!! $slidesJson !!},
         availableTags: {!! $availableTagsJson !!},
+        resultsBankGoals: {!! $resultsBankGoalsJson !!},
+        resultsBankLevels: {!! $resultsBankLevelsJson !!},
+        resultsBankCoverage: {!! $resultsBankCoverageJson !!},
+        hasResultsBankEntry(goalKey) {
+            return !!(this.resultsBankCoverage && this.resultsBankCoverage[goalKey]);
+        },
         slideTypes: [
             { value: 'question', label: 'Question', sub: 'Multiple choice', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>' },
             { value: 'question_text', label: 'Text Input', sub: 'Free-text answer', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>' },

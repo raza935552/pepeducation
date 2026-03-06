@@ -160,33 +160,28 @@
                     <a href="{{ route('admin.quizzes.analytics', $quiz) }}" class="mt-3 block text-center btn btn-secondary text-xs w-full">View Full Analytics</a>
                 </div>
 
-                {{-- Outcomes (grouped by segment) --}}
+                {{-- Quick-Reference Guide --}}
+                @include('admin.quizzes.partials.guide-panel')
+
+                {{-- Outcomes (flat list sorted by priority) --}}
                 <div class="card p-4">
-                    <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center justify-between mb-2">
                         <h3 class="text-sm font-semibold">Outcomes ({{ $quiz->outcomes->count() }})</h3>
-                        <button type="button" onclick="showAddOutcome()" class="text-xs text-brand-gold hover:underline">+ Add</button>
+                        <button type="button" @click="$dispatch('open-outcome-modal', {})" class="text-xs text-brand-gold hover:underline">+ Add</button>
                     </div>
-                    @php
-                        $segmentLabels = ['tof' => 'Top of Funnel', 'mof' => 'Middle of Funnel', 'bof' => 'Bottom of Funnel', 'other' => 'Other'];
-                    @endphp
-                    @foreach($outcomesBySegment as $segment => $outcomes)
-                        <div class="mb-3">
-                            <h4 class="text-xs font-medium px-2 py-1 rounded mb-2
-                                {{ $segment === 'tof' ? 'text-blue-700 bg-blue-50' : '' }}
-                                {{ $segment === 'mof' ? 'text-yellow-700 bg-yellow-50' : '' }}
-                                {{ $segment === 'bof' ? 'text-green-700 bg-green-50' : '' }}
-                                {{ !in_array($segment, ['tof','mof','bof']) ? 'text-gray-700 bg-gray-50' : '' }}">
-                                {{ strtoupper($segment) }} — {{ $segmentLabels[$segment] ?? $segment }}
-                            </h4>
-                            @foreach($outcomes as $outcome)
-                                @include('admin.quizzes.partials.outcome-row', ['outcome' => $outcome])
-                            @endforeach
-                        </div>
-                    @endforeach
+                    <p class="text-[10px] text-gray-400 mb-3">Drag to reorder. First matching outcome wins.</p>
+                    <div id="outcomes-sortable" class="space-y-2">
+                        @foreach($quiz->outcomes->sortBy('priority') as $outcome)
+                            @include('admin.quizzes.partials.outcome-row', ['outcome' => $outcome])
+                        @endforeach
+                    </div>
                     @if($quiz->outcomes->isEmpty())
                         <p class="text-xs text-gray-400 text-center py-2">No outcomes configured yet.</p>
                     @endif
                 </div>
+
+                {{-- Outcome Coverage --}}
+                @include('admin.quizzes.partials.outcome-coverage-panel')
 
                 {{-- Product Mapping --}}
                 @include('admin.quizzes.partials.product-mapping-panel')
@@ -213,12 +208,81 @@
             activeTab: 'map',
         };
     }
+
+    function deleteSlideWithCheck(url, slideName) {
+        fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.needs_confirmation) {
+                let msg = 'Deleting "' + slideName + '" will affect:\n\n';
+                data.warnings.forEach(w => { msg += '- ' + w.message + '\n'; });
+                msg += '\nDelete anyway?';
+                if (confirm(msg)) {
+                    fetch(url + '?confirmed=true', {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                    }).then(() => location.reload());
+                }
+            } else if (data.success) {
+                location.reload();
+            }
+        })
+        .catch(() => {
+            if (confirm('Delete "' + slideName + '"?')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = url;
+                form.innerHTML = '<input type="hidden" name="_token" value="' + document.querySelector('meta[name="csrf-token"]').content + '"><input type="hidden" name="_method" value="DELETE">';
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    }
     </script>
 
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Outcome reorder
+        const outcomesContainer = document.getElementById('outcomes-sortable');
+        if (outcomesContainer) {
+            new Sortable(outcomesContainer, {
+                handle: '.outcome-drag-handle',
+                animation: 150,
+                ghostClass: 'opacity-30',
+                chosenClass: 'ring-2 ring-brand-gold/50',
+                onEnd: function() {
+                    const ids = [...outcomesContainer.querySelectorAll('[data-outcome-id]')]
+                        .map(el => parseInt(el.dataset.outcomeId));
+
+                    fetch('{{ route("admin.quizzes.outcomes.reorder", $quiz) }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                        },
+                        body: JSON.stringify({ outcomes: ids }),
+                    }).then(r => {
+                        if (!r.ok) console.error('Outcome reorder failed');
+                    });
+                }
+            });
+        }
+
+        // Slide reorder
         document.querySelectorAll('[data-phase]').forEach(container => {
             new Sortable(container, {
                 handle: '.drag-handle',

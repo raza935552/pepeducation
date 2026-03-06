@@ -106,6 +106,29 @@
     if (in_array($phaseKey, ['tof', 'mof', 'bof']) && count($conditions) === 1 && $condType === 'and') {
         $isRedundantCondition = true;
     }
+
+    // Check for broken references (3.4)
+    $allSlideIds = $quiz->questions->pluck('id')->toArray();
+    $brokenRefs = [];
+
+    // Check show_conditions for references to non-existent slides
+    foreach ($conditions as $cond) {
+        $refId = $cond['question_id'] ?? null;
+        if ($refId && !in_array($refId, $allSlideIds)) {
+            $brokenRefs[] = 'Show condition references deleted slide #' . $refId;
+        }
+    }
+
+    // Check skip_to_question values for non-existent slides
+    if ($slideType === 'question' && $question->options) {
+        foreach ($question->options as $option) {
+            $skipTo = $option['skip_to_question'] ?? null;
+            if ($skipTo && !in_array($skipTo, $allSlideIds)) {
+                $optLabel = $option['label'] ?? $option['text'] ?? $option['value'] ?? 'Option';
+                $brokenRefs[] = 'Option "' . Str::limit($optLabel, 20) . '" skips to deleted slide #' . $skipTo;
+            }
+        }
+    }
 @endphp
 
 <div class="group border border-l-2 {{ $leftBorder }} rounded-lg bg-white hover:shadow-sm transition-shadow" data-question-id="{{ $question->id }}" data-slide-type="{{ $slideType }}" x-data="{ expanded: false }">
@@ -131,6 +154,13 @@
                 @endif
             </div>
         </div>
+
+        {{-- Broken reference warning --}}
+        @if(!empty($brokenRefs))
+            <span class="flex-shrink-0 text-orange-500" title="{{ implode('; ', $brokenRefs) }}">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+            </span>
+        @endif
 
         {{-- Inline meta chips --}}
         <div class="hidden sm:flex items-center gap-1.5 flex-shrink-0">
@@ -158,12 +188,9 @@
             <button type="button" onclick='event.stopPropagation(); editQuestion({{ $question->id }}, {!! e($questionJson) !!})' class="p-1 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100" title="Edit">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             </button>
-            <form action="{{ route('admin.quizzes.questions.destroy', [$quiz, $question]) }}" method="POST" class="inline" onsubmit="event.stopPropagation(); return confirm('Delete this slide?')">
-                @csrf @method('DELETE')
-                <button type="submit" class="p-1 rounded text-gray-400 hover:text-red-500 hover:bg-red-50" title="Delete">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                </button>
-            </form>
+            <button type="button" onclick="event.stopPropagation(); deleteSlideWithCheck('{{ route('admin.quizzes.questions.destroy', [$quiz, $question]) }}', {{ Js::from($question->question_text ?: $question->content_title ?: 'Slide #'.$question->order) }})" class="p-1 rounded text-gray-400 hover:text-red-500 hover:bg-red-50" title="Delete">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
         </div>
 
         {{-- Expand chevron --}}

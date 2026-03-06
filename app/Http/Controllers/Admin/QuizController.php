@@ -239,6 +239,11 @@ class QuizController extends Controller
         return redirect()->route('admin.quizzes.index')->with('success', 'Quiz deleted.');
     }
 
+    public function guide()
+    {
+        return view('admin.quizzes.guide');
+    }
+
     public function analytics(Quiz $quiz)
     {
         $quiz->load('questions', 'outcomes');
@@ -285,6 +290,7 @@ class QuizController extends Controller
 
         // Recent responses
         $recentResponses = QuizResponse::where('quiz_id', $quiz->id)
+            ->with('outcome')
             ->latest()
             ->limit(20)
             ->get();

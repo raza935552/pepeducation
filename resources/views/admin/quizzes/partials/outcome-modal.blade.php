@@ -1,119 +1,201 @@
 @php
-    // Build question data for outcome answer dropdowns
+    // Build question data for outcome answer dropdowns (enhanced with friendly labels)
+    // Deduplicate by klaviyo_property — keep the first slide with the most options
     $outcomeSlides = $quiz->questions->sortBy('order')->values()->filter(fn ($q) =>
         in_array($q->slide_type, ['question', 'question_text']) && $q->klaviyo_property
-    )->map(fn ($q) => [
+    )->unique('klaviyo_property')->map(fn ($q) => [
+        'id' => $q->id,
         'klaviyo_property' => $q->klaviyo_property,
-        'label' => '#' . $q->order . ' — ' . Str::limit($q->question_text, 40) . ' (' . $q->klaviyo_property . ')',
+        'label' => $q->question_text ?: $q->content_title ?: 'Slide #' . $q->order,
+        'friendly_label' => \Str::of($q->klaviyo_property)->replace('_', ' ')->title()->toString() . ' question',
         'options' => collect($q->options ?? [])->map(fn ($o) => [
             'value' => $o['klaviyo_value'] ?? $o['label'] ?? $o['value'] ?? '',
-            'label' => ($o['label'] ?? $o['text'] ?? $o['value'] ?? ''),
+            'label' => $o['label'] ?? $o['text'] ?? $o['value'] ?? '',
         ])->values()->toArray(),
     ])->values()->toArray();
+
+    // ResultsBank lookup grouped by health_goal for auto-fill feature
+    $resultsBankLookup = \App\Models\ResultsBank::where('is_active', true)
+        ->get()
+        ->groupBy('health_goal')
+        ->map(fn ($entries) => $entries->first())
+        ->map(fn ($entry) => [
+            'peptide_name' => $entry->peptide_name,
+            'description' => $entry->description,
+            'star_rating' => $entry->star_rating,
+            'rating_label' => $entry->rating_label,
+            'goal_label' => $entry->goal_label,
+        ])
+        ->toArray();
+
+    // Friendly labels for health goal values
+    $healthGoalLabels = \App\Models\ResultsBank::HEALTH_GOALS;
 @endphp
 
-<!-- Outcome Modal -->
-<div id="outcome-modal" class="fixed inset-0 bg-black/50 z-50 hidden">
+{{-- Outcome Modal — Alpine.js --}}
+<div x-data="outcomeModal()" x-show="showModal" x-cloak
+     @open-outcome-modal.window="openModal($event.detail)"
+     @keydown.escape.window="closeModal()"
+     class="fixed inset-0 bg-black/50 z-50">
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-xl">
-            <form id="outcome-form" action="{{ route('admin.quizzes.outcomes.store', $quiz) }}" method="POST">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-xl max-h-[90vh] overflow-y-auto"
+             @click.outside="closeModal()">
+            <form :action="formAction" method="POST" @submit.prevent="submitForm($event)">
                 @csrf
-                <input type="hidden" name="_method" id="outcome-method-input" value="POST">
-                <input type="hidden" name="condition_type" id="outcome-condition-type" value="">
+                <input type="hidden" name="_method" :value="isEditing ? 'PUT' : 'POST'">
+                <input type="hidden" name="condition_type" :value="conditionTypeForSubmit">
+                <input type="hidden" name="segment" :value="segment">
+                <input type="hidden" name="answer_question" :value="answerQuestion">
+                <input type="hidden" name="answer_value" :value="answerValue">
 
+                {{-- Header --}}
                 <div class="p-6 border-b">
-                    <h3 class="text-lg font-semibold" id="outcome-modal-title">Add Outcome</h3>
+                    <h3 class="text-lg font-semibold" x-text="isEditing ? 'Edit Outcome' : 'Add Outcome'"></h3>
                 </div>
 
-                <div class="p-6 space-y-4">
+                <div class="p-6 space-y-5">
+                    {{-- Outcome Name --}}
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Outcome Name</label>
-                        <input type="text" name="name" id="outcome-name" required
-                            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                        <input type="text" name="name" x-model="name" required
+                            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold"
+                            placeholder="e.g. Fat Loss — Beginner">
                     </div>
 
-                    <!-- Condition Type Selector -->
+                    {{-- Plain English Condition Builder --}}
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Condition Type</label>
-                        <div class="flex gap-4">
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="condition_type_radio" value="" onchange="switchConditionType(this.value)" class="text-brand-gold focus:ring-brand-gold">
-                                <span class="ml-1.5 text-sm">None</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="condition_type_radio" value="segment" onchange="switchConditionType(this.value)" class="text-brand-gold focus:ring-brand-gold">
-                                <span class="ml-1.5 text-sm">Segment</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="condition_type_radio" value="score" onchange="switchConditionType(this.value)" class="text-brand-gold focus:ring-brand-gold">
-                                <span class="ml-1.5 text-sm">Score</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="condition_type_radio" value="answer" onchange="switchConditionType(this.value)" class="text-brand-gold focus:ring-brand-gold">
-                                <span class="ml-1.5 text-sm">Answer</span>
-                            </label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Show this result...</label>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" @click="conditionMode = 'always'"
+                                :class="conditionMode === 'always' ? 'bg-brand-gold text-white border-brand-gold' : 'bg-white text-gray-700 border-gray-300 hover:border-brand-gold'"
+                                class="px-3 py-2 text-sm rounded-lg border transition-colors">
+                                Always (default)
+                            </button>
+                            <button type="button" @click="conditionMode = 'segment'"
+                                :class="conditionMode === 'segment' ? 'bg-brand-gold text-white border-brand-gold' : 'bg-white text-gray-700 border-gray-300 hover:border-brand-gold'"
+                                class="px-3 py-2 text-sm rounded-lg border transition-colors">
+                                When user's segment is...
+                            </button>
+                            <button type="button" @click="conditionMode = 'answer'"
+                                :class="conditionMode === 'answer' ? 'bg-brand-gold text-white border-brand-gold' : 'bg-white text-gray-700 border-gray-300 hover:border-brand-gold'"
+                                class="px-3 py-2 text-sm rounded-lg border transition-colors">
+                                When user answered...
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Segment fields -->
-                    <div id="condition-segment-fields" class="hidden">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Segment</label>
-                        <select name="segment" id="outcome-segment"
-                            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
-                            <option value="">Select segment</option>
-                            <option value="tof">TOF (Top of Funnel)</option>
-                            <option value="mof">MOF (Middle of Funnel)</option>
-                            <option value="bof">BOF (Bottom of Funnel)</option>
-                        </select>
-                    </div>
-
-                    <!-- Score fields -->
-                    <div id="condition-score-fields" class="hidden">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Min Score</label>
-                        <input type="number" name="min_score" id="outcome-min-score" value="0" min="0"
-                            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
-                    </div>
-
-                    <!-- Answer fields (dynamic dropdowns) -->
-                    <div id="condition-answer-fields" class="hidden space-y-3">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Answer Question <span class="text-xs text-gray-400">(klaviyo_property)</span></label>
-                            <select name="answer_question" id="outcome-answer-question" onchange="onOutcomeQuestionChange()"
-                                class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
-                                <option value="">Select question...</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Answer Value <span class="text-xs text-gray-400">(klaviyo_value)</span></label>
-                            <select name="answer_value" id="outcome-answer-value"
-                                class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
-                                <option value="">Select question first...</option>
-                            </select>
+                    {{-- Segment Picker (visual cards) --}}
+                    <div x-show="conditionMode === 'segment'" x-collapse>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Which segment?</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <button type="button" @click="segment = 'tof'"
+                                :class="segment === 'tof' ? 'ring-2 ring-blue-400 border-blue-400' : 'border-gray-200 hover:border-blue-300'"
+                                class="flex flex-col items-center p-3 rounded-lg border transition-all">
+                                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mb-1">
+                                    <span class="text-blue-600 text-xs font-bold">TOF</span>
+                                </div>
+                                <span class="text-xs font-medium text-gray-800">Explorer</span>
+                                <span class="text-[10px] text-gray-400">Top of Funnel</span>
+                            </button>
+                            <button type="button" @click="segment = 'mof'"
+                                :class="segment === 'mof' ? 'ring-2 ring-yellow-400 border-yellow-400' : 'border-gray-200 hover:border-yellow-300'"
+                                class="flex flex-col items-center p-3 rounded-lg border transition-all">
+                                <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center mb-1">
+                                    <span class="text-yellow-600 text-xs font-bold">MOF</span>
+                                </div>
+                                <span class="text-xs font-medium text-gray-800">Researcher</span>
+                                <span class="text-[10px] text-gray-400">Middle of Funnel</span>
+                            </button>
+                            <button type="button" @click="segment = 'bof'"
+                                :class="segment === 'bof' ? 'ring-2 ring-green-400 border-green-400' : 'border-gray-200 hover:border-green-300'"
+                                class="flex flex-col items-center p-3 rounded-lg border transition-all">
+                                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mb-1">
+                                    <span class="text-green-600 text-xs font-bold">BOF</span>
+                                </div>
+                                <span class="text-xs font-medium text-gray-800">Ready to Buy</span>
+                                <span class="text-[10px] text-gray-400">Bottom of Funnel</span>
+                            </button>
                         </div>
                     </div>
 
+                    {{-- Answer Picker (cascading dropdowns with friendly labels) --}}
+                    <div x-show="conditionMode === 'answer'" x-collapse>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Which question?</label>
+                                <select x-model="answerQuestion" @change="answerValue = ''"
+                                    x-ref="questionSelect"
+                                    x-effect="populateQuestionDropdown($refs.questionSelect, slides, answerQuestion)"
+                                    class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                                </select>
+                            </div>
+                            <div x-show="answerQuestion">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Which answer?</label>
+                                <select x-model="answerValue"
+                                    x-ref="answerSelect"
+                                    x-effect="populateAnswerDropdown($refs.answerSelect, selectedSlideOptions, answerValue, answerQuestion)"
+                                    class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Auto-fill from Results Bank (2.2) --}}
+                    <div x-show="conditionMode === 'answer' && answerQuestion === 'health_goal' && answerValue && resultsBankEntry" x-collapse>
+                        <div class="border border-amber-200 rounded-lg bg-amber-50 p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="flex items-center gap-2">
+                                    <input type="checkbox" x-model="autoFillFromBank"
+                                        class="rounded border-gray-300 text-brand-gold focus:ring-brand-gold">
+                                    <span class="text-sm font-medium text-amber-800">Auto-fill from Results Bank</span>
+                                </label>
+                            </div>
+                            <div x-show="autoFillFromBank" x-collapse>
+                                <div class="bg-white rounded-lg border border-amber-200 p-3 mb-3">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="text-sm font-bold text-gray-900" x-text="resultsBankEntry?.peptide_name"></span>
+                                        <template x-if="resultsBankEntry?.star_rating">
+                                            <span class="text-xs text-amber-500" x-text="'★ ' + resultsBankEntry.star_rating"></span>
+                                        </template>
+                                    </div>
+                                    <p class="text-xs text-gray-500 line-clamp-2" x-text="resultsBankEntry?.description"></p>
+                                </div>
+                                <button type="button" @click="applyAutoFill()"
+                                    class="btn btn-secondary text-xs w-full">
+                                    Apply to Headline &amp; Body
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="border-gray-200">
+
+                    {{-- Result Content --}}
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Headline</label>
-                        <input type="text" name="result_title" id="outcome-headline"
-                            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                        <input type="text" name="result_title" x-model="resultTitle"
+                            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold"
+                            placeholder="Your #1 peptide match is...">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Body Text</label>
-                        <textarea name="result_message" id="outcome-body" rows="3"
-                            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold"></textarea>
+                        <textarea name="result_message" x-model="resultMessage" rows="3"
+                            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold"
+                            placeholder="Description of the recommendation..."></textarea>
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Redirect URL</label>
-                        <input type="text" name="redirect_url" id="outcome-redirect-url" placeholder="/peptides or https://..."
+                        <input type="text" name="redirect_url" x-model="redirectUrl" placeholder="/peptides or https://..."
                             class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
                     </div>
                 </div>
 
+                {{-- Footer --}}
                 <div class="p-6 border-t bg-gray-50 flex justify-end gap-3">
-                    <button type="button" onclick="closeOutcomeModal()" class="btn btn-secondary">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="outcome-submit-btn">Add Outcome</button>
+                    <button type="button" @click="closeModal()" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary" x-text="isEditing ? 'Update Outcome' : 'Add Outcome'"></button>
                 </div>
             </form>
         </div>
@@ -121,113 +203,173 @@
 </div>
 
 <script>
-var outcomeSlides = @json($outcomeSlides);
+function outcomeModal() {
+    return {
+        showModal: false,
+        isEditing: false,
+        editId: null,
 
-function switchConditionType(type) {
-    document.getElementById('outcome-condition-type').value = type;
-    document.getElementById('condition-segment-fields').classList.toggle('hidden', type !== 'segment');
-    document.getElementById('condition-score-fields').classList.toggle('hidden', type !== 'score');
-    document.getElementById('condition-answer-fields').classList.toggle('hidden', type !== 'answer');
-}
+        // Form fields
+        name: '',
+        conditionMode: 'always', // 'always' | 'segment' | 'answer'
+        segment: '',
+        answerQuestion: '',
+        answerValue: '',
+        resultTitle: '',
+        resultMessage: '',
+        redirectUrl: '',
+        autoFillFromBank: false,
 
-function populateOutcomeQuestionDropdown() {
-    var sel = document.getElementById('outcome-answer-question');
-    // Clear existing options using safe DOM methods
-    while (sel.options.length > 1) {
-        sel.remove(1);
-    }
-    outcomeSlides.forEach(function(slide) {
-        var opt = document.createElement('option');
-        opt.value = slide.klaviyo_property;
-        opt.textContent = slide.label;
-        sel.appendChild(opt);
-    });
-}
+        // Data
+        slides: @json($outcomeSlides),
+        resultsBank: @json($resultsBankLookup),
+        healthGoalLabels: @json($healthGoalLabels),
 
-function onOutcomeQuestionChange() {
-    var questionProp = document.getElementById('outcome-answer-question').value;
-    var valueSel = document.getElementById('outcome-answer-value');
+        // Computed
+        get formAction() {
+            if (this.isEditing && this.editId) {
+                return '{{ url("admin/quizzes/" . $quiz->id . "/outcomes") }}/' + this.editId;
+            }
+            return '{{ route("admin.quizzes.outcomes.store", $quiz) }}';
+        },
 
-    // Clear existing options using safe DOM methods
-    while (valueSel.options.length > 0) {
-        valueSel.remove(0);
-    }
+        get conditionTypeForSubmit() {
+            return this.conditionMode === 'always' ? '' : this.conditionMode;
+        },
 
-    // Add default option
-    var defaultOpt = document.createElement('option');
-    defaultOpt.value = '';
-    defaultOpt.textContent = questionProp ? 'Select answer...' : 'Select question first...';
-    valueSel.appendChild(defaultOpt);
+        get selectedSlideOptions() {
+            if (!this.answerQuestion) return [];
+            const slide = this.slides.find(s => s.klaviyo_property === this.answerQuestion);
+            return slide ? slide.options : [];
+        },
 
-    if (!questionProp) return;
+        get resultsBankEntry() {
+            if (this.answerQuestion !== 'health_goal' || !this.answerValue) return null;
+            return this.resultsBank[this.answerValue] || null;
+        },
 
-    // Find matching slide and populate value options
-    var slide = outcomeSlides.find(function(s) { return s.klaviyo_property === questionProp; });
-    if (slide && slide.options) {
-        slide.options.forEach(function(o) {
-            var opt = document.createElement('option');
-            opt.value = o.value;
-            opt.textContent = o.label + (o.value !== o.label ? ' (' + o.value + ')' : '');
-            valueSel.appendChild(opt);
-        });
-    }
-}
+        // Methods
+        openModal(detail) {
+            detail = detail || {};
+            this.isEditing = !!detail.id;
+            this.editId = detail.id || null;
 
-function showAddOutcome() {
-    document.getElementById('outcome-modal').classList.remove('hidden');
-    document.getElementById('outcome-modal-title').textContent = 'Add Outcome';
-    document.getElementById('outcome-submit-btn').textContent = 'Add Outcome';
-    document.getElementById('outcome-form').action = '{{ route("admin.quizzes.outcomes.store", $quiz) }}';
-    document.getElementById('outcome-method-input').value = 'POST';
-    document.getElementById('outcome-condition-type').value = '';
-    document.getElementById('outcome-name').value = '';
-    document.getElementById('outcome-segment').value = '';
-    document.getElementById('outcome-min-score').value = '0';
-    document.getElementById('outcome-answer-question').value = '';
-    document.getElementById('outcome-headline').value = '';
-    document.getElementById('outcome-body').value = '';
-    document.getElementById('outcome-redirect-url').value = '';
+            if (this.isEditing) {
+                this.name = detail.name || '';
+                this.resultTitle = detail.result_title || '';
+                this.resultMessage = detail.result_message || '';
+                this.redirectUrl = detail.redirect_url || '';
 
-    // Populate question dropdown and reset value dropdown
-    populateOutcomeQuestionDropdown();
-    onOutcomeQuestionChange();
+                const conditions = detail.conditions || {};
+                const condType = conditions.type || '';
+                if (condType === 'segment') {
+                    this.conditionMode = 'segment';
+                    this.segment = conditions.segment || '';
+                    this.answerQuestion = '';
+                    this.answerValue = '';
+                } else if (condType === 'answer') {
+                    this.conditionMode = 'answer';
+                    this.answerQuestion = conditions.question || '';
+                    this.answerValue = conditions.value || '';
+                    this.segment = '';
+                } else {
+                    this.conditionMode = 'always';
+                    this.segment = '';
+                    this.answerQuestion = '';
+                    this.answerValue = '';
+                }
+            } else {
+                // Reset for new outcome, but allow pre-filled values
+                this.name = '';
+                this.resultTitle = '';
+                this.resultMessage = '';
+                this.redirectUrl = '';
 
-    // Reset radio buttons and hide all condition fields
-    var radios = document.querySelectorAll('input[name="condition_type_radio"]');
-    radios.forEach(function(r) { r.checked = r.value === ''; });
-    switchConditionType('');
-}
+                if (detail.conditionMode) {
+                    this.conditionMode = detail.conditionMode;
+                    this.segment = detail.segment || '';
+                    this.answerQuestion = detail.answerQuestion || '';
+                    this.answerValue = detail.answerValue || '';
+                } else {
+                    this.conditionMode = 'always';
+                    this.segment = '';
+                    this.answerQuestion = '';
+                    this.answerValue = '';
+                }
+            }
 
-function closeOutcomeModal() {
-    document.getElementById('outcome-modal').classList.add('hidden');
-}
+            this.autoFillFromBank = false;
+            this.showModal = true;
+        },
 
-function editOutcome(id, outcomeData) {
-    var conditions = outcomeData.conditions || {};
-    var condType = conditions.type || '';
+        applyAutoFill() {
+            const entry = this.resultsBankEntry;
+            if (!entry) return;
+            this.resultTitle = entry.peptide_name;
+            this.resultMessage = entry.description || '';
+        },
 
-    document.getElementById('outcome-modal').classList.remove('hidden');
-    document.getElementById('outcome-modal-title').textContent = 'Edit Outcome';
-    document.getElementById('outcome-submit-btn').textContent = 'Update Outcome';
-    document.getElementById('outcome-form').action = '{{ url("admin/quizzes/" . $quiz->id . "/outcomes") }}/' + id;
-    document.getElementById('outcome-method-input').value = 'PUT';
-    document.getElementById('outcome-condition-type').value = condType;
-    document.getElementById('outcome-name').value = outcomeData.name || '';
-    document.getElementById('outcome-segment').value = conditions.segment || '';
-    document.getElementById('outcome-min-score').value = conditions.min_score || 0;
-    document.getElementById('outcome-headline').value = outcomeData.result_title || '';
-    document.getElementById('outcome-body').value = outcomeData.result_message || '';
-    document.getElementById('outcome-redirect-url').value = outcomeData.redirect_url || '';
+        closeModal() {
+            this.showModal = false;
+        },
 
-    // Populate question dropdown, set value, then populate value dropdown
-    populateOutcomeQuestionDropdown();
-    document.getElementById('outcome-answer-question').value = conditions.question || '';
-    onOutcomeQuestionChange();
-    document.getElementById('outcome-answer-value').value = conditions.value || '';
+        submitForm(event) {
+            event.target.action = this.formAction;
+            event.target.submit();
+        },
 
-    // Set the correct radio button and show matching fields
-    var radios = document.querySelectorAll('input[name="condition_type_radio"]');
-    radios.forEach(function(r) { r.checked = r.value === condType; });
-    switchConditionType(condType);
+        friendlyAnswerLabel(opt) {
+            if (this.answerQuestion === 'health_goal' && this.healthGoalLabels[opt.value]) {
+                return this.healthGoalLabels[opt.value];
+            }
+            return opt.label || opt.value;
+        },
+
+        populateQuestionDropdown(select, slides, currentValue) {
+            if (!select) return;
+            // Build options: blank + each slide
+            const needed = [{ value: '', label: 'Select a question...' }];
+            (slides || []).forEach(s => needed.push({ value: s.klaviyo_property, label: s.friendly_label }));
+            // Only rebuild if options changed
+            const currentKeys = [...select.options].map(o => o.value).join('|');
+            const newKeys = needed.map(o => o.value).join('|');
+            if (currentKeys === newKeys) {
+                // Just ensure the correct option is selected
+                select.value = currentValue;
+                return;
+            }
+            select.innerHTML = '';
+            needed.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.value;
+                opt.textContent = item.label;
+                select.appendChild(opt);
+            });
+            select.value = currentValue;
+        },
+
+        populateAnswerDropdown(select, options, currentValue, question) {
+            if (!select) return;
+            const needed = [{ value: '', label: question ? 'Select an answer...' : 'Select question first...' }];
+            (options || []).forEach(item => {
+                needed.push({ value: item.value, label: this.friendlyAnswerLabel(item) });
+            });
+            // Only rebuild if options changed
+            const currentKeys = [...select.options].map(o => o.value).join('|');
+            const newKeys = needed.map(o => o.value).join('|');
+            if (currentKeys === newKeys) {
+                select.value = currentValue;
+                return;
+            }
+            select.innerHTML = '';
+            needed.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.value;
+                opt.textContent = item.label;
+                select.appendChild(opt);
+            });
+            select.value = currentValue;
+        },
+    };
 }
 </script>

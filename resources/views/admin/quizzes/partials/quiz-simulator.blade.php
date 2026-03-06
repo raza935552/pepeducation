@@ -305,7 +305,7 @@
                                  x-init="(() => {
                                      let el = $el;
                                      let items = (resolvedContent.body || '').split('\n').filter(l => l.trim());
-                                     let total = 2000;
+                                     let total = (currentSlide.auto_advance_seconds || 5) * 1000;
                                      let elapsed = 0;
                                      let timer = setInterval(() => {
                                          elapsed += 50;

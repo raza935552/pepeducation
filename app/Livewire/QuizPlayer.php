@@ -61,6 +61,12 @@ class QuizPlayer extends Component
             return;
         }
 
+        // Pre-fill email from cookie for known subscribers
+        $ppEmail = request()->cookie('pp_email');
+        if ($ppEmail) {
+            $this->email = $ppEmail;
+        }
+
         $this->startQuiz();
     }
 
@@ -82,19 +88,28 @@ class QuizPlayer extends Component
                     $existing->update(['status' => 'abandoned']);
                 }
             } else {
-                // Resume: restore progress and mark back to in_progress
-                $existing->update(['status' => 'in_progress']);
-                $this->response = $existing;
-                $this->responseId = $existing->id;
-                $this->answers = $existing->answers ?? [];
-                $this->currentStep = max(0, count($this->answers) - 1);
-                // Trim navigation history to match resumed step
-                // (prevents back button jumping to slides beyond the resumed position)
-                $savedHistory = $existing->navigation_history ?? [];
-                $this->navigationHistory = array_filter($savedHistory, fn ($step) => $step <= $this->currentStep);
-                $this->navigationHistory = array_values($this->navigationHistory);
-                $this->recalculateScores();
-                return;
+                // Validate quiz structure hasn't changed since session was saved
+                $savedAnswers = $existing->answers ?? [];
+                $structureValid = $this->validateResumedAnswers($savedAnswers);
+
+                if (!$structureValid) {
+                    // Quiz was edited — abandon old response and start fresh
+                    $existing->update(['status' => 'abandoned']);
+                } else {
+                    // Resume: restore progress and mark back to in_progress
+                    $existing->update(['status' => 'in_progress']);
+                    $this->response = $existing;
+                    $this->responseId = $existing->id;
+                    $this->answers = $savedAnswers;
+                    $this->currentStep = max(0, count($this->answers) - 1);
+                    // Trim navigation history to match resumed step
+                    // (prevents back button jumping to slides beyond the resumed position)
+                    $savedHistory = $existing->navigation_history ?? [];
+                    $this->navigationHistory = array_filter($savedHistory, fn ($step) => $step <= $this->currentStep);
+                    $this->navigationHistory = array_values($this->navigationHistory);
+                    $this->recalculateScores();
+                    return;
+                }
             }
         }
 
@@ -245,31 +260,54 @@ class QuizPlayer extends Component
 
     /**
      * Get all peptide links grouped by peptide name for the peptide search slide.
-     * Returns a collection of peptide names, each with their vendor links.
+     * Pulls from StackProducts + their store pivot data.
      */
     public function getPeptideSearchDataProperty(): array
     {
-        $links = StackStorePeptideLink::with('store')
-            ->whereHas('store', fn($q) => $q->where('is_active', true))
-            ->where('is_in_stock', true)
-            ->orderBy('peptide_name')
-            ->orderBy('price')
+        $products = StackProduct::with(['stores' => fn($q) => $q->where('stack_stores.is_active', true)])
+            ->where('is_active', true)
+            ->orderBy('name')
             ->get();
 
+        // Batch-load all outbound links referenced by store pivots to avoid N+1
+        $outboundLinkIds = $products->flatMap(fn ($p) => $p->stores->pluck('pivot.outbound_link_id'))
+            ->filter()
+            ->unique()
+            ->values();
+        $outboundLinks = $outboundLinkIds->isNotEmpty()
+            ? \App\Models\OutboundLink::whereIn('id', $outboundLinkIds)->get()->keyBy('id')
+            : collect();
+
         $grouped = [];
-        foreach ($links as $link) {
-            $name = $link->peptide_name;
-            if (!isset($grouped[$name])) {
-                $grouped[$name] = [];
+        foreach ($products as $product) {
+            $inStockStores = $product->stores->where('pivot.is_in_stock', true);
+            if ($inStockStores->isEmpty()) continue;
+
+            $vendors = [];
+            foreach ($inStockStores->sortBy('pivot.price') as $store) {
+                $url = '#';
+                if ($store->pivot->outbound_link_id) {
+                    $outbound = $outboundLinks->get($store->pivot->outbound_link_id);
+                    if ($outbound) $url = $outbound->getTrackingUrl();
+                } elseif ($store->pivot->url) {
+                    $url = $store->pivot->url;
+                } elseif ($store->website_url) {
+                    $url = $store->website_url;
+                }
+
+                $vendors[] = [
+                    'store_name' => $store->name,
+                    'store_logo' => $store->logo,
+                    'store_category' => $store->category ?? null,
+                    'price' => $store->pivot->price,
+                    'url' => $url,
+                    'is_recommended' => $store->pivot->is_recommended ?? $store->is_recommended,
+                ];
             }
-            $grouped[$name][] = [
-                'store_name' => $link->store->name,
-                'store_logo' => $link->store->logo,
-                'store_category' => $link->store->category,
-                'price' => $link->price,
-                'url' => $link->url,
-                'is_recommended' => $link->store->is_recommended,
-            ];
+
+            if (!empty($vendors)) {
+                $grouped[$product->name] = $vendors;
+            }
         }
 
         return $grouped;
@@ -376,6 +414,12 @@ class QuizPlayer extends Component
         if (in_array($optionId, $this->multiSelections)) {
             $this->multiSelections = array_values(array_diff($this->multiSelections, [$optionId]));
         } else {
+            // Enforce max_selections limit
+            $question = $this->questions[$questionIndex] ?? null;
+            $maxSelections = $question['max_selections'] ?? null;
+            if ($maxSelections && count($this->multiSelections) >= $maxSelections) {
+                return;
+            }
             $this->multiSelections[] = $optionId;
         }
     }
@@ -785,23 +829,47 @@ class QuizPlayer extends Component
 
     private function determineOutcome(string $segment): ?QuizOutcome
     {
-        $outcomes = $this->quiz->outcomes->sortBy('priority');
-
-        // First try answer-based matching (for product quizzes)
-        $answerMatch = $outcomes->first(fn ($o) => $o->matchesAnswer($this->answers));
-        if ($answerMatch) return $answerMatch;
-
-        // Then try segment-based matching (for segmentation quizzes)
-        $segmentMatch = $outcomes->first(fn ($o) => $o->matchesSegment($segment));
-        if ($segmentMatch) return $segmentMatch;
-
-        // Then try score-based matching (min_score thresholds)
+        $outcomes = $this->quiz->outcomes->where('is_active', true)->sortBy('priority');
         $totalScore = array_sum($this->segmentScores);
-        $scoreMatch = $outcomes->first(fn ($o) => $o->matchesScore($totalScore, 'total'));
-        if ($scoreMatch) return $scoreMatch;
 
-        // Fallback to first outcome
-        return $outcomes->first();
+        // Check outcomes in priority order — first match wins
+        foreach ($outcomes as $outcome) {
+            $conditions = $outcome->conditions ?? [];
+            $type = $conditions['type'] ?? '';
+
+            $matches = match ($type) {
+                'answer' => $outcome->matchesAnswer($this->answers),
+                'segment' => $outcome->matchesSegment($segment),
+                'score' => $outcome->matchesScore($totalScore, $conditions['score_type'] ?? 'total'),
+                default => empty($conditions), // "always" = empty conditions, matches everyone
+            };
+
+            if ($matches) return $outcome;
+        }
+
+        // Ultimate fallback if nothing matched (shouldn't happen with an "always" outcome)
+        return $outcomes->last();
+    }
+
+    /**
+     * Validate that saved answers still match the current quiz structure.
+     * Returns false if questions were deleted, reordered, or IDs don't match.
+     */
+    private function validateResumedAnswers(array $savedAnswers): bool
+    {
+        foreach ($savedAnswers as $index => $answer) {
+            $question = $this->questions[$index] ?? null;
+            if (!$question) return false;
+
+            // Check question ID matches (catches reordering and deletion)
+            $savedQuestionId = $answer['question_id'] ?? null;
+            $currentQuestionId = $question['id'] ?? null;
+            if ($savedQuestionId && $currentQuestionId && $savedQuestionId !== $currentQuestionId) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function recalculateScores(): void
@@ -810,7 +878,22 @@ class QuizPlayer extends Component
         foreach ($this->answers as $questionIndex => $answer) {
             $question = $this->questions[$questionIndex] ?? null;
             if (!$question) continue;
-            $option = collect($question['options'] ?? [])->first(fn ($o) => ($o['value'] ?? $o['id'] ?? '') === ($answer['option_id'] ?? ''));
+            $options = collect($question['options'] ?? []);
+
+            // Multiple-choice: iterate through each selected option
+            if (!empty($answer['option_ids']) && is_array($answer['option_ids'])) {
+                foreach ($answer['option_ids'] as $selectedId) {
+                    $option = $options->first(fn ($o) => ($o['value'] ?? $o['id'] ?? '') === $selectedId);
+                    if (!$option) continue;
+                    $this->segmentScores['tof'] += (int) ($option['score_tof'] ?? 0);
+                    $this->segmentScores['mof'] += (int) ($option['score_mof'] ?? 0);
+                    $this->segmentScores['bof'] += (int) ($option['score_bof'] ?? 0);
+                }
+                continue;
+            }
+
+            // Single-choice: match by option_id
+            $option = $options->first(fn ($o) => ($o['value'] ?? $o['id'] ?? '') === ($answer['option_id'] ?? ''));
             if (!$option) continue;
             $this->segmentScores['tof'] += (int) ($option['score_tof'] ?? 0);
             $this->segmentScores['mof'] += (int) ($option['score_mof'] ?? 0);
