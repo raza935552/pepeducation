@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\StackBundleController;
 use App\Http\Controllers\Admin\StackStoreController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\ResultsBankController;
+use App\Http\Controllers\Admin\BugReportController;
 use App\Http\Controllers\Admin\UnsplashController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\PageVersionController;
@@ -77,6 +78,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('requests/{peptideRequest}/status', [PeptideRequestController::class, 'updateStatus'])->name('requests.status');
     Route::delete('requests/{peptideRequest}', [PeptideRequestController::class, 'destroy'])->name('requests.destroy');
 
+    // Bug Reports
+    Route::get('bugs/create', [BugReportController::class, 'create'])->name('bugs.create');
+    Route::post('bugs', [BugReportController::class, 'store'])->name('bugs.store');
+    Route::get('bugs', [BugReportController::class, 'index'])->name('bugs.index');
+    Route::get('bugs/{bugReport}', [BugReportController::class, 'show'])->name('bugs.show');
+    Route::patch('bugs/{bugReport}/status', [BugReportController::class, 'updateStatus'])->name('bugs.status');
+    Route::delete('bugs/{bugReport}', [BugReportController::class, 'destroy'])->name('bugs.destroy');
+
     // Subscribers
     Route::get('subscribers', [SubscriberController::class, 'index'])->name('subscribers.index');
     Route::get('subscribers/export', [SubscriberController::class, 'export'])->name('subscribers.export');
@@ -120,6 +129,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('results-bank', ResultsBankController::class)->except(['show']);
 
     // Marketing: Quizzes
+    Route::get('quiz-guide', [QuizController::class, 'guide'])->name('quizzes.guide');
     Route::resource('quizzes', QuizController::class);
     Route::post('quizzes/{quiz}/duplicate', [QuizController::class, 'duplicate'])->name('quizzes.duplicate');
     Route::get('quizzes/{quiz}/analytics', [QuizController::class, 'analytics'])->name('quizzes.analytics');
@@ -127,6 +137,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('quizzes/{quiz}/questions/{question}', [QuizQuestionController::class, 'update'])->name('quizzes.questions.update');
     Route::delete('quizzes/{quiz}/questions/{question}', [QuizQuestionController::class, 'destroy'])->name('quizzes.questions.destroy');
     Route::post('quizzes/{quiz}/questions/reorder', [QuizQuestionController::class, 'reorder'])->name('quizzes.questions.reorder');
+    Route::post('quizzes/{quiz}/outcomes/reorder', [QuizOutcomeController::class, 'reorder'])->name('quizzes.outcomes.reorder');
     Route::post('quizzes/{quiz}/outcomes', [QuizOutcomeController::class, 'store'])->name('quizzes.outcomes.store');
     Route::put('quizzes/{quiz}/outcomes/{outcome}', [QuizOutcomeController::class, 'update'])->name('quizzes.outcomes.update');
     Route::delete('quizzes/{quiz}/outcomes/{outcome}', [QuizOutcomeController::class, 'destroy'])->name('quizzes.outcomes.destroy');
