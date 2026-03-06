@@ -39,4 +39,18 @@
                    class="input w-full" placeholder="e.g., ~20 hours">
         </div>
     </div>
+
+    <!-- Amino Acid Sequence -->
+    <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Amino Acid Sequence</label>
+        <textarea name="amino_acid_sequence" rows="2" class="input w-full font-mono text-sm"
+                  placeholder="e.g., DISSL...">{{ old('amino_acid_sequence', $peptide?->amino_acid_sequence) }}</textarea>
+    </div>
+
+    <!-- Molecular Notes -->
+    <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Molecular Notes</label>
+        <textarea name="molecular_notes" rows="2" class="input w-full"
+                  placeholder="Additional molecular information...">{{ old('molecular_notes', $peptide?->molecular_notes) }}</textarea>
+    </div>
 </div>

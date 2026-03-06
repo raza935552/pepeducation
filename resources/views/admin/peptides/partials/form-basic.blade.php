@@ -25,7 +25,7 @@
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Abbreviation</label>
             <input type="text" name="abbreviation" value="{{ old('abbreviation', $peptide?->abbreviation) }}"
-                   class="input w-full" maxlength="20">
+                   class="input w-full" maxlength="100">
         </div>
 
         <!-- Type -->

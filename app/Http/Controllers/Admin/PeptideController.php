@@ -45,6 +45,7 @@ class PeptideController extends Controller
     public function store(Request $request)
     {
         $validated = $this->validatePeptide($request);
+        $validated = array_merge($validated, $this->parseAdvancedFields($request));
         $peptide = Peptide::create($validated);
         $peptide->categories()->sync($request->get('categories', []));
 
@@ -61,6 +62,7 @@ class PeptideController extends Controller
     public function update(Request $request, Peptide $peptide)
     {
         $validated = $this->validatePeptide($request);
+        $validated = array_merge($validated, $this->parseAdvancedFields($request));
         $peptide->update($validated);
         $peptide->categories()->sync($request->get('categories', []));
 
@@ -88,7 +90,7 @@ class PeptideController extends Controller
         return $request->validate([
             'name' => 'required|string|max:255',
             'full_name' => 'nullable|string|max:255',
-            'abbreviation' => 'nullable|string|max:20',
+            'abbreviation' => 'nullable|string|max:100',
             'type' => 'nullable|string|max:255',
             'typical_dose' => 'nullable|string|max:255',
             'dose_frequency' => 'nullable|string|max:255',
@@ -105,9 +107,50 @@ class PeptideController extends Controller
             'safety_warnings' => 'nullable|array',
             'molecular_weight' => 'nullable|numeric',
             'amino_acid_length' => 'nullable|integer',
+            'amino_acid_sequence' => 'nullable|string',
+            'molecular_notes' => 'nullable|string',
             'peak_time' => 'nullable|string|max:255',
             'half_life' => 'nullable|string|max:255',
             'clearance_time' => 'nullable|string|max:255',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string',
         ]);
+    }
+
+    protected function parseAdvancedFields(Request $request): array
+    {
+        $fields = [];
+
+        // Protocols: array of {goal, dose, frequency, route}
+        $fields['protocols'] = $request->input('protocols') ?: null;
+
+        // Compatible peptides: array of {name, relationship}
+        $fields['compatible_peptides'] = $request->input('compatible_peptides') ?: null;
+
+        // Reconstitution steps: simple string array
+        $steps = $request->input('reconstitution_steps');
+        $fields['reconstitution_steps'] = $steps ? array_values(array_filter($steps)) : null;
+
+        // Quality indicators: array of {status, title, description}
+        $fields['quality_indicators'] = $request->input('quality_indicators') ?: null;
+
+        // Effectiveness ratings: convert [{category, rating}] to {category: rating}
+        $ratingsInput = $request->input('effectiveness_ratings', []);
+        if ($ratingsInput) {
+            $ratings = [];
+            foreach ($ratingsInput as $item) {
+                if (!empty($item['category'])) {
+                    $ratings[$item['category']] = (int) ($item['rating'] ?? 0);
+                }
+            }
+            $fields['effectiveness_ratings'] = $ratings ?: null;
+        } else {
+            $fields['effectiveness_ratings'] = null;
+        }
+
+        // References: array of {title, url, details, description}
+        $fields['references'] = $request->input('references') ?: null;
+
+        return $fields;
     }
 }

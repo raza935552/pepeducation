@@ -7,6 +7,7 @@
         @include('admin.peptides.partials.form-dosing')
         @include('admin.peptides.partials.form-content')
         @include('admin.peptides.partials.form-molecular')
+        @include('admin.peptides.partials.form-advanced')
     </div>
 
     <!-- Sidebar -->

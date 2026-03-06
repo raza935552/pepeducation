@@ -50,3 +50,22 @@
         @endforeach
     </div>
 </div>
+
+<!-- SEO -->
+<div class="card">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">SEO</h3>
+
+    <div class="space-y-4">
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
+            <input type="text" name="meta_title" value="{{ old('meta_title', $peptide?->meta_title) }}"
+                   class="input w-full" placeholder="SEO title...">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
+            <textarea name="meta_description" rows="3" class="input w-full"
+                      placeholder="SEO description...">{{ old('meta_description', $peptide?->meta_description) }}</textarea>
+        </div>
+    </div>
+</div>
