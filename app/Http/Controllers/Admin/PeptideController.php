@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Peptide;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class PeptideController extends Controller
 {
@@ -46,6 +47,7 @@ class PeptideController extends Controller
     {
         $validated = $this->validatePeptide($request);
         $validated = array_merge($validated, $this->parseAdvancedFields($request));
+        $validated['slug'] = Str::slug($validated['name']);
         $peptide = Peptide::create($validated);
         $peptide->categories()->sync($request->get('categories', []));
 
@@ -63,6 +65,17 @@ class PeptideController extends Controller
     {
         $validated = $this->validatePeptide($request);
         $validated = array_merge($validated, $this->parseAdvancedFields($request));
+
+        // Update slug if name changed
+        if ($validated['name'] !== $peptide->name) {
+            $newSlug = Str::slug($validated['name']);
+            // Ensure uniqueness (skip self)
+            if (Peptide::where('slug', $newSlug)->where('id', '!=', $peptide->id)->exists()) {
+                $newSlug .= '-' . $peptide->id;
+            }
+            $validated['slug'] = $newSlug;
+        }
+
         $peptide->update($validated);
         $peptide->categories()->sync($request->get('categories', []));
 
@@ -114,6 +127,8 @@ class PeptideController extends Controller
             'clearance_time' => 'nullable|string|max:255',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
+            'categories' => 'nullable|array',
+            'categories.*' => 'exists:categories,id',
         ]);
     }
 

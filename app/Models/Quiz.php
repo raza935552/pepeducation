@@ -85,22 +85,4 @@ class Quiz extends Model
         return round($this->completions_count / $this->starts_count * 100, 2);
     }
 
-    public function determineOutcome(array $scores): ?QuizOutcome
-    {
-        return $this->outcomes()
-            ->where('min_score', '<=', $scores['total'] ?? 0)
-            ->orderByDesc('min_score')
-            ->first();
-    }
-
-    public function determineSegment(array $scores): string
-    {
-        $tof = $scores['tof'] ?? 0;
-        $mof = $scores['mof'] ?? 0;
-        $bof = $scores['bof'] ?? 0;
-
-        if ($bof >= $mof && $bof >= $tof) return 'bof';
-        if ($mof >= $tof) return 'mof';
-        return 'tof';
-    }
 }

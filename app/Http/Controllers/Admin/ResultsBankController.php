@@ -20,26 +20,60 @@ class ResultsBankController extends Controller
         return view('admin.results-bank.index', compact('results'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         return view('admin.results-bank.form', [
             'result' => null,
             'healthGoals' => $this->getHealthGoalOptions(),
             'experienceLevels' => $this->getExperienceLevelOptions(),
             'stackProducts' => StackProduct::active()->ordered()->get(),
+            'prefillGoal' => $request->query('health_goal'),
         ]);
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate($this->rules());
+        $validated = $request->validate($this->storeRules());
 
-        $validated['benefits'] = $this->parseBenefits($request->input('benefits_text'));
+        $benefits = $this->parseBenefits($request->input('benefits_text'));
+        $levels = $validated['experience_levels'];
 
-        $result = ResultsBank::create($validated);
+        // Remove experience_levels from validated (not a model field)
+        unset($validated['experience_levels']);
 
-        return redirect()->route('admin.results-bank.edit', $result)
-            ->with('success', 'Result entry created.');
+        $created = [];
+        $skipped = [];
+
+        foreach ($levels as $level) {
+            // Check uniqueness: health_goal + experience_level
+            $exists = ResultsBank::where('health_goal', $validated['health_goal'])
+                ->where('experience_level', $level)
+                ->exists();
+
+            if ($exists) {
+                $skipped[] = $level;
+                continue;
+            }
+
+            $created[] = ResultsBank::create(array_merge($validated, [
+                'experience_level' => $level,
+                'benefits' => $benefits,
+            ]));
+        }
+
+        if (empty($created)) {
+            return back()->withInput()
+                ->with('error', 'Entries already exist for the selected experience level(s).');
+        }
+
+        $msg = count($created) . ' entry(ies) created.';
+        if (!empty($skipped)) {
+            $msg .= ' Skipped ' . count($skipped) . ' (already exist): ' . implode(', ', $skipped) . '.';
+        }
+
+        // Redirect to the first created entry
+        return redirect()->route('admin.results-bank.edit', $created[0])
+            ->with('success', $msg);
     }
 
     public function edit(ResultsBank $results_bank)
@@ -54,13 +88,55 @@ class ResultsBankController extends Controller
 
     public function update(Request $request, ResultsBank $results_bank)
     {
-        $validated = $request->validate($this->rules($results_bank->id));
+        $validated = $request->validate($this->storeRules());
 
-        $validated['benefits'] = $this->parseBenefits($request->input('benefits_text'));
+        $benefits = $this->parseBenefits($request->input('benefits_text'));
+        $levels = $validated['experience_levels'];
 
-        $results_bank->update($validated);
+        unset($validated['experience_levels']);
 
-        return back()->with('success', 'Result entry updated.');
+        // Update the current entry with its level (or switch level if only one selected)
+        $currentLevel = $results_bank->experience_level;
+
+        if (in_array($currentLevel, $levels)) {
+            // Current level still selected — update this entry
+            $results_bank->update(array_merge($validated, [
+                'experience_level' => $currentLevel,
+                'benefits' => $benefits,
+            ]));
+        } else {
+            // Current level unchecked — switch to the first selected level
+            $results_bank->update(array_merge($validated, [
+                'experience_level' => $levels[0],
+                'benefits' => $benefits,
+            ]));
+        }
+
+        // Create entries for any additional levels
+        $created = 0;
+        foreach ($levels as $level) {
+            if ($level === $results_bank->experience_level) continue;
+
+            $exists = ResultsBank::where('health_goal', $validated['health_goal'])
+                ->where('experience_level', $level)
+                ->where('id', '!=', $results_bank->id)
+                ->exists();
+
+            if (!$exists) {
+                ResultsBank::create(array_merge($validated, [
+                    'experience_level' => $level,
+                    'benefits' => $benefits,
+                ]));
+                $created++;
+            }
+        }
+
+        $msg = 'Entry updated.';
+        if ($created > 0) {
+            $msg .= " Also created $created new entry(ies) for additional level(s).";
+        }
+
+        return back()->with('success', $msg);
     }
 
     public function destroy(ResultsBank $results_bank)
@@ -71,6 +147,34 @@ class ResultsBankController extends Controller
             ->with('success', 'Result entry deleted.');
     }
 
+    /**
+     * Validation rules for creating new entries (multi experience level).
+     */
+    private function storeRules(): array
+    {
+        return [
+            'health_goal' => 'required|string',
+            'experience_levels' => 'required|array|min:1',
+            'experience_levels.*' => 'string|in:beginner,advanced',
+            'peptide_name' => 'required|string|max:255',
+            'peptide_slug' => 'nullable|string|max:255',
+            'stack_product_id' => 'nullable|exists:stack_products,id',
+            'star_rating' => 'nullable|numeric|min:1|max:5',
+            'rating_label' => 'nullable|string|max:255',
+            'testimonial' => 'nullable|string|max:2000',
+            'testimonial_author' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:2000',
+            'is_active' => 'boolean',
+            'display_fields' => 'nullable|array',
+            'display_fields.star_rating' => 'nullable|boolean',
+            'display_fields.testimonial' => 'nullable|boolean',
+            'display_fields.benefits' => 'nullable|boolean',
+        ];
+    }
+
+    /**
+     * Validation rules for updating a single entry.
+     */
     private function rules(?int $ignoreId = null): array
     {
         return [
@@ -143,6 +247,8 @@ class ResultsBankController extends Controller
     /**
      * Extract unique option value => label pairs from quiz questions
      * that have the given klaviyo_property.
+     * Uses klaviyo_value as the key (if set) to avoid duplicates from
+     * different quiz slides that map to the same underlying value.
      */
     private function getOptionsFromQuiz(string $klaviyoProperty): array
     {
@@ -153,10 +259,11 @@ class ResultsBankController extends Controller
         $options = [];
         foreach ($questions as $question) {
             foreach ($question->options ?? [] as $option) {
-                $value = $option['value'] ?? null;
-                $label = $option['label'] ?? $option['klaviyo_value'] ?? null;
-                if ($value && $label && !isset($options[$value])) {
-                    $options[$value] = $label;
+                // Use klaviyo_value as the canonical key if set, otherwise fall back to value
+                $key = !empty($option['klaviyo_value']) ? $option['klaviyo_value'] : ($option['value'] ?? null);
+                $label = $option['label'] ?? null;
+                if ($key && $label && !isset($options[$key])) {
+                    $options[$key] = $label;
                 }
             }
         }

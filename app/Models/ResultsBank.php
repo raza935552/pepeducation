@@ -112,6 +112,8 @@ class ResultsBank extends Model
             ->where('peptide_slug', '!=', $excludeSlug)
             ->where('is_active', true)
             ->with('stackProduct.stores')
+            ->orderBy('star_rating', 'desc')
+            ->orderBy('id')
             ->first();
     }
 

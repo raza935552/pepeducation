@@ -30,7 +30,7 @@
                                     class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold" required>
                                 <option value="">Select goal...</option>
                                 @foreach($healthGoals as $value => $label)
-                                    <option value="{{ $value }}" {{ old('health_goal', $result?->health_goal) === $value ? 'selected' : '' }}>
+                                    <option value="{{ $value }}" {{ old('health_goal', $result?->health_goal ?? ($prefillGoal ?? '')) === $value ? 'selected' : '' }}>
                                         {{ $label }}
                                     </option>
                                 @endforeach
@@ -39,47 +39,39 @@
                         </div>
 
                         <div>
-                            <label for="experience_level" class="block text-sm font-medium text-gray-700 mb-1">Experience Level</label>
-                            <select name="experience_level" id="experience_level"
-                                    class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold" required>
-                                <option value="">Select level...</option>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Experience Level</label>
+                            @php
+                                $currentLevels = $result
+                                    ? old('experience_levels', [$result->experience_level])
+                                    : old('experience_levels', []);
+                            @endphp
+                            <div class="space-y-2 mt-1">
                                 @foreach($experienceLevels as $value => $label)
-                                    <option value="{{ $value }}" {{ old('experience_level', $result?->experience_level) === $value ? 'selected' : '' }}>
-                                        {{ $label }}
-                                    </option>
+                                    <label class="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 hover:border-brand-gold cursor-pointer transition-colors">
+                                        <input type="checkbox" name="experience_levels[]" value="{{ $value }}"
+                                               {{ in_array($value, $currentLevels) ? 'checked' : '' }}
+                                               class="rounded border-gray-300 text-brand-gold focus:ring-brand-gold">
+                                        <span class="text-sm text-gray-700">{{ $label }}</span>
+                                    </label>
                                 @endforeach
-                            </select>
-                            @error('experience_level') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Select multiple to {{ $result ? 'also create entries for other levels' : 'create one entry per level' }}.</p>
+                            @error('experience_levels') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                            @error('experience_levels.*') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
                     </div>
                 </div>
 
                 {{-- Peptide Info --}}
-                <div class="card p-6">
+                <div class="card p-6" x-data="productAutoFill()">
                     <h3 class="text-lg font-semibold mb-4">Peptide Recommendation</h3>
 
                     <div class="space-y-4">
-                        <div>
-                            <label for="peptide_name" class="block text-sm font-medium text-gray-700 mb-1">Peptide Name</label>
-                            <input type="text" name="peptide_name" id="peptide_name"
-                                   value="{{ old('peptide_name', $result?->peptide_name) }}"
-                                   placeholder="e.g. Tirzepatide, BPC-157"
-                                   class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold" required>
-                            @error('peptide_name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                        </div>
-
-                        <div>
-                            <label for="peptide_slug" class="block text-sm font-medium text-gray-700 mb-1">Peptide Slug (optional)</label>
-                            <input type="text" name="peptide_slug" id="peptide_slug"
-                                   value="{{ old('peptide_slug', $result?->peptide_slug) }}"
-                                   placeholder="e.g. tirzepatide"
-                                   class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
-                            <p class="text-xs text-gray-500 mt-1">URL-friendly name. Used to link to the peptide detail page if it exists.</p>
-                        </div>
-
+                        {{-- Linked Stack Product (TOP) --}}
                         <div>
                             <label for="stack_product_id" class="block text-sm font-medium text-gray-700 mb-1">Linked Stack Product</label>
-                            <select name="stack_product_id" id="stack_product_id"
+                            <select name="stack_product_id" id="stack_product_id" x-model="selectedProductId"
+                                    @change="onProductChange()"
                                     class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
                                 <option value="">-- No linked product --</option>
                                 @foreach($stackProducts as $product)
@@ -88,27 +80,89 @@
                                     </option>
                                 @endforeach
                             </select>
-                            <p class="text-xs text-gray-500 mt-1">Links this recommendation to a Stack Builder product for vendor comparison on the quiz.</p>
+                            <p class="text-xs text-gray-500 mt-1">Select a product to auto-fill the fields below. You can still override any value.</p>
                             @error('stack_product_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
+                        {{-- Auto-fill notice --}}
+                        <div x-show="justFilled" x-transition.opacity class="rounded-lg bg-green-50 border border-green-200 px-3 py-2">
+                            <p class="text-xs text-green-700 flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                Fields auto-filled from product. Edit any field to customize.
+                            </p>
+                        </div>
+
                         <div>
-                            <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description (optional)</label>
-                            <textarea name="description" id="description" rows="3"
+                            <label for="peptide_name" class="block text-sm font-medium text-gray-700 mb-1">Peptide Name</label>
+                            <input type="text" name="peptide_name" id="peptide_name" x-model="peptideName"
+                                   placeholder="e.g. Tirzepatide, BPC-157"
+                                   class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold" required>
+                            @error('peptide_name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label for="peptide_slug" class="block text-sm font-medium text-gray-700 mb-1">Peptide Slug <span class="font-normal text-gray-400">(optional)</span></label>
+                            <input type="text" name="peptide_slug" id="peptide_slug" x-model="peptideSlug"
+                                   placeholder="e.g. tirzepatide"
+                                   class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                            <p class="text-xs text-gray-500 mt-1">URL-friendly name. Used to link to the peptide detail page if it exists.</p>
+                        </div>
+
+                        <div>
+                            <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description <span class="font-normal text-gray-400">(optional)</span></label>
+                            <textarea name="description" id="description" rows="3" x-model="description"
                                       placeholder="Short description of why this peptide is recommended for this goal..."
-                                      class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">{{ old('description', $result?->description) }}</textarea>
+                                      class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold"></textarea>
                             @error('description') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
-                            <label for="benefits_text" class="block text-sm font-medium text-gray-700 mb-1">Key Benefits (one per line)</label>
-                            <textarea name="benefits_text" id="benefits_text" rows="4"
+                            <label for="benefits_text" class="block text-sm font-medium text-gray-700 mb-1">Key Benefits <span class="font-normal text-gray-400">(one per line)</span></label>
+                            <textarea name="benefits_text" id="benefits_text" rows="4" x-model="benefitsText"
                                       placeholder="Promotes fat oxidation&#10;Reduces appetite naturally&#10;Improves insulin sensitivity"
-                                      class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">{{ old('benefits_text', $result ? implode("\n", $result->benefits ?? []) : '') }}</textarea>
+                                      class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold"></textarea>
                             <p class="text-xs text-gray-500 mt-1">Each line becomes a benefit bullet point on the reveal slide.</p>
                         </div>
                     </div>
                 </div>
+
+                @php
+                    $stackProductsJson = $stackProducts->map(fn($p) => [
+                        'id' => $p->id,
+                        'name' => $p->name,
+                        'slug' => $p->slug,
+                        'description' => $p->description,
+                        'key_benefits' => $p->key_benefits ?? [],
+                    ])->keyBy('id')->toJson();
+                @endphp
+                <script>
+                function productAutoFill() {
+                    return {
+                        products: {!! $stackProductsJson !!},
+                        selectedProductId: '{{ old('stack_product_id', $result?->stack_product_id ?? '') }}',
+                        peptideName: @js(old('peptide_name', $result?->peptide_name ?? '')),
+                        peptideSlug: @js(old('peptide_slug', $result?->peptide_slug ?? '')),
+                        description: @js(old('description', $result?->description ?? '')),
+                        benefitsText: @js(old('benefits_text', $result ? implode("\n", $result->benefits ?? []) : '')),
+                        justFilled: false,
+                        onProductChange() {
+                            if (!this.selectedProductId) return;
+                            const product = this.products[this.selectedProductId];
+                            if (!product) return;
+
+                            this.peptideName = product.name;
+                            this.peptideSlug = product.slug;
+                            if (product.description) this.description = product.description;
+                            if (product.key_benefits && product.key_benefits.length > 0) {
+                                this.benefitsText = product.key_benefits.join('\n');
+                            }
+
+                            this.justFilled = true;
+                            setTimeout(() => this.justFilled = false, 4000);
+                        },
+                    };
+                }
+                </script>
 
                 {{-- Rating & Testimonial --}}
                 <div class="card p-6">

@@ -66,9 +66,9 @@ class StackProduct extends Model
     }
 
     // Accessors
-    public function getCurrentPriceAttribute(): string
+    public function getCurrentPriceAttribute(): float
     {
-        return $this->sale_price ?? $this->price;
+        return (float) ($this->sale_price ?? $this->price ?? 0);
     }
 
     public function getSavingsAttribute(): string
