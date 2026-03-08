@@ -717,6 +717,163 @@
             </section>
 
             {{-- ============================================================ --}}
+            {{-- Section 10b: Building a Custom Branching Quiz (Step-by-Step) --}}
+            {{-- ============================================================ --}}
+            <section id="custom-quiz-guide">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">10b. Building a Custom Branching Quiz (Step-by-Step)</h2>
+
+                <div class="space-y-6">
+                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-5">
+                        <p class="text-sm text-amber-800"><strong>This is for you, marketing team.</strong> Custom quizzes don't use the TOF/MOF/BOF scoring system. Instead you control the flow using <strong>Skip To</strong> (on answer options) and <strong>Show Conditions</strong> (on slides). Think of it as building a choose-your-own-adventure.</p>
+                    </div>
+
+                    {{-- Step 1 --}}
+                    <div class="card p-5 border-l-4 border-indigo-500">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="bg-indigo-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">1</span>
+                            <h4 class="font-bold text-gray-900">Create the quiz</h4>
+                        </div>
+                        <p class="text-sm text-gray-600">Go to <strong>Quizzes &rarr; Create New</strong>. Set the type to <strong>Custom</strong>. Give it a name and save. You'll land on the quiz editor.</p>
+                    </div>
+
+                    {{-- Step 2 --}}
+                    <div class="card p-5 border-l-4 border-indigo-500">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="bg-indigo-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">2</span>
+                            <h4 class="font-bold text-gray-900">Plan your branching tree on paper first</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-3">Before adding slides, sketch out the paths. Example:</p>
+                        <div class="bg-gray-50 rounded-lg p-4 font-mono text-xs text-gray-700 space-y-1">
+                            <p>Q1: "What's your goal?" (3 options)</p>
+                            <p class="pl-4">&rarr; "Fat Loss" &rarr; Q2a (fat loss questions)</p>
+                            <p class="pl-4">&rarr; "Muscle" &rarr; Q2b (muscle questions)</p>
+                            <p class="pl-4">&rarr; "Recovery" &rarr; Q2c (recovery questions)</p>
+                            <p class="pl-8">&rarr; All paths merge at Q5 (email capture)</p>
+                            <p class="pl-8">&rarr; Then show the right outcome</p>
+                        </div>
+                    </div>
+
+                    {{-- Step 3 --}}
+                    <div class="card p-5 border-l-4 border-indigo-500">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="bg-indigo-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">3</span>
+                            <h4 class="font-bold text-gray-900">Add the branching question (the "router")</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-3">Create a <strong>Question</strong> slide. This is the decision point. For each answer option:</p>
+                        <div class="space-y-2">
+                            <div class="bg-gray-50 rounded-lg p-3">
+                                <p class="text-xs font-semibold text-gray-700">Option settings to fill in:</p>
+                                <ul class="mt-2 space-y-1 text-xs text-gray-600">
+                                    <li>&bull; <strong>Label:</strong> "Fat Loss" (what user sees)</li>
+                                    <li>&bull; <strong>Value:</strong> "fat_loss" (internal key &mdash; used in show conditions later)</li>
+                                    <li>&bull; <strong>Klaviyo Property</strong> (on the question): "goal" (so we can match outcomes by answer)</li>
+                                    <li>&bull; <strong>Skip To:</strong> Select which slide this path should jump to</li>
+                                    <li>&bull; <strong>Scores:</strong> Leave all at 0 for custom quizzes (scoring isn't used)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Step 4 --}}
+                    <div class="card p-5 border-l-4 border-indigo-500">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="bg-indigo-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">4</span>
+                            <h4 class="font-bold text-gray-900">Add branch-specific slides with Show Conditions</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-3">Create slides that only appear for a specific path. On each slide:</p>
+                        <div class="bg-gray-50 rounded-lg p-4 space-y-3">
+                            <div>
+                                <p class="text-xs font-semibold text-gray-700">Using "Skip To" (on the router question):</p>
+                                <p class="text-xs text-gray-600 mt-1">If "Fat Loss" should jump to slide #4, set <strong>Skip To = slide #4</strong> on the Fat Loss option. Slides #2 and #3 will be skipped for that user.</p>
+                            </div>
+                            <div class="border-t pt-3">
+                                <p class="text-xs font-semibold text-gray-700">Using "Show Conditions" (on the target slide):</p>
+                                <p class="text-xs text-gray-600 mt-1">On slide #4, add a show condition: <strong>"Show when [Router Question] = fat_loss"</strong>. Now this slide is hidden from users who picked "Muscle" or "Recovery".</p>
+                            </div>
+                            <div class="bg-cyan-50 border border-cyan-200 rounded-lg p-3">
+                                <p class="text-xs text-cyan-800"><strong>When to use which?</strong></p>
+                                <p class="text-xs text-cyan-700 mt-1">&bull; <strong>Skip To</strong> = "Jump ahead to this slide" (skips everything in between)</p>
+                                <p class="text-xs text-cyan-700">&bull; <strong>Show Conditions</strong> = "Only show this slide IF..." (the slide is in sequence but hidden from wrong paths)</p>
+                                <p class="text-xs text-cyan-700 mt-1">You can use <strong>both together</strong> for maximum control.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Step 5 --}}
+                    <div class="card p-5 border-l-4 border-indigo-500">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="bg-indigo-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">5</span>
+                            <h4 class="font-bold text-gray-900">Create outcomes for each path</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-3">Since custom quizzes don't use segments, use <strong>"When user answered..."</strong> conditions on your outcomes:</p>
+                        <div class="space-y-2">
+                            <div class="bg-gray-50 rounded-lg p-3 flex items-center gap-3">
+                                <span class="text-xs font-bold text-green-600 w-24 shrink-0">Outcome 1</span>
+                                <span class="text-xs text-gray-600">"When goal = fat_loss" &rarr; Fat Loss result page</span>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-3 flex items-center gap-3">
+                                <span class="text-xs font-bold text-blue-600 w-24 shrink-0">Outcome 2</span>
+                                <span class="text-xs text-gray-600">"When goal = muscle" &rarr; Muscle result page</span>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-3 flex items-center gap-3">
+                                <span class="text-xs font-bold text-purple-600 w-24 shrink-0">Outcome 3</span>
+                                <span class="text-xs text-gray-600">"When goal = recovery" &rarr; Recovery result page</span>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-3 flex items-center gap-3">
+                                <span class="text-xs font-bold text-gray-500 w-24 shrink-0">Fallback</span>
+                                <span class="text-xs text-gray-600">"Always (default)" &rarr; Generic result page. <strong>Always add this last!</strong></span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-3">The "question" in the outcome condition dropdown should be the Klaviyo Property name you set in step 3 (e.g., "goal"). The "value" is the option value (e.g., "fat_loss").</p>
+                    </div>
+
+                    {{-- Step 6 --}}
+                    <div class="card p-5 border-l-4 border-indigo-500">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="bg-indigo-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">6</span>
+                            <h4 class="font-bold text-gray-900">Test with the simulator</h4>
+                        </div>
+                        <p class="text-sm text-gray-600">Use the <strong>Quiz Simulator</strong> in the sidebar to walk through each path. It shows which slides are skipped and which outcome gets matched. Test every branch before going live.</p>
+                    </div>
+
+                    {{-- Visual example --}}
+                    <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-5">
+                        <h4 class="font-semibold text-indigo-900 mb-3">Full Example: 3-Path Custom Quiz</h4>
+                        <div class="font-mono text-xs text-indigo-800 space-y-1">
+                            <p><strong>Slide #1</strong> — Question: "What's your goal?" (klaviyo_property: "goal")</p>
+                            <p class="pl-4">Option "Fat Loss" (value: fat_loss, skip_to: slide #2)</p>
+                            <p class="pl-4">Option "Muscle" (value: muscle, skip_to: slide #4)</p>
+                            <p class="pl-4">Option "Recovery" (value: recovery, skip_to: slide #6)</p>
+                            <p class="mt-2"><strong>Slide #2</strong> — Question: "Diet type?" (show_condition: goal = fat_loss)</p>
+                            <p><strong>Slide #3</strong> — Intermission: "Great choice!" (show_condition: goal = fat_loss)</p>
+                            <p><strong>Slide #4</strong> — Question: "Training style?" (show_condition: goal = muscle)</p>
+                            <p><strong>Slide #5</strong> — Intermission: "Building muscle!" (show_condition: goal = muscle)</p>
+                            <p><strong>Slide #6</strong> — Question: "Injury type?" (show_condition: goal = recovery)</p>
+                            <p><strong>Slide #7</strong> — Intermission: "Healing matters!" (show_condition: goal = recovery)</p>
+                            <p class="mt-2"><strong>Slide #8</strong> — Email Capture (no conditions — all paths see this)</p>
+                            <p class="mt-2"><strong>Outcomes:</strong></p>
+                            <p class="pl-4">Priority 1: "When goal = fat_loss" &rarr; Fat Loss Results</p>
+                            <p class="pl-4">Priority 2: "When goal = muscle" &rarr; Muscle Results</p>
+                            <p class="pl-4">Priority 3: "When goal = recovery" &rarr; Recovery Results</p>
+                            <p class="pl-4">Priority 4: "Always" &rarr; Generic Results (safety net)</p>
+                        </div>
+                    </div>
+
+                    {{-- Common mistakes --}}
+                    <div class="bg-red-50 border border-red-200 rounded-xl p-5">
+                        <h4 class="font-semibold text-red-900 mb-3">Common Mistakes</h4>
+                        <ul class="space-y-2 text-sm text-red-800">
+                            <li>&bull; <strong>No "Always" outcome</strong> — If no outcome matches, the user sees a generic "Thank you" page. Always add a fallback outcome as your last priority.</li>
+                            <li>&bull; <strong>Missing show conditions on branch slides</strong> — Without conditions, ALL users see ALL slides, even ones meant for other paths.</li>
+                            <li>&bull; <strong>Forgot to set Klaviyo Property</strong> — The router question MUST have a Klaviyo Property set (e.g., "goal") so outcomes can match by answer. Without it, "When user answered..." conditions can't find the answer.</li>
+                            <li>&bull; <strong>Skip To pointing backward</strong> — Skip To can only jump forward. It can't loop back to a previous slide.</li>
+                            <li>&bull; <strong>Using scores in custom quizzes</strong> — TOF/MOF/BOF scores still work but segment-based outcomes won't do anything useful in custom quizzes. Use answer-based outcomes instead.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            {{-- ============================================================ --}}
             {{-- Section 11: Dynamic Content --}}
             {{-- ============================================================ --}}
             <section id="dynamic-content">
@@ -1196,6 +1353,7 @@
                 <a href="#coverage" class="block text-sm text-gray-600 hover:text-brand-gold py-1 transition-colors">8. Outcome Coverage</a>
                 <a href="#results-bank" class="block text-sm text-gray-600 hover:text-brand-gold py-1 transition-colors">9. Results Bank</a>
                 <a href="#quiz-paths" class="block text-sm text-gray-600 hover:text-brand-gold py-1 transition-colors">10. The 3 Quiz Paths</a>
+                <a href="#custom-quiz-guide" class="block text-sm text-amber-600 hover:text-brand-gold py-1 transition-colors font-medium">10b. Custom Quiz Guide</a>
                 <a href="#dynamic-content" class="block text-sm text-gray-600 hover:text-brand-gold py-1 transition-colors">11. Dynamic Content</a>
                 <a href="#klaviyo" class="block text-sm text-gray-600 hover:text-brand-gold py-1 transition-colors">12. Klaviyo Integration</a>
                 <a href="#session-behavior" class="block text-sm text-gray-600 hover:text-brand-gold py-1 transition-colors">13. Session & Email</a>
