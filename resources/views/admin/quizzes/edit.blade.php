@@ -209,7 +209,31 @@
         };
     }
 
+    // Toast notification
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        const colors = {
+            success: 'bg-green-600',
+            error: 'bg-red-600',
+            info: 'bg-blue-600',
+        };
+        toast.className = `fixed bottom-6 right-6 ${colors[type] || colors.success} text-white px-4 py-2.5 rounded-lg shadow-lg text-sm z-50 transition-all duration-300 translate-y-0 opacity-100`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.classList.add('opacity-0', 'translate-y-2');
+            setTimeout(() => toast.remove(), 300);
+        }, 2500);
+    }
+
     function assignSegment(url, segment, el) {
+        const segDotColors = { shared: 'bg-gray-400', tof: 'bg-green-500', mof: 'bg-yellow-500', bof: 'bg-red-500' };
+        const segLabels = { shared: 'Shared', tof: 'TOF', mof: 'MOF', bof: 'BOF' };
+
+        // Find the slide row and its dot
+        const slideRow = el.closest('[data-question-id]');
+        const questionId = slideRow?.dataset.questionId;
+
         fetch(url, {
             method: 'PATCH',
             headers: {
@@ -222,12 +246,48 @@
         .then(r => r.json())
         .then(data => {
             if (data.success) {
-                location.reload();
+                // Update the dot color inline
+                const dot = document.getElementById('seg-dot-' + questionId);
+                if (dot) {
+                    dot.className = 'w-2 h-2 rounded-full ' + (segDotColors[segment] || 'bg-gray-400') + ' flex-shrink-0';
+                    dot.title = segLabels[segment] || 'Shared';
+                }
+                showToast(data.message || 'Segment assigned.');
             } else {
-                alert(data.message || 'Failed to assign segment.');
+                showToast(data.message || 'Failed to assign segment.', 'error');
             }
         })
-        .catch(() => alert('Something went wrong. Try again.'));
+        .catch(() => showToast('Something went wrong. Try again.', 'error'));
+    }
+
+    function duplicateSlide(url, btn) {
+        btn.disabled = true;
+        btn.classList.add('opacity-50');
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Slide duplicated as #' + (data.question?.order || '?') + '. Refreshing...');
+                setTimeout(() => location.reload(), 800);
+            } else {
+                showToast('Duplicate failed.', 'error');
+                btn.disabled = false;
+                btn.classList.remove('opacity-50');
+            }
+        })
+        .catch(() => {
+            showToast('Something went wrong.', 'error');
+            btn.disabled = false;
+            btn.classList.remove('opacity-50');
+        });
     }
 
     function deleteSlideWithCheck(url, slideName) {
@@ -253,10 +313,12 @@
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
                         },
-                    }).then(() => location.reload());
+                    }).then(r => r.json()).then(d => {
+                        if (d.success) removeSlideFromDom(url, slideName);
+                    });
                 }
             } else if (data.success) {
-                location.reload();
+                removeSlideFromDom(url, slideName);
             }
         })
         .catch(() => {
@@ -269,6 +331,26 @@
                 form.submit();
             }
         });
+    }
+
+    function removeSlideFromDom(url, slideName) {
+        // Find and remove the slide row by matching the delete button's URL
+        document.querySelectorAll('[data-question-id]').forEach(row => {
+            const deleteBtn = row.querySelector('[onclick*="deleteSlideWithCheck"]');
+            if (deleteBtn && deleteBtn.getAttribute('onclick').includes(url)) {
+                row.style.transition = 'opacity 0.3s, max-height 0.3s';
+                row.style.opacity = '0';
+                row.style.maxHeight = row.offsetHeight + 'px';
+                row.style.overflow = 'hidden';
+                setTimeout(() => {
+                    row.style.maxHeight = '0';
+                    row.style.marginBottom = '0';
+                    row.style.padding = '0';
+                    setTimeout(() => row.remove(), 300);
+                }, 100);
+            }
+        });
+        showToast('"' + slideName + '" deleted.');
     }
     </script>
 

@@ -174,6 +174,10 @@ class QuizQuestionController extends Controller
         }
         $clone->save();
 
+        if (request()->wantsJson()) {
+            return response()->json(['success' => true, 'question' => $clone]);
+        }
+
         return back()->with('success', 'Slide duplicated — all conditions, scores, and settings copied.');
     }
 
