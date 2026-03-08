@@ -39,9 +39,18 @@ class QuizController extends Controller
             'is_active' => 'boolean',
         ]);
 
+        // Generate unique slug
+        $baseSlug = !empty($validated['slug']) ? $validated['slug'] : \Str::slug($validated['name']);
+        $slug = $baseSlug;
+        $count = 1;
+        while (Quiz::where('slug', $slug)->exists()) {
+            $slug = "{$baseSlug}-{$count}";
+            $count++;
+        }
+
         $quiz = Quiz::create([
             'name' => $validated['name'],
-            'slug' => !empty($validated['slug']) ? $validated['slug'] : \Str::slug($validated['name']),
+            'slug' => $slug,
             'type' => $validated['type'],
             'description' => $validated['description'] ?? null,
             'settings' => $validated['settings'] ?? $this->defaultSettings(),
@@ -219,9 +228,18 @@ class QuizController extends Controller
             'is_active' => 'boolean',
         ]);
 
+        // Generate unique slug (skip self)
+        $baseSlug = !empty($validated['slug']) ? $validated['slug'] : \Str::slug($validated['name']);
+        $slug = $baseSlug;
+        $count = 1;
+        while (Quiz::where('slug', $slug)->where('id', '!=', $quiz->id)->exists()) {
+            $slug = "{$baseSlug}-{$count}";
+            $count++;
+        }
+
         $quiz->update([
             'name' => $validated['name'],
-            'slug' => !empty($validated['slug']) ? $validated['slug'] : \Str::slug($validated['name']),
+            'slug' => $slug,
             'type' => $validated['type'],
             'description' => $validated['description'] ?? null,
             'settings' => $validated['settings'] ?? $quiz->settings,

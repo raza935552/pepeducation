@@ -79,7 +79,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                         </svg>
                         Contributions
-                        @php $pendingCount = Cache::remember('admin_pending_contributions', 120, fn() => \App\Models\Contribution::where('status', 'pending')->count()); @endphp
+                        @php try { $pendingCount = Cache::remember('admin_pending_contributions', 120, fn() => \App\Models\Contribution::where('status', 'pending')->count()); } catch (\Throwable $e) { $pendingCount = 0; } @endphp
                         @if($pendingCount > 0)
                             <span class="ml-auto bg-gold-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ $pendingCount }}</span>
                         @endif
@@ -94,7 +94,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                         </svg>
                         Messages
-                        @php $newCount = Cache::remember('admin_new_messages', 120, fn() => \App\Models\ContactMessage::where('status', 'new')->count()); @endphp
+                        @php try { $newCount = Cache::remember('admin_new_messages', 120, fn() => \App\Models\ContactMessage::where('status', 'new')->count()); } catch (\Throwable $e) { $newCount = 0; } @endphp
                         @if($newCount > 0)
                             <span class="ml-auto bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ $newCount }}</span>
                         @endif
@@ -109,7 +109,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                         </svg>
                         Requests
-                        @php $reqCount = Cache::remember('admin_pending_requests', 120, fn() => \App\Models\PeptideRequest::where('status', 'pending')->count()); @endphp
+                        @php try { $reqCount = Cache::remember('admin_pending_requests', 120, fn() => \App\Models\PeptideRequest::where('status', 'pending')->count()); } catch (\Throwable $e) { $reqCount = 0; } @endphp
                         @if($reqCount > 0)
                             <span class="ml-auto bg-yellow-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ $reqCount }}</span>
                         @endif
@@ -124,7 +124,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
                         </svg>
                         Bug Reports
-                        @php $bugCount = Cache::remember('admin_reported_bugs', 120, fn() => \App\Models\BugReport::where('status', 'reported')->count()); @endphp
+                        @php try { $bugCount = Cache::remember('admin_reported_bugs', 120, fn() => \App\Models\BugReport::where('status', 'reported')->count()); } catch (\Throwable $e) { $bugCount = 0; } @endphp
                         @if($bugCount > 0)
                             <span class="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ $bugCount }}</span>
                         @endif
@@ -174,7 +174,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                         </svg>
                         Subscribers
-                        @php $subCount = Cache::remember('admin_active_subscribers', 120, fn() => \App\Models\Subscriber::active()->count()); @endphp
+                        @php try { $subCount = Cache::remember('admin_active_subscribers', 120, fn() => \App\Models\Subscriber::active()->count()); } catch (\Throwable $e) { $subCount = 0; } @endphp
                         @if($subCount > 0)
                             <span class="ml-auto bg-emerald-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ $subCount }}</span>
                         @endif
