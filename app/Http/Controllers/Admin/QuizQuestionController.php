@@ -13,7 +13,23 @@ class QuizQuestionController extends Controller
     {
         $validated = $request->validate($this->slideRules($request));
 
-        $maxOrder = $quiz->questions()->max('order') ?? 0;
+        // Determine insertion order
+        $insertAfter = $request->input('insert_after'); // slide order to insert after
+        if ($insertAfter !== null && $insertAfter !== '') {
+            $insertAfter = (int) $insertAfter;
+            // Shift all slides after this position down by 1
+            $quiz->questions()->where('order', '>', $insertAfter)->increment('order');
+            $newOrder = $insertAfter + 1;
+        } else {
+            $newOrder = ($quiz->questions()->max('order') ?? 0) + 1;
+        }
+
+        // Auto-set show_conditions from segment parameter
+        $showConditions = $this->parseShowConditions($request);
+        $segment = $request->input('segment');
+        if ($segment && in_array($segment, ['tof', 'mof', 'bof']) && !$showConditions) {
+            $showConditions = $this->buildSegmentConditions($quiz, $segment);
+        }
 
         $klaviyoProperty = $validated['klaviyo_property'] ?? null;
         if (empty($klaviyoProperty) && ($validated['slide_type'] ?? '') === 'email_capture') {
@@ -25,13 +41,13 @@ class QuizQuestionController extends Controller
             'question_text' => $validated['question_text'] ?? $validated['content_title'] ?? 'Slide',
             'question_subtext' => $validated['question_subtext'] ?? null,
             'question_type' => $validated['question_type'] ?? 'single_choice',
-            'order' => $maxOrder + 1,
+            'order' => $newOrder,
             'options' => $validated['options'] ?? [],
             'klaviyo_property' => $klaviyoProperty,
             'is_required' => $validated['is_required'] ?? true,
             'max_selections' => $validated['max_selections'] ?? null,
             'settings' => $validated['settings'] ?? null,
-            'show_conditions' => $this->parseShowConditions($request),
+            'show_conditions' => $showConditions,
             'content_title' => $validated['content_title'] ?? null,
             'content_body' => $validated['content_body'] ?? null,
             'content_source' => $validated['content_source'] ?? null,
@@ -280,6 +296,8 @@ class QuizQuestionController extends Controller
         $rules = [
             'slide_type' => "required|string|in:{$validSlideTypes}",
             'klaviyo_property' => 'nullable|string|max:255',
+            'insert_after' => 'nullable|integer|min:0',
+            'segment' => 'nullable|string|in:shared,tof,mof,bof',
             'is_required' => 'boolean',
             'content_title' => 'nullable|string|max:500',
             'content_body' => 'nullable|string|max:5000',
@@ -386,5 +404,46 @@ class QuizQuestionController extends Controller
             'type' => $type,
             'conditions' => $conditions,
         ];
+    }
+
+    /**
+     * Build show_conditions for a given segment (tof/mof/bof) by finding
+     * the segmentation question and mapping the segment to its option value.
+     */
+    private function buildSegmentConditions(Quiz $quiz, string $segment): ?array
+    {
+        $segQuestion = $quiz->questions()
+            ->where('slide_type', 'question')
+            ->orderBy('order')
+            ->get()
+            ->first(function ($q) {
+                foreach ($q->options ?? [] as $opt) {
+                    if (($opt['score_tof'] ?? 0) > 0 || ($opt['score_mof'] ?? 0) > 0 || ($opt['score_bof'] ?? 0) > 0) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+        if (!$segQuestion) return null;
+
+        foreach ($segQuestion->options ?? [] as $opt) {
+            $scores = [
+                'tof' => (int) ($opt['score_tof'] ?? 0),
+                'mof' => (int) ($opt['score_mof'] ?? 0),
+                'bof' => (int) ($opt['score_bof'] ?? 0),
+            ];
+            $maxScore = max($scores);
+            if ($maxScore > 0 && array_search($maxScore, $scores) === $segment) {
+                return [
+                    'type' => 'and',
+                    'conditions' => [
+                        ['question_id' => $segQuestion->id, 'option_value' => $opt['value'] ?? ''],
+                    ],
+                ];
+            }
+        }
+
+        return null;
     }
 }

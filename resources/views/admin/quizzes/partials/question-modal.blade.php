@@ -35,7 +35,21 @@
 
                 {{-- Header --}}
                 <div class="px-6 py-5 border-b border-gray-100 bg-gray-50/50">
-                    <h3 class="text-lg font-semibold text-gray-900" x-text="isEdit ? 'Edit Slide' : 'Add New Slide'"></h3>
+                    <div class="flex items-center gap-2">
+                        <h3 class="text-lg font-semibold text-gray-900" x-text="isEdit ? 'Edit Slide' : 'Add New Slide'"></h3>
+                        <template x-if="!isEdit && segment">
+                            <span class="px-2 py-0.5 text-xs font-medium rounded-full"
+                                :class="{
+                                    'bg-green-100 text-green-700': segment === 'tof',
+                                    'bg-yellow-100 text-yellow-700': segment === 'mof',
+                                    'bg-red-100 text-red-700': segment === 'bof',
+                                }"
+                                x-text="segment.toUpperCase() + ' Path'"></span>
+                        </template>
+                        <template x-if="!isEdit && insertAfter !== null">
+                            <span class="px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-700" x-text="'Insert after #' + insertAfter"></span>
+                        </template>
+                    </div>
                     <p class="text-sm text-gray-500 mt-0.5">Configure what the quiz taker sees on this slide.</p>
                 </div>
 
@@ -647,6 +661,8 @@ function questionModal() {
         advancedOpen: false,
         quizType: @json($quiz->type),
         formAction: '{{ route("admin.quizzes.questions.store", $quiz) }}',
+        insertAfter: null,  // order number to insert after
+        segment: null,      // auto-assign segment (tof/mof/bof)
         allSlides: {!! $slidesJson !!},
         availableTags: {!! $availableTagsJson !!},
         resultsBankGoals: {!! $resultsBankGoalsJson !!},
@@ -779,6 +795,8 @@ function questionModal() {
         },
         resetForm() {
             this.advancedOpen = false;
+            this.insertAfter = null;
+            this.segment = null;
             const autoExpand = this.quizType === 'segmentation';
             this.question = {
                 slide_type: 'question',
@@ -872,6 +890,16 @@ function questionModal() {
                 });
             }
 
+            // Insert position & auto-segment (only for new slides)
+            if (!this.isEdit) {
+                if (this.insertAfter !== null) {
+                    formData.append('insert_after', this.insertAfter);
+                }
+                if (this.segment && validConds.length === 0) {
+                    formData.append('segment', this.segment);
+                }
+            }
+
             if (this.isEdit) formData.append('_method', 'PUT');
 
             await fetch(this.formAction, { method: 'POST', body: formData });
@@ -880,12 +908,14 @@ function questionModal() {
     }
 }
 
-function showAddQuestion() {
+function showAddQuestion(segment = null, insertAfter = null) {
     const modal = document.getElementById('question-modal');
     const data = Alpine.$data(modal);
     data.isEdit = false;
     data.formAction = '{{ route("admin.quizzes.questions.store", $quiz) }}';
     data.resetForm();
+    data.segment = segment;
+    data.insertAfter = insertAfter;
     modal.classList.remove('hidden');
 }
 

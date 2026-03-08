@@ -65,7 +65,12 @@
                                             <option value="{{ $type }}">{{ \App\Models\QuizQuestion::getSlideTypeLabel($type) }}</option>
                                         @endforeach
                                     </select>
-                                    <button type="button" onclick="showAddQuestion()" class="btn btn-secondary text-sm">+ Add Slide</button>
+                                    @php
+                                        $lastOrder = $phase['slides']->last()?->order;
+                                        $segArg = in_array($key, ['tof','mof','bof']) ? "'{$key}'" : 'null';
+                                        $insertArg = $lastOrder ? $lastOrder : 'null';
+                                    @endphp
+                                    <button type="button" onclick="showAddQuestion({{ $segArg }}, {{ $insertArg }})" class="btn btn-secondary text-sm">+ Add Slide</button>
                                 </div>
                             </div>
 

@@ -311,4 +311,17 @@
             </div>
         @endif
     </div>
+
+    {{-- Insert after button --}}
+    @php
+        $insertSegArg = in_array($phaseKey, ['tof','mof','bof']) ? "'{$phaseKey}'" : 'null';
+    @endphp
+    <div class="relative h-0 group/insert">
+        <button type="button"
+            onclick="event.stopPropagation(); showAddQuestion({{ $insertSegArg }}, {{ $question->order }})"
+            class="absolute left-1/2 -translate-x-1/2 -bottom-2.5 z-10 opacity-0 group-hover/insert:opacity-100 transition-opacity bg-white border border-dashed border-gray-300 hover:border-brand-gold text-gray-400 hover:text-brand-gold rounded-full w-5 h-5 flex items-center justify-center shadow-sm"
+            title="Insert slide after #{{ $question->order }}">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        </button>
+    </div>
 </div>
