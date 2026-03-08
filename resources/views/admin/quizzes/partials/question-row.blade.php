@@ -150,13 +150,13 @@
         <span class="inline-flex items-center justify-center w-7 h-7 rounded-md text-xs font-bold border flex-shrink-0 {{ $badgeColor }}">{{ $abbr }}</span>
 
         {{-- Order (click to change position) + segment dot --}}
-        <span class="flex-shrink-0 w-8" @click.stop x-data="{ editing: false, newOrder: {{ $question->order }} }">
-            <span x-show="!editing" @click="editing = true; $nextTick(() => $refs.orderInput{{ $question->id }}.select())" class="text-xs font-mono text-gray-400 cursor-pointer hover:text-brand-gold hover:bg-brand-gold/10 px-1 py-0.5 rounded text-right block" title="Click to move">#{{ $question->order }}</span>
+        <span class="flex-shrink-0" @click.stop x-data="{ editing: false, newOrder: {{ $question->order }} }">
+            <span x-show="!editing" @click="editing = true; $nextTick(() => $refs.orderInput{{ $question->id }}.select())" class="text-xs font-mono text-gray-400 cursor-pointer hover:text-brand-gold hover:bg-brand-gold/10 px-1.5 py-1 rounded block" title="Click to move">#{{ $question->order }}</span>
             <input x-show="editing" x-ref="orderInput{{ $question->id }}" type="number" min="1" x-model="newOrder"
                 @keydown.enter="moveSlide({{ $question->id }}, newOrder); editing = false"
                 @keydown.escape="editing = false; newOrder = {{ $question->order }}"
                 @blur="editing = false; newOrder = {{ $question->order }}"
-                class="w-8 text-xs font-mono text-center border border-brand-gold rounded px-0.5 py-0.5 focus:outline-none focus:ring-1 focus:ring-brand-gold">
+                class="w-12 text-sm font-mono text-center border-2 border-brand-gold rounded px-1 py-0.5 focus:outline-none focus:ring-2 focus:ring-brand-gold bg-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
         </span>
         @if($quiz->type === 'segmentation')
             <span class="w-2 h-2 rounded-full {{ $segmentDot }} flex-shrink-0" title="{{ $segmentLabel }}" id="seg-dot-{{ $question->id }}"></span>

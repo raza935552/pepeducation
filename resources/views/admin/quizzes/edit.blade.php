@@ -384,6 +384,8 @@
     }
     </script>
 
+    <style>.sortable-chosen { box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.5); border-radius: 0.5rem; }</style>
+
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
     <script>
@@ -395,7 +397,7 @@
                 handle: '.outcome-drag-handle',
                 animation: 150,
                 ghostClass: 'opacity-30',
-                chosenClass: 'ring-2 ring-brand-gold/50',
+                chosenClass: 'sortable-chosen',
                 onEnd: function() {
                     const ids = [...outcomesContainer.querySelectorAll('[data-outcome-id]')]
                         .map(el => parseInt(el.dataset.outcomeId));
@@ -421,7 +423,7 @@
                 handle: '.drag-handle',
                 animation: 150,
                 ghostClass: 'opacity-30',
-                chosenClass: 'ring-2 ring-brand-gold/50',
+                chosenClass: 'sortable-chosen',
                 onEnd: function() {
                     const ids = [...container.querySelectorAll('[data-question-id]')]
                         .map(el => parseInt(el.dataset.questionId));

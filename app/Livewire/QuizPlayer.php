@@ -547,7 +547,7 @@ class QuizPlayer extends Component
         $question = $this->questions[$this->currentStep] ?? null;
         if ($question) {
             $slideType = $question['slide_type'] ?? QuizQuestion::SLIDE_QUESTION;
-            if ($slideType === QuizQuestion::SLIDE_EMAIL_CAPTURE) {
+            if (in_array($slideType, [QuizQuestion::SLIDE_EMAIL_CAPTURE, QuizQuestion::SLIDE_PEPTIDE_SEARCH])) {
                 $this->answers[$this->currentStep] = [
                     'question_id' => $question['id'] ?? null,
                     'question_text' => $question['question_text'] ?? 'Email',

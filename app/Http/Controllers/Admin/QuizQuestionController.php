@@ -310,10 +310,16 @@ class QuizQuestionController extends Controller
             'questions.*' => 'integer|exists:quiz_questions,id',
         ]);
 
-        foreach ($validated['questions'] as $order => $questionId) {
+        // Use the minimum current order of the submitted slides as the starting offset
+        // so partial-list reorders (e.g. only MOF slides) don't collide with other segments
+        $startOrder = QuizQuestion::where('quiz_id', $quiz->id)
+            ->whereIn('id', $validated['questions'])
+            ->min('order') ?? 1;
+
+        foreach ($validated['questions'] as $index => $questionId) {
             QuizQuestion::where('id', $questionId)
                 ->where('quiz_id', $quiz->id)
-                ->update(['order' => $order + 1]);
+                ->update(['order' => $startOrder + $index]);
         }
 
         return response()->json(['success' => true]);
