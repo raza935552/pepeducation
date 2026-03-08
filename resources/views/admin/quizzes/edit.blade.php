@@ -265,6 +265,31 @@
         .catch(() => showToast('Something went wrong. Try again.', 'error'));
     }
 
+    function moveSlide(questionId, newOrder) {
+        newOrder = parseInt(newOrder);
+        if (!newOrder || newOrder < 1) return;
+
+        fetch('{{ url("admin/quizzes/" . $quiz->id . "/questions") }}/' + questionId + '/move', {
+            method: 'PATCH',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ order: newOrder }),
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Slide moved to #' + newOrder + '. Refreshing...');
+                setTimeout(() => location.reload(), 600);
+            } else {
+                showToast(data.message || 'Move failed.', 'error');
+            }
+        })
+        .catch(() => showToast('Something went wrong.', 'error'));
+    }
+
     function duplicateSlide(url, btn) {
         btn.disabled = true;
         btn.classList.add('opacity-50');

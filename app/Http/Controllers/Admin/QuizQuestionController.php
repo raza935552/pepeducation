@@ -269,6 +269,40 @@ class QuizQuestionController extends Controller
         ]);
     }
 
+    public function move(Request $request, Quiz $quiz, QuizQuestion $question)
+    {
+        $validated = $request->validate([
+            'order' => 'required|integer|min:1',
+        ]);
+
+        $targetOrder = $validated['order'];
+        $currentOrder = $question->order;
+        $maxOrder = $quiz->questions()->max('order') ?? 1;
+        $targetOrder = min($targetOrder, $maxOrder);
+
+        if ($targetOrder === $currentOrder) {
+            return response()->json(['success' => true, 'message' => 'Already at that position.']);
+        }
+
+        if ($targetOrder < $currentOrder) {
+            // Moving up: shift slides between target and current down by 1
+            $quiz->questions()
+                ->where('order', '>=', $targetOrder)
+                ->where('order', '<', $currentOrder)
+                ->increment('order');
+        } else {
+            // Moving down: shift slides between current and target up by 1
+            $quiz->questions()
+                ->where('order', '>', $currentOrder)
+                ->where('order', '<=', $targetOrder)
+                ->decrement('order');
+        }
+
+        $question->update(['order' => $targetOrder]);
+
+        return response()->json(['success' => true, 'message' => "Slide moved to #{$targetOrder}."]);
+    }
+
     public function reorder(Request $request, Quiz $quiz)
     {
         $validated = $request->validate([
