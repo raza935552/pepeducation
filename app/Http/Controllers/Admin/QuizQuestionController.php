@@ -162,6 +162,93 @@ class QuizQuestionController extends Controller
         return $warnings;
     }
 
+    public function duplicate(Quiz $quiz, QuizQuestion $question)
+    {
+        $maxOrder = $quiz->questions()->max('order') ?? 0;
+
+        $clone = $question->replicate();
+        $clone->order = $maxOrder + 1;
+        $clone->question_text = ($clone->question_text ?? 'Slide') . ' (copy)';
+        if ($clone->content_title) {
+            $clone->content_title = $clone->content_title . ' (copy)';
+        }
+        $clone->save();
+
+        return back()->with('success', 'Slide duplicated — all conditions, scores, and settings copied.');
+    }
+
+    public function assignSegment(Request $request, Quiz $quiz, QuizQuestion $question)
+    {
+        $validated = $request->validate([
+            'segment' => 'required|in:shared,tof,mof,bof',
+        ]);
+
+        $segment = $validated['segment'];
+
+        if ($segment === 'shared') {
+            $question->update(['show_conditions' => null]);
+            return response()->json(['success' => true, 'message' => 'Slide moved to Shared.']);
+        }
+
+        // Find the segmentation question (first question-type slide with scored options)
+        $segQuestion = $quiz->questions()
+            ->where('slide_type', 'question')
+            ->orderBy('order')
+            ->get()
+            ->first(function ($q) {
+                foreach ($q->options ?? [] as $opt) {
+                    if (($opt['score_tof'] ?? 0) > 0 || ($opt['score_mof'] ?? 0) > 0 || ($opt['score_bof'] ?? 0) > 0) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+        if (!$segQuestion) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No segmentation question found. Create a question with TOF/MOF/BOF scores first.',
+            ], 422);
+        }
+
+        // Find which option value maps to the requested segment
+        $targetValue = null;
+        foreach ($segQuestion->options ?? [] as $opt) {
+            $scores = [
+                'tof' => (int) ($opt['score_tof'] ?? 0),
+                'mof' => (int) ($opt['score_mof'] ?? 0),
+                'bof' => (int) ($opt['score_bof'] ?? 0),
+            ];
+            $maxScore = max($scores);
+            if ($maxScore > 0 && array_search($maxScore, $scores) === $segment) {
+                $targetValue = $opt['value'] ?? $opt['klaviyo_value'] ?? '';
+                break;
+            }
+        }
+
+        if (!$targetValue) {
+            return response()->json([
+                'success' => false,
+                'message' => "No option maps to {$segment}. Check funnel scores on the segmentation question.",
+            ], 422);
+        }
+
+        $question->update([
+            'show_conditions' => [
+                'type' => 'and',
+                'conditions' => [
+                    ['question_id' => $segQuestion->id, 'option_value' => $targetValue],
+                ],
+            ],
+        ]);
+
+        $segmentLabels = ['tof' => 'TOF', 'mof' => 'MOF', 'bof' => 'BOF'];
+        return response()->json([
+            'success' => true,
+            'message' => "Slide assigned to {$segmentLabels[$segment]} path.",
+        ]);
+    }
+
     public function reorder(Request $request, Quiz $quiz)
     {
         $validated = $request->validate([

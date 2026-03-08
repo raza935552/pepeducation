@@ -136,6 +136,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('quizzes/{quiz}/questions', [QuizQuestionController::class, 'store'])->name('quizzes.questions.store');
     Route::put('quizzes/{quiz}/questions/{question}', [QuizQuestionController::class, 'update'])->name('quizzes.questions.update');
     Route::delete('quizzes/{quiz}/questions/{question}', [QuizQuestionController::class, 'destroy'])->name('quizzes.questions.destroy');
+    Route::post('quizzes/{quiz}/questions/{question}/duplicate', [QuizQuestionController::class, 'duplicate'])->name('quizzes.questions.duplicate');
+    Route::patch('quizzes/{quiz}/questions/{question}/segment', [QuizQuestionController::class, 'assignSegment'])->name('quizzes.questions.segment');
     Route::post('quizzes/{quiz}/questions/reorder', [QuizQuestionController::class, 'reorder'])->name('quizzes.questions.reorder');
     Route::post('quizzes/{quiz}/outcomes/reorder', [QuizOutcomeController::class, 'reorder'])->name('quizzes.outcomes.reorder');
     Route::post('quizzes/{quiz}/outcomes', [QuizOutcomeController::class, 'store'])->name('quizzes.outcomes.store');

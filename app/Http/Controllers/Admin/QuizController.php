@@ -163,11 +163,33 @@ class QuizController extends Controller
         $segQuestion = $questions->first(fn($q) => $q->slide_type === 'question');
         $segId = $segQuestion?->id;
 
-        $valueToPhase = [
-            'brand_new' => 'tof',
-            'researching' => 'mof',
-            'ready_to_buy' => 'bof',
-        ];
+        // Build value→phase map from the segmentation question's option scores
+        // Each option's highest score (tof/mof/bof) determines which phase that answer maps to
+        $valueToPhase = [];
+        if ($segQuestion) {
+            foreach ($segQuestion->options ?? [] as $opt) {
+                $value = $opt['value'] ?? $opt['klaviyo_value'] ?? '';
+                if (!$value) continue;
+                $scores = [
+                    'tof' => (int) ($opt['score_tof'] ?? 0),
+                    'mof' => (int) ($opt['score_mof'] ?? 0),
+                    'bof' => (int) ($opt['score_bof'] ?? 0),
+                ];
+                $maxScore = max($scores);
+                if ($maxScore > 0) {
+                    $valueToPhase[$value] = array_search($maxScore, $scores);
+                }
+            }
+        }
+
+        // Fallback: legacy hardcoded mappings for quizzes that don't use scoring
+        if (empty($valueToPhase)) {
+            $valueToPhase = [
+                'brand_new' => 'tof',
+                'researching' => 'mof',
+                'ready_to_buy' => 'bof',
+            ];
+        }
 
         $phases = [
             'shared' => ['label' => 'Shared Start', 'description' => 'Seen by everyone', 'slides' => collect()],

@@ -1,5 +1,5 @@
 {{-- Sidebar Quick-Reference Guide --}}
-<div class="card" x-data="{ guideOpen: false }">
+<div class="card" x-data="{ guideOpen: {{ ($quiz->type === 'segmentation' && $quiz->questions->isEmpty()) ? 'true' : 'false' }} }">
     <button @click="guideOpen = !guideOpen" class="flex items-center justify-between w-full p-4 text-left">
         <div class="flex items-center gap-2">
             <svg class="w-4 h-4 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
@@ -11,6 +11,29 @@
     </button>
     <div x-show="guideOpen" x-collapse>
         <div class="px-4 pb-4 space-y-4 text-xs text-gray-600">
+
+            {{-- Segmentation Setup (shown for segmentation quizzes) --}}
+            @if($quiz->type === 'segmentation')
+            <div class="rounded-lg bg-amber-50 border border-amber-200 p-3 -mx-1">
+                <h4 class="font-semibold text-gray-900 mb-2 flex items-center gap-1.5">
+                    <span class="inline-flex gap-0.5">
+                        <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                        <span class="w-2 h-2 rounded-full bg-yellow-400"></span>
+                        <span class="w-2 h-2 rounded-full bg-green-400"></span>
+                    </span>
+                    Segmentation Setup
+                </h4>
+                <ol class="space-y-1.5 list-decimal list-inside text-gray-700">
+                    <li>Add <strong>Question</strong> slides with answer options</li>
+                    <li>Set <strong>TOF/MOF/BOF scores</strong> on each answer (visible in the scoring panel below each option)</li>
+                    <li>Add <strong>Outcomes</strong> using "When user's segment is..." &rarr; pick TOF, MOF, or BOF</li>
+                    <li>Add a <strong>fallback</strong> outcome with "Always" (drag it to the bottom)</li>
+                </ol>
+                <p class="text-[10px] text-amber-600 mt-2">Scores add up across all questions. Highest segment wins. Ties: BOF > MOF > TOF.</p>
+            </div>
+
+            <hr class="border-gray-200">
+            @endif
 
             {{-- Slide Types --}}
             <div>

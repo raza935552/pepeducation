@@ -209,6 +209,27 @@
         };
     }
 
+    function assignSegment(url, segment, el) {
+        fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ segment: segment }),
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert(data.message || 'Failed to assign segment.');
+            }
+        })
+        .catch(() => alert('Something went wrong. Try again.'));
+    }
+
     function deleteSlideWithCheck(url, slideName) {
         fetch(url, {
             method: 'DELETE',

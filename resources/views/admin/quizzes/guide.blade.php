@@ -874,6 +874,155 @@
             </section>
 
             {{-- ============================================================ --}}
+            {{-- Section 10c: Building a Segmentation Quiz from Scratch --}}
+            {{-- ============================================================ --}}
+            <section id="segmentation-guide">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">10c. Building a Segmentation Quiz from Scratch</h2>
+
+                <div class="space-y-6">
+                    <div class="prose prose-sm max-w-none text-gray-700">
+                        <p>A <strong>segmentation quiz</strong> classifies each user as <span class="text-blue-600 font-semibold">TOF (Explorer)</span>, <span class="text-yellow-600 font-semibold">MOF (Researcher)</span>, or <span class="text-green-600 font-semibold">BOF (Ready to Buy)</span> and shows them a tailored outcome. There are two ways to build one.</p>
+                    </div>
+
+                    {{-- Approach A: Simple Scoring --}}
+                    <div class="bg-green-50 border border-green-200 rounded-xl p-5">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-2 py-0.5 rounded bg-green-200 text-green-800 text-xs font-bold">APPROACH A</span>
+                            <h3 class="text-lg font-semibold text-green-900">Simple Scoring (Recommended)</h3>
+                        </div>
+                        <p class="text-sm text-green-800 mb-4">Everyone sees the same questions. Each answer adds TOF/MOF/BOF points. The segment with the highest total score determines which outcome the user gets.</p>
+
+                        <div class="space-y-4">
+                            <div class="bg-white rounded-lg border border-green-200 p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">Step 1: Create your quiz</h4>
+                                <ol class="list-decimal list-inside space-y-1 text-sm text-gray-700">
+                                    <li>Go to <strong>Quizzes &rarr; + New Quiz</strong></li>
+                                    <li>Set <strong>Type = Segmentation</strong></li>
+                                    <li>Give it a name and slug, save</li>
+                                </ol>
+                            </div>
+
+                            <div class="bg-white rounded-lg border border-green-200 p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">Step 2: Add 3-5 question slides</h4>
+                                <ol class="list-decimal list-inside space-y-1 text-sm text-gray-700">
+                                    <li>Click <strong>"+ Add Slide"</strong> &rarr; choose <strong>Question</strong></li>
+                                    <li>Write your question (e.g., "What best describes you?")</li>
+                                    <li>Add 3-4 answer options</li>
+                                    <li>For each answer, set the <strong>Funnel Scoring</strong> (the TOF/MOF/BOF number inputs visible below each option)</li>
+                                </ol>
+                                <div class="mt-3 border-t pt-3">
+                                    <p class="text-xs font-semibold text-gray-600 mb-2">Scoring cheat sheet:</p>
+                                    <table class="w-full text-xs">
+                                        <thead>
+                                            <tr class="text-left border-b">
+                                                <th class="pb-1">Answer feels like...</th>
+                                                <th class="pb-1">Set this score</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="text-gray-600">
+                                            <tr><td class="py-1">"I'm new / just exploring / curious"</td><td><span class="text-blue-600 font-bold">TOF = 2-3</span>, others = 0</td></tr>
+                                            <tr><td class="py-1">"I'm researching / comparing / learning"</td><td><span class="text-yellow-600 font-bold">MOF = 2-3</span>, others = 0</td></tr>
+                                            <tr><td class="py-1">"I know what I want / ready to buy"</td><td><span class="text-green-600 font-bold">BOF = 2-3</span>, others = 0</td></tr>
+                                            <tr><td class="py-1">Ambiguous / could be multiple</td><td>Split points (e.g., TOF=1, MOF=2)</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-lg border border-green-200 p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">Step 3: Create outcomes for each segment</h4>
+                                <ol class="list-decimal list-inside space-y-1 text-sm text-gray-700">
+                                    <li>In the <strong>Outcomes panel</strong> (right sidebar), click <strong>"+ Add"</strong></li>
+                                    <li>Pick <strong>"When user's segment is..."</strong></li>
+                                    <li>Select <strong>TOF</strong> (Explorer card)</li>
+                                    <li>Set the headline, body text, and optional redirect URL</li>
+                                    <li>Repeat for <strong>MOF</strong> and <strong>BOF</strong></li>
+                                    <li>Add one more outcome with <strong>"Always (default)"</strong> as a fallback &mdash; drag it to the bottom</li>
+                                </ol>
+                            </div>
+
+                            <div class="bg-white rounded-lg border border-green-200 p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">Step 4: Test with Preview</h4>
+                                <ol class="list-decimal list-inside space-y-1 text-sm text-gray-700">
+                                    <li>Click <strong>"Preview Quiz"</strong> (top right)</li>
+                                    <li>Answer all questions picking "beginner" answers &rarr; should see the TOF outcome</li>
+                                    <li>Reset &rarr; answer with "ready to buy" answers &rarr; should see the BOF outcome</li>
+                                    <li>Check that the segment indicator matches expectations</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Approach B: Branching Paths --}}
+                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-2 py-0.5 rounded bg-blue-200 text-blue-800 text-xs font-bold">APPROACH B</span>
+                            <h3 class="text-lg font-semibold text-blue-900">Branching Paths (Advanced)</h3>
+                        </div>
+                        <p class="text-sm text-blue-800 mb-4">Different users see <strong>different slides</strong> based on an early answer. Creates separate question paths for TOF/MOF/BOF users, like quiz 2 (PeptideFinderPro). Use this when you want to ask beginners different questions than experienced users.</p>
+
+                        <div class="space-y-4">
+                            <div class="bg-white rounded-lg border border-blue-200 p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">Step 1: Create the branching question</h4>
+                                <ol class="list-decimal list-inside space-y-1 text-sm text-gray-700">
+                                    <li>Add a Question slide as your <strong>first slide</strong></li>
+                                    <li>This is the "fork in the road" &mdash; e.g., "Where are you in your peptide journey?"</li>
+                                    <li>Give each answer a clear value and a high score in its matching segment:</li>
+                                </ol>
+                                <div class="mt-2 bg-gray-50 rounded p-3 text-xs font-mono space-y-1">
+                                    <p>"Brand new" &rarr; value: <code>brand_new</code>, <span class="text-blue-600">TOF = 3</span></p>
+                                    <p>"Researching" &rarr; value: <code>researching</code>, <span class="text-yellow-600">MOF = 3</span></p>
+                                    <p>"Ready to buy" &rarr; value: <code>ready_to_buy</code>, <span class="text-green-600">BOF = 3</span></p>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-lg border border-blue-200 p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">Step 2: Add path-specific slides</h4>
+                                <ol class="list-decimal list-inside space-y-1 text-sm text-gray-700">
+                                    <li>Add a new Question slide for TOF users</li>
+                                    <li>Open <strong>Advanced Settings</strong> (bottom of the slide editor)</li>
+                                    <li>Under <strong>"Show this slide when..."</strong>, click <strong>"+ Add Rule"</strong></li>
+                                    <li>Select your branching question &rarr; select "Brand new"</li>
+                                    <li>Save. This slide will <strong>only</strong> appear to users who picked "Brand new"</li>
+                                    <li>Repeat with different conditions for MOF and BOF slides</li>
+                                </ol>
+                                <p class="text-xs text-blue-600 mt-2"><strong>Tip:</strong> Slides without any conditions appear to <strong>everyone</strong> (shared start). Only add conditions to slides you want path-specific.</p>
+                            </div>
+
+                            <div class="bg-white rounded-lg border border-blue-200 p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">Step 3: Watch the Journey Map update</h4>
+                                <p class="text-sm text-gray-700">Once you set show conditions, the Journey Map on the edit page will automatically group your slides into TOF/MOF/BOF lanes. This is a visual preview of the branching — slides with no conditions go to "Shared Start".</p>
+                            </div>
+
+                            <div class="bg-white rounded-lg border border-blue-200 p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">Step 4: Add outcomes (same as Approach A)</h4>
+                                <p class="text-sm text-gray-700">Create segment-based outcomes for TOF, MOF, BOF, and a fallback. The scoring from both shared and path-specific answers determines the final segment.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- When to use which --}}
+                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-5">
+                        <h3 class="font-semibold text-gray-900 mb-3">When to use which?</h3>
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b text-left">
+                                    <th class="pb-2">Use case</th>
+                                    <th class="pb-2">Approach</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-700">
+                                <tr class="border-b border-gray-100"><td class="py-2">Quick "find my level" quiz (3-5 questions)</td><td class="py-2"><span class="text-green-600 font-semibold">Simple Scoring</span></td></tr>
+                                <tr class="border-b border-gray-100"><td class="py-2">Same questions for all, different outcome</td><td class="py-2"><span class="text-green-600 font-semibold">Simple Scoring</span></td></tr>
+                                <tr class="border-b border-gray-100"><td class="py-2">Full-length quiz with different question paths</td><td class="py-2"><span class="text-blue-600 font-semibold">Branching Paths</span></td></tr>
+                                <tr><td class="py-2">Beginners get education, buyers get product recs</td><td class="py-2"><span class="text-blue-600 font-semibold">Branching Paths</span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            {{-- ============================================================ --}}
             {{-- Section 11: Dynamic Content --}}
             {{-- ============================================================ --}}
             <section id="dynamic-content">
@@ -1354,6 +1503,7 @@
                 <a href="#results-bank" class="block text-sm text-gray-600 hover:text-brand-gold py-1 transition-colors">9. Results Bank</a>
                 <a href="#quiz-paths" class="block text-sm text-gray-600 hover:text-brand-gold py-1 transition-colors">10. The 3 Quiz Paths</a>
                 <a href="#custom-quiz-guide" class="block text-sm text-amber-600 hover:text-brand-gold py-1 transition-colors font-medium">10b. Custom Quiz Guide</a>
+                <a href="#segmentation-guide" class="block text-sm text-green-600 hover:text-brand-gold py-1 transition-colors font-medium">10c. Segmentation Guide</a>
                 <a href="#dynamic-content" class="block text-sm text-gray-600 hover:text-brand-gold py-1 transition-colors">11. Dynamic Content</a>
                 <a href="#klaviyo" class="block text-sm text-gray-600 hover:text-brand-gold py-1 transition-colors">12. Klaviyo Integration</a>
                 <a href="#session-behavior" class="block text-sm text-gray-600 hover:text-brand-gold py-1 transition-colors">13. Session & Email</a>

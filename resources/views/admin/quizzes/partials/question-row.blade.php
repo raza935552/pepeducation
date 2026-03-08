@@ -102,6 +102,14 @@
     // and the only condition is the branching question that routes to this phase,
     // suppress it — the phase tab already implies this.
     $phaseKey = $phaseKey ?? 'shared';
+    $segmentDotColors = [
+        'shared' => 'bg-gray-400',
+        'tof' => 'bg-green-500',
+        'mof' => 'bg-yellow-500',
+        'bof' => 'bg-red-500',
+    ];
+    $segmentDot = $segmentDotColors[$phaseKey] ?? 'bg-gray-400';
+    $segmentLabel = ['shared' => 'Shared', 'tof' => 'TOF', 'mof' => 'MOF', 'bof' => 'BOF'][$phaseKey] ?? 'Shared';
     $isRedundantCondition = false;
     if (in_array($phaseKey, ['tof', 'mof', 'bof']) && count($conditions) === 1 && $condType === 'and') {
         $isRedundantCondition = true;
@@ -141,8 +149,11 @@
         {{-- Type badge --}}
         <span class="inline-flex items-center justify-center w-7 h-7 rounded-md text-xs font-bold border flex-shrink-0 {{ $badgeColor }}">{{ $abbr }}</span>
 
-        {{-- Order --}}
+        {{-- Order + segment dot --}}
         <span class="text-xs font-mono text-gray-400 flex-shrink-0 w-6 text-right">#{{ $question->order }}</span>
+        @if($quiz->type === 'segmentation')
+            <span class="w-2 h-2 rounded-full {{ $segmentDot }} flex-shrink-0" title="{{ $segmentLabel }}"></span>
+        @endif
 
         {{-- Title + meta --}}
         <div class="flex-1 min-w-0">
@@ -185,9 +196,36 @@
 
         {{-- Actions --}}
         <div class="flex items-center gap-0.5 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+            @if($quiz->type === 'segmentation')
+                <div x-data="{ segOpen: false }" class="relative" @click.stop @click.away="segOpen = false">
+                    <button type="button" @click="segOpen = !segOpen" class="p-1 rounded text-gray-400 hover:text-purple-600 hover:bg-purple-50" title="Assign to segment">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
+                    </button>
+                    <div x-show="segOpen" x-transition class="absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-20 py-1 w-36">
+                        <button type="button" @click="assignSegment('{{ route('admin.quizzes.questions.segment', [$quiz, $question]) }}', 'shared', $el); segOpen = false" class="w-full text-left px-3 py-1.5 text-xs hover:bg-gray-50 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-gray-400"></span> Shared (all)
+                        </button>
+                        <button type="button" @click="assignSegment('{{ route('admin.quizzes.questions.segment', [$quiz, $question]) }}', 'tof', $el); segOpen = false" class="w-full text-left px-3 py-1.5 text-xs hover:bg-green-50 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-green-500"></span> TOF Path
+                        </button>
+                        <button type="button" @click="assignSegment('{{ route('admin.quizzes.questions.segment', [$quiz, $question]) }}', 'mof', $el); segOpen = false" class="w-full text-left px-3 py-1.5 text-xs hover:bg-yellow-50 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-yellow-500"></span> MOF Path
+                        </button>
+                        <button type="button" @click="assignSegment('{{ route('admin.quizzes.questions.segment', [$quiz, $question]) }}', 'bof', $el); segOpen = false" class="w-full text-left px-3 py-1.5 text-xs hover:bg-red-50 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-red-500"></span> BOF Path
+                        </button>
+                    </div>
+                </div>
+            @endif
             <button type="button" onclick='event.stopPropagation(); editQuestion({{ $question->id }}, {!! e($questionJson) !!})' class="p-1 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100" title="Edit">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             </button>
+            <form action="{{ route('admin.quizzes.questions.duplicate', [$quiz, $question]) }}" method="POST" class="inline" onclick="event.stopPropagation()">
+                @csrf
+                <button type="submit" class="p-1 rounded text-gray-400 hover:text-green-600 hover:bg-green-50" title="Duplicate slide (copies all conditions, scores & settings)">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                </button>
+            </form>
             <button type="button" onclick="event.stopPropagation(); deleteSlideWithCheck('{{ route('admin.quizzes.questions.destroy', [$quiz, $question]) }}', {{ Js::from($question->question_text ?: $question->content_title ?: 'Slide #'.$question->order) }})" class="p-1 rounded text-gray-400 hover:text-red-500 hover:bg-red-50" title="Delete">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
             </button>

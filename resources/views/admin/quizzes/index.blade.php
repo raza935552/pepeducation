@@ -57,6 +57,11 @@
                                     @csrf
                                     <button type="submit" class="text-gray-600 hover:underline">Duplicate</button>
                                 </form>
+                                <form action="{{ route('admin.quizzes.destroy', $quiz) }}" method="POST" class="inline" onsubmit="return confirm('Delete &quot;{{ $quiz->name }}&quot; and all its questions/outcomes? This cannot be undone.')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-500 hover:underline">Delete</button>
+                                </form>
                             </td>
                         </tr>
                     @empty

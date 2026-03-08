@@ -325,6 +325,11 @@
 
                                         {{-- Funnel Scoring --}}
                                         <div>
+                                            @if($quiz->type === 'segmentation')
+                                            <div class="rounded bg-amber-50 border border-amber-200 px-2 py-1.5 mb-2">
+                                                <p class="text-[10px] text-amber-700"><strong>Segmentation:</strong> Set a score of 1-3 for whichever buyer stage this answer indicates. The segment with the highest total wins.</p>
+                                            </div>
+                                            @endif
                                             <label class="block text-[10px] font-medium text-gray-500 mb-1.5">Funnel Scoring <span class="font-normal text-gray-400">which buyer stage does this answer suggest?</span></label>
                                             <div class="flex gap-2">
                                                 <div class="flex-1">
@@ -640,6 +645,7 @@ function questionModal() {
     return {
         isEdit: false,
         advancedOpen: false,
+        quizType: @json($quiz->type),
         formAction: '{{ route("admin.quizzes.questions.store", $quiz) }}',
         allSlides: {!! $slidesJson !!},
         availableTags: {!! $availableTagsJson !!},
@@ -669,7 +675,7 @@ function questionModal() {
             is_required: true,
             max_selections: null,
             settings: {},
-            options: [{ label: '', value: '', subtext: '', klaviyo_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: false }],
+            options: [{ label: '', value: '', subtext: '', klaviyo_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: @json($quiz->type === 'segmentation') }],
             content_title: '',
             content_body: '',
             content_source: '',
@@ -751,7 +757,7 @@ function questionModal() {
             return bestMatch;
         },
         addOption() {
-            this.question.options.push({ label: '', value: '', subtext: '', klaviyo_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: false });
+            this.question.options.push({ label: '', value: '', subtext: '', klaviyo_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: this.quizType === 'segmentation' });
         },
         removeOption(index) {
             this.question.options.splice(index, 1);
@@ -773,6 +779,7 @@ function questionModal() {
         },
         resetForm() {
             this.advancedOpen = false;
+            const autoExpand = this.quizType === 'segmentation';
             this.question = {
                 slide_type: 'question',
                 question_text: '',
@@ -782,7 +789,7 @@ function questionModal() {
                 is_required: true,
                 max_selections: null,
                 settings: {},
-                options: [{ label: '', value: '', subtext: '', klaviyo_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: false }],
+                options: [{ label: '', value: '', subtext: '', klaviyo_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: autoExpand }],
                 content_title: '',
                 content_body: '',
                 content_source: '',
@@ -915,6 +922,7 @@ function editQuestion(id, questionData) {
     data.advancedOpen = hasAdvanced;
 
     // Populate form
+    const isSegQuiz = data.quizType === 'segmentation';
     data.question = {
         slide_type: questionData.slide_type || 'question',
         question_text: questionData.question_text || '',
@@ -935,9 +943,9 @@ function editQuestion(id, questionData) {
                 score_bof: o.score_bof || 0,
                 skip_to_question: o.skip_to_question ? String(o.skip_to_question) : '',
                 tags: o.tags || [],
-                _expanded: false,
+                _expanded: isSegQuiz,
             }))
-            : [{ label: '', value: '', subtext: '', klaviyo_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: false }],
+            : [{ label: '', value: '', subtext: '', klaviyo_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: isSegQuiz }],
         content_title: questionData.content_title || '',
         content_body: questionData.content_body || '',
         content_source: questionData.content_source || '',
