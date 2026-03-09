@@ -569,6 +569,32 @@ class QuizPlayer extends Component
     }
 
     /**
+     * Select a peptide from the search slide, record the answer, and advance.
+     */
+    public function selectPeptide(string $peptideName): void
+    {
+        $question = $this->questions[$this->currentStep] ?? null;
+        if (!$question) return;
+
+        $this->answers[$this->currentStep] = [
+            'question_id' => $question['id'] ?? null,
+            'question_text' => $question['question_text'] ?? $question['content_title'] ?? 'Peptide Search',
+            'text_value' => $peptideName,
+            'klaviyo_property' => $question['klaviyo_property'] ?? 'selected_peptide',
+            'klaviyo_value' => $peptideName,
+        ];
+
+        if ($this->response) {
+            $this->response->update([
+                'answers' => $this->answers,
+                'questions_answered' => count($this->answers),
+            ]);
+        }
+
+        $this->nextStep();
+    }
+
+    /**
      * Advance from non-question slides (intermission, loading, reveals, bridge).
      * Called by "Next" buttons and auto-advance timers.
      */

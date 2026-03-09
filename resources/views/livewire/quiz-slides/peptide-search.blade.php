@@ -56,7 +56,8 @@
         },
 
         selectPeptide(name) {
-            this.selectedPeptide = this.selectedPeptide === name ? null : name;
+            this.selectedPeptide = name;
+            $wire.selectPeptide(name);
         }
     }">
 
@@ -101,69 +102,24 @@
         <template x-for="peptideName in filteredPeptides" :key="peptideName">
             <div class="border rounded-xl overflow-hidden transition-all"
                 :class="selectedPeptide === peptideName ? 'border-teal-500 ring-2 ring-teal-200 bg-teal-50/30' : 'border-gray-200'">
-                {{-- Peptide Name Header (click to select) --}}
+                {{-- Peptide Row (click to select & advance) --}}
                 <button @click="selectPeptide(peptideName)"
-                    class="w-full flex items-center justify-between px-4 py-3 transition-colors"
-                    :class="selectedPeptide === peptideName ? 'bg-teal-50' : 'bg-gray-50 hover:bg-gray-100'">
+                    class="w-full flex items-center justify-between px-4 py-3.5 transition-colors bg-gray-50 hover:bg-teal-50 group">
                     <div class="flex items-center gap-3">
-                        <span class="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
-                            :class="selectedPeptide === peptideName ? 'bg-teal-500 text-white' : 'bg-teal-100'">
-                            <template x-if="selectedPeptide === peptideName">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                </svg>
-                            </template>
-                            <template x-if="selectedPeptide !== peptideName">
-                                <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
-                                </svg>
-                            </template>
+                        <span class="w-8 h-8 rounded-lg bg-teal-100 flex items-center justify-center transition-colors group-hover:bg-teal-500 group-hover:text-white">
+                            <svg class="w-4 h-4 text-teal-600 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                            </svg>
                         </span>
                         <span class="font-semibold text-gray-900" x-text="peptideName"></span>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-gray-500" x-text="peptides[peptideName].length + ' vendor' + (peptides[peptideName].length !== 1 ? 's' : '')"></span>
-                        <template x-if="selectedPeptide === peptideName">
-                            <span class="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-teal-500 text-white">Selected</span>
-                        </template>
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
                     </div>
                 </button>
-
-                {{-- Vendor Preview (shown when selected) --}}
-                <div x-show="selectedPeptide === peptideName" x-collapse>
-                    <div class="divide-y divide-gray-100">
-                        <template x-for="(vendor, vi) in peptides[peptideName]" :key="vi">
-                            <div class="flex items-center justify-between px-4 py-3">
-                                <div class="flex items-center gap-3 min-w-0">
-                                    <template x-if="vendor.store_logo">
-                                        <img :src="'/storage/' + vendor.store_logo" :alt="vendor.store_name" class="w-8 h-8 rounded-lg object-contain bg-gray-50 p-0.5 flex-shrink-0">
-                                    </template>
-                                    <template x-if="!vendor.store_logo">
-                                        <span class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
-                                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                                            </svg>
-                                        </span>
-                                    </template>
-                                    <div class="min-w-0">
-                                        <div class="flex items-center gap-1.5">
-                                            <span class="text-sm font-medium text-gray-900 truncate" x-text="vendor.store_name"></span>
-                                            <template x-if="vendor.is_recommended">
-                                                <span class="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-amber-100 text-amber-700">Recommended</span>
-                                            </template>
-                                        </div>
-                                        <span class="text-xs text-gray-500 capitalize" x-text="vendor.store_category ? vendor.store_category.replace('_', ' ') : ''"></span>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-3 flex-shrink-0">
-                                    <template x-if="vendor.price">
-                                        <span class="text-sm font-bold text-gray-900" x-text="'$' + parseFloat(vendor.price).toFixed(2)"></span>
-                                    </template>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-                </div>
             </div>
         </template>
 
@@ -226,11 +182,10 @@
             <div></div>
         @endif
 
-        <button wire:click="advanceSlide" class="btn btn-primary">
-            Continue
-            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
+        <button wire:click="advanceSlide" class="text-sm text-gray-400 hover:text-gray-600 underline">
+            Skip
         </button>
     </div>
+
+    <p class="text-center text-xs text-gray-400 mt-3" x-show="search && hasResults">Click a peptide to select it and continue</p>
 </div>
