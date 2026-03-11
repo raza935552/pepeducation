@@ -63,28 +63,107 @@
         </div>
 
         <!-- Klaviyo Integration -->
-        <div class="card p-6">
-            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+        @php
+            $kEnabled = ($settings['integrations'] ?? collect())->firstWhere('key', 'klaviyo_enabled');
+            $kPublicKey = ($settings['integrations'] ?? collect())->firstWhere('key', 'klaviyo_public_key');
+            $kPrivateKey = ($settings['integrations'] ?? collect())->firstWhere('key', 'klaviyo_private_key');
+            $kListId = ($settings['integrations'] ?? collect())->firstWhere('key', 'klaviyo_default_list_id');
+        @endphp
+        <div class="card p-6 border-l-4 border-purple-400" x-data="klaviyoTest()">
+            <h3 class="text-lg font-semibold mb-1 flex items-center gap-2">
                 <svg aria-hidden="true" class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
                 Klaviyo Integration
             </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                @foreach($settings['integrations'] ?? [] as $setting)
-                    @if(str_starts_with($setting->key, 'klaviyo'))
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ $setting->description }}</label>
-                            <input type="{{ $setting->type === 'encrypted' ? 'password' : 'text' }}"
-                                name="settings[{{ $loop->index }}][value]"
-                                value="{{ $setting->type === 'encrypted' ? '' : $setting->value }}"
-                                placeholder="{{ $setting->type === 'encrypted' ? '••••••••' : '' }}"
-                                class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
-                            <input type="hidden" name="settings[{{ $loop->index }}][group]" value="{{ $setting->group }}">
-                            <input type="hidden" name="settings[{{ $loop->index }}][key]" value="{{ $setting->key }}">
+            <p class="text-sm text-gray-500 mb-4">Sync quiz subscribers and events to Klaviyo for email marketing automation.</p>
+
+            <div class="space-y-4">
+                {{-- Enable toggle --}}
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="hidden" name="settings[800][value]" value="0">
+                    <input type="checkbox" name="settings[800][value]" value="1"
+                        {{ $kEnabled && filter_var($kEnabled->value, FILTER_VALIDATE_BOOLEAN) ? 'checked' : '' }}
+                        class="w-5 h-5 rounded border-gray-300 text-purple-500 focus:ring-purple-500">
+                    <input type="hidden" name="settings[800][group]" value="integrations">
+                    <input type="hidden" name="settings[800][key]" value="klaviyo_enabled">
+                    <div>
+                        <span class="font-medium text-gray-700">Enable Klaviyo Integration</span>
+                        <p class="text-sm text-gray-500">When ON, quiz completions sync profiles and track events in Klaviyo.</p>
+                    </div>
+                </label>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {{-- Public API Key --}}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Public API Key (Site ID)</label>
+                        <input type="text" name="settings[801][value]"
+                            value="{{ $kPublicKey->value ?? '' }}"
+                            placeholder="e.g. AbCdEf"
+                            class="w-full rounded-lg border-gray-300 focus:border-purple-500 focus:ring-purple-500 font-mono text-sm">
+                        <input type="hidden" name="settings[801][group]" value="integrations">
+                        <input type="hidden" name="settings[801][key]" value="klaviyo_public_key">
+                        <p class="text-xs text-gray-500 mt-1">Found in Klaviyo &rarr; Settings &rarr; API Keys. Used for client-side tracking.</p>
+                    </div>
+
+                    {{-- Private API Key --}}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Private API Key</label>
+                        <input type="password" name="settings[802][value]"
+                            value=""
+                            placeholder="{{ $kPrivateKey && $kPrivateKey->value ? '••••••••  (saved)' : 'pk_xxxxxxxxxxxx' }}"
+                            class="w-full rounded-lg border-gray-300 focus:border-purple-500 focus:ring-purple-500 font-mono text-sm">
+                        <input type="hidden" name="settings[802][group]" value="integrations">
+                        <input type="hidden" name="settings[802][key]" value="klaviyo_private_key">
+                        <p class="text-xs text-gray-500 mt-1">Full-access private key. Needs <strong>Read/Write</strong> scopes for Profiles, Lists, and Events. Leave blank to keep current value.</p>
+                    </div>
+
+                    {{-- Default List ID --}}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Default List ID</label>
+                        <input type="text" name="settings[803][value]"
+                            value="{{ $kListId->value ?? '' }}"
+                            placeholder="e.g. XyZ123"
+                            class="w-full rounded-lg border-gray-300 focus:border-purple-500 focus:ring-purple-500 font-mono text-sm">
+                        <input type="hidden" name="settings[803][group]" value="integrations">
+                        <input type="hidden" name="settings[803][key]" value="klaviyo_default_list_id">
+                        <p class="text-xs text-gray-500 mt-1">Quiz subscribers are added to this list. Find it in Klaviyo &rarr; Audience &rarr; Lists &amp; Segments.</p>
+                    </div>
+                </div>
+
+                {{-- Test Connection --}}
+                <div class="pt-2 border-t border-gray-100">
+                    <button type="button" @click="testConnection()" :disabled="testing"
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-colors"
+                        :class="testing ? 'bg-gray-50 text-gray-400 border-gray-200 cursor-wait' : 'bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100'">
+                        <svg x-show="testing" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/></svg>
+                        <svg x-show="!testing" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        <span x-text="testing ? 'Testing...' : 'Test Connection'"></span>
+                    </button>
+                    <template x-if="result">
+                        <div class="mt-2 p-3 rounded-lg text-sm" :class="result.success ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'">
+                            <p class="font-medium" x-text="result.message"></p>
+                            <template x-if="result.lists && result.lists.length">
+                                <div class="mt-1">
+                                    <span class="text-xs font-medium">Available Lists:</span>
+                                    <template x-for="list in result.lists" :key="list.id">
+                                        <span class="inline-block ml-1 px-2 py-0.5 bg-green-100 rounded text-xs" x-text="list.name + ' (' + list.id + ')'"></span>
+                                    </template>
+                                </div>
+                            </template>
                         </div>
-                    @endif
-                @endforeach
+                    </template>
+                </div>
+
+                {{-- What you need box --}}
+                <details class="mt-2">
+                    <summary class="text-xs text-gray-500 cursor-pointer hover:text-gray-700">What access does Klaviyo need?</summary>
+                    <div class="mt-2 p-3 bg-gray-50 rounded-lg text-xs text-gray-600 space-y-1">
+                        <p><strong>Public API Key (Site ID)</strong> &mdash; Found under Klaviyo &rarr; Settings &rarr; API Keys. This is the short 6-character code used for client-side tracking (identify, track events).</p>
+                        <p><strong>Private API Key</strong> &mdash; Create one under Klaviyo &rarr; Settings &rarr; API Keys &rarr; Create Private API Key. Required scopes: <code class="bg-gray-200 px-1 rounded">profiles:read</code>, <code class="bg-gray-200 px-1 rounded">profiles:write</code>, <code class="bg-gray-200 px-1 rounded">lists:read</code>, <code class="bg-gray-200 px-1 rounded">lists:write</code>, <code class="bg-gray-200 px-1 rounded">events:read</code>, <code class="bg-gray-200 px-1 rounded">events:write</code>.</p>
+                        <p><strong>Default List ID</strong> &mdash; Go to Klaviyo &rarr; Audience &rarr; Lists &amp; Segments, click your list, and copy the List ID from the URL or settings panel.</p>
+                    </div>
+                </details>
             </div>
         </div>
 
@@ -249,6 +328,31 @@
                 key += chars.charAt(Math.floor(Math.random() * chars.length));
             }
             document.getElementById('journey-api-key').value = key;
+        }
+
+        function klaviyoTest() {
+            return {
+                testing: false,
+                result: null,
+                async testConnection() {
+                    this.testing = true;
+                    this.result = null;
+                    try {
+                        const res = await fetch('{{ route("admin.settings.test-klaviyo") }}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Accept': 'application/json',
+                            },
+                        });
+                        this.result = await res.json();
+                    } catch (e) {
+                        this.result = { success: false, message: 'Network error: ' + e.message };
+                    } finally {
+                        this.testing = false;
+                    }
+                }
+            };
         }
     </script>
 </x-admin-layout>

@@ -1,5 +1,5 @@
 @php
-    $healthGoals = \App\Models\ResultsBank::HEALTH_GOALS;
+    $healthGoals = \App\Models\ResultsBank::allHealthGoals();
     $beginnerEntries = ($resultsBankEntries['beginner'] ?? collect())->keyBy('health_goal');
     $advancedEntries = ($resultsBankEntries['advanced'] ?? collect())->keyBy('health_goal');
     $coveredCount = $beginnerEntries->count();

@@ -20,16 +20,45 @@
     @endphp
 
     @if($stackProduct && $stackProduct->stores->where('pivot.is_in_stock', true)->count())
+        @php
+            $categoryLabels = \App\Models\StackStore::CATEGORIES;
+            $categoryLabel = $preferredCategory ? ($categoryLabels[$preferredCategory] ?? null) : null;
+
+            // Category-specific descriptions
+            $categoryDescriptions = [
+                'telehealth' => 'Licensed clinics with doctor consultations and prescriptions',
+                'research_grade' => 'Lab-tested peptides for research purposes',
+                'affordable' => 'Budget-friendly peptide suppliers',
+            ];
+            $categoryDesc = $preferredCategory ? ($categoryDescriptions[$preferredCategory] ?? null) : null;
+
+            // Category-specific icons and colors
+            $categoryStyles = [
+                'telehealth' => ['bg' => 'bg-purple-50', 'icon' => 'text-purple-500', 'badge' => 'bg-purple-100 text-purple-700'],
+                'research_grade' => ['bg' => 'bg-blue-50', 'icon' => 'text-blue-500', 'badge' => 'bg-blue-100 text-blue-700'],
+                'affordable' => ['bg' => 'bg-green-50', 'icon' => 'text-green-500', 'badge' => 'bg-green-100 text-green-700'],
+            ];
+            $style = $categoryStyles[$preferredCategory] ?? ['bg' => 'bg-blue-50', 'icon' => 'text-blue-500', 'badge' => 'bg-blue-100 text-blue-700'];
+        @endphp
+
         {{-- Header --}}
         <div class="text-center mb-8">
-            <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg aria-hidden="true" class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z"/>
-                </svg>
+            <div class="w-16 h-16 {{ $style['bg'] }} rounded-full flex items-center justify-center mx-auto mb-4">
+                @if($preferredCategory === 'telehealth')
+                    <svg aria-hidden="true" class="w-8 h-8 {{ $style['icon'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"/>
+                    </svg>
+                @else
+                    <svg aria-hidden="true" class="w-8 h-8 {{ $style['icon'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.29 48.29 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/>
+                    </svg>
+                @endif
             </div>
-            <p class="text-sm text-blue-600 font-semibold uppercase tracking-wide mb-2">Trusted Vendors</p>
+            @if($categoryLabel)
+                <span class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide mb-3 {{ $style['badge'] }}">{{ $categoryLabel }}</span>
+            @endif
             <h2 class="text-2xl font-bold text-gray-900">Where to Get {{ $result?->peptide_name ?? $stackProduct->name }}</h2>
-            <p class="text-gray-500 mt-2">Compare pricing from verified peptide suppliers</p>
+            <p class="text-gray-500 mt-2">{{ $categoryDesc ?? 'Compare pricing from verified peptide suppliers' }}</p>
         </div>
 
         {{-- Store Comparison — reuse existing partial --}}

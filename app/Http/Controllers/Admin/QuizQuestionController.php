@@ -54,6 +54,7 @@ class QuizQuestionController extends Controller
             'auto_advance_seconds' => $validated['auto_advance_seconds'] ?? null,
             'cta_text' => $validated['cta_text'] ?? null,
             'cta_url' => $validated['cta_url'] ?? null,
+            'skip_to_question' => $validated['skip_to_question'] ?? null,
             'dynamic_content_key' => $validated['dynamic_content_key'] ?? null,
             'dynamic_content_map' => $this->parseDynamicContentMap($request),
         ]);
@@ -91,6 +92,7 @@ class QuizQuestionController extends Controller
             'auto_advance_seconds' => $validated['auto_advance_seconds'] ?? null,
             'cta_text' => $validated['cta_text'] ?? null,
             'cta_url' => $validated['cta_url'] ?? null,
+            'skip_to_question' => $validated['skip_to_question'] ?? null,
             'dynamic_content_key' => $validated['dynamic_content_key'] ?? null,
             'dynamic_content_map' => $this->parseDynamicContentMap($request),
         ]);
@@ -151,6 +153,16 @@ class QuizQuestionController extends Controller
         foreach ($quiz->questions as $otherQuestion) {
             if ($otherQuestion->id === $slideId) continue;
 
+            // Slide-level skip_to_question
+            if (($otherQuestion->skip_to_question ?? null) == $slideId) {
+                $warnings[] = [
+                    'type' => 'skip_to',
+                    'message' => 'Slide #' . $otherQuestion->order . ' "' . \Str::limit($otherQuestion->question_text ?: $otherQuestion->content_title ?: 'Untitled', 40) . '" jumps to this slide',
+                ];
+                continue;
+            }
+
+            // Option-level skip_to_question
             foreach ($otherQuestion->options ?? [] as $option) {
                 if (($option['skip_to_question'] ?? null) == $slideId) {
                     $warnings[] = [
@@ -345,6 +357,7 @@ class QuizQuestionController extends Controller
             'auto_advance_seconds' => 'nullable|integer|min:1|max:30',
             'cta_text' => 'nullable|string|max:255',
             'cta_url' => 'nullable|string|max:2048',
+            'skip_to_question' => 'nullable|integer',
             // New fields
             'question_subtext' => 'nullable|string|max:500',
             'max_selections' => 'nullable|integer|min:1|max:20',
@@ -403,10 +416,10 @@ class QuizQuestionController extends Controller
         foreach ($variants as $v) {
             $key = trim($v['key'] ?? '');
             if ($key) {
-                $map[$key] = array_filter([
+                $map[$key] = [
                     'title' => $v['title'] ?? '',
                     'body' => $v['body'] ?? '',
-                ]);
+                ];
             }
         }
 

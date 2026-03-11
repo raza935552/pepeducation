@@ -194,4 +194,5 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Settings (Integrations)
     Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::post('settings', [SettingsController::class, 'update'])->name('settings.update');
+    Route::post('settings/test-klaviyo', [SettingsController::class, 'testKlaviyo'])->name('settings.test-klaviyo');
 });

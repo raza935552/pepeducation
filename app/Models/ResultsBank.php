@@ -11,6 +11,7 @@ class ResultsBank extends Model
 
     protected $fillable = [
         'health_goal',
+        'health_goal_label',
         'experience_level',
         'peptide_name',
         'peptide_slug',
@@ -37,6 +38,10 @@ class ResultsBank extends Model
         $fields = $this->display_fields;
         if (empty($fields)) {
             return true; // Show everything by default
+        }
+        // If the field isn't explicitly set in display_fields, show it by default
+        if (!array_key_exists($field, $fields)) {
+            return true;
         }
         return !empty($fields[$field]);
     }
@@ -118,11 +123,30 @@ class ResultsBank extends Model
     }
 
     /**
+     * Get all health goals: hardcoded constants + any custom goals from the database.
+     */
+    public static function allHealthGoals(): array
+    {
+        $custom = static::select('health_goal', 'health_goal_label')
+            ->distinct('health_goal')
+            ->pluck('health_goal_label', 'health_goal')
+            ->filter(fn ($label, $key) => $key) // remove null keys
+            ->mapWithKeys(fn ($label, $key) => [
+                $key => self::HEALTH_GOALS[$key] ?? ($label ?: ucfirst(str_replace('_', ' ', $key))),
+            ])
+            ->toArray();
+
+        return array_merge(self::HEALTH_GOALS, $custom);
+    }
+
+    /**
      * Get the human-readable health goal label.
      */
     public function getGoalLabelAttribute(): string
     {
-        return self::HEALTH_GOALS[$this->health_goal] ?? ucfirst(str_replace('_', ' ', $this->health_goal));
+        return self::HEALTH_GOALS[$this->health_goal]
+            ?? $this->health_goal_label
+            ?? ucfirst(str_replace('_', ' ', $this->health_goal));
     }
 
     /**

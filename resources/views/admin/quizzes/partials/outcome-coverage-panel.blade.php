@@ -18,7 +18,7 @@
     $segmentNames = ['tof' => 'Explorer', 'mof' => 'Researcher', 'bof' => 'Ready to Buy'];
 
     // Health goal answer coverage
-    $healthGoals = \App\Models\ResultsBank::HEALTH_GOALS;
+    $healthGoals = \App\Models\ResultsBank::allHealthGoals();
     $goalCoverage = [];
     foreach ($healthGoals as $goalKey => $goalLabel) {
         $goalCoverage[$goalKey] = [

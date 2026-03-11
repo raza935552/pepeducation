@@ -11,13 +11,27 @@ use Illuminate\Validation\Rule;
 
 class ResultsBankController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $results = ResultsBank::orderBy('health_goal')
-            ->orderBy('experience_level')
-            ->paginate(25);
+        $query = ResultsBank::orderBy('health_goal')->orderBy('experience_level');
 
-        return view('admin.results-bank.index', compact('results'));
+        if ($request->filled('health_goal')) {
+            $query->where('health_goal', $request->input('health_goal'));
+        }
+
+        if ($request->filled('experience_level')) {
+            $query->where('experience_level', $request->input('experience_level'));
+        }
+
+        if ($request->filled('status')) {
+            $query->where('is_active', $request->input('status') === 'active');
+        }
+
+        $results = $query->paginate(25)->appends($request->query());
+
+        $healthGoals = ResultsBank::allHealthGoals();
+
+        return view('admin.results-bank.index', compact('results', 'healthGoals'));
     }
 
     public function create(Request $request)
@@ -33,6 +47,8 @@ class ResultsBankController extends Controller
 
     public function store(Request $request)
     {
+        $this->resolveCustomHealthGoal($request);
+
         $validated = $request->validate($this->storeRules());
 
         $benefits = $this->parseBenefits($request->input('benefits_text'));
@@ -88,6 +104,8 @@ class ResultsBankController extends Controller
 
     public function update(Request $request, ResultsBank $results_bank)
     {
+        $this->resolveCustomHealthGoal($request);
+
         $validated = $request->validate($this->storeRules());
 
         $benefits = $this->parseBenefits($request->input('benefits_text'));
@@ -154,6 +172,7 @@ class ResultsBankController extends Controller
     {
         return [
             'health_goal' => 'required|string',
+            'health_goal_label' => 'nullable|string|max:255',
             'experience_levels' => 'required|array|min:1',
             'experience_levels.*' => 'string|in:beginner,advanced',
             'peptide_name' => 'required|string|max:255',
@@ -210,7 +229,7 @@ class ResultsBankController extends Controller
         $quizOptions = $this->getOptionsFromQuiz('health_goal');
 
         // Merge: quiz values get constant labels where available, quiz-only values keep quiz labels
-        return $this->mergeWithConstants($quizOptions, ResultsBank::HEALTH_GOALS);
+        return $this->mergeWithConstants($quizOptions, ResultsBank::allHealthGoals());
     }
 
     /**
@@ -269,6 +288,21 @@ class ResultsBankController extends Controller
         }
 
         return $options;
+    }
+
+    /**
+     * If the user submitted a custom health goal, merge it into the request as health_goal.
+     */
+    private function resolveCustomHealthGoal(Request $request): void
+    {
+        if ($request->filled('health_goal_custom_key')) {
+            $key = \Str::slug($request->input('health_goal_custom_key'), '_');
+            $label = $request->input('health_goal_custom_label', '');
+            $request->merge([
+                'health_goal' => $key,
+                'health_goal_label' => $label ?: ucfirst(str_replace('_', ' ', $key)),
+            ]);
+        }
     }
 
     private function parseBenefits(?string $text): array

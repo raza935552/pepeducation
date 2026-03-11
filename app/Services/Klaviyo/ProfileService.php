@@ -3,6 +3,7 @@
 namespace App\Services\Klaviyo;
 
 use App\Models\Subscriber;
+use Illuminate\Support\Facades\Log;
 
 class ProfileService
 {
@@ -56,6 +57,11 @@ class ProfileService
             }
         }
 
+        Log::warning('Klaviyo profile creation failed', [
+            'subscriber_id' => $subscriber->id,
+            'email' => $subscriber->email,
+        ]);
+
         return null;
     }
 
@@ -64,8 +70,11 @@ class ProfileService
      */
     public function findByEmail(string $email): ?string
     {
+        // Escape quotes in email to prevent filter injection
+        $safeEmail = str_replace('"', '\\"', $email);
+
         $response = $this->client->get('/profiles/', [
-            'filter' => "equals(email,\"{$email}\")",
+            'filter' => "equals(email,\"{$safeEmail}\")",
         ]);
 
         if ($response && !empty($response['data'][0]['id'])) {
@@ -99,13 +108,21 @@ class ProfileService
             return $subscriber->klaviyo_id;
         }
 
-        return $subscriber->klaviyo_id;
+        Log::warning('Klaviyo profile update failed', [
+            'subscriber_id' => $subscriber->id,
+            'klaviyo_id' => $subscriber->klaviyo_id,
+        ]);
+
+        return null;
     }
 
     public function updateProperties(Subscriber $subscriber, array $properties): bool
     {
+        if (empty($properties)) return true;
+
         if (!$subscriber->klaviyo_id) {
             $this->createOrUpdate($subscriber);
+            $subscriber->refresh();
         }
 
         if (!$subscriber->klaviyo_id) return false;
@@ -137,6 +154,7 @@ class ProfileService
     {
         if (!$subscriber->klaviyo_id) {
             $this->createOrUpdate($subscriber);
+            $subscriber->refresh();
         }
 
         if (!$subscriber->klaviyo_id) return false;

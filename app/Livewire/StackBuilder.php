@@ -131,6 +131,7 @@ class StackBuilder extends Component
         if (!$this->selectedGoal) return collect();
         return $this->selectedGoal->products()
             ->where('is_active', true)
+            ->where('has_deal', true)
             ->with(['stores' => fn ($q) => $q->where('stack_stores.is_active', true)->orderBy('stack_stores.order')])
             ->orderByPivot('order')
             ->get();
@@ -139,6 +140,7 @@ class StackBuilder extends Component
     public function getAllProductsProperty()
     {
         return StackProduct::active()
+            ->where('has_deal', true)
             ->with(['stores' => fn ($q) => $q->where('stack_stores.is_active', true)->orderBy('stack_stores.order')])
             ->ordered()
             ->get();

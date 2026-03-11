@@ -7,6 +7,7 @@ use App\Models\UserSession;
 use App\Models\QuizResponse;
 use App\Models\LeadMagnetDownload;
 use App\Models\OutboundClick;
+use Illuminate\Support\Facades\Log;
 
 class EventService
 {
@@ -27,7 +28,16 @@ class EventService
             $subscriber->refresh();
         }
 
-        if (!$subscriber->klaviyo_id) return false;
+        if (!$subscriber->klaviyo_id) {
+            Log::warning('Klaviyo event skipped: no profile ID', [
+                'event' => $eventName,
+                'subscriber_id' => $subscriber->id,
+            ]);
+            return false;
+        }
+
+        // Filter out null values from properties to avoid Klaviyo validation issues
+        $properties = array_filter($properties, fn ($v) => $v !== null);
 
         $response = $this->client->post('/events/', [
             'data' => [
@@ -35,7 +45,7 @@ class EventService
                 'attributes' => [
                     'metric' => ['data' => ['type' => 'metric', 'attributes' => ['name' => $eventName]]],
                     'profile' => ['data' => ['type' => 'profile', 'id' => $subscriber->klaviyo_id]],
-                    'properties' => $properties,
+                    'properties' => $properties ?: (object) [],
                     'time' => now()->toIso8601String(),
                 ],
             ],
@@ -54,7 +64,13 @@ class EventService
 
     public function trackQuizCompleted(QuizResponse $response): bool
     {
-        if (!$response->subscriber) return false;
+        if (!$response->subscriber) {
+            Log::warning('Klaviyo quiz sync skipped: no subscriber', [
+                'quiz_response_id' => $response->id,
+                'quiz_id' => $response->quiz_id,
+            ]);
+            return false;
+        }
 
         $properties = array_merge([
             'quiz_id' => $response->quiz_id,

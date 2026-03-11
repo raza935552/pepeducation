@@ -30,7 +30,20 @@ class SyncSubscriberToKlaviyo implements ShouldQueue
             return;
         }
 
-        $klaviyo->syncProfile($this->subscriber);
+        // Refresh subscriber to get latest data (may have changed since queued)
+        $this->subscriber->refresh();
+
+        $profileId = $klaviyo->syncProfile($this->subscriber);
+
+        if (!$profileId) {
+            logger()->warning('Klaviyo sync job: profile creation failed, will retry', [
+                'subscriber_id' => $this->subscriber->id,
+                'attempt' => $this->attempts(),
+            ]);
+            $this->release($this->backoff[$this->attempts() - 1] ?? 60);
+            return;
+        }
+
         $klaviyo->trackSubscribed($this->subscriber, $this->source);
     }
 }

@@ -64,6 +64,7 @@ class StackProductController extends Controller
         $validated['key_benefits'] = array_filter($request->get('key_benefits', []));
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_active'] = $request->boolean('is_active');
+        $validated['has_deal'] = $request->boolean('has_deal');
 
         $product = StackProduct::create($validated);
         $product->goals()->sync($request->get('goals', []));
@@ -96,6 +97,7 @@ class StackProductController extends Controller
         $validated['key_benefits'] = array_filter($request->get('key_benefits', []));
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_active'] = $request->boolean('is_active');
+        $validated['has_deal'] = $request->boolean('has_deal');
 
         $stackProduct->update($validated);
         $stackProduct->goals()->sync($request->get('goals', []));

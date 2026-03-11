@@ -87,31 +87,37 @@ class KlaviyoService
     }
 
     // Batch sync for queued jobs
-    public function syncPendingProfiles(int $limit = 100): int
+    public function syncPendingProfiles(int $limit = 100): array
     {
         $subscribers = Subscriber::needsSyncToKlaviyo()->limit($limit)->get();
         $synced = 0;
+        $failed = 0;
 
         foreach ($subscribers as $subscriber) {
             if ($this->profiles->createOrUpdate($subscriber)) {
                 $synced++;
+            } else {
+                $failed++;
             }
         }
 
-        return $synced;
+        return ['attempted' => $subscribers->count(), 'synced' => $synced, 'failed' => $failed];
     }
 
-    public function syncPendingQuizResponses(int $limit = 100): int
+    public function syncPendingQuizResponses(int $limit = 100): array
     {
         $responses = QuizResponse::needsSyncToKlaviyo()->with('subscriber', 'quiz', 'outcome')->limit($limit)->get();
         $synced = 0;
+        $failed = 0;
 
         foreach ($responses as $response) {
             if ($this->events->trackQuizCompleted($response)) {
                 $synced++;
+            } else {
+                $failed++;
             }
         }
 
-        return $synced;
+        return ['attempted' => $responses->count(), 'synced' => $synced, 'failed' => $failed];
     }
 }

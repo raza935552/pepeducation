@@ -23,19 +23,83 @@
                     <h3 class="text-lg font-semibold mb-4">Classification</h3>
                     <p class="text-sm text-gray-500 mb-4">Each entry maps a health goal + experience level to a specific peptide recommendation. The combination must be unique.</p>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    @php
+                        $presetGoalKeys = json_encode(array_keys($healthGoals));
+                    @endphp
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" x-data="{
+                        goalMode: '{{ old('health_goal_custom_key') ? 'custom' : 'preset' }}',
+                        selectedGoal: @js(old('health_goal', $result?->health_goal ?? ($prefillGoal ?? ''))),
+                        customKey: @js(old('health_goal_custom_key', '')),
+                        customLabel: @js(old('health_goal_custom_label', '')),
+                        slugManuallyEdited: {{ old('health_goal_custom_key') ? 'true' : 'false' }},
+                        presetKeys: {{ $presetGoalKeys }},
+                        slugify(str) {
+                            return str.toLowerCase().trim()
+                                .replace(/[^a-z0-9\s_-]/g, '')
+                                .replace(/[\s-]+/g, '_')
+                                .replace(/_+/g, '_')
+                                .replace(/^_|_$/g, '');
+                        },
+                        onLabelInput() {
+                            if (!this.slugManuallyEdited) {
+                                this.customKey = this.slugify(this.customLabel);
+                            }
+                        },
+                        onKeyInput(val) {
+                            this.slugManuallyEdited = true;
+                            this.customKey = this.slugify(val);
+                        },
+                        get isConflict() {
+                            return this.customKey && this.presetKeys.includes(this.customKey);
+                        },
+                    }">
                         <div>
-                            <label for="health_goal" class="block text-sm font-medium text-gray-700 mb-1">Health Goal</label>
-                            <select name="health_goal" id="health_goal"
-                                    class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold" required>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Health Goal</label>
+                            <select x-model="selectedGoal" x-show="goalMode === 'preset'"
+                                    :name="goalMode === 'preset' ? 'health_goal' : ''"
+                                    class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
                                 <option value="">Select goal...</option>
                                 @foreach($healthGoals as $value => $label)
-                                    <option value="{{ $value }}" {{ old('health_goal', $result?->health_goal ?? ($prefillGoal ?? '')) === $value ? 'selected' : '' }}>
-                                        {{ $label }}
-                                    </option>
+                                    <option value="{{ $value }}">{{ $label }}</option>
                                 @endforeach
                             </select>
+
+                            <template x-if="goalMode === 'custom'">
+                                <div class="space-y-2">
+                                    <div>
+                                        <label class="block text-[11px] font-medium text-gray-600 mb-0.5">Display Label</label>
+                                        <input type="text" name="health_goal_custom_label" x-model="customLabel"
+                                               @input="onLabelInput()"
+                                               placeholder="e.g. Hair Growth & Restoration" required
+                                               class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold text-sm">
+                                        <p class="text-[10px] text-gray-400 mt-0.5">The friendly name shown in dropdowns and on the quiz.</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-medium text-gray-600 mb-0.5">Slug Key</label>
+                                        <input type="text" name="health_goal_custom_key" x-model="customKey"
+                                               @input="onKeyInput($event.target.value)"
+                                               placeholder="auto-generated from label"
+                                               class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold text-sm font-mono">
+                                        <p class="text-[10px] text-gray-400 mt-0.5">Auto-generated from the label. Edit only if you need a different internal key.</p>
+                                        <template x-if="isConflict">
+                                            <p class="text-[11px] text-amber-600 mt-1 flex items-center gap-1">
+                                                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                                                This key already exists in the preset list. Select it from the dropdown instead.
+                                            </p>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <button type="button" @click="
+                                    if (goalMode === 'custom') { customKey = ''; customLabel = ''; slugManuallyEdited = false; }
+                                    goalMode = goalMode === 'preset' ? 'custom' : 'preset';
+                                "
+                                    class="mt-1.5 text-xs text-brand-gold hover:underline">
+                                <span x-text="goalMode === 'preset' ? '+ Add custom goal' : '← Back to list'"></span>
+                            </button>
                             @error('health_goal') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                            @error('health_goal_custom_key') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
                         <div>

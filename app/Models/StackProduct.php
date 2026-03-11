@@ -13,7 +13,7 @@ class StackProduct extends Model
         'name', 'slug', 'subtitle', 'description', 'image',
         'price', 'sale_price', 'dosing_info', 'key_benefits',
         'external_url', 'outbound_link_id', 'related_peptide_id',
-        'is_featured', 'is_active', 'order',
+        'is_featured', 'is_active', 'has_deal', 'order',
     ];
 
     protected $casts = [
@@ -22,6 +22,7 @@ class StackProduct extends Model
         'key_benefits' => 'array',
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
+        'has_deal' => 'boolean',
         'order' => 'integer',
     ];
 

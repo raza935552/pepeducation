@@ -97,25 +97,24 @@
         </div>
     @endif
 
-    {{-- CTA: Use linked peptide page if available, otherwise fall back to slug lookup --}}
+    {{-- CTA: Only show if admin set button text, or auto-generate from linked peptide page --}}
     @php
         $ctaUrl = $this->currentSlide['cta_url'] ?? null;
         $ctaText = $this->currentSlide['cta_text'] ?? null;
 
-        // If there's a linked StackProduct with a related peptide page, use that
-        $stackProduct = $this->stackProduct;
-        if ($stackProduct && $stackProduct->relatedPeptide) {
-            $ctaUrl = $ctaUrl ?: route('peptides.show', $stackProduct->relatedPeptide->slug);
-            $ctaText = $ctaText ?: 'Learn More About ' . ($result->peptide_name ?? 'This Peptide');
-        } elseif ($result && $result->peptide_slug) {
-            // Fallback: try to link to the peptide page by slug from ResultsBank
-            $ctaUrl = $ctaUrl ?: '/peptides/' . $result->peptide_slug;
-            $ctaText = $ctaText ?: 'Learn More About ' . $result->peptide_name;
+        // Auto-generate link if admin set button text but no URL
+        if ($ctaText && !$ctaUrl) {
+            $stackProduct = $this->stackProduct;
+            if ($stackProduct && $stackProduct->relatedPeptide) {
+                $ctaUrl = route('peptides.show', $stackProduct->relatedPeptide->slug);
+            } elseif ($result && $result->peptide_slug) {
+                $ctaUrl = '/peptides/' . $result->peptide_slug;
+            }
         }
     @endphp
     @if($ctaText)
         <div class="text-center mb-4">
-            <a href="{{ $ctaUrl }}"
+            <a href="{{ $ctaUrl ?? '#' }}"
                class="btn btn-primary inline-block text-lg px-8 py-3">
                 {{ $ctaText }}
             </a>

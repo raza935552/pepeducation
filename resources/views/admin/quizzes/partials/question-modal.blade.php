@@ -11,11 +11,12 @@
         'options' => collect($q->options ?? [])->map(fn ($o) => [
             'value' => $o['value'] ?? $o['id'] ?? '',
             'label' => $o['text'] ?? $o['label'] ?? $o['value'] ?? '',
+            'klaviyo_value' => $o['klaviyo_value'] ?? '',
         ])->values()->toArray(),
     ])->toJson();
 
     // ResultsBank data for smart dropdowns & validation
-    $resultsBankGoalsJson = json_encode(\App\Models\ResultsBank::HEALTH_GOALS);
+    $resultsBankGoalsJson = json_encode(\App\Models\ResultsBank::allHealthGoals());
     $resultsBankLevelsJson = json_encode(\App\Models\ResultsBank::EXPERIENCE_LEVELS);
     $resultsBankCoverageJson = json_encode(
         \App\Models\ResultsBank::where('is_active', true)
@@ -24,6 +25,7 @@
             ->map(fn($entries) => $entries->pluck('experience_level')->toArray())
             ->toArray()
     );
+    $vendorCategoriesJson = json_encode(\App\Models\StackStore::CATEGORIES);
 @endphp
 
 <div id="question-modal" class="fixed inset-0 bg-black/50 z-50 hidden" x-data="questionModal()">
@@ -244,6 +246,11 @@
                                                 :title="hasResultsBankEntry(option.klaviyo_value) ? 'Has Results Bank entry' : 'Missing Results Bank entry'">
                                             </span>
                                         </template>
+                                        {{-- Warning when health_goal slide option has no goal mapped --}}
+                                        <template x-if="question.klaviyo_property === 'health_goal' && !option.klaviyo_value">
+                                            <span class="flex-shrink-0 text-[9px] px-1.5 py-0.5 rounded-full font-medium whitespace-nowrap bg-red-50 text-red-500 border border-red-200"
+                                                title="No health goal selected — expand this option and pick a goal">No Goal</span>
+                                        </template>
 
                                         {{-- Scoring indicator (shows if any score > 0) --}}
                                         <template x-if="(option.score_tof || 0) + (option.score_mof || 0) + (option.score_bof || 0) > 0">
@@ -281,7 +288,7 @@
                                                     <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Health Goal <span class="font-normal text-gray-400">maps to Results Bank</span></label>
                                                     <div class="flex items-center gap-2">
                                                         <select x-model="option.klaviyo_value"
-                                                            @change="option.value = option.klaviyo_value"
+                                                            @change="if (!option.value) option.value = option.klaviyo_value"
                                                             class="flex-1 rounded border-gray-200 text-xs py-1">
                                                             <option value="">Select goal...</option>
                                                             <template x-for="[key, label] in Object.entries(resultsBankGoals)" :key="key">
@@ -310,7 +317,7 @@
                                                 <div>
                                                     <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Experience Level <span class="font-normal text-gray-400">maps to Results Bank</span></label>
                                                     <select x-model="option.klaviyo_value"
-                                                        @change="option.value = option.klaviyo_value"
+                                                        @change="if (!option.value) option.value = option.klaviyo_value"
                                                         class="w-full rounded border-gray-200 text-xs py-1">
                                                         <option value="">Select level...</option>
                                                         <template x-for="[key, label] in Object.entries(resultsBankLevels)" :key="key">
@@ -320,8 +327,24 @@
                                                 </div>
                                             </template>
 
+                                            {{-- Buying Priority / Vendor Category dropdown --}}
+                                            <template x-if="question.klaviyo_property === 'buying_priority'">
+                                                <div>
+                                                    <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Vendor Category <span class="font-normal text-gray-400">matches store category</span></label>
+                                                    <select x-model="option.value"
+                                                        @change="if (!option.klaviyo_value) option.klaviyo_value = option.value"
+                                                        class="w-full rounded border-gray-200 text-xs py-1">
+                                                        <option value="">Select category...</option>
+                                                        <template x-for="[key, label] in Object.entries(vendorCategories)" :key="key">
+                                                            <option :value="key" x-text="label"></option>
+                                                        </template>
+                                                    </select>
+                                                    <p class="text-[10px] text-gray-400 mt-0.5">The vendor reveal slide will show only stores in this category.</p>
+                                                </div>
+                                            </template>
+
                                             {{-- Default free-text inputs --}}
-                                            <template x-if="question.klaviyo_property !== 'health_goal' && question.klaviyo_property !== 'experience_level'">
+                                            <template x-if="question.klaviyo_property !== 'health_goal' && question.klaviyo_property !== 'experience_level' && question.klaviyo_property !== 'buying_priority'">
                                                 <div class="flex gap-3">
                                                     <div>
                                                         <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Internal Value <span class="font-normal text-gray-400">auto-generated if blank</span></label>
@@ -417,6 +440,25 @@
                             </template>
                         </div>
                         <button type="button" @click="addOption" class="mt-2 text-sm text-brand-gold hover:underline font-medium">+ Add Answer</button>
+                    </div>
+
+                    {{-- ═══════════ JUMP TO SLIDE (non-question slides) ═══════════ --}}
+                    <div x-show="question.slide_type !== 'question' && question.slide_type !== 'loading'" x-cloak>
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Routing</span>
+                            <div class="flex-1 h-px bg-gray-200"></div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Jump to Slide <span class="font-normal text-gray-400">skip ahead when this slide's button is clicked</span></label>
+                            <select x-model="question.skip_to_question"
+                                class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold text-sm">
+                                <option value="">Continue normally</option>
+                                <template x-for="slide in allSlides" :key="slide.id">
+                                    <option :value="slide.id" x-text="slide.label"></option>
+                                </template>
+                            </select>
+                            <p class="text-xs text-gray-400 mt-1">When the user clicks "Next" on this slide, jump directly to the selected slide instead of continuing normally.</p>
+                        </div>
                     </div>
 
                     {{-- ═══════════ BUTTON SECTION (CTA slides) ═══════════ --}}
@@ -530,21 +572,35 @@
                                                     :class="ci > 0 ? 'text-gray-400' : 'text-cyan-600'"
                                                     x-text="ci > 0 ? question.show_conditions.type.toUpperCase() : 'IF'"></span>
                                                 <select x-model="cond.question_id" @change="cond.option_value = ''"
-                                                    x-init="$nextTick(() => { if(cond.question_id) $el.value = cond.question_id })"
                                                     class="flex-1 rounded border-gray-300 text-xs py-1">
                                                     <option value="">Select question...</option>
-                                                    <template x-for="slide in allSlides.filter(s => s.slide_type === 'question')" :key="slide.id">
-                                                        <option :value="slide.id" x-text="slide.label"></option>
-                                                    </template>
+                                                    @foreach($quiz->questions->sortBy('order') as $qs)
+                                                        @if(in_array($qs->slide_type, ['question', 'peptide_search']))
+                                                            <option value="{{ $qs->id }}">#{{ $qs->order }} — {{ Str::limit($qs->question_text ?: $qs->content_title ?: 'Slide', 40) }}</option>
+                                                        @endif
+                                                    @endforeach
                                                 </select>
                                                 <span class="text-xs text-gray-400">=</span>
                                                 <select x-model="cond.option_value"
-                                                    x-init="$nextTick(() => { if(cond.option_value) $el.value = cond.option_value })"
                                                     class="flex-1 rounded border-gray-300 text-xs py-1">
                                                     <option value="">Select answer...</option>
-                                                    <template x-for="opt in getOptionsForQuestion(cond.question_id)" :key="opt.value">
-                                                        <option :value="opt.value" x-text="opt.label"></option>
-                                                    </template>
+                                                    {{-- Regular question options --}}
+                                                    @foreach($quiz->questions->sortBy('order')->where('slide_type', 'question') as $qs)
+                                                        @foreach($qs->options ?? [] as $opt)
+                                                            <option value="{{ $opt['value'] ?? '' }}"
+                                                                x-bind:hidden="String(cond.question_id) !== '{{ $qs->id }}'"
+                                                                :disabled="String(cond.question_id) !== '{{ $qs->id }}'">{{ $opt['label'] ?? $opt['text'] ?? '' }}</option>
+                                                        @endforeach
+                                                    @endforeach
+                                                    {{-- Peptide search availability options --}}
+                                                    @foreach($quiz->questions->sortBy('order')->where('slide_type', 'peptide_search') as $qs)
+                                                        <option value="available"
+                                                            x-bind:hidden="String(cond.question_id) !== '{{ $qs->id }}'"
+                                                            :disabled="String(cond.question_id) !== '{{ $qs->id }}'">Peptide Available (has deal)</option>
+                                                        <option value="unavailable"
+                                                            x-bind:hidden="String(cond.question_id) !== '{{ $qs->id }}'"
+                                                            :disabled="String(cond.question_id) !== '{{ $qs->id }}'">Peptide Unavailable (no deal)</option>
+                                                    @endforeach
                                                 </select>
                                                 <button type="button" @click="removeCondition(ci)" class="text-red-400 hover:text-red-600 flex-shrink-0">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -598,35 +654,45 @@
                                 </div>
                                 <p class="text-xs text-gray-400 mb-3">Show different content based on a previous answer. Leave empty to always show the same content.</p>
 
+                                {{-- Warning: variants exist but no key selected --}}
+                                <div x-show="question.dynamic_variants.length > 0 && !question.dynamic_content_key"
+                                    class="mb-3 p-2 bg-orange-50 border border-orange-200 rounded-lg flex items-start gap-2">
+                                    <svg class="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                                    <p class="text-xs text-orange-700">Variants won't work without selecting which question to branch on. Choose a slide below.</p>
+                                </div>
+
                                 <div class="mb-3">
                                     <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Based on answer to</label>
                                     <select x-model="question.dynamic_content_key"
-                                        class="w-full rounded border-gray-200 text-sm py-1.5">
+                                        class="w-full rounded border-gray-200 text-sm py-1.5"
+                                        :class="question.dynamic_variants.length > 0 && !question.dynamic_content_key ? 'border-orange-300 ring-1 ring-orange-200' : ''">
                                         <option value="">Select a synced property...</option>
-                                        <template x-for="slide in allSlides.filter(s => s.klaviyo_property)" :key="slide.id">
-                                            <option :value="slide.klaviyo_property" x-text="slide.klaviyo_property + ' (' + slide.label + ')'"></option>
-                                        </template>
+                                        @foreach($quiz->questions->sortBy('order') as $qs)
+                                            @if($qs->klaviyo_property)
+                                                <option value="{{ $qs->klaviyo_property }}">{{ $qs->klaviyo_property }} (#{{ $qs->order }} — {{ Str::limit($qs->question_text ?: $qs->content_title ?: 'Slide', 40) }})</option>
+                                            @endif
+                                        @endforeach
                                     </select>
                                     <p class="text-[10px] text-gray-400 mt-0.5">The Klaviyo property from a previous slide whose value determines which variant to show.</p>
                                 </div>
 
+                                {{-- Shared datalist for variant key suggestions --}}
+                                <datalist id="variant-key-suggestions">
+                                    <option value="_default">
+                                    <template x-for="opt in getVariantKeyOptions()" :key="opt.value">
+                                        <option :value="opt.value"></option>
+                                    </template>
+                                </datalist>
+
                                 <template x-for="(variant, vi) in question.dynamic_variants" :key="vi">
                                     <div class="border rounded-lg p-3 mb-2 bg-gray-50/50">
                                         <div class="flex gap-2 items-center mb-2">
-                                            <template x-if="question.dynamic_content_key === 'health_goal'">
-                                                <select x-model="variant.key" class="w-48 rounded border-gray-200 text-sm">
-                                                    <option value="">Select goal...</option>
-                                                    <option value="_default">_default (fallback)</option>
-                                                    <template x-for="[key, label] in Object.entries(resultsBankGoals)" :key="key">
-                                                        <option :value="key" x-text="label"></option>
-                                                    </template>
-                                                </select>
-                                            </template>
-                                            <template x-if="question.dynamic_content_key !== 'health_goal'">
-                                                <input type="text" x-model="variant.key" placeholder="Answer value (e.g. fat_loss)"
-                                                    class="w-40 rounded border-gray-200 text-sm">
-                                            </template>
-                                            <span class="text-[10px] text-gray-400 flex-1" x-show="question.dynamic_content_key !== 'health_goal'">or <code class="bg-gray-100 px-1 rounded">_default</code> for fallback</span>
+                                            <div class="flex items-center gap-2">
+                                                <input type="text" x-model="variant.key" placeholder="e.g. fat_loss or _default"
+                                                    class="w-40 rounded border-gray-200 text-sm font-mono"
+                                                    list="variant-key-suggestions">
+                                                <span class="text-[10px] text-gray-400" x-show="getVariantKeyOptions().length > 0">type or pick from list</span>
+                                            </div>
                                             <button type="button" @click="question.dynamic_variants.splice(vi, 1)" class="text-red-400 hover:text-red-600 p-1">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                             </button>
@@ -668,6 +734,7 @@ function questionModal() {
         resultsBankGoals: {!! $resultsBankGoalsJson !!},
         resultsBankLevels: {!! $resultsBankLevelsJson !!},
         resultsBankCoverage: {!! $resultsBankCoverageJson !!},
+        vendorCategories: {!! $vendorCategoriesJson !!},
         hasResultsBankEntry(goalKey) {
             return !!(this.resultsBankCoverage && this.resultsBankCoverage[goalKey]);
         },
@@ -698,6 +765,7 @@ function questionModal() {
             auto_advance_seconds: 5,
             cta_text: '',
             cta_url: '',
+            skip_to_question: '',
             dynamic_content_key: '',
             dynamic_variants: [],
             show_conditions: { type: 'and', conditions: [] },
@@ -745,14 +813,14 @@ function questionModal() {
             const values = (this.question.options || []).map(o => o.value).filter(Boolean);
             if (values.length === 0) return '';
             const patterns = {
-                health_goal: ['fat_loss', 'muscle_growth', 'anti_aging', 'injury_recovery', 'cognitive', 'sleep', 'immune', 'sexual_health', 'gut_health', 'general_wellness'],
+                health_goal: Object.keys({!! $resultsBankGoalsJson !!}),
                 awareness_level: ['brand_new', 'researching', 'ready_to_buy'],
                 experience_level: ['beginner', 'intermediate', 'advanced'],
                 gender: ['male', 'female', 'prefer_not'],
                 age_range: ['18-29', '30-39', '40-49', '50-59', '60+'],
                 barrier: ['education', 'sourcing', 'safety', 'needles'],
                 hesitation: ['too_many_choices', 'vendor_trust', 'hype_vs_real'],
-                buying_priority: ['doctor_guidance', 'research_grade', 'affordable'],
+                buying_priority: ['doctor_guidance', 'research_grade', 'affordable', 'TELE', 'RUO', 'RUO-Research', 'doctor_route', 'research_route'],
                 buying_confidence: ['price', 'lab_reports', 'reviews', 'doctor'],
                 buying_context: ['first_time', 'restocking', 'switching'],
                 bof_intent: ['know_what_i_want', 'know_my_goal', 'want_to_stack'],
@@ -790,6 +858,16 @@ function questionModal() {
             const slide = this.allSlides.find(s => s.id == questionId);
             return slide ? slide.options : [];
         },
+        getVariantKeyOptions() {
+            const key = this.question.dynamic_content_key;
+            if (!key) return [];
+            const slide = this.allSlides.find(s => s.klaviyo_property === key);
+            if (!slide || !slide.options) return [];
+            return slide.options.map(o => ({
+                value: o.klaviyo_value || o.value,
+                label: o.label,
+            })).filter(o => o.value);
+        },
         closeModal() {
             document.getElementById('question-modal').classList.add('hidden');
         },
@@ -814,6 +892,7 @@ function questionModal() {
                 auto_advance_seconds: 5,
                 cta_text: '',
                 cta_url: '',
+                skip_to_question: '',
                 dynamic_content_key: '',
                 dynamic_variants: [],
                 show_conditions: { type: 'and', conditions: [] },
@@ -840,6 +919,11 @@ function questionModal() {
             formData.append('auto_advance_seconds', this.question.auto_advance_seconds || '');
             formData.append('cta_text', this.question.cta_text || '');
             formData.append('cta_url', this.question.cta_url || '');
+
+            // Slide-level skip_to_question (non-question slides)
+            if (this.question.skip_to_question) {
+                formData.append('skip_to_question', this.question.skip_to_question);
+            }
 
             // Dynamic content fields (intermission slides)
             if (this.question.dynamic_content_key) {
@@ -902,8 +986,29 @@ function questionModal() {
 
             if (this.isEdit) formData.append('_method', 'PUT');
 
-            await fetch(this.formAction, { method: 'POST', body: formData });
-            window.location.reload();
+            try {
+                const response = await fetch(this.formAction, { method: 'POST', body: formData });
+                if (!response.ok) {
+                    const data = await response.json().catch(() => null);
+                    const msg = data?.message || data?.errors
+                        ? Object.values(data.errors).flat().join('\n')
+                        : 'Failed to save slide (status ' + response.status + ')';
+                    if (typeof showToast === 'function') {
+                        showToast(msg, 'error');
+                    } else {
+                        alert(msg);
+                    }
+                    return;
+                }
+                window.location.reload();
+            } catch (err) {
+                const msg = 'Network error — could not save slide.';
+                if (typeof showToast === 'function') {
+                    showToast(msg, 'error');
+                } else {
+                    alert(msg);
+                }
+            }
         }
     }
 }
@@ -982,6 +1087,7 @@ function editQuestion(id, questionData) {
         auto_advance_seconds: questionData.auto_advance_seconds || 5,
         cta_text: questionData.cta_text || '',
         cta_url: questionData.cta_url || '',
+        skip_to_question: questionData.skip_to_question ? String(questionData.skip_to_question) : '',
         dynamic_content_key: questionData.dynamic_content_key || '',
         dynamic_variants: dynamicVariants,
         show_conditions: parsedConds,

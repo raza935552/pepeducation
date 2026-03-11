@@ -139,14 +139,16 @@
             </div>
 
             <button type="submit" class="w-full btn btn-primary">{{ $store ? 'Update Vendor' : 'Add Vendor' }}</button>
-
-            @if($store)
-                <form action="{{ route('admin.stack-stores.destroy', $store) }}" method="POST"
-                    onsubmit="return confirm('Delete this vendor? All product pricing links will be removed.')">
-                    @csrf @method('DELETE')
-                    <button type="submit" class="w-full btn bg-red-500 text-white hover:bg-red-600">Delete Vendor</button>
-                </form>
-            @endif
         </div>
     </div>
 </form>
+
+@if($store)
+    <div class="lg:col-span-1 lg:col-start-3 mt-3">
+        <form action="{{ route('admin.stack-stores.destroy', $store) }}" method="POST"
+            onsubmit="return confirm('Delete this vendor? All product pricing links will be removed.')">
+            @csrf @method('DELETE')
+            <button type="submit" class="w-full btn bg-red-500 text-white hover:bg-red-600">Delete Vendor</button>
+        </form>
+    </div>
+@endif

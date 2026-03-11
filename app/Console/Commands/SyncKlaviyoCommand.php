@@ -21,11 +21,17 @@ class SyncKlaviyoCommand extends Command
 
         $this->info('Syncing pending profiles...');
         $profiles = $klaviyo->syncPendingProfiles($limit);
-        $this->info("Synced {$profiles} profiles.");
+        $this->info("Profiles: {$profiles['synced']}/{$profiles['attempted']} synced" .
+            ($profiles['failed'] ? ", {$profiles['failed']} failed" : ''));
 
         $this->info('Syncing pending quiz responses...');
         $responses = $klaviyo->syncPendingQuizResponses($limit);
-        $this->info("Synced {$responses} quiz responses.");
+        $this->info("Responses: {$responses['synced']}/{$responses['attempted']} synced" .
+            ($responses['failed'] ? ", {$responses['failed']} failed" : ''));
+
+        if ($profiles['failed'] > 0 || $responses['failed'] > 0) {
+            $this->warn('Some items failed to sync. Check logs for details.');
+        }
 
         return 0;
     }

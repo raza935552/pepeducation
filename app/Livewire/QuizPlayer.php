@@ -197,7 +197,23 @@ class QuizPlayer extends Component
             $healthGoal = $this->inferHealthGoalFromPeptide($peptidePref);
         }
 
-        if (!$healthGoal) return null;
+        // Direct peptide selection (BOF-A peptide search): look up via StackProduct link
+        // Note: inline the product lookup to avoid circular dependency with getStackProductProperty()
+        if (!$healthGoal) {
+            $selectedPeptide = $this->getAnswerByKlaviyoProperty('selected_peptide');
+            if ($selectedPeptide) {
+                $product = StackProduct::where('slug', $selectedPeptide)->first()
+                    ?? StackProduct::where('name', $selectedPeptide)->first();
+                if ($product) {
+                    return ResultsBank::where('stack_product_id', $product->id)
+                        ->where('is_active', true)
+                        ->with('stackProduct.stores')
+                        ->orderByDesc('star_rating')
+                        ->first();
+                }
+            }
+            return null;
+        }
 
         // BOF-C stackers are experienced — default to advanced
         $bofIntent = $this->getAnswerByKlaviyoProperty('bof_intent');
@@ -230,7 +246,8 @@ class QuizPlayer extends Component
         if ($selectedPeptide) {
             $slugMap = ['kisspeptin' => 'kisspeptin-10'];
             $slug = $slugMap[$selectedPeptide] ?? $selectedPeptide;
-            $product = StackProduct::where('slug', $slug)->first();
+            $product = StackProduct::where('slug', $slug)->first()
+                ?? StackProduct::where('name', $selectedPeptide)->first();
             if ($product) return $product;
         }
 
@@ -250,11 +267,16 @@ class QuizPlayer extends Component
         $buyingPriority = $this->getAnswerByKlaviyoProperty('buying_priority');
         if (!$buyingPriority) return null;
 
+        // Direct match: value is the exact store category slug
+        if (array_key_exists($buyingPriority, StackStore::CATEGORIES)) {
+            return $buyingPriority;
+        }
+
+        // Legacy fallback for old option values
         return match ($buyingPriority) {
-            'doctor_guidance' => StackStore::CATEGORY_TELEHEALTH,
-            'research_grade'  => StackStore::CATEGORY_RESEARCH_GRADE,
-            'affordable'      => StackStore::CATEGORY_AFFORDABLE,
-            default           => null,
+            'doctor_guidance', 'TELE', 'doctor_route' => StackStore::CATEGORY_TELEHEALTH,
+            'RUO', 'RUO-Research', 'research_route'   => StackStore::CATEGORY_RESEARCH_GRADE,
+            default                                    => null,
         };
     }
 
@@ -281,7 +303,6 @@ class QuizPlayer extends Component
         $grouped = [];
         foreach ($products as $product) {
             $inStockStores = $product->stores->where('pivot.is_in_stock', true);
-            if ($inStockStores->isEmpty()) continue;
 
             $vendors = [];
             foreach ($inStockStores->sortBy('pivot.price') as $store) {
@@ -305,9 +326,11 @@ class QuizPlayer extends Component
                 ];
             }
 
-            if (!empty($vendors)) {
-                $grouped[$product->name] = $vendors;
-            }
+            // Include ALL active products — has_deal flag controls quiz routing
+            $grouped[$product->name] = [
+                'vendors' => $vendors,
+                'has_deal' => (bool) $product->has_deal,
+            ];
         }
 
         return $grouped;
@@ -576,9 +599,14 @@ class QuizPlayer extends Component
         $question = $this->questions[$this->currentStep] ?? null;
         if (!$question) return;
 
+        // Check if this peptide has a deal (for routing)
+        $searchData = $this->peptideSearchData;
+        $hasDeal = ($searchData[$peptideName]['has_deal'] ?? false);
+
         $this->answers[$this->currentStep] = [
             'question_id' => $question['id'] ?? null,
             'question_text' => $question['question_text'] ?? $question['content_title'] ?? 'Peptide Search',
+            'option_id' => $hasDeal ? 'available' : 'unavailable',
             'text_value' => $peptideName,
             'klaviyo_property' => $question['klaviyo_property'] ?? 'selected_peptide',
             'klaviyo_value' => $peptideName,
@@ -600,7 +628,9 @@ class QuizPlayer extends Component
      */
     public function advanceSlide(): void
     {
-        $this->nextStep();
+        $question = $this->questions[$this->currentStep] ?? null;
+        $skipTo = $question['skip_to_question'] ?? null;
+        $this->nextStep($skipTo ? (string) $skipTo : null);
     }
 
     /**
@@ -820,7 +850,7 @@ class QuizPlayer extends Component
         ];
 
         foreach ($this->answers as $answer) {
-            if (!empty($answer['klaviyo_property'])) {
+            if (!empty($answer['klaviyo_property']) && !empty($answer['klaviyo_value'])) {
                 $properties[$answer['klaviyo_property']] = $answer['klaviyo_value'];
             }
         }
@@ -845,11 +875,20 @@ class QuizPlayer extends Component
             $klaviyo = app(KlaviyoService::class);
             if ($klaviyo->isEnabled()) {
                 $this->response->load('subscriber');
-                $klaviyo->trackQuizCompleted($this->response);
+                $success = $klaviyo->trackQuizCompleted($this->response);
+
+                if (!$success) {
+                    logger()->warning('Klaviyo quiz sync returned false — will retry via scheduled command', [
+                        'quiz_response_id' => $this->response->id,
+                        'subscriber_id' => $this->response->subscriber_id,
+                    ]);
+                }
             }
         } catch (\Exception $e) {
-            // Log but don't fail the quiz
-            logger()->error('Klaviyo sync failed', ['error' => $e->getMessage()]);
+            logger()->error('Klaviyo sync failed', [
+                'quiz_response_id' => $this->response->id,
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 

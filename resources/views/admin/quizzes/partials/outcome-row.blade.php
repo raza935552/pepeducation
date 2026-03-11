@@ -25,7 +25,7 @@
         $friendlyValue = $condValue;
         // Look up friendly value label from health goals
         if ($condQuestion === 'health_goal') {
-            $friendlyValue = \App\Models\ResultsBank::HEALTH_GOALS[$condValue] ?? $condValue;
+            $friendlyValue = \App\Models\ResultsBank::allHealthGoals()[$condValue] ?? $condValue;
         } else {
             // Try to find the slide and option label
             $refSlide = $quiz->questions->first(fn($q) => $q->klaviyo_property === $condQuestion);
@@ -60,6 +60,8 @@
         'result_title' => $outcome->result_title,
         'result_message' => $outcome->result_message,
         'redirect_url' => $outcome->redirect_url,
+        'result_image' => $outcome->result_image,
+        'redirect_type' => $outcome->redirect_type,
     ];
 @endphp
 <div class="border border-l-4 {{ $borderColor }} rounded-lg bg-white hover:shadow-sm transition-shadow" data-outcome-id="{{ $outcome->id }}">
@@ -112,6 +114,14 @@
 
             {{-- Actions --}}
             <div class="flex items-center gap-1.5 flex-shrink-0">
+                <button type="button"
+                    @click="$dispatch('open-outcome-preview', {{ Js::from($outcomeData) }})"
+                    class="p-1.5 rounded text-gray-400 hover:text-teal-600 hover:bg-teal-50" title="Preview">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                </button>
                 <button type="button"
                     @click="$dispatch('open-outcome-modal', {{ Js::from($outcomeData) }})"
                     class="p-1.5 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100" title="Edit">

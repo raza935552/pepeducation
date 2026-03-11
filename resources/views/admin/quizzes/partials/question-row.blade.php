@@ -37,6 +37,7 @@
         'auto_advance_seconds' => $question->auto_advance_seconds ?? 5,
         'cta_text' => $question->cta_text,
         'cta_url' => $question->cta_url,
+        'skip_to_question' => $question->skip_to_question,
         'dynamic_content_key' => $question->dynamic_content_key,
         'dynamic_content_map' => $question->dynamic_content_map ?? [],
         'show_conditions' => $question->show_conditions,

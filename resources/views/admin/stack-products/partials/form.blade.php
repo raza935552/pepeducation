@@ -222,18 +222,26 @@
                             class="rounded border-gray-300 text-brand-gold focus:ring-brand-gold">
                         <span>Active</span>
                     </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" name="has_deal" value="1" {{ old('has_deal', $product?->has_deal ?? true) ? 'checked' : '' }}
+                            class="rounded border-gray-300 text-green-500 focus:ring-green-500">
+                        <span>Has Deal</span>
+                    </label>
+                    <p class="text-xs text-gray-400 ml-6 -mt-1">When checked, quiz users who select this peptide see the vendor reveal. When unchecked, they get the email capture path instead.</p>
                 </div>
             </div>
 
             <button type="submit" class="w-full btn btn-primary">{{ $product ? 'Update Product' : 'Create Product' }}</button>
-
-            @if($product)
-                <form action="{{ route('admin.stack-products.destroy', $product) }}" method="POST"
-                    onsubmit="return confirm('Delete this product?')">
-                    @csrf @method('DELETE')
-                    <button type="submit" class="w-full btn bg-red-500 text-white hover:bg-red-600">Delete Product</button>
-                </form>
-            @endif
         </div>
     </div>
 </form>
+
+@if($product)
+    <div class="lg:col-span-1 lg:col-start-3 mt-3">
+        <form action="{{ route('admin.stack-products.destroy', $product) }}" method="POST"
+            onsubmit="return confirm('Delete this product?')">
+            @csrf @method('DELETE')
+            <button type="submit" class="w-full btn bg-red-500 text-white hover:bg-red-600">Delete Product</button>
+        </form>
+    </div>
+@endif

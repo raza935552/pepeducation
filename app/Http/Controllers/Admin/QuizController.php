@@ -91,6 +91,7 @@ class QuizController extends Controller
             'cta_text' => $q->cta_text,
             'cta_url' => $q->cta_url,
             'show_conditions' => $q->show_conditions,
+            'skip_to_question' => $q->skip_to_question,
             'dynamic_content_key' => $q->dynamic_content_key,
             'dynamic_content_map' => $q->dynamic_content_map ?? [],
             'klaviyo_property' => $q->klaviyo_property,
@@ -151,7 +152,21 @@ class QuizController extends Controller
             ->get()
             ->groupBy('experience_level');
 
-        return view('admin.quizzes.edit', compact('quiz', 'phases', 'slideLabels', 'outcomesBySegment', 'questionsJson', 'outcomesJson', 'resultsBankEntries'));
+        // Serialize ResultsBank for the simulator preview
+        $resultsBankJson = ResultsBank::where('is_active', true)->get()->map(fn($e) => [
+            'health_goal' => $e->health_goal,
+            'experience_level' => $e->experience_level,
+            'peptide_name' => $e->peptide_name,
+            'star_rating' => $e->star_rating,
+            'rating_label' => $e->rating_label,
+            'description' => $e->description,
+            'benefits' => $e->benefits ?? [],
+            'testimonial' => $e->testimonial,
+            'testimonial_author' => $e->testimonial_author,
+            'display_fields' => $e->display_fields ?? [],
+        ])->values();
+
+        return view('admin.quizzes.edit', compact('quiz', 'phases', 'slideLabels', 'outcomesBySegment', 'questionsJson', 'outcomesJson', 'resultsBankEntries', 'resultsBankJson'));
     }
 
     /**

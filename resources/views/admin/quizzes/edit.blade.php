@@ -202,9 +202,11 @@
 
     @include('admin.quizzes.partials.question-modal')
     @include('admin.quizzes.partials.outcome-modal')
+    @include('admin.quizzes.partials.outcome-preview-modal')
     @include('admin.quizzes.partials.quiz-simulator', [
         'questionsJson' => $questionsJson,
         'outcomesJson' => $outcomesJson,
+        'resultsBankJson' => $resultsBankJson,
     ])
 
     <script>

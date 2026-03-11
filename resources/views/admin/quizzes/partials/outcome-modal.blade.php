@@ -29,7 +29,7 @@
         ->toArray();
 
     // Friendly labels for health goal values
-    $healthGoalLabels = \App\Models\ResultsBank::HEALTH_GOALS;
+    $healthGoalLabels = \App\Models\ResultsBank::allHealthGoals();
 @endphp
 
 {{-- Outcome Modal — Alpine.js --}}

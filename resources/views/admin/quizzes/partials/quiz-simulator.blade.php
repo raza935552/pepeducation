@@ -91,6 +91,26 @@
                     </div>
                 </div>
 
+                {{-- Live ResultsBank Match --}}
+                <div>
+                    <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Peptide Match</h4>
+                    <div class="rounded-lg border p-3 transition-colors duration-300"
+                         :class="resultsBankEntry ? 'border-green-300 bg-green-50' : 'border-gray-200 bg-gray-50'">
+                        <template x-if="resultsBankEntry">
+                            <div>
+                                <p class="text-sm font-bold text-gray-800" x-text="resultsBankEntry.peptide_name"></p>
+                                <p class="text-xs text-gray-500 mt-0.5" x-text="resultsBankEntry.health_goal + ' / ' + resultsBankEntry.experience_level"></p>
+                                <template x-if="resultsBankEntry.star_rating">
+                                    <p class="text-xs text-yellow-600 mt-1" x-text="'★ ' + resultsBankEntry.star_rating + (resultsBankEntry.rating_label ? ' — ' + resultsBankEntry.rating_label : '')"></p>
+                                </template>
+                            </div>
+                        </template>
+                        <template x-if="!resultsBankEntry">
+                            <p class="text-xs text-gray-400 italic">No health_goal answer yet</p>
+                        </template>
+                    </div>
+                </div>
+
                 {{-- Answer History --}}
                 <div>
                     <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
@@ -358,19 +378,96 @@
 
                         {{-- Peptide Reveal Slide --}}
                         <template x-if="currentSlide.slide_type === 'peptide_reveal'">
-                            <div class="text-center">
-                                <div class="w-14 h-14 bg-brand-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <svg class="w-7 h-7 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082"/>
-                                    </svg>
-                                </div>
-                                <p class="text-xs text-brand-gold font-semibold uppercase tracking-wide mb-1">Your Personalized Recommendation</p>
-                                <h2 class="text-2xl font-bold mb-3" x-text="resolvedContent.title || currentSlide.content_title || 'Your Peptide Match'"></h2>
-                                <template x-if="resolvedContent.body">
-                                    <div class="text-gray-600 text-sm mb-4 max-w-sm mx-auto" x-html="nl2br(resolvedContent.body)"></div>
+                            <div>
+                                <template x-if="resultsBankEntry">
+                                    <div>
+                                        {{-- Header --}}
+                                        <div class="text-center mb-6">
+                                            <div class="w-16 h-16 bg-brand-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                <svg class="w-8 h-8 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.29 48.29 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/>
+                                                </svg>
+                                            </div>
+                                            <p class="text-sm text-brand-gold font-semibold uppercase tracking-wide mb-2">Your Personalized Recommendation</p>
+                                            <h2 class="text-3xl font-bold text-gray-900" x-text="resultsBankEntry.peptide_name"></h2>
+                                        </div>
+
+                                        {{-- Star Rating --}}
+                                        <template x-if="shouldDisplay(resultsBankEntry, 'star_rating') && resultsBankEntry.star_rating">
+                                            <div class="flex items-center justify-center gap-2 mb-6">
+                                                <div class="flex items-center">
+                                                    <template x-for="i in 5" :key="i">
+                                                        <svg class="w-6 h-6" :class="i <= Math.floor(resultsBankEntry.star_rating) ? 'text-yellow-400' : 'text-gray-300'" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                                        </svg>
+                                                    </template>
+                                                </div>
+                                                <span class="text-lg font-bold text-gray-900" x-text="resultsBankEntry.star_rating"></span>
+                                                <template x-if="resultsBankEntry.rating_label">
+                                                    <span class="text-sm text-gray-500" x-text="'— ' + resultsBankEntry.rating_label"></span>
+                                                </template>
+                                            </div>
+                                        </template>
+
+                                        {{-- Description --}}
+                                        <template x-if="resultsBankEntry.description">
+                                            <p class="text-gray-600 text-center max-w-lg mx-auto mb-6" x-text="resultsBankEntry.description"></p>
+                                        </template>
+
+                                        {{-- Key Benefits --}}
+                                        <template x-if="shouldDisplay(resultsBankEntry, 'benefits') && resultsBankEntry.benefits && resultsBankEntry.benefits.length > 0">
+                                            <div class="bg-green-50 rounded-lg p-6 mb-6 max-w-md mx-auto">
+                                                <h3 class="text-sm font-semibold text-green-800 uppercase tracking-wide mb-3">Key Benefits</h3>
+                                                <ul class="space-y-2">
+                                                    <template x-for="(benefit, bi) in resultsBankEntry.benefits" :key="bi">
+                                                        <li class="flex items-start gap-2">
+                                                            <svg class="w-5 h-5 text-green-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                                            </svg>
+                                                            <span class="text-green-900 text-sm" x-text="benefit"></span>
+                                                        </li>
+                                                    </template>
+                                                </ul>
+                                            </div>
+                                        </template>
+
+                                        {{-- Testimonial --}}
+                                        <template x-if="shouldDisplay(resultsBankEntry, 'testimonial') && resultsBankEntry.testimonial">
+                                            <div class="bg-gray-50 rounded-lg p-6 mb-6 max-w-lg mx-auto">
+                                                <svg class="w-8 h-8 text-gray-300 mb-3" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151C7.546 6.068 5.983 8.789 5.983 11h4v10H0z"/>
+                                                </svg>
+                                                <p class="text-gray-700 italic mb-3" x-text="resultsBankEntry.testimonial"></p>
+                                                <template x-if="resultsBankEntry.testimonial_author">
+                                                    <p class="text-sm text-gray-500 font-medium" x-text="'— ' + resultsBankEntry.testimonial_author"></p>
+                                                </template>
+                                            </div>
+                                        </template>
+
+                                        {{-- CTA --}}
+                                        <template x-if="currentSlide.cta_text">
+                                            <div class="text-center">
+                                                <span class="inline-block btn btn-primary text-sm opacity-75 cursor-default" x-text="currentSlide.cta_text"></span>
+                                            </div>
+                                        </template>
+                                    </div>
                                 </template>
-                                <template x-if="currentSlide.cta_text">
-                                    <span class="inline-block btn btn-primary text-sm opacity-75 cursor-default" x-text="currentSlide.cta_text"></span>
+
+                                {{-- No match fallback --}}
+                                <template x-if="!resultsBankEntry">
+                                    <div class="text-center py-4">
+                                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082"/>
+                                            </svg>
+                                        </div>
+                                        <h2 class="text-2xl font-bold mb-3" x-text="resolvedContent.title || 'Your Peptide Match'"></h2>
+                                        <p class="text-gray-500 mb-2">No ResultsBank entry found for this health goal.</p>
+                                        <p class="text-xs text-gray-400">Check that a ResultsBank entry exists for the selected health_goal + experience_level combination.</p>
+                                        <template x-if="getAnswerValue('health_goal')">
+                                            <p class="text-xs text-orange-500 mt-2" x-text="'Looking for: ' + getAnswerValue('health_goal') + ' / ' + (getAnswerValue('experience_level') || 'beginner')"></p>
+                                        </template>
+                                    </div>
                                 </template>
                             </div>
                         </template>
@@ -410,6 +507,35 @@
                                 <template x-if="currentSlide.cta_text">
                                     <span class="inline-block btn btn-primary text-sm opacity-75 cursor-default mb-2" x-text="currentSlide.cta_text"></span>
                                 </template>
+                            </div>
+                        </template>
+
+                        {{-- Peptide Search Slide --}}
+                        <template x-if="currentSlide.slide_type === 'peptide_search'">
+                            <div class="text-center">
+                                <div class="w-14 h-14 bg-teal-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <svg class="w-7 h-7 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                    </svg>
+                                </div>
+                                <p class="text-xs text-teal-600 font-semibold uppercase tracking-wide mb-1">Peptide Search</p>
+                                <h2 class="text-xl font-bold mb-3" x-text="resolvedContent.title || currentSlide.content_title || 'Browse Peptides'"></h2>
+                                <template x-if="resolvedContent.body">
+                                    <div class="text-gray-600 text-sm mb-4 max-w-sm mx-auto" x-html="nl2br(resolvedContent.body)"></div>
+                                </template>
+                                <p class="text-xs text-gray-400 italic mb-3">[Simulate: which peptide does the user pick?]</p>
+                                <div class="space-y-2 max-w-xs mx-auto">
+                                    <button @click="simulatePeptideSearch('available')"
+                                        class="w-full p-3 rounded-lg border-2 border-green-200 hover:border-green-400 hover:bg-green-50 text-left transition-all">
+                                        <span class="text-sm font-medium text-green-700">Peptide we HAVE a deal for</span>
+                                        <span class="block text-xs text-green-500 mt-0.5">e.g. BPC-157, Tirzepatide</span>
+                                    </button>
+                                    <button @click="simulatePeptideSearch('unavailable')"
+                                        class="w-full p-3 rounded-lg border-2 border-orange-200 hover:border-orange-400 hover:bg-orange-50 text-left transition-all">
+                                        <span class="text-sm font-medium text-orange-700">Peptide we DON'T have a deal for</span>
+                                        <span class="block text-xs text-orange-500 mt-0.5">e.g. Semaglutide, AOD-9604</span>
+                                    </button>
+                                </div>
                             </div>
                         </template>
 
@@ -474,6 +600,7 @@ function quizSimulator() {
         open: false,
         slides: @json($questionsJson),
         outcomes: @json($outcomesJson),
+        resultsBank: @json($resultsBankJson ?? []),
         currentIndex: 0,
         answers: {},
         scores: { tof: 0, mof: 0, bof: 0 },
@@ -552,14 +679,14 @@ function quizSimulator() {
             if (scoreMof) impacts.push('MOF +' + scoreMof);
             if (scoreBof) impacts.push('BOF +' + scoreBof);
 
-            // Store answer
+            // Store answer (klaviyo_value fallback mirrors QuizPlayer.php: klaviyo_value → value → label)
             this.answers[slide.id] = {
                 order: slide.order,
                 label: slide.question_text || '',
                 value: optionKey,
                 value_label: optionLabel,
                 klaviyo_property: slide.klaviyo_property || '',
-                klaviyo_value: option.klaviyo_value || optionLabel,
+                klaviyo_value: option.klaviyo_value || option.value || optionLabel,
                 score_impact: impacts.join(', ') || null,
                 scores: { tof: scoreTof, mof: scoreMof, bof: scoreBof },
             };
@@ -619,13 +746,16 @@ function quizSimulator() {
             if (totalMof) impacts.push('MOF +' + totalMof);
             if (totalBof) impacts.push('BOF +' + totalBof);
 
+            // klaviyo_value for multi-select: use value keys (not labels) to match QuizPlayer.php
+            const klaviyoValues = selected.map(o => o.klaviyo_value || o.value || o.text || o.label || '');
+
             this.answers[slide.id] = {
                 order: slide.order,
                 label: slide.question_text || '',
                 value: this.multiSelections.join(', '),
                 value_label: labels.join(', '),
                 klaviyo_property: slide.klaviyo_property || '',
-                klaviyo_value: labels.join(', '),
+                klaviyo_value: klaviyoValues.join(', '),
                 score_impact: impacts.join(', ') || null,
                 scores: { tof: totalTof, mof: totalMof, bof: totalBof },
             };
@@ -659,9 +789,34 @@ function quizSimulator() {
             this.navigateNext(null);
         },
 
-        advanceContinue() {
+        simulatePeptideSearch(availability) {
+            const slide = this.currentSlide;
+            const label = availability === 'available' ? 'Has Deal Peptide' : 'No Deal Peptide';
+            this.answers[slide.id] = {
+                order: slide.order,
+                label: slide.question_text || slide.content_title || 'Peptide Search',
+                value: availability,
+                value_label: label,
+                klaviyo_property: slide.klaviyo_property || 'selected_peptide',
+                klaviyo_value: label,
+                score_impact: null,
+                scores: { tof: 0, mof: 0, bof: 0 },
+            };
             this.history.push(this.currentIndex);
             this.navigateNext(null);
+        },
+
+        advanceContinue() {
+            const slide = this.currentSlide;
+            // For peptide_search slides, default to "available" if no explicit choice made
+            if (slide.slide_type === 'peptide_search' && !this.answers[slide.id]) {
+                this.simulatePeptideSearch('available');
+                return;
+            }
+            this.history.push(this.currentIndex);
+            // Use slide-level skip_to_question if set
+            const skipTo = slide.skip_to_question || null;
+            this.navigateNext(skipTo ? String(skipTo) : null);
         },
 
         navigateNext(skipToQuestionId) {
@@ -855,17 +1010,51 @@ function quizSimulator() {
             const map = slide.dynamic_content_map;
             if (!key || !map || typeof map !== 'object') return null;
 
-            // Find the user's answer value for this key
+            // Find the user's answer for this key (mirrors QuizFunnelEngine::resolveDynamicContent)
             let answerValue = null;
+            let optionId = null;
             for (const a of Object.values(this.answers)) {
                 if (a.klaviyo_property === key) {
                     answerValue = a.klaviyo_value;
+                    optionId = a.value;
                     break;
                 }
             }
 
+            // Try klaviyo_value first, then fall back to option value (option_id), then _default
             if (answerValue && map[answerValue]) return map[answerValue];
+            if (optionId && optionId !== answerValue && map[optionId]) return map[optionId];
             return map['_default'] || null;
+        },
+
+        get resultsBankEntry() {
+            const healthGoal = this.getAnswerValue('health_goal');
+            if (!healthGoal) return null;
+
+            let expLevel = this.getAnswerValue('experience_level') || 'beginner';
+
+            // Try exact match first, then fallback to other level
+            let entry = this.resultsBank.find(e => e.health_goal === healthGoal && e.experience_level === expLevel);
+            if (!entry) {
+                entry = this.resultsBank.find(e => e.health_goal === healthGoal);
+            }
+            return entry;
+        },
+
+        getAnswerValue(klaviyoProperty) {
+            for (const a of Object.values(this.answers)) {
+                if (a.klaviyo_property === klaviyoProperty) {
+                    return a.klaviyo_value || a.value || null;
+                }
+            }
+            return null;
+        },
+
+        shouldDisplay(entry, field) {
+            if (!entry.display_fields || Object.keys(entry.display_fields).length === 0) return true;
+            // If the field isn't explicitly set, show it by default
+            if (!(field in entry.display_fields)) return true;
+            return !!entry.display_fields[field] && entry.display_fields[field] !== '0';
         },
 
         interpolateTokens(text) {
@@ -890,7 +1079,7 @@ function quizSimulator() {
             const labels = {
                 question: 'Question', question_text: 'Text Input', intermission: 'Intermission',
                 loading: 'Loading', email_capture: 'Email', peptide_reveal: 'Peptide Reveal',
-                vendor_reveal: 'Vendor Reveal', bridge: 'Bridge',
+                vendor_reveal: 'Vendor Reveal', bridge: 'Bridge', peptide_search: 'Peptide Search',
             };
             return labels[type] || type;
         },
@@ -905,6 +1094,7 @@ function quizSimulator() {
                 peptide_reveal: 'bg-pink-100 text-pink-700 border-pink-200',
                 vendor_reveal: 'bg-indigo-100 text-indigo-700 border-indigo-200',
                 bridge: 'bg-orange-100 text-orange-700 border-orange-200',
+                peptide_search: 'bg-teal-100 text-teal-700 border-teal-200',
             };
             return colors[type] || 'bg-gray-200 text-gray-700 border-gray-300';
         },
