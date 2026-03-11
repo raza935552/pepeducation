@@ -363,6 +363,17 @@ class QuizQuestionController extends Controller
             'max_selections' => 'nullable|integer|min:1|max:20',
             'settings' => 'nullable|array',
             'settings.placeholder' => 'nullable|string|max:200',
+            'settings.doctor_heading' => 'nullable|string|max:500',
+            'settings.doctor_description' => 'nullable|string|max:500',
+            'settings.doctor_unavailable_text' => 'nullable|string|max:500',
+            'settings.research_heading' => 'nullable|string|max:500',
+            'settings.research_description' => 'nullable|string|max:500',
+            'settings.research_unavailable_text' => 'nullable|string|max:500',
+            // Peptide reveal settings
+            'settings.pre_headline' => 'nullable|string|max:500',
+            'settings.benefits_heading' => 'nullable|string|max:500',
+            'settings.fallback_headline' => 'nullable|string|max:500',
+            'settings.fallback_body' => 'nullable|string|max:2000',
             // Dynamic content
             'dynamic_content_key' => 'nullable|string|max:255',
             'dynamic_variants' => 'nullable|array',

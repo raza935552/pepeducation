@@ -1,7 +1,11 @@
 {{-- Peptide Reveal Slide --}}
 <div class="card p-8" wire:key="slide-peptide-reveal-{{ $currentStep }}">
 
-    @php $result = $this->resultsBankEntry; @endphp
+    @php
+        $result = $this->resultsBankEntry;
+        $resolved = $this->resolvedSlide;
+        $settings = $resolved['settings'] ?? [];
+    @endphp
 
     @if($result)
         {{-- Reveal Header --}}
@@ -11,8 +15,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.29 48.29 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/>
                 </svg>
             </div>
-            <p class="text-sm text-brand-gold font-semibold uppercase tracking-wide mb-2">Your Personalized Recommendation</p>
-            <h2 class="text-3xl font-bold text-gray-900">{{ $result->peptide_name }}</h2>
+            <p class="text-sm text-brand-gold font-semibold uppercase tracking-wide mb-2">{{ $settings['pre_headline'] ?? 'Your Personalized Recommendation' }}</p>
+            <h2 class="text-3xl font-bold text-gray-900">{{ $resolved['content_title'] ?? $result->peptide_name }}</h2>
         </div>
 
         {{-- Star Rating --}}
@@ -50,14 +54,14 @@
         @endif
 
         {{-- Description --}}
-        @if($result->description)
-            <p class="text-gray-600 text-center max-w-lg mx-auto mb-6">{{ $result->description }}</p>
+        @if($resolved['content_body'] ?? $result->description)
+            <p class="text-gray-600 text-center max-w-lg mx-auto mb-6">{{ $resolved['content_body'] ?? $result->description }}</p>
         @endif
 
         {{-- Benefits --}}
         @if($result->shouldDisplay('benefits') && !empty($result->benefits))
             <div class="bg-green-50 rounded-lg p-6 mb-6 max-w-md mx-auto">
-                <h3 class="text-sm font-semibold text-green-800 uppercase tracking-wide mb-3">Key Benefits</h3>
+                <h3 class="text-sm font-semibold text-green-800 uppercase tracking-wide mb-3">{{ $settings['benefits_heading'] ?? 'Key Benefits' }}</h3>
                 <ul class="space-y-2">
                     @foreach($result->benefits as $benefit)
                         <li class="flex items-start gap-2">
@@ -92,8 +96,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082"/>
                 </svg>
             </div>
-            <h2 class="text-2xl font-bold mb-4">Your Peptide Recommendation</h2>
-            <p class="text-gray-500 mb-6">We're preparing your personalized recommendation.</p>
+            <h2 class="text-2xl font-bold mb-4">{{ $settings['fallback_headline'] ?? 'Your Peptide Recommendation' }}</h2>
+            <p class="text-gray-500 mb-6">{{ $settings['fallback_body'] ?? 'We\'re preparing your personalized recommendation.' }}</p>
         </div>
     @endif
 

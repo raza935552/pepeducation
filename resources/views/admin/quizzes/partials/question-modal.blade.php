@@ -180,13 +180,119 @@
                             </div>
                         </div>
 
-                        {{-- Peptide/Vendor reveal have no editable content fields --}}
-                        <div x-show="['peptide_reveal', 'vendor_reveal'].includes(question.slide_type)">
-                            <div class="rounded-lg bg-gray-50 border border-gray-200 px-4 py-3">
-                                <p class="text-sm text-gray-600">
-                                    <span x-show="question.slide_type === 'peptide_reveal'">This slide automatically shows the personalized peptide recommendation based on the user's answers. Content is powered by the Results Bank.</span>
-                                    <span x-show="question.slide_type === 'vendor_reveal'">This slide automatically shows the recommended vendor with product details and pricing.</span>
-                                </p>
+                        {{-- Peptide Reveal — configurable text --}}
+                        <div x-show="question.slide_type === 'peptide_reveal'" class="space-y-3">
+                            <div class="rounded-lg bg-purple-50 border border-purple-200 px-4 py-3 mb-3">
+                                <p class="text-sm text-purple-700">Customize the text shown on the peptide recommendation slide. Leave blank to use defaults from the Results Bank. Use <code class="bg-purple-100 px-1 rounded">@{{peptide_name}}</code> in the headline/description to insert the peptide name.</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Pre-headline <span class="font-normal text-gray-400">(optional)</span></label>
+                                <input type="text" x-model="question.settings.pre_headline"
+                                    placeholder="Your Personalized Recommendation"
+                                    class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Headline <span class="font-normal text-gray-400">(optional — defaults to peptide name)</span></label>
+                                <input type="text" x-model="question.content_title"
+                                    placeholder="e.g. @{{peptide_name}} or Your Top Match"
+                                    class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Description <span class="font-normal text-gray-400">(optional — defaults to Results Bank)</span></label>
+                                <textarea x-model="question.content_body" rows="2"
+                                    placeholder="Override the Results Bank description..."
+                                    class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Benefits Heading <span class="font-normal text-gray-400">(optional)</span></label>
+                                <input type="text" x-model="question.settings.benefits_heading"
+                                    placeholder="Key Benefits"
+                                    class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                            </div>
+
+                            <div class="border-t border-gray-200 pt-3 mt-3">
+                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Fallback (no Results Bank match)</p>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Fallback Headline <span class="font-normal text-gray-400">(optional)</span></label>
+                                        <input type="text" x-model="question.settings.fallback_headline"
+                                            placeholder="Your Peptide Recommendation"
+                                            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Fallback Description <span class="font-normal text-gray-400">(optional)</span></label>
+                                        <textarea x-model="question.settings.fallback_body" rows="2"
+                                            placeholder="We're preparing your personalized recommendation."
+                                            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Vendor Reveal — configurable text --}}
+                        <div x-show="question.slide_type === 'vendor_reveal'" class="space-y-3">
+                            <div class="rounded-lg bg-blue-50 border border-blue-200 px-4 py-3 mb-3">
+                                <p class="text-sm text-blue-700">Customize the text shown on the vendor comparison slide. Leave blank to use defaults. Use <code class="bg-blue-100 px-1 rounded">@{{peptide_name}}</code> in the headline/description for the peptide name.</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Page Headline <span class="font-normal text-gray-400">(optional)</span></label>
+                                <input type="text" x-model="question.content_title"
+                                    placeholder="Where to Get @{{peptide_name}}"
+                                    class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Page Description <span class="font-normal text-gray-400">(optional)</span></label>
+                                <input type="text" x-model="question.content_body"
+                                    placeholder="Compare pricing from verified peptide suppliers"
+                                    class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                            </div>
+
+                            <div class="border-t border-gray-200 pt-3 mt-3">
+                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Doctor / Telehealth Section</p>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Section Heading <span class="font-normal text-gray-400">(optional)</span></label>
+                                        <input type="text" x-model="question.settings.doctor_heading"
+                                            placeholder="Doctor / Telehealth"
+                                            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Section Description <span class="font-normal text-gray-400">(optional)</span></label>
+                                        <input type="text" x-model="question.settings.doctor_description"
+                                            placeholder="Licensed clinics with doctor consultations and prescriptions"
+                                            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Unavailable Message <span class="font-normal text-gray-400">(optional)</span></label>
+                                        <input type="text" x-model="question.settings.doctor_unavailable_text"
+                                            placeholder="This peptide is not currently available through a doctor or telehealth provider."
+                                            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-gray-200 pt-3 mt-3">
+                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Research Section</p>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Section Heading <span class="font-normal text-gray-400">(optional)</span></label>
+                                        <input type="text" x-model="question.settings.research_heading"
+                                            placeholder="Research"
+                                            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Section Description <span class="font-normal text-gray-400">(optional)</span></label>
+                                        <input type="text" x-model="question.settings.research_description"
+                                            placeholder="Lab-tested peptides for research purposes"
+                                            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Unavailable Message <span class="font-normal text-gray-400">(optional)</span></label>
+                                        <input type="text" x-model="question.settings.research_unavailable_text"
+                                            placeholder="No research vendors are available for this peptide at this time."
+                                            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -910,8 +1016,24 @@ function questionModal() {
             if (this.question.max_selections) {
                 formData.append('max_selections', this.question.max_selections);
             }
-            if (this.question.settings && this.question.settings.placeholder) {
-                formData.append('settings[placeholder]', this.question.settings.placeholder);
+            if (this.question.settings) {
+                if (this.question.settings.placeholder) {
+                    formData.append('settings[placeholder]', this.question.settings.placeholder);
+                }
+                // Vendor reveal settings
+                const vendorKeys = ['doctor_heading', 'doctor_description', 'doctor_unavailable_text', 'research_heading', 'research_description', 'research_unavailable_text'];
+                vendorKeys.forEach(key => {
+                    if (this.question.settings[key]) {
+                        formData.append('settings[' + key + ']', this.question.settings[key]);
+                    }
+                });
+                // Peptide reveal settings
+                const peptideKeys = ['pre_headline', 'benefits_heading', 'fallback_headline', 'fallback_body'];
+                peptideKeys.forEach(key => {
+                    if (this.question.settings[key]) {
+                        formData.append('settings[' + key + ']', this.question.settings[key]);
+                    }
+                });
             }
             formData.append('content_title', this.question.content_title || '');
             formData.append('content_body', this.question.content_body || '');

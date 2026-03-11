@@ -1,5 +1,5 @@
 @php
-    $productStores = $product->stores->where('pivot.is_in_stock', true);
+    $productStores = isset($stores) ? $stores : $product->stores->where('pivot.is_in_stock', true);
     $hasMultipleStores = $productStores->count() > 1;
     $cheapestPrice = $hasMultipleStores ? $productStores->min('pivot.price') : null;
 @endphp

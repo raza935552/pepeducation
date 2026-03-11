@@ -732,6 +732,14 @@ class QuizPlayer extends Component
             $this->currentStep = $nextIndex;
             // Auto-skip email_capture for known subscribers
             $this->autoSkipEmailCaptureIfKnown();
+
+            // Terminal slides (vendor_reveal) complete the quiz while still showing the slide
+            $slideType = $this->questions[$this->currentStep]['slide_type'] ?? 'question';
+            if ($slideType === QuizQuestion::SLIDE_VENDOR_REVEAL && !$this->completed) {
+                $this->completeQuiz();
+                // Keep showing the vendor_reveal slide instead of the generic results page
+                $this->completed = false;
+            }
         } else {
             $this->completeQuiz();
         }
@@ -992,40 +1000,40 @@ class QuizPlayer extends Component
     {
         if (count($this->questions) === 0) return 0;
 
-        // Estimate journey length from first answer (journey selector)
-        $journeyLength = $this->estimateJourneyLength();
-        $stepsCompleted = count($this->navigationHistory) + 1; // history + current
+        $stepsCompleted = count($this->navigationHistory) + 1;
 
-        return min(100, round($stepsCompleted / $journeyLength * 100));
-    }
+        // Count remaining slides that would be visible given current answers.
+        // Slides whose conditions reference unanswered questions are counted
+        // optimistically (they may become visible once that question is reached).
+        $engine = app(QuizFunnelEngine::class);
+        $remainingVisible = 0;
 
-    private function estimateJourneyLength(): int
-    {
-        // Check first answer to determine journey path
-        $journeyAnswer = $this->answers[0]['option_id'] ?? null;
-        $subPathAnswer = null;
+        for ($i = $this->currentStep + 1; $i < count($this->questions); $i++) {
+            $slide = $this->questions[$i];
 
-        // Find sub-path answer if BOF
-        if ($journeyAnswer === 'ready_to_buy') {
-            foreach ($this->answers as $a) {
-                if (in_array($a['option_id'] ?? '', ['know_what_i_want', 'know_my_goal', 'want_to_stack'])) {
-                    $subPathAnswer = $a['option_id'];
-                    break;
+            if ($engine->shouldShowSlide($slide, $this->questions, $this->answers)) {
+                $remainingVisible++;
+                continue;
+            }
+
+            // Slide failed — check if any condition references an unanswered
+            // question; if so, the slide may still appear on this path.
+            $conditions = $slide['show_conditions']['conditions'] ?? [];
+            foreach ($conditions as $condition) {
+                $qId = $condition['question_id'] ?? null;
+                if ($qId) {
+                    $idx = $engine->findSlideIndexById($this->questions, $qId);
+                    if ($idx !== null && !isset($this->answers[$idx])) {
+                        $remainingVisible++;
+                        break;
+                    }
                 }
             }
         }
 
-        return match ($journeyAnswer) {
-            'brand_new' => 16,   // TOF
-            'researching' => 16, // MOF
-            'ready_to_buy' => match ($subPathAnswer) {
-                'know_what_i_want' => 8,  // BOF-A
-                'know_my_goal' => 9,      // BOF-B
-                'want_to_stack' => 10,    // BOF-C
-                default => 9,             // BOF default before sub-path chosen
-            },
-            default => count($this->questions), // Fallback for non-funnel quizzes
-        };
+        $total = $stepsCompleted + $remainingVisible;
+
+        return min(100, (int) round($stepsCompleted / $total * 100));
     }
 
     public function getCurrentQuestionProperty(): ?array
