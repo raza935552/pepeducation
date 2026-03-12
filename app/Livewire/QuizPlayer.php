@@ -566,6 +566,9 @@ class QuizPlayer extends Component
 
         $service->setEmailCookie($this->email);
 
+        // Track Klaviyo events now that we have a subscriber
+        $this->trackEmailEvents($subscriber);
+
         // Store answer for email capture slides
         $question = $this->questions[$this->currentStep] ?? null;
         if ($question) {
@@ -896,6 +899,30 @@ class QuizPlayer extends Component
             logger()->error('Klaviyo sync failed', [
                 'quiz_response_id' => $this->response->id,
                 'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Fire "Started Quiz" and "Email Captured" events to Klaviyo
+     * once a subscriber is linked (after email submission).
+     */
+    private function trackEmailEvents(\App\Models\Subscriber $subscriber): void
+    {
+        try {
+            $klaviyo = app(KlaviyoService::class);
+            if (!$klaviyo->isEnabled()) return;
+
+            // Track quiz start (retroactively, using actual start time)
+            $klaviyo->trackQuizStarted($subscriber, $this->quiz->id, $this->quiz->name);
+
+            // Track email captured
+            $this->response->load('quiz');
+            $klaviyo->trackEmailCaptured($subscriber, $this->response);
+        } catch (\Exception $e) {
+            logger()->warning('Klaviyo email event tracking failed', [
+                'error' => $e->getMessage(),
+                'subscriber_id' => $subscriber->id,
             ]);
         }
     }

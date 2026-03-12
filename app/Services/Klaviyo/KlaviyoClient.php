@@ -81,7 +81,8 @@ class KlaviyoClient
                     return null;
                 }
 
-                return $response->json();
+                // Klaviyo returns 202 with empty body for events — treat as success
+                return $response->json() ?? [];
             } catch (\Exception $e) {
                 Log::error('Klaviyo API exception', [
                     'endpoint' => $endpoint,

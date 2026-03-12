@@ -164,4 +164,15 @@ class EventService
             'utm_campaign' => $subscriber->first_utm_campaign,
         ]);
     }
+
+    public function trackEmailCaptured(Subscriber $subscriber, QuizResponse $response): bool
+    {
+        return $this->track($subscriber, 'Email Captured', [
+            'quiz_id' => $response->quiz_id,
+            'quiz_name' => $response->quiz?->name,
+            'source' => 'quiz:' . ($response->quiz?->slug ?? 'unknown'),
+            'segment' => $response->segment,
+            'questions_answered' => count($response->answers ?? []),
+        ]);
+    }
 }

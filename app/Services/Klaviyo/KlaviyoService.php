@@ -86,6 +86,11 @@ class KlaviyoService
         return $this->events->trackSubscribed($subscriber, $source, $popupSlug);
     }
 
+    public function trackEmailCaptured(Subscriber $subscriber, QuizResponse $response): bool
+    {
+        return $this->events->trackEmailCaptured($subscriber, $response);
+    }
+
     // Batch sync for queued jobs
     public function syncPendingProfiles(int $limit = 100): array
     {
