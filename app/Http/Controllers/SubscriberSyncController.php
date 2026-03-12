@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\SubscriberService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SubscriberSyncController extends Controller
 {
@@ -30,8 +31,10 @@ class SubscriberSyncController extends Controller
             $request->cookie('pp_session_id'),
             session()->getId(),
         ]);
+
+        $linked = 0;
         if (!empty($sessionIds)) {
-            \App\Models\QuizResponse::whereIn('session_id', $sessionIds)
+            $linked = \App\Models\QuizResponse::whereIn('session_id', $sessionIds)
                 ->where('status', 'in_progress')
                 ->whereNull('subscriber_id')
                 ->update([
@@ -39,6 +42,13 @@ class SubscriberSyncController extends Controller
                     'email' => $subscriber->email,
                 ]);
         }
+
+        Log::info('Subscriber sync completed', [
+            'subscriber_id' => $subscriber->id,
+            'email' => $subscriber->email,
+            'session_ids_checked' => $sessionIds,
+            'quiz_responses_linked' => $linked,
+        ]);
 
         return response()->json(['ok' => true]);
     }

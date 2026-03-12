@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Quiz;
 use App\Models\QuizResponse;
+use App\Models\Subscriber;
 use App\Services\Klaviyo\KlaviyoService;
 use Illuminate\Http\Request;
 
@@ -49,12 +50,30 @@ class QuizController extends Controller
             return response()->json(['ok' => false], 404);
         }
 
-        $response->update(['status' => 'abandoned', 'updated_at' => now()]);
+        // Link subscriber from pp_email cookie if not already linked
+        if (!$response->subscriber_id) {
+            $email = $request->cookie('pp_email');
+            if ($email) {
+                $subscriber = Subscriber::where('email', strtolower(trim($email)))->first();
+                if ($subscriber) {
+                    $response->subscriber_id = $subscriber->id;
+                    $response->email = $subscriber->email;
+                }
+            }
+        }
+
+        $response->update([
+            'status' => 'abandoned',
+            'subscriber_id' => $response->subscriber_id,
+            'email' => $response->email,
+            'updated_at' => now(),
+        ]);
 
         // Fire Klaviyo "Quiz Abandoned" event if subscriber exists
-        if ($response->subscriber && $klaviyo->isEnabled()) {
+        $subscriber = $response->subscriber_id ? ($response->subscriber ?? Subscriber::find($response->subscriber_id)) : null;
+        if ($subscriber && $klaviyo->isEnabled()) {
             try {
-                $klaviyo->trackQuizAbandoned($response->subscriber, $response);
+                $klaviyo->trackQuizAbandoned($subscriber, $response);
             } catch (\Exception $e) {
                 // Beacon responses must be fast — don't block on errors
             }
