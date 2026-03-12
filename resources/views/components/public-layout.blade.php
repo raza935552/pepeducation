@@ -43,9 +43,6 @@
     @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    {{-- Klaviyo Onsite JS (popups, forms, tracking) --}}
-    {!! \App\Models\Setting::getValue('integrations', 'klaviyo_popup_script', '') !!}
-
     @livewireStyles
     @stack('head')
 </head>
