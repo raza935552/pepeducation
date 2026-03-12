@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Peptide;
+use App\Models\Subscriber;
+use App\Services\Klaviyo\EventService;
 use Illuminate\Http\Request;
 
 class PeptideController extends Controller
@@ -56,6 +58,29 @@ class PeptideController extends Controller
             ->limit(4)
             ->get();
 
+        // Track viewed product to Klaviyo (if subscriber identified)
+        $this->trackViewedProduct($peptide);
+
         return view('peptides.show', compact('peptide', 'relatedPeptides'));
+    }
+
+    protected function trackViewedProduct(Peptide $peptide): void
+    {
+        $email = request()->cookie('pp_email');
+        if (!$email) return;
+
+        $subscriber = Subscriber::where('email', $email)->first();
+        if (!$subscriber) return;
+
+        try {
+            app(EventService::class)->track($subscriber, 'Viewed Product', [
+                'ProductName' => $peptide->name,
+                'ProductID' => $peptide->slug,
+                'Categories' => $peptide->categories->pluck('name')->toArray(),
+                'URL' => route('peptides.show', $peptide),
+            ]);
+        } catch (\Exception $e) {
+            // Silent fail — don't break page load
+        }
     }
 }

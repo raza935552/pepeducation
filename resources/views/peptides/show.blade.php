@@ -19,8 +19,14 @@
                 <div class="lg:col-span-2 space-y-6">
                     @include('peptides.partials.show-overview')
                     @include('peptides.partials.show-benefits')
+                    @include('peptides.partials.show-protocols')
+                    @include('peptides.partials.show-compatible-peptides')
+                    @include('peptides.partials.show-reconstitution')
+                    @include('peptides.partials.show-quality-indicators')
+                    @include('peptides.partials.show-effectiveness')
                     @include('peptides.partials.show-timeline')
                     @include('peptides.partials.show-warnings')
+                    @include('peptides.partials.show-references')
                 </div>
 
                 <!-- Sidebar -->
@@ -38,4 +44,38 @@
             @endif
         </div>
     </section>
+    @push('scripts')
+    <script>
+    (function() {
+        function whenKlaviyoReady(cb) {
+            if (window.klaviyo && typeof window.klaviyo.push === 'function') { cb(); return; }
+            var i = setInterval(function() {
+                if (window.klaviyo && typeof window.klaviyo.push === 'function') { clearInterval(i); cb(); }
+            }, 500);
+            setTimeout(function() { clearInterval(i); }, 10000);
+        }
+
+        whenKlaviyoReady(function() {
+            // Identify user if email known
+            var email = getCookie('pp_email');
+            if (email) {
+                klaviyo.identify({ $email: email });
+            }
+
+            // Track Viewed Product
+            klaviyo.push(['track', 'Viewed Product', {
+                ProductName: '{{ addslashes($peptide->name) }}',
+                ProductID: '{{ $peptide->slug }}',
+                Categories: {!! json_encode($peptide->categories->pluck('name')) !!},
+                URL: window.location.href
+            }]);
+        });
+
+        function getCookie(name) {
+            var v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+            return v ? decodeURIComponent(v.pop()) : null;
+        }
+    })();
+    </script>
+    @endpush
 </x-public-layout>
