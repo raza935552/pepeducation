@@ -50,6 +50,14 @@ class KlaviyoService
         return $this->profiles->addToList($subscriber, $listId);
     }
 
+    public function subscribeToList(Subscriber $subscriber, ?string $listId = null): bool
+    {
+        $listId = $listId ?? Setting::getValue('integrations', 'klaviyo_default_list_id');
+        if (!$listId) return false;
+
+        return $this->profiles->subscribeToList($subscriber, $listId);
+    }
+
     // Event Methods
     public function trackEvent(Subscriber $subscriber, string $eventName, array $properties = []): bool
     {
@@ -89,6 +97,11 @@ class KlaviyoService
     public function trackEmailCaptured(Subscriber $subscriber, QuizResponse $response): bool
     {
         return $this->events->trackEmailCaptured($subscriber, $response);
+    }
+
+    public function trackQuizAbandoned(Subscriber $subscriber, QuizResponse $response): bool
+    {
+        return $this->events->trackQuizAbandoned($subscriber, $response);
     }
 
     // Batch sync for queued jobs

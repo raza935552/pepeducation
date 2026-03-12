@@ -66,6 +66,9 @@ Route::get('/quiz/{slug}', [QuizController::class, 'show'])->name('quiz.show');
 Route::get('/quiz/{slug}/embed', [QuizController::class, 'embed'])->name('quiz.embed');
 Route::post('/quiz/abandon', [QuizController::class, 'abandon'])->name('quiz.abandon');
 
+// Subscriber sync (from Klaviyo popup)
+Route::post('/subscriber/sync', [\App\Http\Controllers\SubscriberSyncController::class, 'sync'])->name('subscriber.sync');
+
 // Lead Magnets
 Route::get('/lead-magnet/{slug}', [LeadMagnetController::class, 'landing'])->name('lead-magnet.landing');
 Route::get('/lead-magnet/{slug}/download', [LeadMagnetController::class, 'download'])->name('lead-magnet.download');

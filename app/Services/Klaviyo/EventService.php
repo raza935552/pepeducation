@@ -175,4 +175,26 @@ class EventService
             'questions_answered' => count($response->answers ?? []),
         ]);
     }
+
+    public function trackQuizAbandoned(Subscriber $subscriber, QuizResponse $response): bool
+    {
+        $answers = $response->answers ?? [];
+        $properties = [
+            'quiz_id' => $response->quiz_id,
+            'quiz_name' => $response->quiz?->name,
+            'segment' => $response->segment,
+            'questions_answered' => count($answers),
+            'time_spent_seconds' => $response->duration_seconds
+                ?? ($response->started_at ? now()->diffInSeconds($response->started_at) : null),
+        ];
+
+        // Include answer properties so flows can branch on what they selected
+        foreach ($answers as $answer) {
+            if (!empty($answer['klaviyo_property']) && !empty($answer['klaviyo_value'])) {
+                $properties[$answer['klaviyo_property']] = $answer['klaviyo_value'];
+            }
+        }
+
+        return $this->track($subscriber, 'Quiz Abandoned', $properties);
+    }
 }

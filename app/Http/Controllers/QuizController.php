@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Quiz;
 use App\Models\QuizResponse;
+use App\Services\Klaviyo\KlaviyoService;
 use Illuminate\Http\Request;
 
 class QuizController extends Controller
@@ -32,16 +33,32 @@ class QuizController extends Controller
      * Beacon endpoint: mark an in-progress quiz response as abandoned.
      * Called via navigator.sendBeacon when user leaves mid-quiz.
      */
-    public function abandon(Request $request)
+    public function abandon(Request $request, KlaviyoService $klaviyo)
     {
         $responseId = $request->input('response_id');
         if (!$responseId) {
             return response()->json(['ok' => false], 422);
         }
 
-        QuizResponse::where('id', $responseId)
+        $response = QuizResponse::where('id', $responseId)
             ->where('status', 'in_progress')
-            ->update(['status' => 'abandoned', 'updated_at' => now()]);
+            ->with('subscriber', 'quiz')
+            ->first();
+
+        if (!$response) {
+            return response()->json(['ok' => false], 404);
+        }
+
+        $response->update(['status' => 'abandoned', 'updated_at' => now()]);
+
+        // Fire Klaviyo "Quiz Abandoned" event if subscriber exists
+        if ($response->subscriber && $klaviyo->isEnabled()) {
+            try {
+                $klaviyo->trackQuizAbandoned($response->subscriber, $response);
+            } catch (\Exception $e) {
+                // Beacon responses must be fast — don't block on errors
+            }
+        }
 
         return response()->json(['ok' => true]);
     }

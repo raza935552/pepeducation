@@ -168,6 +168,48 @@ class ProfileService
         return $response !== null;
     }
 
+    /**
+     * Subscribe a profile to a list with email marketing consent.
+     * Uses the Subscribe API so the profile is marked SUBSCRIBED and can receive emails.
+     */
+    public function subscribeToList(Subscriber $subscriber, string $listId): bool
+    {
+        $response = $this->client->post('/profile-subscription-bulk-create-jobs/', [
+            'data' => [
+                'type' => 'profile-subscription-bulk-create-job',
+                'attributes' => [
+                    'profiles' => [
+                        'data' => [
+                            [
+                                'type' => 'profile',
+                                'attributes' => [
+                                    'email' => $subscriber->email,
+                                    'subscriptions' => [
+                                        'email' => [
+                                            'marketing' => [
+                                                'consent' => 'SUBSCRIBED',
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'relationships' => [
+                    'list' => [
+                        'data' => [
+                            'type' => 'list',
+                            'id' => $listId,
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        return $response !== null;
+    }
+
     protected function buildProfileData(Subscriber $subscriber): array
     {
         $data = [

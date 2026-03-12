@@ -113,13 +113,27 @@ class QuizPlayer extends Component
             }
         }
 
+        // Check if we already know this subscriber (e.g. from Klaviyo popup)
+        $subscriberData = [];
+        $ppEmail = request()->cookie('pp_email');
+        if ($ppEmail) {
+            $existingSub = \App\Models\Subscriber::where('email', strtolower(trim($ppEmail)))->first();
+            if ($existingSub) {
+                $subscriberData = [
+                    'subscriber_id' => $existingSub->id,
+                    'email' => $existingSub->email,
+                ];
+                $this->email = $existingSub->email;
+            }
+        }
+
         $this->response = QuizResponse::create(array_merge([
             'quiz_id' => $this->quiz->id,
             'session_id' => $trackingSessionId,
             'answers' => [],
             'started_at' => now(),
             'status' => 'in_progress',
-        ], $this->utmParams));
+        ], $subscriberData, $this->utmParams));
         $this->responseId = $this->response->id;
 
         $this->quiz->increment('starts_count');
@@ -215,10 +229,13 @@ class QuizPlayer extends Component
             return null;
         }
 
-        // BOF-C stackers are experienced — default to advanced
+        // Map quiz answer values to ResultsBank experience levels
         $bofIntent = $this->getAnswerByKlaviyoProperty('bof_intent');
-        if (!$experienceLevel) {
-            $experienceLevel = ($bofIntent === 'want_to_stack') ? 'advanced' : 'beginner';
+        $advancedValues = ['i\'ve_already_tried_peptides', 'tried_peptides', 'advanced', 'want_to_stack'];
+        if (in_array($experienceLevel, $advancedValues, true) || $bofIntent === 'want_to_stack') {
+            $experienceLevel = 'advanced';
+        } else {
+            $experienceLevel = 'beginner';
         }
 
         // Path 3 same-category: exclude the peptide they're switching from
@@ -418,6 +435,12 @@ class QuizPlayer extends Component
             'navigation_history' => $this->navigationHistory,
         ]);
 
+        // Real-time Klaviyo sync
+        $this->syncAnswerToKlaviyo(
+            $question['klaviyo_property'] ?? null,
+            $this->answers[$questionIndex]['klaviyo_value'] ?? null
+        );
+
         // Check if we should collect email now (legacy setting — new system uses email_capture slides)
         if ($this->shouldCollectEmailNow()) {
             $this->showEmailForm = true;
@@ -504,6 +527,12 @@ class QuizPlayer extends Component
             'navigation_history' => $this->navigationHistory,
         ]);
 
+        // Real-time Klaviyo sync
+        $this->syncAnswerToKlaviyo(
+            $question['klaviyo_property'] ?? null,
+            $this->answers[$questionIndex]['klaviyo_value'] ?? null
+        );
+
         $this->multiSelections = [];
         $this->nextStep();
     }
@@ -534,6 +563,12 @@ class QuizPlayer extends Component
             'questions_answered' => count($this->answers),
             'navigation_history' => $this->navigationHistory,
         ]);
+
+        // Real-time Klaviyo sync
+        $this->syncAnswerToKlaviyo(
+            $question['klaviyo_property'] ?? null,
+            $this->textAnswer ?: null
+        );
 
         $this->textAnswer = '';
         $this->nextStep();
@@ -622,16 +657,45 @@ class QuizPlayer extends Component
             ]);
         }
 
+        // Real-time Klaviyo sync
+        $this->syncAnswerToKlaviyo('selected_peptide', $peptideName);
+
         $this->nextStep();
     }
 
     /**
      * Advance from non-question slides (intermission, loading, reveals, bridge).
      * Called by "Next" buttons and auto-advance timers.
+     * Also captures the recommended peptide when leaving a peptide_reveal slide.
      */
     public function advanceSlide(): void
     {
         $question = $this->questions[$this->currentStep] ?? null;
+
+        // Capture recommended peptide when advancing past a peptide_reveal slide
+        if ($question && ($question['slide_type'] ?? '') === QuizQuestion::SLIDE_PEPTIDE_REVEAL) {
+            $entry = $this->resultsBankEntry;
+            if ($entry) {
+                $this->answers[$this->currentStep] = [
+                    'question_id' => $question['id'] ?? null,
+                    'question_text' => $question['question_text'] ?? 'Peptide Reveal',
+                    'klaviyo_property' => 'selected_peptide',
+                    'klaviyo_value' => $entry->peptide_name,
+                    'text_value' => $entry->peptide_name,
+                ];
+
+                if ($this->response) {
+                    $this->response->update([
+                        'answers' => $this->answers,
+                        'questions_answered' => count($this->answers),
+                    ]);
+                }
+
+                // Real-time Klaviyo sync
+                $this->syncAnswerToKlaviyo('selected_peptide', $entry->peptide_name);
+            }
+        }
+
         $skipTo = $question['skip_to_question'] ?? null;
         $this->nextStep($skipTo ? (string) $skipTo : null);
     }
@@ -866,6 +930,15 @@ class QuizPlayer extends Component
             }
         }
 
+        // Add recommended peptide from ResultsBank (for peptide_reveal paths)
+        $resultsBankEntry = $this->resultsBankEntry;
+        if ($resultsBankEntry) {
+            $properties['recommended_peptide'] = $resultsBankEntry->peptide_name;
+            if ($resultsBankEntry->stackProduct) {
+                $properties['recommended_peptide_slug'] = $resultsBankEntry->stackProduct->slug;
+            }
+        }
+
         // Add collected tags
         $tags = $this->collectAllTags();
         if (!empty($tags)) {
@@ -906,6 +979,7 @@ class QuizPlayer extends Component
     /**
      * Fire "Started Quiz" and "Email Captured" events to Klaviyo
      * once a subscriber is linked (after email submission).
+     * Also subscribes to list and pushes all answers collected so far.
      */
     private function trackEmailEvents(\App\Models\Subscriber $subscriber): void
     {
@@ -919,10 +993,52 @@ class QuizPlayer extends Component
             // Track email captured
             $this->response->load('quiz');
             $klaviyo->trackEmailCaptured($subscriber, $this->response);
+
+            // Push all answers collected so far as profile properties
+            $properties = $this->buildKlaviyoProperties();
+            if (!empty($properties)) {
+                $klaviyo->updateProfileProperties($subscriber, $properties);
+            }
         } catch (\Exception $e) {
             logger()->warning('Klaviyo email event tracking failed', [
                 'error' => $e->getMessage(),
                 'subscriber_id' => $subscriber->id,
+            ]);
+        }
+    }
+
+    /**
+     * Push a single answer property to Klaviyo in real-time.
+     * Only fires if subscriber is already linked (post-email capture).
+     */
+    private function syncAnswerToKlaviyo(?string $property, ?string $value): void
+    {
+        if (!$property || !$value) return;
+
+        // Refresh subscriber_id from DB in case Klaviyo popup linked it mid-quiz
+        if (!$this->response?->subscriber_id) {
+            $freshSubId = \Illuminate\Support\Facades\DB::table('quiz_responses')
+                ->where('id', $this->response->id)
+                ->value('subscriber_id');
+            if ($freshSubId) {
+                $this->response->subscriber_id = $freshSubId;
+            } else {
+                return;
+            }
+        }
+
+        try {
+            $klaviyo = app(KlaviyoService::class);
+            if (!$klaviyo->isEnabled()) return;
+
+            $subscriber = \App\Models\Subscriber::find($this->response->subscriber_id);
+            if (!$subscriber) return;
+
+            $klaviyo->updateProfileProperties($subscriber, [$property => $value]);
+        } catch (\Exception $e) {
+            logger()->warning('Klaviyo real-time answer sync failed', [
+                'property' => $property,
+                'error' => $e->getMessage(),
             ]);
         }
     }

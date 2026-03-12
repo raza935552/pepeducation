@@ -68,6 +68,7 @@
             $kPublicKey = ($settings['integrations'] ?? collect())->firstWhere('key', 'klaviyo_public_key');
             $kPrivateKey = ($settings['integrations'] ?? collect())->firstWhere('key', 'klaviyo_private_key');
             $kListId = ($settings['integrations'] ?? collect())->firstWhere('key', 'klaviyo_default_list_id');
+            $kPopupScript = ($settings['integrations'] ?? collect())->firstWhere('key', 'klaviyo_popup_script');
         @endphp
         <div class="card p-6 border-l-4 border-purple-400" x-data="klaviyoTest()">
             <h3 class="text-lg font-semibold mb-1 flex items-center gap-2">
@@ -129,6 +130,17 @@
                         <input type="hidden" name="settings[803][key]" value="klaviyo_default_list_id">
                         <p class="text-xs text-gray-500 mt-1">Quiz subscribers are added to this list. Find it in Klaviyo &rarr; Audience &rarr; Lists &amp; Segments.</p>
                     </div>
+                </div>
+
+                {{-- Klaviyo Popup / Onsite JS Script --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Klaviyo Popup Script</label>
+                    <textarea name="settings[804][value]" rows="4"
+                        placeholder='<script async type="text/javascript" src="https://static.klaviyo.com/onsite/js/YOUR_ID/klaviyo.js?company_id=YOUR_ID"></script>'
+                        class="w-full rounded-lg border-gray-300 focus:border-purple-500 focus:ring-purple-500 font-mono text-xs">{{ $kPopupScript->value ?? '' }}</textarea>
+                    <input type="hidden" name="settings[804][group]" value="integrations">
+                    <input type="hidden" name="settings[804][key]" value="klaviyo_popup_script">
+                    <p class="text-xs text-gray-500 mt-1">Paste the full Klaviyo onsite JS snippet here. This loads popups and enables email capture tracking on all public pages.</p>
                 </div>
 
                 {{-- Test Connection --}}

@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Subscriber;
-use App\Jobs\SyncSubscriberToKlaviyo;
 use App\Services\Klaviyo\KlaviyoService;
 
 class SubscriberService
@@ -33,7 +32,7 @@ class SubscriberService
             $subscriber = $this->createNew($email, $data);
         }
 
-        // Sync to Klaviyo (handles dedup on their side too)
+        // Sync to Klaviyo synchronously
         $this->syncToKlaviyo($subscriber, $data['source'] ?? 'unknown');
 
         return $subscriber;
@@ -98,7 +97,7 @@ class SubscriberService
     }
 
     /**
-     * Dispatch async Klaviyo sync job
+     * Sync subscriber to Klaviyo: create/update profile, subscribe to list, track event.
      */
     protected function syncToKlaviyo(Subscriber $subscriber, string $source): void
     {
@@ -106,7 +105,16 @@ class SubscriberService
             return;
         }
 
-        SyncSubscriberToKlaviyo::dispatch($subscriber, $source);
+        try {
+            $this->klaviyo->syncProfile($subscriber);
+            $this->klaviyo->subscribeToList($subscriber);
+            $this->klaviyo->trackSubscribed($subscriber, $source);
+        } catch (\Exception $e) {
+            logger()->warning('Klaviyo sync failed', [
+                'subscriber_id' => $subscriber->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**

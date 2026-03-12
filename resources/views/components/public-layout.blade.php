@@ -42,6 +42,10 @@
         <script>window.__ppConsentRequired = true;</script>
     @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- Klaviyo Onsite JS (popups, forms, tracking) --}}
+    {!! \App\Models\Setting::getValue('integrations', 'klaviyo_popup_script', '') !!}
+
     @livewireStyles
     @stack('head')
 </head>
@@ -70,14 +74,77 @@
     {{-- Edit Suggestion Modal --}}
     @livewire('edit-suggestion-modal')
 
-    {{-- Email Capture Popup --}}
-    @livewire('email-capture-popup')
-
     {{-- Dynamic Popup Manager --}}
     @livewire('popup-manager')
 
     @livewireScripts
     @stack('scripts')
+
+    {{-- Sync Klaviyo popup email submissions to our Subscriber system --}}
+    <script>
+        (function() {
+            // Identify user from pp_email cookie (enables abandonment flows)
+            var ppEmail = (function(n) {
+                var v = document.cookie.match('(^|;)\\s*' + n + '\\s*=\\s*([^;]+)');
+                return v ? decodeURIComponent(v.pop()) : null;
+            })('pp_email');
+            if (ppEmail && window.klaviyo) {
+                klaviyo.identify({ $email: ppEmail });
+            }
+
+            var synced = {};
+            function syncKlaviyoEmail(email) {
+                if (!email || synced[email]) return;
+                synced[email] = true;
+                fetch('{{ route("subscriber.sync") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                    },
+                    body: JSON.stringify({ email: email, source: 'klaviyo_popup' })
+                }).catch(function() {});
+            }
+
+            // Listen for Klaviyo form submissions
+            function initKlaviyoListener() {
+                if (window.klaviyo && typeof window.klaviyo.isIdentified === 'function') {
+                    window.klaviyo.isIdentified().then(function(identified) {
+                        if (identified) {
+                            window.klaviyo.getEmail().then(function(email) {
+                                if (email) syncKlaviyoEmail(email);
+                            });
+                        }
+                    });
+                }
+            }
+
+            // Poll for Klaviyo identification changes (catches popup submissions)
+            var checkInterval = setInterval(function() {
+                if (!window.klaviyo || typeof window.klaviyo.isIdentified !== 'function') return;
+                window.klaviyo.isIdentified().then(function(identified) {
+                    if (identified) {
+                        window.klaviyo.getEmail().then(function(email) {
+                            if (email) {
+                                syncKlaviyoEmail(email);
+                                clearInterval(checkInterval);
+                            }
+                        });
+                    }
+                });
+            }, 2000);
+
+            // Stop polling after 5 minutes
+            setTimeout(function() { clearInterval(checkInterval); }, 300000);
+
+            // Also check on page load
+            if (document.readyState === 'complete') {
+                initKlaviyoListener();
+            } else {
+                window.addEventListener('load', initKlaviyoListener);
+            }
+        })();
+    </script>
 
     @if(\App\Models\Setting::getValue('tracking', 'cookie_consent_enabled', false))
         @include('partials.cookie-consent')

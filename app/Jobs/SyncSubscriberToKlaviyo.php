@@ -44,6 +44,9 @@ class SyncSubscriberToKlaviyo implements ShouldQueue
             return;
         }
 
+        // Subscribe to list with email marketing consent
+        $klaviyo->subscribeToList($this->subscriber);
+
         $klaviyo->trackSubscribed($this->subscriber, $this->source);
     }
 }
