@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Api\TrackingController;
 use App\Http\Controllers\Api\JourneyController;
-use App\Http\Controllers\Api\ConversionController;
 use Illuminate\Support\Facades\Route;
 
 // Tracking API
@@ -13,6 +12,3 @@ Route::middleware([\App\Http\Middleware\ValidateTrackingOrigin::class])->group(f
 
 // Journey API (for shop integration)
 Route::get('/journey/{sessionId}', [JourneyController::class, 'show']);
-
-// Conversion Webhook
-Route::post('/conversions', [ConversionController::class, 'store']);
