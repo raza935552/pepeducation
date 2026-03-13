@@ -69,9 +69,19 @@ class QuizController extends Controller
             'updated_at' => now(),
         ]);
 
-        // Fire Klaviyo "Quiz Abandoned" event if subscriber exists
+        // Skip Klaviyo event if user already completed this quiz (prevents false abandons
+        // from empty responses created on page refresh after completion)
+        $alreadyCompleted = QuizResponse::where('quiz_id', $response->quiz_id)
+            ->where('session_id', $response->session_id)
+            ->where('status', 'completed')
+            ->exists();
+
+        // Also skip if zero answers (user never engaged with the quiz)
+        $hasAnswers = !empty($response->answers);
+
+        // Fire Klaviyo "Quiz Abandoned" event if subscriber exists and not already completed
         $subscriber = $response->subscriber_id ? ($response->subscriber ?? Subscriber::find($response->subscriber_id)) : null;
-        if ($subscriber && $klaviyo->isEnabled()) {
+        if ($subscriber && $klaviyo->isEnabled() && !$alreadyCompleted && $hasAnswers) {
             try {
                 $klaviyo->trackQuizAbandoned($subscriber, $response);
             } catch (\Exception $e) {
