@@ -29,10 +29,20 @@
             }
         }
 
-        // Split stores by category
+        // Split stores by category, sorted by price ascending
         $allInStock = $stackProduct ? $stackProduct->stores->where('pivot.is_in_stock', true) : collect();
-        $telehealthStores = $allInStock->where('category', 'telehealth');
-        $researchStores = $allInStock->where('category', 'research_grade');
+        $telehealthStores = $allInStock->where('category', 'telehealth')->sortBy('pivot.price')->values();
+
+        // Research: BioLinx first, then others sorted by price (only if priced higher)
+        $researchRaw = $allInStock->where('category', 'research_grade');
+        $biolinx = $researchRaw->first(fn ($s) => $s->id === 15); // BiolinxLabs store ID
+        $biolinxPrice = $biolinx?->pivot?->price;
+        $others = $researchRaw->filter(fn ($s) => $s->id !== 15)
+            ->when($biolinxPrice, fn ($c) => $c->filter(fn ($s) => (float) $s->pivot->price >= (float) $biolinxPrice))
+            ->sortBy('pivot.price');
+        $researchStores = $biolinx
+            ? collect([$biolinx])->concat($others)->values()
+            : $others->values();
     @endphp
 
     @if($stackProduct)
@@ -135,7 +145,7 @@
     {{-- Navigation (back only — vendor reveal is the final slide) --}}
     <div class="flex items-center mt-6">
         @if((($quiz->settings ?? [])['allow_back'] ?? true) && $currentStep > 0)
-            <button wire:click="previousStep" class="btn bg-gray-200 text-gray-700 hover:bg-gray-300">
+            <button wire:click="previousStep" wire:loading.attr="disabled" wire:loading.class="opacity-50 pointer-events-none" class="btn bg-gray-200 text-gray-700 hover:bg-gray-300">
                 <svg aria-hidden="true" class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>

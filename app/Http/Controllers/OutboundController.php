@@ -18,13 +18,25 @@ class OutboundController extends Controller
         $tracking = new TrackingManager($request);
         $trackingData = $tracking->getCrossDomainData();
 
-        // Add subscriber email if available
+        // Add subscriber email if available (session link or cookie fallback)
         $session = $tracking->getSession();
         if ($session->subscriber) {
             $trackingData['email'] = $session->subscriber->email;
+        } elseif ($email = $request->cookie('pp_email')) {
+            $trackingData['email'] = $email;
         }
 
-        $finalUrl = $link->buildFinalUrl($trackingData);
+        // Allow per-product destination override (must match outbound link domain)
+        $destinationOverride = null;
+        if ($dest = $request->query('dest')) {
+            $linkDomain = parse_url($link->destination_url, PHP_URL_HOST);
+            $destDomain = parse_url($dest, PHP_URL_HOST);
+            if ($linkDomain && $destDomain && $destDomain === $linkDomain) {
+                $destinationOverride = $dest;
+            }
+        }
+
+        $finalUrl = $link->buildFinalUrl($trackingData, $destinationOverride);
 
         // Use TrackingManager for proper recording + Klaviyo sync
         $tracking->recordOutboundClick($link, $finalUrl, $trackingData);

@@ -163,7 +163,7 @@
                     {{ $this->currentSlide['cta_text'] }}
                 </a>
             @else
-                <button wire:click="advanceSlide" class="btn btn-primary text-lg px-8 py-3">
+                <button wire:click="advanceSlide" wire:loading.attr="disabled" wire:loading.class="opacity-50 pointer-events-none" class="btn btn-primary text-lg px-8 py-3">
                     {{ $this->currentSlide['cta_text'] }}
                 </button>
             @endif
@@ -173,7 +173,7 @@
     {{-- Navigation --}}
     <div class="flex items-center justify-between mt-6">
         @if((($quiz->settings ?? [])['allow_back'] ?? true) && $currentStep > 0)
-            <button wire:click="previousStep" class="btn bg-gray-200 text-gray-700 hover:bg-gray-300">
+            <button wire:click="previousStep" wire:loading.attr="disabled" wire:loading.class="opacity-50 pointer-events-none" class="btn bg-gray-200 text-gray-700 hover:bg-gray-300">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
@@ -183,7 +183,7 @@
             <div></div>
         @endif
 
-        <button wire:click="advanceSlide" class="text-sm text-gray-400 hover:text-gray-600 underline">
+        <button wire:click="advanceSlide" wire:loading.attr="disabled" wire:loading.class="opacity-50 pointer-events-none" class="text-sm text-gray-400 hover:text-gray-600 underline">
             Skip
         </button>
     </div>

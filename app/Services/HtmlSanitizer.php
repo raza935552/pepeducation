@@ -24,7 +24,8 @@ class HtmlSanitizer
             'ul[id|class|style]', 'ol[id|class|style]', 'li[id|class|style]',
             'blockquote[id|style]', 'pre[id|style]', 'code[id]',
             'table[id|class|style]', 'thead[id|class]', 'tbody[id|class]', 'tfoot[id|class]', 'tr[id|class|style]', 'th[id|class|colspan|rowspan|style]', 'td[id|class|colspan|rowspan|style]',
-            'div[class|id|style]', 'span[id|class|style]', 'section[class|id|style]',
+            'div[class|id|style]', 'span[id|class|style]', 'section[class|id|style]', 'button[id|class|style|type]',
+            'nav[id|class|style]', 'header[id|class|style]', 'footer[id|class|style]', 'main[id|class|style]', 'article[id|class|style]', 'aside[id|class|style]',
             'figure[id|style]', 'figcaption[id|style]', 'picture[id]', 'source[id|srcset|media|type]',
             'video[id|src|controls|autoplay|muted|loop|poster|width|height|class|style]',
             'audio[id|src|controls|class|style]',
@@ -73,7 +74,7 @@ class HtmlSanitizer
 
         // Register HTML5 elements not in HTMLPurifier's default definition
         $config->set('HTML.DefinitionID', 'pepprofesor-html5');
-        $config->set('HTML.DefinitionRev', 5);
+        $config->set('HTML.DefinitionRev', 6);
         if ($def = $config->maybeGetRawHTMLDefinition()) {
             // HTML5 inline elements
             $def->addElement('mark', 'Inline', 'Inline', 'Common');
@@ -82,6 +83,15 @@ class HtmlSanitizer
             $def->addElement('figure', 'Block', 'Optional: (figcaption, Flow) | (Flow, figcaption) | Flow', 'Common');
             $def->addElement('figcaption', 'Inline', 'Flow', 'Common');
             $def->addElement('section', 'Block', 'Flow', 'Common');
+            $def->addElement('nav', 'Block', 'Flow', 'Common');
+            $def->addElement('header', 'Block', 'Flow', 'Common');
+            $def->addElement('footer', 'Block', 'Flow', 'Common');
+            $def->addElement('main', 'Block', 'Flow', 'Common');
+            $def->addElement('article', 'Block', 'Flow', 'Common');
+            $def->addElement('aside', 'Block', 'Flow', 'Common');
+            $def->addElement('button', 'Inline', 'Inline', 'Common', [
+                'type' => 'Enum#button,submit,reset',
+            ]);
 
             // HTML5 media elements
             $def->addElement('picture', 'Block', 'Optional: (source, Flow) | Flow', 'Common');

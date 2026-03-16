@@ -83,6 +83,8 @@
                 {{-- Single choice: select and advance immediately --}}
                 <button
                     wire:click="selectAnswer({{ $currentStep }}, '{{ addslashes($optionKey) }}')"
+                    wire:loading.attr="disabled"
+                    wire:loading.class="opacity-50 pointer-events-none"
                     @if($showSearch) x-show="!search || '{{ strtolower(addslashes($optionLabel)) }}'.includes(search.toLowerCase())" @endif
                     class="w-full text-left p-4 rounded-lg border-2 transition-all
                         {{ isset($answers[$currentStep]) && ($answers[$currentStep]['option_id'] ?? '') === $optionKey
@@ -132,7 +134,7 @@
     <!-- Back Button -->
     @if((($quiz->settings ?? [])['allow_back'] ?? true) && $currentStep > 0)
         <div class="flex justify-start mt-8">
-            <button wire:click="previousStep" class="btn bg-gray-200 text-gray-700 hover:bg-gray-300">
+            <button wire:click="previousStep" wire:loading.attr="disabled" wire:loading.class="opacity-50 pointer-events-none" class="btn bg-gray-200 text-gray-700 hover:bg-gray-300">
                 <svg aria-hidden="true" class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>

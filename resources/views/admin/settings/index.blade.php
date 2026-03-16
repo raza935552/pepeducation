@@ -179,32 +179,6 @@
             </div>
         </div>
 
-        <!-- Fast Peptix Integration -->
-        <div class="card p-6">
-            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-                <svg aria-hidden="true" class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
-                </svg>
-                Fast Peptix Integration
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                @foreach($settings['integrations'] ?? [] as $setting)
-                    @if(str_starts_with($setting->key, 'fastpeptix'))
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ $setting->description }}</label>
-                            <input type="{{ $setting->type === 'encrypted' ? 'password' : 'text' }}"
-                                name="settings[{{ 100 + $loop->index }}][value]"
-                                value="{{ $setting->type === 'encrypted' ? '' : $setting->value }}"
-                                placeholder="{{ $setting->type === 'encrypted' ? '••••••••' : '' }}"
-                                class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
-                            <input type="hidden" name="settings[{{ 100 + $loop->index }}][group]" value="{{ $setting->group }}">
-                            <input type="hidden" name="settings[{{ 100 + $loop->index }}][key]" value="{{ $setting->key }}">
-                        </div>
-                    @endif
-                @endforeach
-            </div>
-        </div>
-
         <!-- Journey API (Shop Integration) -->
         <div class="card p-6">
             <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">

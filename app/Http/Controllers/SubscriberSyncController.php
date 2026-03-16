@@ -26,9 +26,17 @@ class SubscriberSyncController extends Controller
 
         $service->setEmailCookie($request->email);
 
+        // Link subscriber to the current session (enables cross-domain email passing)
+        $sessionId = $request->cookie('pp_session_id');
+        if ($sessionId) {
+            \App\Models\UserSession::where('session_id', $sessionId)
+                ->whereNull('subscriber_id')
+                ->update(['subscriber_id' => $subscriber->id]);
+        }
+
         // Link subscriber to any active quiz response in this session
         $sessionIds = array_filter([
-            $request->cookie('pp_session_id'),
+            $sessionId,
             session()->getId(),
         ]);
 
@@ -46,7 +54,7 @@ class SubscriberSyncController extends Controller
         Log::info('Subscriber sync completed', [
             'subscriber_id' => $subscriber->id,
             'email' => $subscriber->email,
-            'session_ids_checked' => $sessionIds,
+            'session_id' => $sessionId,
             'quiz_responses_linked' => $linked,
         ]);
 

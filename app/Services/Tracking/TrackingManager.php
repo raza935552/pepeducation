@@ -316,7 +316,7 @@ class TrackingManager
         ], $subscriber);
     }
 
-    // Get cross-domain data for Fast Peptix
+    // Get cross-domain data for vendor
     public function getCrossDomainData(): array
     {
         $session = $this->getSession();

@@ -12,7 +12,7 @@ class OutboundClick extends Model
     protected $fillable = [
         'outbound_link_id', 'session_id', 'subscriber_id', 'user_id',
         'source_page', 'source_component', 'final_url', 'passed_data',
-        // Attribution data sent to Fast Peptix
+        // Attribution data sent to vendor
         'pp_session', 'pp_email_hash', 'pp_segment', 'pp_engagement_score',
         'pp_health_goal', 'pp_experience_level', 'pp_recommended_peptide',
         'pp_quiz_completed',

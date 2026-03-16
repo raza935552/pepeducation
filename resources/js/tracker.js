@@ -160,7 +160,6 @@ class PPTracker {
             const ctaPatterns = [
                 '/quiz/',           // Quiz pages
                 '/go/',             // Outbound tracked links
-                'fastpeptix.com',   // Shop links
                 '#subscribe',       // Subscribe anchors
                 '#signup',          // Signup anchors
             ];
@@ -198,7 +197,6 @@ class PPTracker {
         }
         if (destinationUrl?.includes('/quiz/')) return 'quiz';
         if (destinationUrl?.includes('/go/')) return 'outbound';
-        if (destinationUrl?.includes('fastpeptix')) return 'shop';
         if (destinationUrl?.includes('#subscribe')) return 'subscribe';
         return 'general';
     }

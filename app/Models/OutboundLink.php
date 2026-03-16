@@ -10,7 +10,7 @@ class OutboundLink extends Model
     protected $fillable = [
         'name', 'slug', 'destination_url', 'peptide_id',
         'utm_source', 'utm_medium', 'utm_campaign', 'utm_content',
-        'append_segment', 'append_session', 'append_email', 'append_quiz_data',
+        'append_segment', 'append_session', 'append_email', 'append_raw_email', 'append_quiz_data',
         'track_klaviyo', 'click_count', 'is_active',
     ];
 
@@ -18,6 +18,7 @@ class OutboundLink extends Model
         'append_segment' => 'boolean',
         'append_session' => 'boolean',
         'append_email' => 'boolean',
+        'append_raw_email' => 'boolean',
         'append_quiz_data' => 'boolean',
         'track_klaviyo' => 'boolean',
         'is_active' => 'boolean',
@@ -41,9 +42,9 @@ class OutboundLink extends Model
         return route('outbound.track', $this->slug);
     }
 
-    public function buildFinalUrl(array $trackingData = []): string
+    public function buildFinalUrl(array $trackingData = [], ?string $destinationOverride = null): string
     {
-        $url = $this->destination_url;
+        $url = $destinationOverride ?? $this->destination_url;
         $params = [];
 
         // UTM params
@@ -63,6 +64,9 @@ class OutboundLink extends Model
             $params['pp_email_hash'] = hash('sha256', $trackingData['email']);
         } elseif (isset($trackingData['pp_email_hash'])) {
             $params['pp_email_hash'] = $trackingData['pp_email_hash'];
+        }
+        if ($this->append_raw_email && isset($trackingData['email'])) {
+            $params['pp_email'] = $trackingData['email'];
         }
 
         // Quiz data fields

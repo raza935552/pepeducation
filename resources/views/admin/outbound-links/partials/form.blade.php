@@ -22,7 +22,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Destination URL</label>
                         <input type="url" name="destination_url" value="{{ old('destination_url', $link?->destination_url) }}" required
-                            placeholder="https://fastpeptix.com/product/..."
+                            placeholder="https://example.com/product/..."
                             class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
                     </div>
                                     </div>
@@ -56,7 +56,7 @@
 
             <div class="card p-6">
                 <h3 class="text-lg font-semibold mb-4">Cross-Domain Tracking Data</h3>
-                <p class="text-sm text-gray-500 mb-4">Select what data to pass to Fast Peptix for attribution.</p>
+                <p class="text-sm text-gray-500 mb-4">Select what data to pass to the vendor for attribution.</p>
                 <div class="grid grid-cols-2 gap-4">
                     <label class="flex items-center gap-2">
                         <input type="checkbox" name="append_session" value="1" {{ ($link?->append_session ?? true) ? 'checked' : '' }}
@@ -72,6 +72,11 @@
                         <input type="checkbox" name="append_email" value="1" {{ ($link?->append_email ?? true) ? 'checked' : '' }}
                             class="rounded border-gray-300 text-brand-gold focus:ring-brand-gold">
                         <span class="text-sm">Email Hash (pp_email_hash)</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" name="append_raw_email" value="1" {{ ($link?->append_raw_email ?? false) ? 'checked' : '' }}
+                            class="rounded border-gray-300 text-brand-gold focus:ring-brand-gold">
+                        <span class="text-sm">Raw Email (pp_email) — own stores only</span>
                     </label>
                     <label class="flex items-center gap-2">
                         <input type="checkbox" name="append_quiz_data" value="1" {{ ($link?->append_quiz_data ?? true) ? 'checked' : '' }}

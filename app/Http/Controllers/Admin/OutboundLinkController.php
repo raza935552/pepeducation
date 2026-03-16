@@ -37,6 +37,7 @@ class OutboundLinkController extends Controller
             'append_segment' => $validated['append_segment'] ?? true,
             'append_session' => $validated['append_session'] ?? true,
             'append_email' => $validated['append_email'] ?? true,
+            'append_raw_email' => $validated['append_raw_email'] ?? false,
             'append_quiz_data' => $validated['append_quiz_data'] ?? true,
             'is_active' => $validated['is_active'] ?? true,
         ]);
@@ -67,6 +68,7 @@ class OutboundLinkController extends Controller
             'append_segment' => $validated['append_segment'] ?? false,
             'append_session' => $validated['append_session'] ?? false,
             'append_email' => $validated['append_email'] ?? false,
+            'append_raw_email' => $validated['append_raw_email'] ?? false,
             'append_quiz_data' => $validated['append_quiz_data'] ?? false,
             'is_active' => $validated['is_active'] ?? false,
         ]);
@@ -93,6 +95,7 @@ class OutboundLinkController extends Controller
             'append_segment' => 'boolean',
             'append_session' => 'boolean',
             'append_email' => 'boolean',
+            'append_raw_email' => 'boolean',
             'append_quiz_data' => 'boolean',
             'is_active' => 'boolean',
         ]);

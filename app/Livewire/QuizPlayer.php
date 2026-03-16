@@ -625,6 +625,14 @@ class QuizPlayer extends Component
 
     public function skipEmail(): void
     {
+        // If Klaviyo popup already captured email, use it instead of truly skipping
+        $ppEmail = request()->cookie('pp_email');
+        if ($ppEmail && filter_var($ppEmail, FILTER_VALIDATE_EMAIL)) {
+            $this->email = $ppEmail;
+            $this->submitEmail();
+            return;
+        }
+
         $this->showEmailForm = false;
         $this->nextStep();
     }
@@ -903,6 +911,21 @@ class QuizPlayer extends Component
         // Store segment in session/cookie for targeting
         session(['pp_segment' => $segment]);
         cookie()->queue('pp_segment', $segment, 60 * 24 * 30);
+
+        // Last-chance subscriber link from Klaviyo popup cookie
+        if (!$this->response->subscriber_id) {
+            $ppEmail = request()->cookie('pp_email');
+            if ($ppEmail && filter_var($ppEmail, FILTER_VALIDATE_EMAIL)) {
+                $service = app(SubscriberService::class);
+                $subscriber = $service->findByEmail($ppEmail);
+                if ($subscriber) {
+                    $this->response->update([
+                        'email' => $ppEmail,
+                        'subscriber_id' => $subscriber->id,
+                    ]);
+                }
+            }
+        }
 
         // Sync to Klaviyo outside transaction (external API call)
         if ($this->response->subscriber_id) {

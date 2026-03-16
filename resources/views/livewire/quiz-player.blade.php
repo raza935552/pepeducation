@@ -200,6 +200,15 @@
 
 @script
 <script>
+    // Scroll quiz container into view after each slide transition
+    Livewire.hook('morph.updated', ({ el }) => {
+        if (el.classList && el.classList.contains('quiz-player')) {
+            requestAnimationFrame(() => {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        }
+    });
+
     // Track quiz start
     $wire.on('quiz-started', ({ quizId }) => {
         console.log('Quiz started:', quizId);

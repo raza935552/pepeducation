@@ -14,7 +14,11 @@
                 if ($store->pivot->outbound_link_id) {
                     $outboundLink = \App\Models\OutboundLink::find($store->pivot->outbound_link_id);
                     if ($outboundLink) {
-                        $visitUrl = $outboundLink->getTrackingUrl();
+                        $trackingUrl = $outboundLink->getTrackingUrl();
+                        // Pass product-specific URL so redirect lands on correct product page
+                        $visitUrl = $store->pivot->url
+                            ? $trackingUrl . '?' . http_build_query(['dest' => $store->pivot->url])
+                            : $trackingUrl;
                     }
                 } elseif ($store->pivot->url) {
                     $visitUrl = $store->pivot->url;

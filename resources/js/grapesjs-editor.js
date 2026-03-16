@@ -712,10 +712,13 @@ function cleanExportedCss(css) {
     return css.trim();
 }
 
-// Helper to clean HTML - removes editor-only data attributes
+// Helper to clean HTML - removes editor-only data attributes and body wrapper
 function cleanExportedHtml(html) {
     html = html.replace(/\s*data-gjs-type="[^"]*"/g, '');
     html = html.replace(/\s*data-highlightable="[^"]*"/g, '');
+    // Strip <body> wrapper that GrapeJS adds — content lives inside a layout <body> already
+    html = html.replace(/^<body[^>]*>/, '');
+    html = html.replace(/<\/body>\s*$/, '');
     // Keep GrapesJS-generated IDs — CSS rules reference them via selectors
     return html;
 }

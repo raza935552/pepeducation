@@ -48,12 +48,12 @@
             Compare Vendors on Stack Builder
         </a>
     @else
-        <button wire:click="advanceSlide" class="btn btn-primary text-lg px-8 py-3">Continue</button>
+        <button wire:click="advanceSlide" wire:loading.attr="disabled" wire:loading.class="opacity-50 pointer-events-none" class="btn btn-primary text-lg px-8 py-3">Continue</button>
     @endif
 
     {{-- Finish Quiz button — always present to complete the quiz --}}
     <div class="mt-4">
-        <button wire:click="advanceSlide" class="text-sm font-medium text-brand-gold hover:text-brand-gold/80 underline underline-offset-2">
+        <button wire:click="advanceSlide" wire:loading.attr="disabled" wire:loading.class="opacity-50 pointer-events-none" class="text-sm font-medium text-brand-gold hover:text-brand-gold/80 underline underline-offset-2">
             Finish Quiz &amp; See Results
         </button>
     </div>
@@ -61,7 +61,7 @@
     {{-- Back button --}}
     @if((($quiz->settings ?? [])['allow_back'] ?? true) && $currentStep > 0)
         <div class="flex justify-center mt-4">
-            <button wire:click="previousStep" class="text-sm text-gray-500 hover:text-gray-700">
+            <button wire:click="previousStep" wire:loading.attr="disabled" wire:loading.class="opacity-50 pointer-events-none" class="text-sm text-gray-500 hover:text-gray-700">
                 <svg aria-hidden="true" class="w-4 h-4 mr-1 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
