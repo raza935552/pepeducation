@@ -128,11 +128,13 @@ class StackProductController extends Controller
         $syncData = [];
         foreach ($storePrices as $storeId => $data) {
             if (empty($data['price'])) continue;
+            $status = $data['availability_status'] ?? 'in_stock';
             $syncData[$storeId] = [
                 'price' => $data['price'],
                 'url' => $data['url'] ?: null,
                 'outbound_link_id' => $data['outbound_link_id'] ?: null,
-                'is_in_stock' => isset($data['is_in_stock']),
+                'is_in_stock' => $status === 'in_stock',
+                'availability_status' => $status,
                 'is_recommended' => isset($data['is_recommended']) ? true : null,
             ];
         }

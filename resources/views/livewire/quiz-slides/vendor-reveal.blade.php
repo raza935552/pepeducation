@@ -29,12 +29,14 @@
             }
         }
 
-        // Split stores by category, sorted by price ascending
-        $allInStock = $stackProduct ? $stackProduct->stores->where('pivot.is_in_stock', true) : collect();
-        $telehealthStores = $allInStock->where('category', 'telehealth')->sortBy('pivot.price')->values();
+        // Split stores by category — include in_stock + sold_out (exclude out_of_stock)
+        $visibleStores = $stackProduct ? $stackProduct->stores->filter(fn ($s) =>
+            $s->pivot->is_in_stock || ($s->pivot->availability_status ?? 'in_stock') === 'sold_out'
+        ) : collect();
+        $telehealthStores = $visibleStores->where('category', 'telehealth')->sortBy('pivot.price')->values();
 
         // Research: BioLinx first, then others sorted by price (only if priced higher)
-        $researchRaw = $allInStock->where('category', 'research_grade');
+        $researchRaw = $visibleStores->where('category', 'research_grade');
         $biolinx = $researchRaw->first(fn ($s) => $s->id === 15); // BiolinxLabs store ID
         $biolinxPrice = $biolinx?->pivot?->price;
         $others = $researchRaw->filter(fn ($s) => $s->id !== 15)
@@ -131,15 +133,21 @@
             <h2 class="text-2xl font-bold mb-4">Vendor Information</h2>
             <p class="text-gray-500 mb-6">No vendor information is available for this recommendation yet.</p>
         </div>
+    @endif
 
-        {{-- Fallback CTA from slide config --}}
-        @if(!empty($this->currentSlide['cta_text']))
-            <div class="text-center mb-6">
-                <a href="{{ $this->currentSlide['cta_url'] ?? '#' }}" class="btn btn-primary inline-block">
+    {{-- CTA from slide config (always rendered regardless of product state) --}}
+    @if(!empty($this->currentSlide['cta_text']))
+        <div class="text-center mb-6">
+            @if(!empty($this->currentSlide['cta_url']))
+                <a href="{{ $this->currentSlide['cta_url'] }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary inline-block">
                     {{ $this->currentSlide['cta_text'] }}
                 </a>
-            </div>
-        @endif
+            @else
+                <button wire:click="advanceSlide" wire:loading.attr="disabled" class="btn btn-primary">
+                    {{ $this->currentSlide['cta_text'] }}
+                </button>
+            @endif
+        </div>
     @endif
 
     @include('livewire.partials.slide-accordion')

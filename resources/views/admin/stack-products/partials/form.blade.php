@@ -166,13 +166,17 @@
                                     class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold text-sm">
                             </div>
                             <div class="mt-3 flex items-center gap-4">
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" name="store_prices[{{ $store->id }}][is_in_stock]" value="1"
-                                        {{ old("store_prices.{$store->id}.is_in_stock", $pivot?->is_in_stock ?? true) ? 'checked' : '' }}
-                                        class="rounded border-gray-300 text-brand-gold focus:ring-brand-gold">
-                                    <span class="text-sm">In Stock</span>
-                                </label>
-                                <label class="flex items-center gap-2">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">Availability</label>
+                                    <select name="store_prices[{{ $store->id }}][availability_status]"
+                                        class="rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold text-sm">
+                                        @php $currentStatus = old("store_prices.{$store->id}.availability_status", $pivot?->availability_status ?? 'in_stock'); @endphp
+                                        <option value="in_stock" {{ $currentStatus === 'in_stock' ? 'selected' : '' }}>In Stock</option>
+                                        <option value="sold_out" {{ $currentStatus === 'sold_out' ? 'selected' : '' }}>Sold Out</option>
+                                        <option value="out_of_stock" {{ $currentStatus === 'out_of_stock' ? 'selected' : '' }}>Unavailable</option>
+                                    </select>
+                                </div>
+                                <label class="flex items-center gap-2 mt-4">
                                     <input type="checkbox" name="store_prices[{{ $store->id }}][is_recommended]" value="1"
                                         {{ old("store_prices.{$store->id}.is_recommended", $pivot?->is_recommended) ? 'checked' : '' }}
                                         class="rounded border-gray-300 text-amber-500 focus:ring-amber-500">
