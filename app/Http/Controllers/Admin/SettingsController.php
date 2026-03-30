@@ -48,27 +48,4 @@ class SettingsController extends Controller
         return back()->with('success', 'Settings updated successfully.');
     }
 
-    public function testKlaviyo()
-    {
-        $client = new \App\Services\Klaviyo\KlaviyoClient();
-
-        if (!$client->isEnabled()) {
-            return response()->json(['success' => false, 'message' => 'Klaviyo is not enabled. Turn on the toggle and save settings first.']);
-        }
-
-        $response = $client->get('/lists/');
-
-        if ($response) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Klaviyo connection successful!',
-                'lists' => collect($response['data'] ?? [])->map(fn($l) => [
-                    'id' => $l['id'],
-                    'name' => $l['attributes']['name'] ?? 'Unknown',
-                ])->toArray(),
-            ]);
-        }
-
-        return response()->json(['success' => false, 'message' => 'Failed to connect to Klaviyo. Check your Private API Key.']);
-    }
 }
