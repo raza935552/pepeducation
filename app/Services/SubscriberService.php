@@ -3,19 +3,19 @@
 namespace App\Services;
 
 use App\Models\Subscriber;
-use App\Services\Klaviyo\KlaviyoService;
+use App\Services\CustomerIo\CustomerIoService;
 
 class SubscriberService
 {
-    protected KlaviyoService $klaviyo;
+    protected CustomerIoService $customerIo;
 
-    public function __construct(KlaviyoService $klaviyo)
+    public function __construct(CustomerIoService $customerIo)
     {
-        $this->klaviyo = $klaviyo;
+        $this->customerIo = $customerIo;
     }
 
     /**
-     * Subscribe an email - handles deduplication locally and in Klaviyo
+     * Subscribe an email - handles deduplication locally and in Customer.io
      */
     public function subscribe(string $email, array $data = []): Subscriber
     {
@@ -32,8 +32,8 @@ class SubscriberService
             $subscriber = $this->createNew($email, $data);
         }
 
-        // Sync to Klaviyo synchronously
-        $this->syncToKlaviyo($subscriber, $data['source'] ?? 'unknown');
+        // Sync to Customer.io synchronously
+        $this->syncToCustomerIo($subscriber, $data['source'] ?? 'unknown');
 
         return $subscriber;
     }
@@ -96,21 +96,17 @@ class SubscriberService
         ]);
     }
 
-    /**
-     * Sync subscriber to Klaviyo: create/update profile, subscribe to list, track event.
-     */
-    protected function syncToKlaviyo(Subscriber $subscriber, string $source): void
+    protected function syncToCustomerIo(Subscriber $subscriber, string $source): void
     {
-        if (!$this->klaviyo->isEnabled()) {
+        if (!$this->customerIo->isEnabled()) {
             return;
         }
 
         try {
-            $this->klaviyo->syncProfile($subscriber);
-            $this->klaviyo->subscribeToList($subscriber);
-            $this->klaviyo->trackSubscribed($subscriber, $source);
+            $this->customerIo->syncSubscriber($subscriber);
+            $this->customerIo->trackSubscribed($subscriber, $source);
         } catch (\Exception $e) {
-            logger()->warning('Klaviyo sync failed', [
+            logger()->warning('Customer.io sync failed', [
                 'subscriber_id' => $subscriber->id,
                 'error' => $e->getMessage(),
             ]);
