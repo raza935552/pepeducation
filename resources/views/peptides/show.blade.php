@@ -47,33 +47,23 @@
     @push('scripts')
     <script>
     (function() {
-        function whenKlaviyoReady(cb) {
-            if (window.klaviyo && typeof window.klaviyo.push === 'function') { cb(); return; }
-            var i = setInterval(function() {
-                if (window.klaviyo && typeof window.klaviyo.push === 'function') { clearInterval(i); cb(); }
-            }, 500);
-            setTimeout(function() { clearInterval(i); }, 10000);
+        function getEmail() {
+            var v = document.cookie.match('(^|;)\\s*pp_email\\s*=\\s*([^;]+)');
+            return v ? decodeURIComponent(v.pop()) : null;
         }
 
-        whenKlaviyoReady(function() {
-            // Identify user if email known
-            var email = getCookie('pp_email');
-            if (email) {
-                klaviyo.identify({ $email: email });
-            }
+        var email = getEmail();
+        if (email && window._cio) {
+            _cio.identify({ id: email, email: email });
+        }
 
-            // Track Viewed Product
-            klaviyo.push(['track', 'Viewed Product', {
+        if (window._cio) {
+            _cio.track('Viewed Product', {
                 ProductName: '{{ addslashes($peptide->name) }}',
                 ProductID: '{{ $peptide->slug }}',
                 Categories: {!! json_encode($peptide->categories->pluck('name')) !!},
                 URL: window.location.href
-            }]);
-        });
-
-        function getCookie(name) {
-            var v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-            return v ? decodeURIComponent(v.pop()) : null;
+            });
         }
     })();
     </script>

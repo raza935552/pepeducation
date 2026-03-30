@@ -42,11 +42,6 @@
         <script>window.__ppConsentRequired = true;</script>
     @endif
 
-    {{-- Klaviyo Onsite JS (embedded popup + identification) --}}
-    @if($klaviyoKey = \App\Models\Setting::getValue('integrations', 'klaviyo_public_key'))
-        <script async type="text/javascript" src="https://static.klaviyo.com/onsite/js/{{ $klaviyoKey }}/klaviyo.js?company_id={{ $klaviyoKey }}"></script>
-    @endif
-
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @livewireStyles
@@ -87,86 +82,8 @@
     @livewireScripts
     @stack('scripts')
 
-    {{-- Sync Klaviyo popup/form email submissions to our Subscriber system --}}
-    <script>
-        (function() {
-            var synced = {};
-            function getCookie(n) {
-                var v = document.cookie.match('(^|;)\\s*' + n + '\\s*=\\s*([^;]+)');
-                return v ? decodeURIComponent(v.pop()) : null;
-            }
-
-            function syncKlaviyoEmail(email) {
-                if (!email || synced[email]) return;
-                synced[email] = true;
-                fetch('{{ route("subscriber.sync") }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
-                    },
-                    body: JSON.stringify({ email: email, source: 'klaviyo_popup' })
-                }).catch(function() {});
-            }
-
-            // Identify user from pp_email cookie (enables Klaviyo abandonment flows)
-            var ppEmail = getCookie('pp_email');
-            if (ppEmail && window.klaviyo) {
-                klaviyo.identify({ $email: ppEmail });
-            }
-
-            // Method 1: Listen for Klaviyo embedded form submissions (most reliable)
-            window.addEventListener('klaviyoForms', function(e) {
-                if (e.detail && e.detail.type === 'submit') {
-                    var metaData = e.detail.metaData;
-                    if (metaData && metaData.$email) {
-                        syncKlaviyoEmail(metaData.$email);
-                    }
-                }
-            });
-
-            // Method 2: Check Klaviyo __kla_id cookie (fallback for all form types)
-            function checkKlaviyoCookie() {
-                try {
-                    var klaId = getCookie('__kla_id');
-                    if (klaId) {
-                        var decoded = JSON.parse(atob(klaId));
-                        if (decoded.$email) syncKlaviyoEmail(decoded.$email);
-                        return true;
-                    }
-                } catch(e) {}
-                return false;
-            }
-
-            // Method 3: Poll Klaviyo JS API + cookie (catches everything)
-            var checkInterval = setInterval(function() {
-                // Try cookie first (works even if JS API is delayed)
-                if (checkKlaviyoCookie()) {
-                    clearInterval(checkInterval);
-                    return;
-                }
-                // Fall back to JS API
-                if (window.klaviyo && typeof window.klaviyo.isIdentified === 'function') {
-                    window.klaviyo.isIdentified().then(function(identified) {
-                        if (identified) {
-                            window.klaviyo.getEmail().then(function(email) {
-                                if (email) {
-                                    syncKlaviyoEmail(email);
-                                    clearInterval(checkInterval);
-                                }
-                            });
-                        }
-                    }).catch(function() {});
-                }
-            }, 2000);
-
-            // Stop polling after 5 minutes
-            setTimeout(function() { clearInterval(checkInterval); }, 300000);
-
-            // Also check immediately on page load
-            checkKlaviyoCookie();
-        })();
-    </script>
+    {{-- Customer.io tracking --}}
+    @include('components.customerio-tracking')
 
     @if(\App\Models\Setting::getValue('tracking', 'cookie_consent_enabled', false))
         @include('partials.cookie-consent')
