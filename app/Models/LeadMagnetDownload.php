@@ -13,14 +13,14 @@ class LeadMagnetDownload extends Model
         'lead_magnet_id', 'session_id', 'subscriber_id', 'user_id',
         'source_page', 'source_popup', 'utm_source', 'utm_campaign',
         'delivery_method', 'email_sent', 'downloaded', 'downloaded_at',
-        'synced_to_klaviyo', 'created_at',
+        'synced_to_marketing', 'created_at',
     ];
 
     protected $casts = [
         'email_sent' => 'boolean',
         'downloaded' => 'boolean',
         'downloaded_at' => 'datetime',
-        'synced_to_klaviyo' => 'boolean',
+        'synced_to_marketing' => 'boolean',
         'created_at' => 'datetime',
     ];
 
@@ -51,9 +51,9 @@ class LeadMagnetDownload extends Model
         return $query->where('downloaded', true);
     }
 
-    public function scopeNeedsSyncToKlaviyo($query)
+    public function scopeNeedsSyncToMarketing($query)
     {
-        return $query->where('synced_to_klaviyo', false);
+        return $query->where('synced_to_marketing', false);
     }
 
     public function scopeFromPopup($query, string $popupSlug)

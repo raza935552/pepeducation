@@ -14,7 +14,7 @@ class LeadMagnet extends Model
         'thumbnail', 'preview_image',
         'segment', 'delivery_method', 'download_button_text',
         'landing_headline', 'landing_description', 'landing_benefits',
-        'klaviyo_flow_id', 'klaviyo_event', 'klaviyo_property_name',
+        'marketing_flow_id', 'marketing_event', 'marketing_property_name',
         'views_count', 'downloads_count',
         'is_active',
     ];

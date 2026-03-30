@@ -17,12 +17,12 @@ class UserEvent extends Model
         'element_x', 'element_y',
         'sequence', 'time_since_session_start', 'time_since_last_event',
         'scroll_depth', 'time_on_page', 'engagement_points',
-        'synced_to_klaviyo', 'synced_at', 'created_at',
+        'synced_to_marketing', 'synced_at', 'created_at',
     ];
 
     protected $casts = [
         'event_data' => 'array',
-        'synced_to_klaviyo' => 'boolean',
+        'synced_to_marketing' => 'boolean',
         'created_at' => 'datetime',
     ];
 
@@ -68,9 +68,9 @@ class UserEvent extends Model
         return $query->whereDate('created_at', today());
     }
 
-    public function scopeNeedsSyncToKlaviyo($query)
+    public function scopeNeedsSyncToMarketing($query)
     {
-        return $query->where('synced_to_klaviyo', false);
+        return $query->where('synced_to_marketing', false);
     }
 
     public function scopeOlderThan($query, int $days)

@@ -13,7 +13,7 @@ class Quiz extends Model
         'title', 'intro_text', 'intro_image',
         'completion_title', 'completion_text',
         'settings', 'design',
-        'klaviyo_list_id', 'klaviyo_start_event', 'klaviyo_complete_event',
+        'marketing_list_id', 'marketing_start_event', 'marketing_complete_event',
         'outcome_page_id', 'redirect_url',
         'starts_count', 'completions_count',
         'is_active',

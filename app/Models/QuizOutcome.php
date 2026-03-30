@@ -18,16 +18,16 @@ class QuizOutcome extends Model
         'result_image',
         'recommended_peptide_id',
         'product_link',
-        'klaviyo_event',
-        'klaviyo_list_id',
-        'klaviyo_properties',
+        'marketing_event',
+        'marketing_list_id',
+        'marketing_properties',
         'priority',
         'is_active',
     ];
 
     protected $casts = [
         'conditions' => 'array',
-        'klaviyo_properties' => 'array',
+        'marketing_properties' => 'array',
         'is_active' => 'boolean',
     ];
 
@@ -95,8 +95,8 @@ class QuizOutcome extends Model
         }
 
         foreach ($answers as $answer) {
-            if (($answer['klaviyo_property'] ?? '') === $targetProperty &&
-                ($answer['klaviyo_value'] ?? '') === $targetValue) {
+            if (($answer['marketing_property'] ?? '') === $targetProperty &&
+                ($answer['marketing_value'] ?? '') === $targetValue) {
                 return true;
             }
         }

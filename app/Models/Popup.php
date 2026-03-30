@@ -13,7 +13,7 @@ class Popup extends Model
         'headline', 'body', 'image', 'button_text',
         'success_message', 'success_redirect_url',
         'form_fields', 'triggers', 'targeting', 'display_rules', 'design',
-        'klaviyo_list_id', 'klaviyo_event', 'lead_magnet_id',
+        'marketing_list_id', 'marketing_event', 'lead_magnet_id',
         'views_count', 'conversions_count', 'dismissals_count', 'impressions_count',
         'is_active', 'starts_at', 'ends_at',
     ];

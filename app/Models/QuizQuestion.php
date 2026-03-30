@@ -30,7 +30,7 @@ class QuizQuestion extends Model
         self::SLIDE_PEPTIDE_SEARCH,
     ];
 
-    // Predefined marketing/Klaviyo segmentation tags for answer options
+    // Predefined marketing segmentation tags for answer options
     public const OPTION_TAGS = [
         // Health Goal Interest
         'interested_weight_loss',
@@ -114,7 +114,7 @@ class QuizQuestion extends Model
     protected $fillable = [
         'quiz_id', 'slide_type', 'question_text', 'question_subtext',
         'question_type', 'order',
-        'options', 'klaviyo_property', 'is_required', 'max_selections',
+        'options', 'marketing_property', 'is_required', 'max_selections',
         'settings', 'show_conditions', 'skip_to_question',
         'content_title', 'content_body', 'content_source',
         'auto_advance_seconds', 'cta_text', 'cta_url',
@@ -170,13 +170,13 @@ class QuizQuestion extends Model
         return ['tof' => 0, 'mof' => 0, 'bof' => 0];
     }
 
-    public function getKlaviyoValue(string $selectedValue): ?string
+    public function getMarketingValue(string $selectedValue): ?string
     {
         if (!$this->options) return $selectedValue;
 
         foreach ($this->options as $option) {
             if (($option['value'] ?? '') === $selectedValue) {
-                return $option['klaviyo_value'] ?? $selectedValue;
+                return $option['marketing_value'] ?? $selectedValue;
             }
         }
 
@@ -218,7 +218,7 @@ class QuizQuestion extends Model
      *   {
      *     "value": "weight_loss",
      *     "label": "Weight Loss",
-     *     "klaviyo_value": "Weight Loss",
+     *     "marketing_value": "Weight Loss",
      *     "score_tof": 3,
      *     "score_mof": 1,
      *     "score_bof": 0,

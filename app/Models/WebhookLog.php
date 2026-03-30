@@ -22,7 +22,7 @@ class WebhookLog extends Model
     ];
 
     // Sources
-    public const SOURCE_KLAVIYO = 'klaviyo';
+    public const SOURCE_CUSTOMERIO = 'customerio';
 
     // Status
     public const STATUS_PENDING = 'pending';

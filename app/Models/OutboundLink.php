@@ -11,7 +11,7 @@ class OutboundLink extends Model
         'name', 'slug', 'destination_url', 'peptide_id',
         'utm_source', 'utm_medium', 'utm_campaign', 'utm_content',
         'append_segment', 'append_session', 'append_email', 'append_raw_email', 'append_quiz_data',
-        'track_klaviyo', 'click_count', 'is_active',
+        'track_marketing', 'click_count', 'is_active',
     ];
 
     protected $casts = [
@@ -20,7 +20,7 @@ class OutboundLink extends Model
         'append_email' => 'boolean',
         'append_raw_email' => 'boolean',
         'append_quiz_data' => 'boolean',
-        'track_klaviyo' => 'boolean',
+        'track_marketing' => 'boolean',
         'is_active' => 'boolean',
     ];
 

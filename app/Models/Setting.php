@@ -93,21 +93,6 @@ class Setting extends Model
     }
 
     // Helper methods for common settings
-    public static function isKlaviyoEnabled(): bool
-    {
-        return (bool) self::getValue('integrations', 'klaviyo_enabled', false);
-    }
-
-    public static function getKlaviyoPublicKey(): ?string
-    {
-        return self::getValue('integrations', 'klaviyo_public_key');
-    }
-
-    public static function getKlaviyoPrivateKey(): ?string
-    {
-        return self::getValue('integrations', 'klaviyo_private_key');
-    }
-
     public static function getEngagementPoints(string $action): int
     {
         return (int) self::getValue('scoring', 'points_' . $action, 0);

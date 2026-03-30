@@ -12,8 +12,8 @@ class Subscriber extends Model
         'subscribed_at', 'unsubscribed_at', 'ip_address', 'user_agent',
         // Segmentation
         'segment', 'quiz_completed', 'quiz_completed_at',
-        // Klaviyo
-        'klaviyo_id', 'klaviyo_synced_at', 'klaviyo_properties', 'needs_klaviyo_sync',
+        // Customer.io
+        'customerio_id', 'customerio_synced_at', 'customerio_properties', 'needs_customerio_sync',
         // First Touch Attribution
         'first_session_id', 'first_utm_source', 'first_utm_medium',
         'first_utm_campaign', 'first_utm_content', 'first_referrer', 'first_landing_page',
@@ -34,9 +34,9 @@ class Subscriber extends Model
         'unsubscribed_at' => 'datetime',
         'quiz_completed' => 'boolean',
         'quiz_completed_at' => 'datetime',
-        'klaviyo_synced_at' => 'datetime',
-        'klaviyo_properties' => 'array',
-        'needs_klaviyo_sync' => 'boolean',
+        'customerio_synced_at' => 'datetime',
+        'customerio_properties' => 'array',
+        'needs_customerio_sync' => 'boolean',
         'last_activity_at' => 'datetime',
         'lead_magnets_downloaded' => 'array',
         'peptides_viewed' => 'array',
@@ -99,9 +99,9 @@ class Subscriber extends Model
         return $query->where('engagement_tier', 'warm');
     }
 
-    public function scopeNeedsSyncToKlaviyo($query)
+    public function scopeNeedsSyncToCustomerIo($query)
     {
-        return $query->where('needs_klaviyo_sync', true);
+        return $query->where('needs_customerio_sync', true);
     }
 
     // Methods

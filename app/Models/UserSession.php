@@ -28,7 +28,7 @@ class UserSession extends Model
         // Conversion
         'converted', 'conversion_type', 'converted_at',
         // Status
-        'is_bounced', 'synced_to_klaviyo',
+        'is_bounced', 'synced_to_marketing',
     ];
 
     protected $casts = [
@@ -40,7 +40,7 @@ class UserSession extends Model
         'is_bot' => 'boolean',
         'is_bounced' => 'boolean',
         'converted' => 'boolean',
-        'synced_to_klaviyo' => 'boolean',
+        'synced_to_marketing' => 'boolean',
         'latitude' => 'decimal:7',
         'longitude' => 'decimal:7',
     ];

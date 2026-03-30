@@ -22,7 +22,7 @@ class QuizResponse extends Model
         'outcome_id',
         'outcome_name',
         'recommended_peptide_id',
-        'klaviyo_properties',
+        'marketing_properties',
         'tags',
         'email',
         'phone',
@@ -31,7 +31,7 @@ class QuizResponse extends Model
         'duration_seconds',
         'questions_answered',
         'status',
-        'synced_to_klaviyo',
+        'synced_to_marketing',
         'utm_source',
         'utm_medium',
         'utm_campaign',
@@ -40,11 +40,11 @@ class QuizResponse extends Model
     protected $casts = [
         'answers' => 'array',
         'navigation_history' => 'array',
-        'klaviyo_properties' => 'array',
+        'marketing_properties' => 'array',
         'tags' => 'array',
         'started_at' => 'datetime',
         'completed_at' => 'datetime',
-        'synced_to_klaviyo' => 'boolean',
+        'synced_to_marketing' => 'boolean',
     ];
 
     // Relationships
@@ -99,9 +99,9 @@ class QuizResponse extends Model
         return $query->where('segment', strtolower($segment));
     }
 
-    public function scopeNeedsSyncToKlaviyo($query)
+    public function scopeNeedsSyncToMarketing($query)
     {
-        return $query->completed()->where('synced_to_klaviyo', false);
+        return $query->completed()->where('synced_to_marketing', false);
     }
 
     // Methods
@@ -124,16 +124,16 @@ class QuizResponse extends Model
         };
     }
 
-    public function buildKlaviyoProperties(): array
+    public function buildMarketingProperties(): array
     {
         $properties = [];
 
         foreach ($this->answers as $answer) {
-            $klaviyoProp = $answer['klaviyo_property'] ?? null;
-            $klaviyoVal = $answer['klaviyo_value'] ?? null;
+            $marketingProp = $answer['marketing_property'] ?? null;
+            $marketingVal = $answer['marketing_value'] ?? null;
 
-            if ($klaviyoProp && $klaviyoVal) {
-                $properties[$klaviyoProp] = $klaviyoVal;
+            if ($marketingProp && $marketingVal) {
+                $properties[$marketingProp] = $marketingVal;
             }
         }
 
