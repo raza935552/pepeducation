@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <span>Customer.io Integration</span>
-            <a href="{{ route('admin.settings') }}" class="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1">
+            <a href="{{ route('admin.settings.index') }}" class="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 Back to Settings
             </a>

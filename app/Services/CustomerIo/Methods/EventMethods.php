@@ -84,7 +84,7 @@ trait EventMethods
             if (!empty($answer['marketing_property']) && !empty($answer['marketing_value'])) {
                 $properties[$answer['marketing_property']] = $answer['marketing_value'];
             }
-            // Backward compat: also check old marketing_property/marketing_value keys in stored answers (pre-migration data)
+            // Backward compat: also check old klaviyo_property/klaviyo_value keys in stored answers (pre-migration data)
             if (!empty($answer['klaviyo_property']) && !empty($answer['klaviyo_value']) && empty($answer['marketing_property'])) {
                 $properties[$answer['klaviyo_property']] = $answer['klaviyo_value'];
             }
