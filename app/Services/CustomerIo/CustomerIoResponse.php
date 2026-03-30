@@ -54,7 +54,11 @@ class CustomerIoResponse
             return $this->errorMessage;
         }
 
-        $body = $this->response->json();
+        try {
+            $body = $this->response->json();
+        } catch (\Exception $e) {
+            $body = null;
+        }
         $status = $this->response->status();
 
         if (is_array($body)) {

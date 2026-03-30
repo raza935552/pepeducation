@@ -3,6 +3,7 @@
 namespace App\Services\CustomerIo\Methods;
 
 use App\Models\Subscriber;
+use App\Services\CustomerIo\CustomerIoClient;
 use App\Services\CustomerIo\CustomerIoResponse;
 use Illuminate\Support\Facades\Log;
 
@@ -52,7 +53,7 @@ trait ProfileMethods
 
         // Use email as identifier (Customer.io convention for anonymous-first users)
         $identifier = $subscriber->email;
-        $response = $this->client->put("customers/{$identifier}", $attributes);
+        $response = $this->client->put('customers/' . CustomerIoClient::encodeId($identifier), $attributes);
 
         if ($response->isSuccess()) {
             $subscriber->update([
@@ -86,7 +87,7 @@ trait ProfileMethods
         $identifier = $subscriber->customerio_id ?? $subscriber->email;
         if (!$identifier) return false;
 
-        $response = $this->client->put("customers/{$identifier}", $properties);
+        $response = $this->client->put('customers/' . CustomerIoClient::encodeId($identifier), $properties);
 
         if ($response->isSuccess()) {
             $existing = $subscriber->customerio_properties ?? [];

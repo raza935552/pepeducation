@@ -24,6 +24,7 @@ class ResultsBank extends Model
         'benefits',
         'is_active',
         'display_fields',
+        'accordion_items',
     ];
 
     protected $casts = [
@@ -31,6 +32,7 @@ class ResultsBank extends Model
         'benefits' => 'array',
         'is_active' => 'boolean',
         'display_fields' => 'array',
+        'accordion_items' => 'array',
     ];
 
     public function shouldDisplay(string $field): bool

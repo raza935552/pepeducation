@@ -47,17 +47,15 @@
     @push('scripts')
     <script>
     (function() {
-        function getEmail() {
-            var v = document.cookie.match('(^|;)\\s*pp_email\\s*=\\s*([^;]+)');
-            return v ? decodeURIComponent(v.pop()) : null;
-        }
-
-        var email = getEmail();
-        if (email && window._cio) {
-            _cio.identify({ id: email, email: email });
-        }
-
-        if (window._cio) {
+        // Use global PepMarketing (set up by customerio-tracking component)
+        if (window.PepMarketing) {
+            PepMarketing.track('Viewed Product', {
+                ProductName: '{{ addslashes($peptide->name) }}',
+                ProductID: '{{ $peptide->slug }}',
+                Categories: {!! json_encode($peptide->categories->pluck('name')) !!},
+                URL: window.location.href
+            });
+        } else if (window._cio) {
             _cio.track('Viewed Product', {
                 ProductName: '{{ addslashes($peptide->name) }}',
                 ProductID: '{{ $peptide->slug }}',

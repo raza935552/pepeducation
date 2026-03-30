@@ -115,6 +115,15 @@ class CustomerIoClient
         return !empty($this->siteId) && !empty($this->apiKey);
     }
 
+    /**
+     * URL-encode a Customer.io identifier for use in API paths.
+     * Emails contain @, +, and . which must be encoded in URL segments.
+     */
+    public static function encodeId(string $identifier): string
+    {
+        return rawurlencode($identifier);
+    }
+
     protected function getHeaders(): array
     {
         return [

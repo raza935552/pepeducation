@@ -421,8 +421,7 @@ class QuizPlayer extends Component
             'marketing_property' => $question['marketing_property'] ?? null,
             'marketing_value' => (!empty($selectedOption['marketing_value']))
                 ? $selectedOption['marketing_value']
-                : ((!empty($selectedOption['klaviyo_value'])) ? $selectedOption['klaviyo_value']
-                : ($selectedOption['value'] ?? $selectedOption['text'] ?? $selectedOption['label'] ?? '')),
+                : ($selectedOption['value'] ?? $selectedOption['text'] ?? $selectedOption['label'] ?? ''),
             'tags' => $selectedOption['tags'] ?? [],
         ];
 
@@ -519,8 +518,7 @@ class QuizPlayer extends Component
             'marketing_property' => $question['marketing_property'] ?? null,
             'marketing_value' => $selectedOptions->map(fn ($o) =>
                 (!empty($o['marketing_value'])) ? $o['marketing_value']
-                : ((!empty($o['klaviyo_value'])) ? $o['klaviyo_value']
-                : ($o['value'] ?? $o['text'] ?? $o['label'] ?? ''))
+                : ($o['value'] ?? $o['text'] ?? $o['label'] ?? '')
             )->implode(', '),
             'tags' => array_values(array_unique($tags)),
         ];

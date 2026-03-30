@@ -34,9 +34,11 @@ class CustomerIoSettingController extends Controller
         ]);
 
         if ($request->filled('site_id')) {
+            $request->validate(['site_id' => 'string|max:64|regex:/^[a-f0-9]+$/']);
             $settings->site_id = $request->input('site_id');
         }
         if ($request->filled('api_key')) {
+            $request->validate(['api_key' => 'string|max:64|regex:/^[a-f0-9]+$/']);
             $settings->api_key = $request->input('api_key');
         }
 
