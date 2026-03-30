@@ -66,7 +66,7 @@ Route::get('/quiz/{slug}', [QuizController::class, 'show'])->name('quiz.show');
 Route::get('/quiz/{slug}/embed', [QuizController::class, 'embed'])->name('quiz.embed');
 Route::post('/quiz/abandon', [QuizController::class, 'abandon'])->name('quiz.abandon');
 
-// Subscriber sync (from Klaviyo popup)
+// Subscriber sync (from email popup / Customer.io)
 Route::post('/subscriber/sync', [\App\Http\Controllers\SubscriberSyncController::class, 'sync'])->name('subscriber.sync');
 
 // Lead Magnets

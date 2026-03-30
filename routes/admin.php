@@ -194,5 +194,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Settings (Integrations)
     Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::post('settings', [SettingsController::class, 'update'])->name('settings.update');
-    Route::post('settings/test-klaviyo', [SettingsController::class, 'testKlaviyo'])->name('settings.test-klaviyo');
+    Route::get('settings/customerio', [\App\Http\Controllers\Admin\CustomerIoSettingController::class, 'edit'])->name('settings.customerio');
+    Route::put('settings/customerio', [\App\Http\Controllers\Admin\CustomerIoSettingController::class, 'update'])->name('settings.customerio.update');
+    Route::post('settings/customerio/test', [\App\Http\Controllers\Admin\CustomerIoSettingController::class, 'test'])->name('settings.customerio.test');
 });

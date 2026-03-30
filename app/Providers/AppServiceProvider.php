@@ -14,11 +14,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Scoped (not singleton) so settings changes take effect without app restart
-        $this->app->scoped(\App\Services\Klaviyo\KlaviyoClient::class);
-        $this->app->scoped(\App\Services\Klaviyo\ProfileService::class);
-        $this->app->scoped(\App\Services\Klaviyo\EventService::class);
-        $this->app->scoped(\App\Services\Klaviyo\KlaviyoService::class);
+        $this->app->scoped(\App\Services\CustomerIo\CustomerIoService::class, function () {
+            return \App\Services\CustomerIo\CustomerIoService::make();
+        });
     }
 
     /**

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Quiz;
 use App\Models\QuizResponse;
 use App\Models\Subscriber;
-use App\Services\Klaviyo\KlaviyoService;
+use App\Services\CustomerIo\CustomerIoService;
 use Illuminate\Http\Request;
 
 class QuizController extends Controller
@@ -34,7 +34,7 @@ class QuizController extends Controller
      * Beacon endpoint: mark an in-progress quiz response as abandoned.
      * Called via navigator.sendBeacon when user leaves mid-quiz.
      */
-    public function abandon(Request $request, KlaviyoService $klaviyo)
+    public function abandon(Request $request, CustomerIoService $customerIo)
     {
         $responseId = $request->input('response_id');
         if (!$responseId) {
@@ -69,7 +69,7 @@ class QuizController extends Controller
             'updated_at' => now(),
         ]);
 
-        // Skip Klaviyo event if user already completed this quiz (prevents false abandons
+        // Skip Customer.io event if user already completed this quiz (prevents false abandons
         // from empty responses created on page refresh after completion)
         $alreadyCompleted = QuizResponse::where('quiz_id', $response->quiz_id)
             ->where('session_id', $response->session_id)
@@ -79,11 +79,11 @@ class QuizController extends Controller
         // Also skip if zero answers (user never engaged with the quiz)
         $hasAnswers = !empty($response->answers);
 
-        // Fire Klaviyo "Quiz Abandoned" event if subscriber exists and not already completed
+        // Fire Customer.io "Quiz Abandoned" event if subscriber exists and not already completed
         $subscriber = $response->subscriber_id ? ($response->subscriber ?? Subscriber::find($response->subscriber_id)) : null;
-        if ($subscriber && $klaviyo->isEnabled() && !$alreadyCompleted && $hasAnswers) {
+        if ($subscriber && $customerIo->isEnabled() && !$alreadyCompleted && $hasAnswers) {
             try {
-                $klaviyo->trackQuizAbandoned($subscriber, $response);
+                $customerIo->trackQuizAbandoned($subscriber, $response);
             } catch (\Exception $e) {
                 // Beacon responses must be fast — don't block on errors
             }
