@@ -134,7 +134,7 @@ class QuizFunnelEngine
      * Resolve dynamic content for a slide based on user answers.
      *
      * Looks up the user's answer value for the configured dynamic_content_key
-     * (matched by klaviyo_property), then returns the matching variant from
+     * (matched by marketing_property), then returns the matching variant from
      * dynamic_content_map, or the _default fallback.
      *
      * @return array|null  ['title' => ..., 'body' => ...] or null if no dynamic content
@@ -146,18 +146,18 @@ class QuizFunnelEngine
 
         if (!$key || !$map || !is_array($map)) return null;
 
-        // Find the user's answer for this key (by klaviyo_property)
+        // Find the user's answer for this key (by marketing_property)
         $answerValue = null;
         $optionId = null;
         foreach ($answers as $answer) {
-            if (($answer['klaviyo_property'] ?? null) === $key) {
-                $answerValue = $answer['klaviyo_value'] ?? $answer['text_value'] ?? null;
+            if (($answer['marketing_property'] ?? null) === $key) {
+                $answerValue = $answer['marketing_value'] ?? $answer['text_value'] ?? null;
                 $optionId = $answer['option_id'] ?? null;
                 break;
             }
         }
 
-        // Try klaviyo_value first, then fall back to option_id (internal value)
+        // Try marketing_value first, then fall back to option_id (internal value)
         if ($answerValue && isset($map[$answerValue])) {
             return $map[$answerValue];
         }
@@ -171,18 +171,18 @@ class QuizFunnelEngine
     /**
      * Replace {{token}} placeholders in text with values from quiz answers + context.
      *
-     * Tokens are matched by klaviyo_property name. Additional context (like peptide_name
+     * Tokens are matched by marketing_property name. Additional context (like peptide_name
      * from ResultsBank) can be passed in the $context array.
      * Unmatched tokens are left as-is (rendered literally).
      */
     public function interpolateTokens(string $text, array $answers, array $context = []): string
     {
-        // Build token map from answers (klaviyo_property => display value)
+        // Build token map from answers (marketing_property => display value)
         $tokens = $context;
         foreach ($answers as $answer) {
-            $prop = $answer['klaviyo_property'] ?? null;
+            $prop = $answer['marketing_property'] ?? null;
             if ($prop) {
-                $tokens[$prop] = $answer['option_text'] ?? $answer['klaviyo_value'] ?? $answer['text_value'] ?? '';
+                $tokens[$prop] = $answer['option_text'] ?? $answer['marketing_value'] ?? $answer['text_value'] ?? '';
             }
         }
 

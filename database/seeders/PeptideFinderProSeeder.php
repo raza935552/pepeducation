@@ -92,66 +92,66 @@ class PeptideFinderProSeeder extends Seeder
     private function healthGoalOptions(): array
     {
         return [
-            ['value' => 'fat_loss', 'label' => 'Lose fat & boost metabolism', 'klaviyo_value' => 'fat_loss', 'tags' => ['interested_weight_loss']],
-            ['value' => 'muscle_growth', 'label' => 'Build muscle & recover faster', 'klaviyo_value' => 'muscle_growth', 'tags' => ['interested_muscle_growth']],
-            ['value' => 'anti_aging', 'label' => 'Look & feel younger', 'klaviyo_value' => 'anti_aging', 'tags' => ['interested_anti_aging']],
-            ['value' => 'injury_recovery', 'label' => 'Heal an injury faster', 'klaviyo_value' => 'injury_recovery', 'tags' => ['interested_injury_recovery']],
-            ['value' => 'cognitive', 'label' => 'Think sharper & focus better', 'klaviyo_value' => 'cognitive', 'tags' => ['interested_cognitive']],
-            ['value' => 'sleep', 'label' => 'Sleep deeper & wake refreshed', 'klaviyo_value' => 'sleep', 'tags' => ['interested_sleep']],
-            ['value' => 'immune', 'label' => 'Strengthen my immune system', 'klaviyo_value' => 'immune', 'tags' => ['interested_immune']],
-            ['value' => 'sexual_health', 'label' => 'Improve sexual health & vitality', 'klaviyo_value' => 'sexual_health', 'tags' => ['interested_sexual_health']],
-            ['value' => 'gut_health', 'label' => 'Fix my gut & digestion', 'klaviyo_value' => 'gut_health', 'tags' => ['interested_gut_health']],
-            ['value' => 'general_wellness', 'label' => 'General wellness & energy', 'klaviyo_value' => 'general_wellness', 'tags' => ['interested_general_wellness']],
+            ['value' => 'fat_loss', 'label' => 'Lose fat & boost metabolism', 'marketing_value' => 'fat_loss', 'tags' => ['interested_weight_loss']],
+            ['value' => 'muscle_growth', 'label' => 'Build muscle & recover faster', 'marketing_value' => 'muscle_growth', 'tags' => ['interested_muscle_growth']],
+            ['value' => 'anti_aging', 'label' => 'Look & feel younger', 'marketing_value' => 'anti_aging', 'tags' => ['interested_anti_aging']],
+            ['value' => 'injury_recovery', 'label' => 'Heal an injury faster', 'marketing_value' => 'injury_recovery', 'tags' => ['interested_injury_recovery']],
+            ['value' => 'cognitive', 'label' => 'Think sharper & focus better', 'marketing_value' => 'cognitive', 'tags' => ['interested_cognitive']],
+            ['value' => 'sleep', 'label' => 'Sleep deeper & wake refreshed', 'marketing_value' => 'sleep', 'tags' => ['interested_sleep']],
+            ['value' => 'immune', 'label' => 'Strengthen my immune system', 'marketing_value' => 'immune', 'tags' => ['interested_immune']],
+            ['value' => 'sexual_health', 'label' => 'Improve sexual health & vitality', 'marketing_value' => 'sexual_health', 'tags' => ['interested_sexual_health']],
+            ['value' => 'gut_health', 'label' => 'Fix my gut & digestion', 'marketing_value' => 'gut_health', 'tags' => ['interested_gut_health']],
+            ['value' => 'general_wellness', 'label' => 'General wellness & energy', 'marketing_value' => 'general_wellness', 'tags' => ['interested_general_wellness']],
         ];
     }
 
     private function peptideSelectionOptions(): array
     {
         return [
-            ['value' => 'bpc-157', 'label' => 'BPC-157', 'klaviyo_value' => 'BPC-157', 'tags' => ['interested_bpc157']],
-            ['value' => 'tirzepatide', 'label' => 'Tirzepatide', 'klaviyo_value' => 'Tirzepatide', 'tags' => ['interested_tirzepatide']],
-            ['value' => 'semaglutide', 'label' => 'Semaglutide', 'klaviyo_value' => 'Semaglutide', 'tags' => ['interested_semaglutide']],
-            ['value' => 'cjc-1295-ipamorelin', 'label' => 'CJC-1295 / Ipamorelin', 'klaviyo_value' => 'CJC-1295/Ipamorelin', 'tags' => ['interested_cjc1295_ipamorelin']],
-            ['value' => 'epithalon', 'label' => 'Epithalon', 'klaviyo_value' => 'Epithalon', 'tags' => ['interested_epithalon']],
-            ['value' => 'tb-500', 'label' => 'TB-500', 'klaviyo_value' => 'TB-500', 'tags' => ['interested_tb500']],
-            ['value' => 'ghk-cu', 'label' => 'GHK-Cu', 'klaviyo_value' => 'GHK-Cu', 'tags' => ['interested_ghk_cu']],
-            ['value' => 'semax', 'label' => 'Semax', 'klaviyo_value' => 'Semax', 'tags' => ['interested_semax']],
-            ['value' => 'dsip', 'label' => 'DSIP', 'klaviyo_value' => 'DSIP', 'tags' => ['interested_dsip']],
-            ['value' => 'thymosin-alpha-1', 'label' => 'Thymosin Alpha 1', 'klaviyo_value' => 'Thymosin Alpha 1', 'tags' => ['interested_thymosin_alpha1']],
-            ['value' => 'pt-141', 'label' => 'PT-141', 'klaviyo_value' => 'PT-141', 'tags' => ['interested_pt141']],
-            ['value' => 'mk-677', 'label' => 'MK-677 (Ibutamoren)', 'klaviyo_value' => 'MK-677', 'tags' => []],
-            ['value' => 'retatrutide', 'label' => 'Retatrutide', 'klaviyo_value' => 'Retatrutide', 'tags' => []],
-            ['value' => 'nad-plus', 'label' => 'NAD+', 'klaviyo_value' => 'NAD+', 'tags' => []],
-            ['value' => 'other', 'label' => 'Something else', 'klaviyo_value' => 'Other', 'tags' => []],
+            ['value' => 'bpc-157', 'label' => 'BPC-157', 'marketing_value' => 'BPC-157', 'tags' => ['interested_bpc157']],
+            ['value' => 'tirzepatide', 'label' => 'Tirzepatide', 'marketing_value' => 'Tirzepatide', 'tags' => ['interested_tirzepatide']],
+            ['value' => 'semaglutide', 'label' => 'Semaglutide', 'marketing_value' => 'Semaglutide', 'tags' => ['interested_semaglutide']],
+            ['value' => 'cjc-1295-ipamorelin', 'label' => 'CJC-1295 / Ipamorelin', 'marketing_value' => 'CJC-1295/Ipamorelin', 'tags' => ['interested_cjc1295_ipamorelin']],
+            ['value' => 'epithalon', 'label' => 'Epithalon', 'marketing_value' => 'Epithalon', 'tags' => ['interested_epithalon']],
+            ['value' => 'tb-500', 'label' => 'TB-500', 'marketing_value' => 'TB-500', 'tags' => ['interested_tb500']],
+            ['value' => 'ghk-cu', 'label' => 'GHK-Cu', 'marketing_value' => 'GHK-Cu', 'tags' => ['interested_ghk_cu']],
+            ['value' => 'semax', 'label' => 'Semax', 'marketing_value' => 'Semax', 'tags' => ['interested_semax']],
+            ['value' => 'dsip', 'label' => 'DSIP', 'marketing_value' => 'DSIP', 'tags' => ['interested_dsip']],
+            ['value' => 'thymosin-alpha-1', 'label' => 'Thymosin Alpha 1', 'marketing_value' => 'Thymosin Alpha 1', 'tags' => ['interested_thymosin_alpha1']],
+            ['value' => 'pt-141', 'label' => 'PT-141', 'marketing_value' => 'PT-141', 'tags' => ['interested_pt141']],
+            ['value' => 'mk-677', 'label' => 'MK-677 (Ibutamoren)', 'marketing_value' => 'MK-677', 'tags' => []],
+            ['value' => 'retatrutide', 'label' => 'Retatrutide', 'marketing_value' => 'Retatrutide', 'tags' => []],
+            ['value' => 'nad-plus', 'label' => 'NAD+', 'marketing_value' => 'NAD+', 'tags' => []],
+            ['value' => 'other', 'label' => 'Something else', 'marketing_value' => 'Other', 'tags' => []],
         ];
     }
 
     private function genderOptions(): array
     {
         return [
-            ['value' => 'male', 'label' => 'Male', 'klaviyo_value' => 'male', 'tags' => ['male']],
-            ['value' => 'female', 'label' => 'Female', 'klaviyo_value' => 'female', 'tags' => ['female']],
-            ['value' => 'prefer_not', 'label' => 'Prefer not to say', 'klaviyo_value' => 'prefer_not', 'tags' => []],
+            ['value' => 'male', 'label' => 'Male', 'marketing_value' => 'male', 'tags' => ['male']],
+            ['value' => 'female', 'label' => 'Female', 'marketing_value' => 'female', 'tags' => ['female']],
+            ['value' => 'prefer_not', 'label' => 'Prefer not to say', 'marketing_value' => 'prefer_not', 'tags' => []],
         ];
     }
 
     private function ageOptions(): array
     {
         return [
-            ['value' => '18-29', 'label' => '18-29', 'klaviyo_value' => '18-29', 'score_tof' => 2, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['age_18_29']],
-            ['value' => '30-39', 'label' => '30-39', 'klaviyo_value' => '30-39', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['age_30_39']],
-            ['value' => '40-49', 'label' => '40-49', 'klaviyo_value' => '40-49', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 1, 'tags' => ['age_40_49']],
-            ['value' => '50-59', 'label' => '50-59', 'klaviyo_value' => '50-59', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 2, 'tags' => ['age_50_59']],
-            ['value' => '60+', 'label' => '60+', 'klaviyo_value' => '60+', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 2, 'tags' => ['age_60_plus']],
+            ['value' => '18-29', 'label' => '18-29', 'marketing_value' => '18-29', 'score_tof' => 2, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['age_18_29']],
+            ['value' => '30-39', 'label' => '30-39', 'marketing_value' => '30-39', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['age_30_39']],
+            ['value' => '40-49', 'label' => '40-49', 'marketing_value' => '40-49', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 1, 'tags' => ['age_40_49']],
+            ['value' => '50-59', 'label' => '50-59', 'marketing_value' => '50-59', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 2, 'tags' => ['age_50_59']],
+            ['value' => '60+', 'label' => '60+', 'marketing_value' => '60+', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 2, 'tags' => ['age_60_plus']],
         ];
     }
 
     private function buyingPriorityOptions(): array
     {
         return [
-            ['value' => 'doctor_guidance', 'label' => "I want a doctor's guidance (telehealth)", 'klaviyo_value' => 'doctor_guidance', 'tags' => ['prefers_telehealth']],
-            ['value' => 'research_grade', 'label' => 'I want to do my own research (research-grade)', 'klaviyo_value' => 'research_grade', 'tags' => ['prefers_research_grade']],
-            ['value' => 'affordable', 'label' => 'I want the most affordable option', 'klaviyo_value' => 'affordable', 'tags' => ['prefers_affordable', 'price_sensitive']],
+            ['value' => 'doctor_guidance', 'label' => "I want a doctor's guidance (telehealth)", 'marketing_value' => 'doctor_guidance', 'tags' => ['prefers_telehealth']],
+            ['value' => 'research_grade', 'label' => 'I want to do my own research (research-grade)', 'marketing_value' => 'research_grade', 'tags' => ['prefers_research_grade']],
+            ['value' => 'affordable', 'label' => 'I want the most affordable option', 'marketing_value' => 'affordable', 'tags' => ['prefers_affordable', 'price_sensitive']],
         ];
     }
 
@@ -166,26 +166,26 @@ class PeptideFinderProSeeder extends Seeder
             'question_text' => 'What brings you here today?',
             'question_subtext' => 'This helps us personalize your experience.',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'quiz_path',
+            'marketing_property' => 'quiz_path',
             'options' => [
                 [
                     'value' => 'know_my_peptides',
                     'label' => 'I know my peptides',
-                    'klaviyo_value' => 'I Know My Peptides',
+                    'marketing_value' => 'I Know My Peptides',
                     'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 10,
                     'tags' => ['high_intent', 'advanced'],
                 ],
                 [
                     'value' => 'know_my_goal',
                     'label' => 'I know my goal',
-                    'klaviyo_value' => 'I Know My Goal',
+                    'marketing_value' => 'I Know My Goal',
                     'score_tof' => 0, 'score_mof' => 5, 'score_bof' => 5,
                     'tags' => ['researching'],
                 ],
                 [
                     'value' => 'want_something_new',
                     'label' => 'I want something new',
-                    'klaviyo_value' => 'I Want Something New',
+                    'marketing_value' => 'I Want Something New',
                     'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 10,
                     'tags' => ['advanced', 'wants_fresh_start'],
                 ],
@@ -227,7 +227,7 @@ class PeptideFinderProSeeder extends Seeder
             'question_text' => 'Which peptide are you looking for?',
             'question_subtext' => 'Select the peptide you want to buy.',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'peptide_preference',
+            'marketing_property' => 'peptide_preference',
             'show_conditions' => $p1Cond,
             'options' => $this->peptideSelectionOptions(),
         ]);
@@ -243,7 +243,7 @@ class PeptideFinderProSeeder extends Seeder
         $this->slide($quiz, 'p1_email', [
             'slide_type' => QuizQuestion::SLIDE_EMAIL_CAPTURE,
             'question_text' => 'Get Your Deals',
-            'klaviyo_property' => 'email',
+            'marketing_property' => 'email',
             'content_title' => 'We found deals for your peptide!',
             'content_body' => 'Enter your email to see vendor pricing and receive exclusive discount codes.',
             'show_conditions' => $p1Cond,
@@ -281,7 +281,7 @@ class PeptideFinderProSeeder extends Seeder
             'question_text' => "What's your #1 health goal right now?",
             'question_subtext' => 'Choose the one that matters most to you.',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'health_goal',
+            'marketing_property' => 'health_goal',
             'show_conditions' => $p2Cond,
             'options' => $this->healthGoalOptions(),
         ]);
@@ -300,7 +300,7 @@ class PeptideFinderProSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'Which best describes you?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'gender',
+            'marketing_property' => 'gender',
             'show_conditions' => $p2Cond,
             'options' => $this->genderOptions(),
         ]);
@@ -310,7 +310,7 @@ class PeptideFinderProSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What is your age range?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'age_range',
+            'marketing_property' => 'age_range',
             'show_conditions' => $p2Cond,
             'options' => $this->ageOptions(),
         ]);
@@ -320,13 +320,13 @@ class PeptideFinderProSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'How would you rate your overall health?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'health_rating',
+            'marketing_property' => 'health_rating',
             'show_conditions' => $p2Cond,
             'options' => [
-                ['value' => 'excellent', 'label' => 'Excellent', 'klaviyo_value' => 'excellent', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['high_intent']],
-                ['value' => 'good', 'label' => 'Good', 'klaviyo_value' => 'good', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => []],
-                ['value' => 'fair', 'label' => 'Fair', 'klaviyo_value' => 'fair', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => []],
-                ['value' => 'poor', 'label' => 'Poor', 'klaviyo_value' => 'poor', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'excellent', 'label' => 'Excellent', 'marketing_value' => 'excellent', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['high_intent']],
+                ['value' => 'good', 'label' => 'Good', 'marketing_value' => 'good', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'fair', 'label' => 'Fair', 'marketing_value' => 'fair', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'poor', 'label' => 'Poor', 'marketing_value' => 'poor', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
             ],
         ]);
 
@@ -335,13 +335,13 @@ class PeptideFinderProSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'How often do you exercise?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'exercise_frequency',
+            'marketing_property' => 'exercise_frequency',
             'show_conditions' => $p2Cond,
             'options' => [
-                ['value' => 'daily', 'label' => 'Daily', 'klaviyo_value' => 'daily', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 2, 'tags' => []],
-                ['value' => '3-5x', 'label' => '3-5x per week', 'klaviyo_value' => '3-5x', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => []],
-                ['value' => '1-2x', 'label' => '1-2x per week', 'klaviyo_value' => '1-2x', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => []],
-                ['value' => 'rarely', 'label' => 'Rarely', 'klaviyo_value' => 'rarely', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'daily', 'label' => 'Daily', 'marketing_value' => 'daily', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 2, 'tags' => []],
+                ['value' => '3-5x', 'label' => '3-5x per week', 'marketing_value' => '3-5x', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => []],
+                ['value' => '1-2x', 'label' => '1-2x per week', 'marketing_value' => '1-2x', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'rarely', 'label' => 'Rarely', 'marketing_value' => 'rarely', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
             ],
         ]);
 
@@ -350,13 +350,13 @@ class PeptideFinderProSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'How would you describe your diet?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'diet_quality',
+            'marketing_property' => 'diet_quality',
             'show_conditions' => $p2Cond,
             'options' => [
-                ['value' => 'strict', 'label' => 'Strict / optimized', 'klaviyo_value' => 'strict', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['high_intent']],
-                ['value' => 'balanced', 'label' => 'Balanced', 'klaviyo_value' => 'balanced', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => []],
-                ['value' => 'inconsistent', 'label' => 'Inconsistent', 'klaviyo_value' => 'inconsistent', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => []],
-                ['value' => 'poor', 'label' => 'Needs work', 'klaviyo_value' => 'poor', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'strict', 'label' => 'Strict / optimized', 'marketing_value' => 'strict', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['high_intent']],
+                ['value' => 'balanced', 'label' => 'Balanced', 'marketing_value' => 'balanced', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => []],
+                ['value' => 'inconsistent', 'label' => 'Inconsistent', 'marketing_value' => 'inconsistent', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'poor', 'label' => 'Needs work', 'marketing_value' => 'poor', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
             ],
         ]);
 
@@ -367,14 +367,14 @@ class PeptideFinderProSeeder extends Seeder
             'question_subtext' => 'Select all that apply.',
             'question_type' => QuizQuestion::TYPE_MULTIPLE,
             'max_selections' => 5,
-            'klaviyo_property' => 'current_supplements',
+            'marketing_property' => 'current_supplements',
             'show_conditions' => $p2Cond,
             'options' => [
-                ['value' => 'vitamins', 'label' => 'Vitamins / minerals', 'klaviyo_value' => 'vitamins', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => []],
-                ['value' => 'protein', 'label' => 'Protein / creatine', 'klaviyo_value' => 'protein', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => []],
-                ['value' => 'hrt', 'label' => 'Hormone therapy (TRT, HRT)', 'klaviyo_value' => 'hrt', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['advanced', 'high_intent']],
-                ['value' => 'peptides', 'label' => 'Already using peptides', 'klaviyo_value' => 'peptides', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5, 'tags' => ['advanced', 'wants_to_add']],
-                ['value' => 'nothing', 'label' => 'Nothing', 'klaviyo_value' => 'nothing', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner']],
+                ['value' => 'vitamins', 'label' => 'Vitamins / minerals', 'marketing_value' => 'vitamins', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'protein', 'label' => 'Protein / creatine', 'marketing_value' => 'protein', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => []],
+                ['value' => 'hrt', 'label' => 'Hormone therapy (TRT, HRT)', 'marketing_value' => 'hrt', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['advanced', 'high_intent']],
+                ['value' => 'peptides', 'label' => 'Already using peptides', 'marketing_value' => 'peptides', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5, 'tags' => ['advanced', 'wants_to_add']],
+                ['value' => 'nothing', 'label' => 'Nothing', 'marketing_value' => 'nothing', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner']],
             ],
         ]);
 
@@ -392,13 +392,13 @@ class PeptideFinderProSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'How would you rate your sleep quality?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'sleep_quality',
+            'marketing_property' => 'sleep_quality',
             'show_conditions' => $p2Cond,
             'options' => [
-                ['value' => 'excellent', 'label' => 'Excellent — 7-9 hrs, wake refreshed', 'klaviyo_value' => 'excellent', 'tags' => []],
-                ['value' => 'good', 'label' => 'Good — usually fine', 'klaviyo_value' => 'good', 'tags' => []],
-                ['value' => 'fair', 'label' => 'Fair — could be better', 'klaviyo_value' => 'fair', 'tags' => []],
-                ['value' => 'poor', 'label' => 'Poor — I struggle with sleep', 'klaviyo_value' => 'poor', 'tags' => ['interested_sleep']],
+                ['value' => 'excellent', 'label' => 'Excellent — 7-9 hrs, wake refreshed', 'marketing_value' => 'excellent', 'tags' => []],
+                ['value' => 'good', 'label' => 'Good — usually fine', 'marketing_value' => 'good', 'tags' => []],
+                ['value' => 'fair', 'label' => 'Fair — could be better', 'marketing_value' => 'fair', 'tags' => []],
+                ['value' => 'poor', 'label' => 'Poor — I struggle with sleep', 'marketing_value' => 'poor', 'tags' => ['interested_sleep']],
             ],
         ]);
 
@@ -407,13 +407,13 @@ class PeptideFinderProSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'How would you rate your stress level?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'stress_level',
+            'marketing_property' => 'stress_level',
             'show_conditions' => $p2Cond,
             'options' => [
-                ['value' => 'low', 'label' => 'Low — pretty relaxed', 'klaviyo_value' => 'low', 'tags' => []],
-                ['value' => 'moderate', 'label' => 'Moderate — manageable', 'klaviyo_value' => 'moderate', 'tags' => []],
-                ['value' => 'high', 'label' => 'High — affects daily life', 'klaviyo_value' => 'high', 'tags' => []],
-                ['value' => 'very_high', 'label' => 'Very high — overwhelmed', 'klaviyo_value' => 'very_high', 'tags' => ['interested_cognitive']],
+                ['value' => 'low', 'label' => 'Low — pretty relaxed', 'marketing_value' => 'low', 'tags' => []],
+                ['value' => 'moderate', 'label' => 'Moderate — manageable', 'marketing_value' => 'moderate', 'tags' => []],
+                ['value' => 'high', 'label' => 'High — affects daily life', 'marketing_value' => 'high', 'tags' => []],
+                ['value' => 'very_high', 'label' => 'Very high — overwhelmed', 'marketing_value' => 'very_high', 'tags' => ['interested_cognitive']],
             ],
         ]);
 
@@ -422,13 +422,13 @@ class PeptideFinderProSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'How is your energy throughout the day?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'energy_level',
+            'marketing_property' => 'energy_level',
             'show_conditions' => $p2Cond,
             'options' => [
-                ['value' => 'great', 'label' => 'Great — steady all day', 'klaviyo_value' => 'great', 'tags' => []],
-                ['value' => 'ok', 'label' => 'OK — occasional dips', 'klaviyo_value' => 'ok', 'tags' => []],
-                ['value' => 'low', 'label' => 'Low — tired often', 'klaviyo_value' => 'low', 'tags' => []],
-                ['value' => 'very_low', 'label' => 'Very low — exhausted', 'klaviyo_value' => 'very_low', 'tags' => ['interested_general_wellness']],
+                ['value' => 'great', 'label' => 'Great — steady all day', 'marketing_value' => 'great', 'tags' => []],
+                ['value' => 'ok', 'label' => 'OK — occasional dips', 'marketing_value' => 'ok', 'tags' => []],
+                ['value' => 'low', 'label' => 'Low — tired often', 'marketing_value' => 'low', 'tags' => []],
+                ['value' => 'very_low', 'label' => 'Very low — exhausted', 'marketing_value' => 'very_low', 'tags' => ['interested_general_wellness']],
             ],
         ]);
 
@@ -447,13 +447,13 @@ class PeptideFinderProSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'Do you have any recovery or healing needs?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'recovery_needs',
+            'marketing_property' => 'recovery_needs',
             'show_conditions' => $p2Cond,
             'options' => [
-                ['value' => 'injury', 'label' => 'Yes — recovering from injury', 'klaviyo_value' => 'injury', 'tags' => ['interested_injury_recovery']],
-                ['value' => 'chronic', 'label' => 'Yes — chronic pain or inflammation', 'klaviyo_value' => 'chronic', 'tags' => ['interested_injury_recovery']],
-                ['value' => 'workout', 'label' => 'Yes — faster workout recovery', 'klaviyo_value' => 'workout', 'tags' => ['interested_muscle_growth']],
-                ['value' => 'none', 'label' => 'No specific recovery needs', 'klaviyo_value' => 'none', 'tags' => []],
+                ['value' => 'injury', 'label' => 'Yes — recovering from injury', 'marketing_value' => 'injury', 'tags' => ['interested_injury_recovery']],
+                ['value' => 'chronic', 'label' => 'Yes — chronic pain or inflammation', 'marketing_value' => 'chronic', 'tags' => ['interested_injury_recovery']],
+                ['value' => 'workout', 'label' => 'Yes — faster workout recovery', 'marketing_value' => 'workout', 'tags' => ['interested_muscle_growth']],
+                ['value' => 'none', 'label' => 'No specific recovery needs', 'marketing_value' => 'none', 'tags' => []],
             ],
         ]);
 
@@ -462,12 +462,12 @@ class PeptideFinderProSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'How much do you know about peptides?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'experience_level',
+            'marketing_property' => 'experience_level',
             'show_conditions' => $p2Cond,
             'options' => [
-                ['value' => 'beginner', 'label' => "I'm brand new", 'klaviyo_value' => 'beginner', 'score_tof' => 5, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner', 'needs_education']],
-                ['value' => 'intermediate', 'label' => "I've done some research", 'klaviyo_value' => 'intermediate', 'score_tof' => 0, 'score_mof' => 5, 'score_bof' => 0, 'tags' => ['intermediate', 'researching']],
-                ['value' => 'advanced', 'label' => "I've used peptides before", 'klaviyo_value' => 'advanced', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5, 'tags' => ['advanced', 'high_intent']],
+                ['value' => 'beginner', 'label' => "I'm brand new", 'marketing_value' => 'beginner', 'score_tof' => 5, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner', 'needs_education']],
+                ['value' => 'intermediate', 'label' => "I've done some research", 'marketing_value' => 'intermediate', 'score_tof' => 0, 'score_mof' => 5, 'score_bof' => 0, 'tags' => ['intermediate', 'researching']],
+                ['value' => 'advanced', 'label' => "I've used peptides before", 'marketing_value' => 'advanced', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5, 'tags' => ['advanced', 'high_intent']],
             ],
         ]);
 
@@ -476,13 +476,13 @@ class PeptideFinderProSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'How do you feel about injections?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'injection_comfort',
+            'marketing_property' => 'injection_comfort',
             'show_conditions' => $p2Cond,
             'options' => [
-                ['value' => 'comfortable', 'label' => 'Totally fine with it', 'klaviyo_value' => 'comfortable', 'tags' => []],
-                ['value' => 'ok', 'label' => "I'd try it if needed", 'klaviyo_value' => 'ok', 'tags' => []],
-                ['value' => 'prefer_oral', 'label' => 'I prefer oral / nasal options', 'klaviyo_value' => 'prefer_oral', 'tags' => ['barrier_needles']],
-                ['value' => 'not_comfortable', 'label' => 'Not comfortable with needles', 'klaviyo_value' => 'not_comfortable', 'tags' => ['barrier_needles']],
+                ['value' => 'comfortable', 'label' => 'Totally fine with it', 'marketing_value' => 'comfortable', 'tags' => []],
+                ['value' => 'ok', 'label' => "I'd try it if needed", 'marketing_value' => 'ok', 'tags' => []],
+                ['value' => 'prefer_oral', 'label' => 'I prefer oral / nasal options', 'marketing_value' => 'prefer_oral', 'tags' => ['barrier_needles']],
+                ['value' => 'not_comfortable', 'label' => 'Not comfortable with needles', 'marketing_value' => 'not_comfortable', 'tags' => ['barrier_needles']],
             ],
         ]);
 
@@ -491,7 +491,7 @@ class PeptideFinderProSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'When it comes to buying peptides, what matters most?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'buying_priority',
+            'marketing_property' => 'buying_priority',
             'show_conditions' => $p2Cond,
             'options' => $this->buyingPriorityOptions(),
         ]);
@@ -501,14 +501,14 @@ class PeptideFinderProSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What monthly budget are you comfortable with for peptide therapy?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'budget',
+            'marketing_property' => 'budget',
             'show_conditions' => $p2Cond,
             'options' => [
-                ['value' => 'under_100', 'label' => 'Under $100/month', 'klaviyo_value' => 'under_100', 'tags' => ['price_sensitive']],
-                ['value' => '100-250', 'label' => '$100-250/month', 'klaviyo_value' => '100-250', 'tags' => []],
-                ['value' => '250-500', 'label' => '$250-500/month', 'klaviyo_value' => '250-500', 'tags' => ['high_intent']],
-                ['value' => 'over_500', 'label' => '$500+/month', 'klaviyo_value' => 'over_500', 'tags' => ['high_intent']],
-                ['value' => 'not_sure', 'label' => 'Not sure yet', 'klaviyo_value' => 'not_sure', 'tags' => ['researching']],
+                ['value' => 'under_100', 'label' => 'Under $100/month', 'marketing_value' => 'under_100', 'tags' => ['price_sensitive']],
+                ['value' => '100-250', 'label' => '$100-250/month', 'marketing_value' => '100-250', 'tags' => []],
+                ['value' => '250-500', 'label' => '$250-500/month', 'marketing_value' => '250-500', 'tags' => ['high_intent']],
+                ['value' => 'over_500', 'label' => '$500+/month', 'marketing_value' => 'over_500', 'tags' => ['high_intent']],
+                ['value' => 'not_sure', 'label' => 'Not sure yet', 'marketing_value' => 'not_sure', 'tags' => ['researching']],
             ],
         ]);
 
@@ -516,7 +516,7 @@ class PeptideFinderProSeeder extends Seeder
         $this->slide($quiz, 'p2_email', [
             'slide_type' => QuizQuestion::SLIDE_EMAIL_CAPTURE,
             'question_text' => 'Get Your Results',
-            'klaviyo_property' => 'email',
+            'marketing_property' => 'email',
             'content_title' => 'Your personalized recommendation is ready!',
             'content_body' => 'Enter your email to see your matched peptide, vendor comparison, and receive our Peptide Research Guide.',
             'show_conditions' => $p2Cond,
@@ -574,7 +574,7 @@ class PeptideFinderProSeeder extends Seeder
             'question_text' => 'Awesome! What peptide were you using?',
             'question_subtext' => 'Select the peptide you want to switch from.',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'peptide_preference',
+            'marketing_property' => 'peptide_preference',
             'show_conditions' => $p3Cond,
             'options' => $this->peptideSelectionOptions(),
         ]);
@@ -585,14 +585,14 @@ class PeptideFinderProSeeder extends Seeder
             'question_text' => 'Why are you looking to switch?',
             'question_subtext' => 'This helps us find a better match for you.',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'switch_reason',
+            'marketing_property' => 'switch_reason',
             'show_conditions' => $p3Cond,
             'options' => [
-                ['value' => 'side_effects', 'label' => 'Side effects', 'klaviyo_value' => 'side_effects', 'tags' => ['barrier_safety']],
-                ['value' => 'not_working', 'label' => 'Not seeing results', 'klaviyo_value' => 'not_working', 'tags' => []],
-                ['value' => 'too_expensive', 'label' => 'Too expensive', 'klaviyo_value' => 'too_expensive', 'tags' => ['price_sensitive']],
-                ['value' => 'hard_to_source', 'label' => 'Hard to find a reliable source', 'klaviyo_value' => 'hard_to_source', 'tags' => ['barrier_sourcing']],
-                ['value' => 'want_variety', 'label' => 'Just want to try something different', 'klaviyo_value' => 'want_variety', 'tags' => ['wants_fresh_start']],
+                ['value' => 'side_effects', 'label' => 'Side effects', 'marketing_value' => 'side_effects', 'tags' => ['barrier_safety']],
+                ['value' => 'not_working', 'label' => 'Not seeing results', 'marketing_value' => 'not_working', 'tags' => []],
+                ['value' => 'too_expensive', 'label' => 'Too expensive', 'marketing_value' => 'too_expensive', 'tags' => ['price_sensitive']],
+                ['value' => 'hard_to_source', 'label' => 'Hard to find a reliable source', 'marketing_value' => 'hard_to_source', 'tags' => ['barrier_sourcing']],
+                ['value' => 'want_variety', 'label' => 'Just want to try something different', 'marketing_value' => 'want_variety', 'tags' => ['wants_fresh_start']],
             ],
         ]);
 
@@ -602,11 +602,11 @@ class PeptideFinderProSeeder extends Seeder
             'question_text' => 'Do you want to stay in the same category or try a different one?',
             'question_subtext' => "We'll find the best alternative for you either way.",
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'category_preference',
+            'marketing_property' => 'category_preference',
             'show_conditions' => $p3Cond,
             'options' => [
-                ['value' => 'same_category', 'label' => 'Stay in the same category', 'klaviyo_value' => 'same_category', 'tags' => []],
-                ['value' => 'different_category', 'label' => 'Try a different category', 'klaviyo_value' => 'different_category', 'tags' => []],
+                ['value' => 'same_category', 'label' => 'Stay in the same category', 'marketing_value' => 'same_category', 'tags' => []],
+                ['value' => 'different_category', 'label' => 'Try a different category', 'marketing_value' => 'different_category', 'tags' => []],
             ],
         ]);
 
@@ -615,7 +615,7 @@ class PeptideFinderProSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What health goal do you want to explore?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'health_goal',
+            'marketing_property' => 'health_goal',
             'show_conditions' => $this->cond('p3_category_choice', 'different_category'),
             'options' => $this->healthGoalOptions(),
         ]);
@@ -633,7 +633,7 @@ class PeptideFinderProSeeder extends Seeder
         $this->slide($quiz, 'p3_email', [
             'slide_type' => QuizQuestion::SLIDE_EMAIL_CAPTURE,
             'question_text' => 'Get Your Alternative',
-            'klaviyo_property' => 'email',
+            'marketing_property' => 'email',
             'content_title' => 'Your alternative recommendation is ready!',
             'content_body' => 'Enter your email to see your matched peptide and vendor comparison.',
             'show_conditions' => $p3Cond,

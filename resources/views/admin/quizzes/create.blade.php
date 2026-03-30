@@ -37,10 +37,10 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Klaviyo List ID (optional)</label>
-                <input type="text" name="klaviyo_list_id" value="{{ old('klaviyo_list_id') }}"
+                <label class="block text-sm font-medium text-gray-700 mb-1">Marketing List ID (optional)</label>
+                <input type="text" name="marketing_list_id" value="{{ old('marketing_list_id') }}"
                     class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold"
-                    placeholder="Enter Klaviyo list ID to add completers">
+                    placeholder="Enter marketing list ID to add completers">
             </div>
 
             <div class="flex items-center gap-2">

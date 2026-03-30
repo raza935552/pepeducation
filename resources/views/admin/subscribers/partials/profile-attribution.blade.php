@@ -46,11 +46,11 @@
             </div>
         @endif
 
-        {{-- Klaviyo Sync Status --}}
+        {{-- Customer.io Sync Status --}}
         <div class="pt-3 mt-3 border-t border-gray-200">
             <div class="flex justify-between items-center">
-                <span class="text-gray-500">Klaviyo Status</span>
-                @if($subscriber->klaviyo_id)
+                <span class="text-gray-500">Customer.io Status</span>
+                @if($subscriber->customerio_id)
                     <span class="text-emerald-600 flex items-center gap-1">
                         <svg aria-hidden="true" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
@@ -61,9 +61,9 @@
                     <span class="text-gray-400">Not synced</span>
                 @endif
             </div>
-            @if($subscriber->klaviyo_synced_at)
+            @if($subscriber->customerio_synced_at)
                 <p class="text-xs text-gray-400 mt-1 text-right">
-                    Last sync: {{ $subscriber->klaviyo_synced_at->diffForHumans() }}
+                    Last sync: {{ $subscriber->customerio_synced_at->diffForHumans() }}
                 </p>
             @endif
         </div>

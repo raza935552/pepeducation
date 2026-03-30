@@ -21,7 +21,7 @@ class ProductLinksSeeder extends Seeder
                 'append_segment' => true,
                 'append_session' => true,
                 'append_email' => true,
-                'track_klaviyo' => true,
+                'track_marketing' => true,
                 'is_active' => true,
             ],
             [
@@ -35,7 +35,7 @@ class ProductLinksSeeder extends Seeder
                 'append_segment' => true,
                 'append_session' => true,
                 'append_email' => true,
-                'track_klaviyo' => true,
+                'track_marketing' => true,
                 'is_active' => true,
             ],
             [
@@ -49,7 +49,7 @@ class ProductLinksSeeder extends Seeder
                 'append_segment' => true,
                 'append_session' => true,
                 'append_email' => true,
-                'track_klaviyo' => true,
+                'track_marketing' => true,
                 'is_active' => true,
             ],
             [
@@ -63,7 +63,7 @@ class ProductLinksSeeder extends Seeder
                 'append_segment' => true,
                 'append_session' => true,
                 'append_email' => true,
-                'track_klaviyo' => true,
+                'track_marketing' => true,
                 'is_active' => true,
             ],
             [
@@ -77,7 +77,7 @@ class ProductLinksSeeder extends Seeder
                 'append_segment' => true,
                 'append_session' => true,
                 'append_email' => true,
-                'track_klaviyo' => true,
+                'track_marketing' => true,
                 'is_active' => true,
             ],
             [
@@ -91,7 +91,7 @@ class ProductLinksSeeder extends Seeder
                 'append_segment' => true,
                 'append_session' => true,
                 'append_email' => true,
-                'track_klaviyo' => true,
+                'track_marketing' => true,
                 'is_active' => true,
             ],
         ];

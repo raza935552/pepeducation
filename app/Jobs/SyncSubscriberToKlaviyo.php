@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Subscriber;
-use App\Services\Klaviyo\KlaviyoService;
+use App\Services\CustomerIo\CustomerIoService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -21,22 +21,22 @@ class SyncSubscriberToKlaviyo implements ShouldQueue
         public Subscriber $subscriber,
         public string $source = 'unknown',
     ) {
-        $this->onQueue('klaviyo');
+        $this->onQueue('customerio');
     }
 
-    public function handle(KlaviyoService $klaviyo): void
+    public function handle(CustomerIoService $customerIo): void
     {
-        if (!$klaviyo->isEnabled()) {
+        if (!$customerIo->isEnabled()) {
             return;
         }
 
         // Refresh subscriber to get latest data (may have changed since queued)
         $this->subscriber->refresh();
 
-        $profileId = $klaviyo->syncProfile($this->subscriber);
+        $profileId = $customerIo->syncProfile($this->subscriber);
 
         if (!$profileId) {
-            logger()->warning('Klaviyo sync job: profile creation failed, will retry', [
+            logger()->warning('Customer.io sync job: profile creation failed, will retry', [
                 'subscriber_id' => $this->subscriber->id,
                 'attempt' => $this->attempts(),
             ]);
@@ -45,8 +45,8 @@ class SyncSubscriberToKlaviyo implements ShouldQueue
         }
 
         // Subscribe to list with email marketing consent
-        $klaviyo->subscribeToList($this->subscriber);
+        $customerIo->subscribeToList($this->subscriber);
 
-        $klaviyo->trackSubscribed($this->subscriber, $this->source);
+        $customerIo->trackSubscribed($this->subscriber, $this->source);
     }
 }

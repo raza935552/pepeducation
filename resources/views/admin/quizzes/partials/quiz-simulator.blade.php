@@ -679,14 +679,14 @@ function quizSimulator() {
             if (scoreMof) impacts.push('MOF +' + scoreMof);
             if (scoreBof) impacts.push('BOF +' + scoreBof);
 
-            // Store answer (klaviyo_value fallback mirrors QuizPlayer.php: klaviyo_value → value → label)
+            // Store answer (marketing_value fallback mirrors QuizPlayer.php: marketing_value -> value -> label)
             this.answers[slide.id] = {
                 order: slide.order,
                 label: slide.question_text || '',
                 value: optionKey,
                 value_label: optionLabel,
-                klaviyo_property: slide.klaviyo_property || '',
-                klaviyo_value: option.klaviyo_value || option.value || optionLabel,
+                marketing_property: slide.marketing_property || '',
+                marketing_value: option.marketing_value || option.value || optionLabel,
                 score_impact: impacts.join(', ') || null,
                 scores: { tof: scoreTof, mof: scoreMof, bof: scoreBof },
             };
@@ -746,16 +746,16 @@ function quizSimulator() {
             if (totalMof) impacts.push('MOF +' + totalMof);
             if (totalBof) impacts.push('BOF +' + totalBof);
 
-            // klaviyo_value for multi-select: use value keys (not labels) to match QuizPlayer.php
-            const klaviyoValues = selected.map(o => o.klaviyo_value || o.value || o.text || o.label || '');
+            // marketing_value for multi-select: use value keys (not labels) to match QuizPlayer.php
+            const marketingValues = selected.map(o => o.marketing_value || o.value || o.text || o.label || '');
 
             this.answers[slide.id] = {
                 order: slide.order,
                 label: slide.question_text || '',
                 value: this.multiSelections.join(', '),
                 value_label: labels.join(', '),
-                klaviyo_property: slide.klaviyo_property || '',
-                klaviyo_value: klaviyoValues.join(', '),
+                marketing_property: slide.marketing_property || '',
+                marketing_value: marketingValues.join(', '),
                 score_impact: impacts.join(', ') || null,
                 scores: { tof: totalTof, mof: totalMof, bof: totalBof },
             };
@@ -779,8 +779,8 @@ function quizSimulator() {
                 label: slide.question_text || '',
                 value: text,
                 value_label: text.substring(0, 40) + (text.length > 40 ? '...' : ''),
-                klaviyo_property: slide.klaviyo_property || '',
-                klaviyo_value: text,
+                marketing_property: slide.marketing_property || '',
+                marketing_value: text,
                 score_impact: null,
                 scores: { tof: 0, mof: 0, bof: 0 },
             };
@@ -797,8 +797,8 @@ function quizSimulator() {
                 label: slide.question_text || slide.content_title || 'Peptide Search',
                 value: availability,
                 value_label: label,
-                klaviyo_property: slide.klaviyo_property || 'selected_peptide',
-                klaviyo_value: label,
+                marketing_property: slide.marketing_property || 'selected_peptide',
+                marketing_value: label,
                 score_impact: null,
                 scores: { tof: 0, mof: 0, bof: 0 },
             };
@@ -955,8 +955,8 @@ function quizSimulator() {
 
             // Build answers array in the format outcome matching expects
             const answersArray = Object.values(this.answers).map(a => ({
-                klaviyo_property: a.klaviyo_property,
-                klaviyo_value: a.klaviyo_value,
+                marketing_property: a.marketing_property,
+                marketing_value: a.marketing_value,
             }));
 
             // 1. Answer-based matching
@@ -987,7 +987,7 @@ function quizSimulator() {
             const targetVal = cond.value;
             if (!targetProp || !targetVal) return false;
 
-            return answers.some(a => a.klaviyo_property === targetProp && a.klaviyo_value === targetVal);
+            return answers.some(a => a.marketing_property === targetProp && a.marketing_value === targetVal);
         },
 
         outcomeMatchesSegment(outcome, segment) {
@@ -1014,14 +1014,14 @@ function quizSimulator() {
             let answerValue = null;
             let optionId = null;
             for (const a of Object.values(this.answers)) {
-                if (a.klaviyo_property === key) {
-                    answerValue = a.klaviyo_value;
+                if (a.marketing_property === key) {
+                    answerValue = a.marketing_value;
                     optionId = a.value;
                     break;
                 }
             }
 
-            // Try klaviyo_value first, then fall back to option value (option_id), then _default
+            // Try marketing_value first, then fall back to option value (option_id), then _default
             if (answerValue && map[answerValue]) return map[answerValue];
             if (optionId && optionId !== answerValue && map[optionId]) return map[optionId];
             return map['_default'] || null;
@@ -1041,10 +1041,10 @@ function quizSimulator() {
             return entry;
         },
 
-        getAnswerValue(klaviyoProperty) {
+        getAnswerValue(marketingProperty) {
             for (const a of Object.values(this.answers)) {
-                if (a.klaviyo_property === klaviyoProperty) {
-                    return a.klaviyo_value || a.value || null;
+                if (a.marketing_property === marketingProperty) {
+                    return a.marketing_value || a.value || null;
                 }
             }
             return null;
@@ -1061,8 +1061,8 @@ function quizSimulator() {
             if (!text) return '';
             const tokens = {};
             for (const a of Object.values(this.answers)) {
-                if (a.klaviyo_property) {
-                    tokens[a.klaviyo_property] = a.value_label || a.klaviyo_value || '';
+                if (a.marketing_property) {
+                    tokens[a.marketing_property] = a.value_label || a.marketing_value || '';
                 }
             }
             return text.replace(/\{\{(\w+)\}\}/g, (match, key) => tokens[key] || match);

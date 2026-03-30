@@ -47,12 +47,12 @@ class QuizSeeder extends Seeder
             'question_text' => 'What is your primary research focus?',
             'question_type' => 'single',
             'order' => 1,
-            'klaviyo_property' => 'research_focus',
+            'marketing_property' => 'research_focus',
             'options' => [
-                ['id' => 'opt_a', 'text' => 'Recovery & Healing', 'klaviyo_value' => 'recovery', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 3],
-                ['id' => 'opt_b', 'text' => 'Weight Management', 'klaviyo_value' => 'weight', 'score_tof' => 2, 'score_mof' => 2, 'score_bof' => 2],
-                ['id' => 'opt_c', 'text' => 'Cognitive Function', 'klaviyo_value' => 'cognitive', 'score_tof' => 3, 'score_mof' => 2, 'score_bof' => 1],
-                ['id' => 'opt_d', 'text' => 'General Wellness', 'klaviyo_value' => 'wellness', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 1],
+                ['id' => 'opt_a', 'text' => 'Recovery & Healing', 'marketing_value' => 'recovery', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 3],
+                ['id' => 'opt_b', 'text' => 'Weight Management', 'marketing_value' => 'weight', 'score_tof' => 2, 'score_mof' => 2, 'score_bof' => 2],
+                ['id' => 'opt_c', 'text' => 'Cognitive Function', 'marketing_value' => 'cognitive', 'score_tof' => 3, 'score_mof' => 2, 'score_bof' => 1],
+                ['id' => 'opt_d', 'text' => 'General Wellness', 'marketing_value' => 'wellness', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 1],
             ],
         ]);
 
@@ -61,11 +61,11 @@ class QuizSeeder extends Seeder
             'question_text' => 'How familiar are you with peptide research?',
             'question_type' => 'single',
             'order' => 2,
-            'klaviyo_property' => 'experience_level',
+            'marketing_property' => 'experience_level',
             'options' => [
-                ['id' => 'opt_a', 'text' => 'Just starting to learn', 'klaviyo_value' => 'beginner', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 0],
-                ['id' => 'opt_b', 'text' => 'Some knowledge', 'klaviyo_value' => 'intermediate', 'score_tof' => 1, 'score_mof' => 3, 'score_bof' => 1],
-                ['id' => 'opt_c', 'text' => 'Experienced researcher', 'klaviyo_value' => 'advanced', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3],
+                ['id' => 'opt_a', 'text' => 'Just starting to learn', 'marketing_value' => 'beginner', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 0],
+                ['id' => 'opt_b', 'text' => 'Some knowledge', 'marketing_value' => 'intermediate', 'score_tof' => 1, 'score_mof' => 3, 'score_bof' => 1],
+                ['id' => 'opt_c', 'text' => 'Experienced researcher', 'marketing_value' => 'advanced', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3],
             ],
         ]);
 
@@ -74,11 +74,11 @@ class QuizSeeder extends Seeder
             'question_text' => 'When do you plan to begin your research?',
             'question_type' => 'single',
             'order' => 3,
-            'klaviyo_property' => 'timeline',
+            'marketing_property' => 'timeline',
             'options' => [
-                ['id' => 'opt_a', 'text' => 'Within the next week', 'klaviyo_value' => 'immediate', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 5],
-                ['id' => 'opt_b', 'text' => 'Within the next month', 'klaviyo_value' => 'soon', 'score_tof' => 1, 'score_mof' => 3, 'score_bof' => 2],
-                ['id' => 'opt_c', 'text' => 'Still researching options', 'klaviyo_value' => 'researching', 'score_tof' => 3, 'score_mof' => 2, 'score_bof' => 0],
+                ['id' => 'opt_a', 'text' => 'Within the next week', 'marketing_value' => 'immediate', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 5],
+                ['id' => 'opt_b', 'text' => 'Within the next month', 'marketing_value' => 'soon', 'score_tof' => 1, 'score_mof' => 3, 'score_bof' => 2],
+                ['id' => 'opt_c', 'text' => 'Still researching options', 'marketing_value' => 'researching', 'score_tof' => 3, 'score_mof' => 2, 'score_bof' => 0],
             ],
         ]);
 
@@ -93,7 +93,7 @@ class QuizSeeder extends Seeder
             'result_message' => 'You have the experience and timeline to begin your peptide research journey.',
             'redirect_url' => '/peptides',
             'redirect_type' => 'internal',
-            'klaviyo_event' => 'Quiz Outcome BOF',
+            'marketing_event' => 'Quiz Outcome BOF',
             'priority' => 1,
             'is_active' => true,
         ]);
@@ -109,7 +109,7 @@ class QuizSeeder extends Seeder
             'result_message' => 'You are building knowledge and getting ready. Our calculator and guides can help.',
             'redirect_url' => '/calculator',
             'redirect_type' => 'internal',
-            'klaviyo_event' => 'Quiz Outcome MOF',
+            'marketing_event' => 'Quiz Outcome MOF',
             'priority' => 2,
             'is_active' => true,
         ]);
@@ -125,7 +125,7 @@ class QuizSeeder extends Seeder
             'result_message' => 'You are just getting started. Browse our peptide encyclopedia to learn more.',
             'redirect_url' => '/peptides',
             'redirect_type' => 'internal',
-            'klaviyo_event' => 'Quiz Outcome TOF',
+            'marketing_event' => 'Quiz Outcome TOF',
             'priority' => 3,
             'is_active' => true,
         ]);

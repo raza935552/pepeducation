@@ -101,8 +101,8 @@
             </div>
 
             <div class="card p-6">
-                <h3 class="text-lg font-semibold mb-4">Klaviyo</h3>
-                <input type="text" name="klaviyo_list_id" value="{{ old('klaviyo_list_id', $popup?->klaviyo_list_id) }}"
+                <h3 class="text-lg font-semibold mb-4">Marketing</h3>
+                <input type="text" name="marketing_list_id" value="{{ old('marketing_list_id', $popup?->marketing_list_id) }}"
                     placeholder="List ID" class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
             </div>
 

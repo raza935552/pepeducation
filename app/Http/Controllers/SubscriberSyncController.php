@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 class SubscriberSyncController extends Controller
 {
     /**
-     * Sync an email from Klaviyo popup into our Subscriber system.
+     * Sync an email from popup into our Subscriber system.
      * Also links the subscriber to any active quiz response in the current session.
      */
     public function sync(Request $request, SubscriberService $service)
@@ -20,7 +20,7 @@ class SubscriberSyncController extends Controller
         ]);
 
         $subscriber = $service->subscribe($request->email, [
-            'source' => $request->input('source', 'klaviyo_popup'),
+            'source' => $request->input('source', 'popup'),
             'segment' => $request->cookie('pp_segment') ?? 'tof',
         ]);
 

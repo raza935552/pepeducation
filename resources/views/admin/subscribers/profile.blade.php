@@ -11,9 +11,9 @@
                 </svg>
                 Back to Subscribers
             </a>
-            @if($subscriber->klaviyo_id)
+            @if($subscriber->customerio_id)
                 <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm">
-                    Synced to Klaviyo
+                    Synced to Customer.io
                 </span>
             @endif
         </div>

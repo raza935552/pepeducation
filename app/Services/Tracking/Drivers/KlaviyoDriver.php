@@ -5,36 +5,36 @@ namespace App\Services\Tracking\Drivers;
 use App\Models\Subscriber;
 use App\Models\Setting;
 use App\Services\Tracking\Contracts\TrackingDriver;
-use App\Services\Klaviyo\KlaviyoService;
+use App\Services\CustomerIo\CustomerIoService;
 
 class KlaviyoDriver implements TrackingDriver
 {
-    protected KlaviyoService $klaviyo;
+    protected CustomerIoService $customerIo;
 
     public function __construct()
     {
-        $this->klaviyo = app(KlaviyoService::class);
+        $this->customerIo = app(CustomerIoService::class);
     }
 
     public function isEnabled(): bool
     {
-        return $this->klaviyo->isEnabled();
+        return $this->customerIo->isEnabled();
     }
 
     public function getName(): string
     {
-        return 'klaviyo';
+        return 'customerio';
     }
 
     public function identify(Subscriber $subscriber): void
     {
         if (!$this->isEnabled()) return;
 
-        $this->klaviyo->syncProfile($subscriber);
+        $this->customerIo->syncProfile($subscriber);
 
-        $defaultListId = Setting::getValue('integrations', 'klaviyo_default_list_id');
+        $defaultListId = Setting::getValue('integrations', 'customerio_default_list_id');
         if ($defaultListId) {
-            $this->klaviyo->addToList($subscriber, $defaultListId);
+            $this->customerIo->addToList($subscriber, $defaultListId);
         }
     }
 
@@ -42,17 +42,17 @@ class KlaviyoDriver implements TrackingDriver
     {
         if (!$this->isEnabled() || !$subscriber) return;
 
-        $this->klaviyo->trackEvent($subscriber, $eventName, $properties);
+        $this->customerIo->trackEvent($subscriber, $eventName, $properties);
     }
 
     public function trackPageView(string $url, ?string $title = null): void
     {
-        // Klaviyo handles page views via their JS snippet
+        // Customer.io handles page views via their JS snippet
         // We only sync server-side events
     }
 
-    public function getKlaviyoService(): KlaviyoService
+    public function getCustomerIoService(): CustomerIoService
     {
-        return $this->klaviyo;
+        return $this->customerIo;
     }
 }

@@ -43,7 +43,7 @@
                     <div class="flex gap-1.5"><dt class="font-medium text-gray-700 shrink-0">Text Input</dt><dd>— Free text answer</dd></div>
                     <div class="flex gap-1.5"><dt class="font-medium text-gray-700 shrink-0">Intermission</dt><dd>— Info screen, no input</dd></div>
                     <div class="flex gap-1.5"><dt class="font-medium text-gray-700 shrink-0">Loading</dt><dd>— Animated progress, auto-advances</dd></div>
-                    <div class="flex gap-1.5"><dt class="font-medium text-gray-700 shrink-0">Email Capture</dt><dd>— Collects email for Klaviyo</dd></div>
+                    <div class="flex gap-1.5"><dt class="font-medium text-gray-700 shrink-0">Email Capture</dt><dd>— Collects email for marketing</dd></div>
                     <div class="flex gap-1.5"><dt class="font-medium text-gray-700 shrink-0">Peptide Reveal</dt><dd>— Shows recommended peptide</dd></div>
                     <div class="flex gap-1.5"><dt class="font-medium text-gray-700 shrink-0">Vendor Reveal</dt><dd>— Shows where to buy</dd></div>
                     <div class="flex gap-1.5"><dt class="font-medium text-gray-700 shrink-0">Bridge</dt><dd>— Final CTA before results</dd></div>
@@ -110,7 +110,7 @@
             {{-- Tags --}}
             <div>
                 <h4 class="font-semibold text-gray-900 mb-1.5">Tags</h4>
-                <p>Labels attached to answer options. Used for Klaviyo segmentation and targeted email campaigns.</p>
+                <p>Labels attached to answer options. Used for marketing segmentation and targeted email campaigns.</p>
             </div>
 
             {{-- Full Guide Link --}}

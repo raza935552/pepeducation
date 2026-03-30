@@ -28,9 +28,9 @@
             $friendlyValue = \App\Models\ResultsBank::allHealthGoals()[$condValue] ?? $condValue;
         } else {
             // Try to find the slide and option label
-            $refSlide = $quiz->questions->first(fn($q) => $q->klaviyo_property === $condQuestion);
+            $refSlide = $quiz->questions->first(fn($q) => $q->marketing_property === $condQuestion);
             if ($refSlide && $refSlide->options) {
-                $matchOpt = collect($refSlide->options)->first(fn($o) => ($o['klaviyo_value'] ?? $o['label'] ?? $o['value'] ?? '') === $condValue);
+                $matchOpt = collect($refSlide->options)->first(fn($o) => ($o['marketing_value'] ?? $o['label'] ?? $o['value'] ?? '') === $condValue);
                 if ($matchOpt) {
                     $friendlyValue = $matchOpt['label'] ?? $matchOpt['text'] ?? $condValue;
                 }
@@ -45,10 +45,10 @@
     $hasBrokenRef = false;
     $brokenRefMessage = '';
     if ($condType === 'answer' && $condQuestion) {
-        $hasSlide = $quiz->questions->contains(fn($q) => $q->klaviyo_property === $condQuestion);
+        $hasSlide = $quiz->questions->contains(fn($q) => $q->marketing_property === $condQuestion);
         if (!$hasSlide) {
             $hasBrokenRef = true;
-            $brokenRefMessage = 'No slide has klaviyo_property "' . $condQuestion . '"';
+            $brokenRefMessage = 'No slide has marketing_property "' . $condQuestion . '"';
         }
     }
 

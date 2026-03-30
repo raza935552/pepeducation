@@ -125,8 +125,8 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Klaviyo List ID</label>
-                                    <input type="text" name="klaviyo_list_id" value="{{ $quiz->klaviyo_list_id }}" class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold text-sm">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Marketing List ID</label>
+                                    <input type="text" name="marketing_list_id" value="{{ $quiz->marketing_list_id }}" class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold text-sm">
                                 </div>
                                 <label class="flex items-center gap-2">
                                     <input type="checkbox" name="is_active" value="1" {{ $quiz->is_active ? 'checked' : '' }} class="rounded border-gray-300 text-brand-gold focus:ring-brand-gold">

@@ -85,16 +85,16 @@
             </div>
 
             <div class="card p-6">
-                <h3 class="text-lg font-semibold mb-4">Klaviyo</h3>
+                <h3 class="text-lg font-semibold mb-4">Marketing</h3>
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Event Name</label>
-                        <input type="text" name="klaviyo_event" value="{{ old('klaviyo_event', $leadMagnet?->klaviyo_event ?? 'Downloaded Lead Magnet') }}"
+                        <input type="text" name="marketing_event" value="{{ old('marketing_event', $leadMagnet?->marketing_event ?? 'Downloaded Lead Magnet') }}"
                             class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Property Name</label>
-                        <input type="text" name="klaviyo_property_name" value="{{ old('klaviyo_property_name', $leadMagnet?->klaviyo_property_name) }}"
+                        <input type="text" name="marketing_property_name" value="{{ old('marketing_property_name', $leadMagnet?->marketing_property_name) }}"
                             placeholder="e.g. pp_downloaded_guide"
                             class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
                     </div>

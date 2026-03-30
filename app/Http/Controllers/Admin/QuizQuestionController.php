@@ -31,9 +31,9 @@ class QuizQuestionController extends Controller
             $showConditions = $this->buildSegmentConditions($quiz, $segment);
         }
 
-        $klaviyoProperty = $validated['klaviyo_property'] ?? null;
-        if (empty($klaviyoProperty) && ($validated['slide_type'] ?? '') === 'email_capture') {
-            $klaviyoProperty = 'email';
+        $marketingProperty = $validated['marketing_property'] ?? null;
+        if (empty($marketingProperty) && ($validated['slide_type'] ?? '') === 'email_capture') {
+            $marketingProperty = 'email';
         }
 
         $question = $quiz->questions()->create([
@@ -43,7 +43,7 @@ class QuizQuestionController extends Controller
             'question_type' => $validated['question_type'] ?? 'single_choice',
             'order' => $newOrder,
             'options' => $validated['options'] ?? [],
-            'klaviyo_property' => $klaviyoProperty,
+            'marketing_property' => $marketingProperty,
             'is_required' => $validated['is_required'] ?? true,
             'max_selections' => $validated['max_selections'] ?? null,
             'settings' => $validated['settings'] ?? null,
@@ -70,9 +70,9 @@ class QuizQuestionController extends Controller
     {
         $validated = $request->validate($this->slideRules($request));
 
-        $klaviyoProperty = $validated['klaviyo_property'] ?? null;
-        if (empty($klaviyoProperty) && ($validated['slide_type'] ?? $question->slide_type) === 'email_capture') {
-            $klaviyoProperty = 'email';
+        $marketingProperty = $validated['marketing_property'] ?? null;
+        if (empty($marketingProperty) && ($validated['slide_type'] ?? $question->slide_type) === 'email_capture') {
+            $marketingProperty = 'email';
         }
 
         $question->update([
@@ -81,7 +81,7 @@ class QuizQuestionController extends Controller
             'question_subtext' => $validated['question_subtext'] ?? null,
             'question_type' => $validated['question_type'] ?? $question->question_type,
             'options' => $validated['options'] ?? [],
-            'klaviyo_property' => $klaviyoProperty,
+            'marketing_property' => $marketingProperty,
             'is_required' => $validated['is_required'] ?? true,
             'max_selections' => $validated['max_selections'] ?? null,
             'settings' => $validated['settings'] ?? null,
@@ -174,14 +174,14 @@ class QuizQuestionController extends Controller
             }
         }
 
-        // 3. Outcomes with answer conditions matching this slide's klaviyo_property
-        if ($question->klaviyo_property) {
+        // 3. Outcomes with answer conditions matching this slide's marketing_property
+        if ($question->marketing_property) {
             foreach ($quiz->outcomes as $outcome) {
                 $conditions = $outcome->conditions ?? [];
-                if (($conditions['type'] ?? null) === 'answer' && ($conditions['question'] ?? null) === $question->klaviyo_property) {
+                if (($conditions['type'] ?? null) === 'answer' && ($conditions['question'] ?? null) === $question->marketing_property) {
                     $warnings[] = [
                         'type' => 'outcome',
-                        'message' => 'Outcome "' . $outcome->name . '" has an answer condition on "' . $question->klaviyo_property . '"',
+                        'message' => 'Outcome "' . $outcome->name . '" has an answer condition on "' . $question->marketing_property . '"',
                     ];
                 }
             }
@@ -253,7 +253,7 @@ class QuizQuestionController extends Controller
             ];
             $maxScore = max($scores);
             if ($maxScore > 0 && array_search($maxScore, $scores) === $segment) {
-                $targetValue = $opt['value'] ?? $opt['klaviyo_value'] ?? '';
+                $targetValue = $opt['value'] ?? $opt['marketing_value'] ?? '';
                 break;
             }
         }
@@ -347,7 +347,7 @@ class QuizQuestionController extends Controller
 
         $rules = [
             'slide_type' => "required|string|in:{$validSlideTypes}",
-            'klaviyo_property' => 'nullable|string|max:255',
+            'marketing_property' => 'nullable|string|max:255',
             'insert_after' => 'nullable|integer|min:0',
             'segment' => 'nullable|string|in:shared,tof,mof,bof',
             'is_required' => 'boolean',
@@ -404,7 +404,7 @@ class QuizQuestionController extends Controller
             $rules['options'] = 'required|array|min:2';
             $rules['options.*.value'] = 'required|string';
             $rules['options.*.label'] = 'required|string';
-            $rules['options.*.klaviyo_value'] = 'nullable|string';
+            $rules['options.*.marketing_value'] = 'nullable|string';
             $rules['options.*.score_tof'] = 'nullable|integer';
             $rules['options.*.score_mof'] = 'nullable|integer';
             $rules['options.*.score_bof'] = 'nullable|integer';

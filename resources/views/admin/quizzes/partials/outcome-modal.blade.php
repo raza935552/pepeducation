@@ -1,15 +1,15 @@
 @php
     // Build question data for outcome answer dropdowns (enhanced with friendly labels)
-    // Deduplicate by klaviyo_property — keep the first slide with the most options
+    // Deduplicate by marketing_property — keep the first slide with the most options
     $outcomeSlides = $quiz->questions->sortBy('order')->values()->filter(fn ($q) =>
-        in_array($q->slide_type, ['question', 'question_text']) && $q->klaviyo_property
-    )->unique('klaviyo_property')->map(fn ($q) => [
+        in_array($q->slide_type, ['question', 'question_text']) && $q->marketing_property
+    )->unique('marketing_property')->map(fn ($q) => [
         'id' => $q->id,
-        'klaviyo_property' => $q->klaviyo_property,
+        'marketing_property' => $q->marketing_property,
         'label' => $q->question_text ?: $q->content_title ?: 'Slide #' . $q->order,
-        'friendly_label' => \Str::of($q->klaviyo_property)->replace('_', ' ')->title()->toString() . ' question',
+        'friendly_label' => \Str::of($q->marketing_property)->replace('_', ' ')->title()->toString() . ' question',
         'options' => collect($q->options ?? [])->map(fn ($o) => [
-            'value' => $o['klaviyo_value'] ?? $o['label'] ?? $o['value'] ?? '',
+            'value' => $o['marketing_value'] ?? $o['label'] ?? $o['value'] ?? '',
             'label' => $o['label'] ?? $o['text'] ?? $o['value'] ?? '',
         ])->values()->toArray(),
     ])->values()->toArray();
@@ -239,7 +239,7 @@ function outcomeModal() {
 
         get selectedSlideOptions() {
             if (!this.answerQuestion) return [];
-            const slide = this.slides.find(s => s.klaviyo_property === this.answerQuestion);
+            const slide = this.slides.find(s => s.marketing_property === this.answerQuestion);
             return slide ? slide.options : [];
         },
 
@@ -329,7 +329,7 @@ function outcomeModal() {
             if (!select) return;
             // Build options: blank + each slide
             const needed = [{ value: '', label: 'Select a question...' }];
-            (slides || []).forEach(s => needed.push({ value: s.klaviyo_property, label: s.friendly_label }));
+            (slides || []).forEach(s => needed.push({ value: s.marketing_property, label: s.friendly_label }));
             // Only rebuild if options changed
             const currentKeys = [...select.options].map(o => o.value).join('|');
             const newKeys = needed.map(o => o.value).join('|');

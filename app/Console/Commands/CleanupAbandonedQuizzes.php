@@ -3,15 +3,15 @@
 namespace App\Console\Commands;
 
 use App\Models\QuizResponse;
-use App\Services\Klaviyo\KlaviyoService;
+use App\Services\CustomerIo\CustomerIoService;
 use Illuminate\Console\Command;
 
 class CleanupAbandonedQuizzes extends Command
 {
     protected $signature = 'quiz:cleanup-abandoned {--hours=24 : Mark in-progress responses older than this many hours as abandoned}';
-    protected $description = 'Mark stale in-progress quiz responses as abandoned and fire Klaviyo events';
+    protected $description = 'Mark stale in-progress quiz responses as abandoned and fire Customer.io events';
 
-    public function handle(KlaviyoService $klaviyo): int
+    public function handle(CustomerIoService $customerIo): int
     {
         $hours = (int) $this->option('hours');
         $cutoff = now()->subHours($hours);
@@ -31,19 +31,19 @@ class CleanupAbandonedQuizzes extends Command
             ]);
             $marked++;
 
-            // Fire Klaviyo "Quiz Abandoned" event if subscriber exists
-            if ($response->subscriber && $klaviyo->isEnabled()) {
+            // Fire Customer.io "Quiz Abandoned" event if subscriber exists
+            if ($response->subscriber && $customerIo->isEnabled()) {
                 try {
-                    if ($klaviyo->trackQuizAbandoned($response->subscriber, $response)) {
+                    if ($customerIo->trackQuizAbandoned($response->subscriber, $response)) {
                         $tracked++;
                     }
                 } catch (\Exception $e) {
-                    $this->warn("Klaviyo abandon event failed for response #{$response->id}: {$e->getMessage()}");
+                    $this->warn("Customer.io abandon event failed for response #{$response->id}: {$e->getMessage()}");
                 }
             }
         }
 
-        $this->info("Marked {$marked} stale quiz responses as abandoned (older than {$hours}h). Tracked {$tracked} to Klaviyo.");
+        $this->info("Marked {$marked} stale quiz responses as abandoned (older than {$hours}h). Tracked {$tracked} to Customer.io.");
 
         return self::SUCCESS;
     }

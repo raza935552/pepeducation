@@ -221,7 +221,7 @@ class ResultsBankController extends Controller
     }
 
     /**
-     * Pull health goal options from quiz questions (by klaviyo_property).
+     * Pull health goal options from quiz questions (by marketing_property).
      * Falls back to hardcoded constants if no quiz data exists.
      */
     private function getHealthGoalOptions(): array
@@ -233,7 +233,7 @@ class ResultsBankController extends Controller
     }
 
     /**
-     * Pull experience level options from quiz questions (by klaviyo_property).
+     * Pull experience level options from quiz questions (by marketing_property).
      * Falls back to hardcoded constants if no quiz data exists.
      */
     private function getExperienceLevelOptions(): array
@@ -265,21 +265,21 @@ class ResultsBankController extends Controller
 
     /**
      * Extract unique option value => label pairs from quiz questions
-     * that have the given klaviyo_property.
-     * Uses klaviyo_value as the key (if set) to avoid duplicates from
+     * that have the given marketing_property.
+     * Uses marketing_value as the key (if set) to avoid duplicates from
      * different quiz slides that map to the same underlying value.
      */
-    private function getOptionsFromQuiz(string $klaviyoProperty): array
+    private function getOptionsFromQuiz(string $marketingProperty): array
     {
-        $questions = QuizQuestion::where('klaviyo_property', $klaviyoProperty)
+        $questions = QuizQuestion::where('marketing_property', $marketingProperty)
             ->whereNotNull('options')
             ->get();
 
         $options = [];
         foreach ($questions as $question) {
             foreach ($question->options ?? [] as $option) {
-                // Use klaviyo_value as the canonical key if set, otherwise fall back to value
-                $key = !empty($option['klaviyo_value']) ? $option['klaviyo_value'] : ($option['value'] ?? null);
+                // Use marketing_value as the canonical key if set, otherwise fall back to value
+                $key = !empty($option['marketing_value']) ? $option['marketing_value'] : ($option['value'] ?? null);
                 $label = $option['label'] ?? null;
                 if ($key && $label && !isset($options[$key])) {
                     $options[$key] = $label;

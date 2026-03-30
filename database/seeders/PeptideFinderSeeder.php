@@ -69,24 +69,24 @@ class PeptideFinderSeeder extends Seeder
         $this->slide($quiz, 'gender', [
             'question_text' => 'Which best describes you?',
             'question_subtext' => 'This helps us personalize your peptide recommendations.',
-            'klaviyo_property' => 'gender',
+            'marketing_property' => 'gender',
             'options' => [
-                ['value' => 'male', 'label' => 'Male', 'klaviyo_value' => 'Male', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['male']],
-                ['value' => 'female', 'label' => 'Female', 'klaviyo_value' => 'Female', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['female']],
-                ['value' => 'prefer_not', 'label' => 'Prefer not to say', 'klaviyo_value' => 'Prefer not to say', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'male', 'label' => 'Male', 'marketing_value' => 'Male', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['male']],
+                ['value' => 'female', 'label' => 'Female', 'marketing_value' => 'Female', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['female']],
+                ['value' => 'prefer_not', 'label' => 'Prefer not to say', 'marketing_value' => 'Prefer not to say', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
             ],
         ]);
 
         // 2. Age Range
         $this->slide($quiz, 'age', [
             'question_text' => 'What is your age range?',
-            'klaviyo_property' => 'age_range',
+            'marketing_property' => 'age_range',
             'options' => [
-                ['value' => '18-29', 'label' => '18–29', 'klaviyo_value' => '18-29', 'score_tof' => 2, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['age_18_29']],
-                ['value' => '30-39', 'label' => '30–39', 'klaviyo_value' => '30-39', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['age_30_39']],
-                ['value' => '40-49', 'label' => '40–49', 'klaviyo_value' => '40-49', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 1, 'tags' => ['age_40_49']],
-                ['value' => '50-59', 'label' => '50–59', 'klaviyo_value' => '50-59', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 2, 'tags' => ['age_50_59']],
-                ['value' => '60+', 'label' => '60+', 'klaviyo_value' => '60+', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 2, 'tags' => ['age_60_plus']],
+                ['value' => '18-29', 'label' => '18–29', 'marketing_value' => '18-29', 'score_tof' => 2, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['age_18_29']],
+                ['value' => '30-39', 'label' => '30–39', 'marketing_value' => '30-39', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['age_30_39']],
+                ['value' => '40-49', 'label' => '40–49', 'marketing_value' => '40-49', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 1, 'tags' => ['age_40_49']],
+                ['value' => '50-59', 'label' => '50–59', 'marketing_value' => '50-59', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 2, 'tags' => ['age_50_59']],
+                ['value' => '60+', 'label' => '60+', 'marketing_value' => '60+', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 2, 'tags' => ['age_60_plus']],
             ],
         ]);
 
@@ -94,15 +94,15 @@ class PeptideFinderSeeder extends Seeder
         $this->slide($quiz, 'health_goal', [
             'question_text' => 'What is your #1 health goal right now?',
             'question_subtext' => 'Choose the one that matters most to you.',
-            'klaviyo_property' => 'health_goal',
+            'marketing_property' => 'health_goal',
             'options' => [
-                ['value' => 'fat_loss', 'label' => 'Lose weight / burn fat', 'klaviyo_value' => 'Fat Loss', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_weight_loss']],
-                ['value' => 'muscle_growth', 'label' => 'Build muscle / recover faster', 'klaviyo_value' => 'Muscle Growth', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_muscle_growth']],
-                ['value' => 'anti_aging', 'label' => 'Anti-aging / longevity', 'klaviyo_value' => 'Anti-Aging', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_anti_aging']],
-                ['value' => 'cognitive', 'label' => 'Mental clarity / focus', 'klaviyo_value' => 'Cognitive', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_cognitive']],
-                ['value' => 'injury_recovery', 'label' => 'Heal an injury / joint pain', 'klaviyo_value' => 'Injury Recovery', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_injury_recovery']],
-                ['value' => 'sleep', 'label' => 'Better sleep', 'klaviyo_value' => 'Sleep', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_sleep']],
-                ['value' => 'general_wellness', 'label' => 'Overall health & wellness', 'klaviyo_value' => 'General Wellness', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_general_wellness']],
+                ['value' => 'fat_loss', 'label' => 'Lose weight / burn fat', 'marketing_value' => 'Fat Loss', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_weight_loss']],
+                ['value' => 'muscle_growth', 'label' => 'Build muscle / recover faster', 'marketing_value' => 'Muscle Growth', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_muscle_growth']],
+                ['value' => 'anti_aging', 'label' => 'Anti-aging / longevity', 'marketing_value' => 'Anti-Aging', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_anti_aging']],
+                ['value' => 'cognitive', 'label' => 'Mental clarity / focus', 'marketing_value' => 'Cognitive', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_cognitive']],
+                ['value' => 'injury_recovery', 'label' => 'Heal an injury / joint pain', 'marketing_value' => 'Injury Recovery', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_injury_recovery']],
+                ['value' => 'sleep', 'label' => 'Better sleep', 'marketing_value' => 'Sleep', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_sleep']],
+                ['value' => 'general_wellness', 'label' => 'Overall health & wellness', 'marketing_value' => 'General Wellness', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_general_wellness']],
             ],
         ]);
 
@@ -118,51 +118,51 @@ class PeptideFinderSeeder extends Seeder
         $this->slide($quiz, 'secondary_goal', [
             'question_text' => 'What\'s your second most important health goal?',
             'question_subtext' => 'Many peptides address multiple goals.',
-            'klaviyo_property' => 'secondary_goal',
+            'marketing_property' => 'secondary_goal',
             'options' => [
-                ['value' => 'fat_loss', 'label' => 'Weight management', 'klaviyo_value' => 'Fat Loss', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_weight_loss']],
-                ['value' => 'muscle_growth', 'label' => 'Muscle & recovery', 'klaviyo_value' => 'Muscle Growth', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_muscle_growth']],
-                ['value' => 'anti_aging', 'label' => 'Anti-aging', 'klaviyo_value' => 'Anti-Aging', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_anti_aging']],
-                ['value' => 'immune', 'label' => 'Immune support', 'klaviyo_value' => 'Immune', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_immune']],
-                ['value' => 'sexual_health', 'label' => 'Sexual health', 'klaviyo_value' => 'Sexual Health', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_sexual_health']],
-                ['value' => 'gut_health', 'label' => 'Gut health', 'klaviyo_value' => 'Gut Health', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_gut_health']],
-                ['value' => 'none', 'label' => 'Just focusing on one goal', 'klaviyo_value' => 'None', 'score_tof' => 2, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'fat_loss', 'label' => 'Weight management', 'marketing_value' => 'Fat Loss', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_weight_loss']],
+                ['value' => 'muscle_growth', 'label' => 'Muscle & recovery', 'marketing_value' => 'Muscle Growth', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_muscle_growth']],
+                ['value' => 'anti_aging', 'label' => 'Anti-aging', 'marketing_value' => 'Anti-Aging', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_anti_aging']],
+                ['value' => 'immune', 'label' => 'Immune support', 'marketing_value' => 'Immune', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_immune']],
+                ['value' => 'sexual_health', 'label' => 'Sexual health', 'marketing_value' => 'Sexual Health', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_sexual_health']],
+                ['value' => 'gut_health', 'label' => 'Gut health', 'marketing_value' => 'Gut Health', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_gut_health']],
+                ['value' => 'none', 'label' => 'Just focusing on one goal', 'marketing_value' => 'None', 'score_tof' => 2, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
             ],
         ]);
 
         // 6. Current Health Rating
         $this->slide($quiz, 'health_rating', [
             'question_text' => 'How would you rate your overall health right now?',
-            'klaviyo_property' => 'health_rating',
+            'marketing_property' => 'health_rating',
             'options' => [
-                ['value' => 'excellent', 'label' => 'Excellent — I\'m optimizing', 'klaviyo_value' => 'Excellent', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3, 'tags' => ['high_intent']],
-                ['value' => 'good', 'label' => 'Good — but could be better', 'klaviyo_value' => 'Good', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['researching']],
-                ['value' => 'fair', 'label' => 'Fair — dealing with some issues', 'klaviyo_value' => 'Fair', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['needs_education']],
-                ['value' => 'poor', 'label' => 'Poor — need significant help', 'klaviyo_value' => 'Poor', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['needs_education']],
+                ['value' => 'excellent', 'label' => 'Excellent — I\'m optimizing', 'marketing_value' => 'Excellent', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3, 'tags' => ['high_intent']],
+                ['value' => 'good', 'label' => 'Good — but could be better', 'marketing_value' => 'Good', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['researching']],
+                ['value' => 'fair', 'label' => 'Fair — dealing with some issues', 'marketing_value' => 'Fair', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['needs_education']],
+                ['value' => 'poor', 'label' => 'Poor — need significant help', 'marketing_value' => 'Poor', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['needs_education']],
             ],
         ]);
 
         // 7. Exercise Frequency
         $this->slide($quiz, 'exercise_freq', [
             'question_text' => 'How often do you exercise?',
-            'klaviyo_property' => 'exercise_frequency',
+            'marketing_property' => 'exercise_frequency',
             'options' => [
-                ['value' => 'daily', 'label' => 'Daily or almost daily', 'klaviyo_value' => 'Daily', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 2, 'tags' => ['interested_muscle_growth']],
-                ['value' => '3-5x', 'label' => '3–5 times per week', 'klaviyo_value' => '3-5x', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => []],
-                ['value' => '1-2x', 'label' => '1–2 times per week', 'klaviyo_value' => '1-2x', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => []],
-                ['value' => 'rarely', 'label' => 'Rarely or never', 'klaviyo_value' => 'Rarely', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['just_curious']],
+                ['value' => 'daily', 'label' => 'Daily or almost daily', 'marketing_value' => 'Daily', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 2, 'tags' => ['interested_muscle_growth']],
+                ['value' => '3-5x', 'label' => '3–5 times per week', 'marketing_value' => '3-5x', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => []],
+                ['value' => '1-2x', 'label' => '1–2 times per week', 'marketing_value' => '1-2x', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'rarely', 'label' => 'Rarely or never', 'marketing_value' => 'Rarely', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['just_curious']],
             ],
         ]);
 
         // 8. Diet Quality
         $this->slide($quiz, 'diet', [
             'question_text' => 'How would you describe your diet?',
-            'klaviyo_property' => 'diet_quality',
+            'marketing_property' => 'diet_quality',
             'options' => [
-                ['value' => 'strict', 'label' => 'Very strict — macros, meal prep, supplements', 'klaviyo_value' => 'Strict', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['high_intent']],
-                ['value' => 'balanced', 'label' => 'Balanced — mostly healthy choices', 'klaviyo_value' => 'Balanced', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['researching']],
-                ['value' => 'inconsistent', 'label' => 'Inconsistent — on and off', 'klaviyo_value' => 'Inconsistent', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['needs_education']],
-                ['value' => 'poor', 'label' => 'Not great — working on it', 'klaviyo_value' => 'Poor', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['just_curious']],
+                ['value' => 'strict', 'label' => 'Very strict — macros, meal prep, supplements', 'marketing_value' => 'Strict', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['high_intent']],
+                ['value' => 'balanced', 'label' => 'Balanced — mostly healthy choices', 'marketing_value' => 'Balanced', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['researching']],
+                ['value' => 'inconsistent', 'label' => 'Inconsistent — on and off', 'marketing_value' => 'Inconsistent', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['needs_education']],
+                ['value' => 'poor', 'label' => 'Not great — working on it', 'marketing_value' => 'Poor', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['just_curious']],
             ],
         ]);
 
@@ -172,13 +172,13 @@ class PeptideFinderSeeder extends Seeder
             'question_subtext' => 'Select all that apply.',
             'question_type' => QuizQuestion::TYPE_MULTIPLE,
             'max_selections' => 5,
-            'klaviyo_property' => 'current_supplements',
+            'marketing_property' => 'current_supplements',
             'options' => [
-                ['value' => 'vitamins', 'label' => 'Vitamins & minerals', 'klaviyo_value' => 'Vitamins', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
-                ['value' => 'protein', 'label' => 'Protein powder / creatine', 'klaviyo_value' => 'Protein', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 1, 'tags' => ['interested_muscle_growth']],
-                ['value' => 'hrt', 'label' => 'Hormone replacement (TRT/HRT)', 'klaviyo_value' => 'HRT', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['advanced', 'high_intent']],
-                ['value' => 'peptides', 'label' => 'Already using peptides', 'klaviyo_value' => 'Peptides', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5, 'tags' => ['advanced', 'wants_to_add']],
-                ['value' => 'nothing', 'label' => 'Nothing currently', 'klaviyo_value' => 'Nothing', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner']],
+                ['value' => 'vitamins', 'label' => 'Vitamins & minerals', 'marketing_value' => 'Vitamins', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'protein', 'label' => 'Protein powder / creatine', 'marketing_value' => 'Protein', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 1, 'tags' => ['interested_muscle_growth']],
+                ['value' => 'hrt', 'label' => 'Hormone replacement (TRT/HRT)', 'marketing_value' => 'HRT', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['advanced', 'high_intent']],
+                ['value' => 'peptides', 'label' => 'Already using peptides', 'marketing_value' => 'Peptides', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5, 'tags' => ['advanced', 'wants_to_add']],
+                ['value' => 'nothing', 'label' => 'Nothing currently', 'marketing_value' => 'Nothing', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner']],
             ],
         ]);
 
@@ -194,36 +194,36 @@ class PeptideFinderSeeder extends Seeder
         // 11. Sleep Quality
         $this->slide($quiz, 'sleep_quality', [
             'question_text' => 'How is your sleep quality?',
-            'klaviyo_property' => 'sleep_quality',
+            'marketing_property' => 'sleep_quality',
             'options' => [
-                ['value' => 'great', 'label' => 'Great — 7-9 hours of deep sleep', 'klaviyo_value' => 'Great', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 1, 'tags' => []],
-                ['value' => 'ok', 'label' => 'Okay — could be better', 'klaviyo_value' => 'Okay', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_sleep']],
-                ['value' => 'poor', 'label' => 'Poor — I struggle to sleep well', 'klaviyo_value' => 'Poor', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_sleep']],
-                ['value' => 'terrible', 'label' => 'Terrible — chronic insomnia', 'klaviyo_value' => 'Terrible', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_sleep', 'needs_education']],
+                ['value' => 'great', 'label' => 'Great — 7-9 hours of deep sleep', 'marketing_value' => 'Great', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 1, 'tags' => []],
+                ['value' => 'ok', 'label' => 'Okay — could be better', 'marketing_value' => 'Okay', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_sleep']],
+                ['value' => 'poor', 'label' => 'Poor — I struggle to sleep well', 'marketing_value' => 'Poor', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_sleep']],
+                ['value' => 'terrible', 'label' => 'Terrible — chronic insomnia', 'marketing_value' => 'Terrible', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_sleep', 'needs_education']],
             ],
         ]);
 
         // 12. Stress Level
         $this->slide($quiz, 'stress_level', [
             'question_text' => 'How would you rate your daily stress level?',
-            'klaviyo_property' => 'stress_level',
+            'marketing_property' => 'stress_level',
             'options' => [
-                ['value' => 'low', 'label' => 'Low — I manage it well', 'klaviyo_value' => 'Low', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 1, 'tags' => []],
-                ['value' => 'moderate', 'label' => 'Moderate — comes and goes', 'klaviyo_value' => 'Moderate', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_cognitive']],
-                ['value' => 'high', 'label' => 'High — it affects my health', 'klaviyo_value' => 'High', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_cognitive', 'interested_sleep']],
-                ['value' => 'extreme', 'label' => 'Extreme — burnout territory', 'klaviyo_value' => 'Extreme', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['needs_education']],
+                ['value' => 'low', 'label' => 'Low — I manage it well', 'marketing_value' => 'Low', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 1, 'tags' => []],
+                ['value' => 'moderate', 'label' => 'Moderate — comes and goes', 'marketing_value' => 'Moderate', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_cognitive']],
+                ['value' => 'high', 'label' => 'High — it affects my health', 'marketing_value' => 'High', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_cognitive', 'interested_sleep']],
+                ['value' => 'extreme', 'label' => 'Extreme — burnout territory', 'marketing_value' => 'Extreme', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['needs_education']],
             ],
         ]);
 
         // 13. Energy Level
         $this->slide($quiz, 'energy_level', [
             'question_text' => 'How are your energy levels throughout the day?',
-            'klaviyo_property' => 'energy_level',
+            'marketing_property' => 'energy_level',
             'options' => [
-                ['value' => 'high', 'label' => 'High — sustained all day', 'klaviyo_value' => 'High', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 2, 'tags' => ['high_intent']],
-                ['value' => 'moderate', 'label' => 'Moderate — afternoon crashes', 'klaviyo_value' => 'Moderate', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_cognitive']],
-                ['value' => 'low', 'label' => 'Low — fatigued often', 'klaviyo_value' => 'Low', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['needs_education']],
-                ['value' => 'variable', 'label' => 'All over the place', 'klaviyo_value' => 'Variable', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_general_wellness']],
+                ['value' => 'high', 'label' => 'High — sustained all day', 'marketing_value' => 'High', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 2, 'tags' => ['high_intent']],
+                ['value' => 'moderate', 'label' => 'Moderate — afternoon crashes', 'marketing_value' => 'Moderate', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_cognitive']],
+                ['value' => 'low', 'label' => 'Low — fatigued often', 'marketing_value' => 'Low', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['needs_education']],
+                ['value' => 'variable', 'label' => 'All over the place', 'marketing_value' => 'Variable', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_general_wellness']],
             ],
         ]);
 
@@ -233,26 +233,26 @@ class PeptideFinderSeeder extends Seeder
             'question_subtext' => 'Select all that apply. This helps us recommend safely.',
             'question_type' => QuizQuestion::TYPE_MULTIPLE,
             'max_selections' => 5,
-            'klaviyo_property' => 'medical_conditions',
+            'marketing_property' => 'medical_conditions',
             'options' => [
-                ['value' => 'joint_pain', 'label' => 'Joint pain or arthritis', 'klaviyo_value' => 'Joint Pain', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_injury_recovery']],
-                ['value' => 'gut_issues', 'label' => 'Digestive / gut issues', 'klaviyo_value' => 'Gut Issues', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_gut_health']],
-                ['value' => 'brain_fog', 'label' => 'Brain fog / poor concentration', 'klaviyo_value' => 'Brain Fog', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_cognitive']],
-                ['value' => 'weight', 'label' => 'Weight management struggles', 'klaviyo_value' => 'Weight', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_weight_loss']],
-                ['value' => 'none', 'label' => 'None of the above', 'klaviyo_value' => 'None', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 1, 'tags' => ['interested_general_wellness']],
+                ['value' => 'joint_pain', 'label' => 'Joint pain or arthritis', 'marketing_value' => 'Joint Pain', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_injury_recovery']],
+                ['value' => 'gut_issues', 'label' => 'Digestive / gut issues', 'marketing_value' => 'Gut Issues', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_gut_health']],
+                ['value' => 'brain_fog', 'label' => 'Brain fog / poor concentration', 'marketing_value' => 'Brain Fog', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_cognitive']],
+                ['value' => 'weight', 'label' => 'Weight management struggles', 'marketing_value' => 'Weight', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_weight_loss']],
+                ['value' => 'none', 'label' => 'None of the above', 'marketing_value' => 'None', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 1, 'tags' => ['interested_general_wellness']],
             ],
         ]);
 
         // 15. Motivation Source
         $this->slide($quiz, 'motivation', [
             'question_text' => 'What motivated you to explore peptides?',
-            'klaviyo_property' => 'motivation_source',
+            'marketing_property' => 'motivation_source',
             'options' => [
-                ['value' => 'social_media', 'label' => 'Saw it on social media / podcast', 'klaviyo_value' => 'Social Media', 'score_tof' => 4, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['just_curious', 'beginner']],
-                ['value' => 'doctor', 'label' => 'Doctor or healthcare provider mentioned it', 'klaviyo_value' => 'Doctor', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 3, 'tags' => ['high_intent']],
-                ['value' => 'friend', 'label' => 'Friend or family recommended', 'klaviyo_value' => 'Friend', 'score_tof' => 2, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['researching']],
-                ['value' => 'research', 'label' => 'My own research', 'klaviyo_value' => 'Research', 'score_tof' => 0, 'score_mof' => 4, 'score_bof' => 1, 'tags' => ['researching']],
-                ['value' => 'already_using', 'label' => 'Already using — want to optimize', 'klaviyo_value' => 'Already Using', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5, 'tags' => ['advanced', 'wants_to_upgrade']],
+                ['value' => 'social_media', 'label' => 'Saw it on social media / podcast', 'marketing_value' => 'Social Media', 'score_tof' => 4, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['just_curious', 'beginner']],
+                ['value' => 'doctor', 'label' => 'Doctor or healthcare provider mentioned it', 'marketing_value' => 'Doctor', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 3, 'tags' => ['high_intent']],
+                ['value' => 'friend', 'label' => 'Friend or family recommended', 'marketing_value' => 'Friend', 'score_tof' => 2, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['researching']],
+                ['value' => 'research', 'label' => 'My own research', 'marketing_value' => 'Research', 'score_tof' => 0, 'score_mof' => 4, 'score_bof' => 1, 'tags' => ['researching']],
+                ['value' => 'already_using', 'label' => 'Already using — want to optimize', 'marketing_value' => 'Already Using', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5, 'tags' => ['advanced', 'wants_to_upgrade']],
             ],
         ]);
 
@@ -267,36 +267,36 @@ class PeptideFinderSeeder extends Seeder
         // 17. Lifestyle Type
         $this->slide($quiz, 'lifestyle', [
             'question_text' => 'Which best describes your lifestyle?',
-            'klaviyo_property' => 'lifestyle_type',
+            'marketing_property' => 'lifestyle_type',
             'options' => [
-                ['value' => 'athlete', 'label' => 'Competitive athlete / bodybuilder', 'klaviyo_value' => 'Athlete', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['advanced', 'interested_muscle_growth']],
-                ['value' => 'active', 'label' => 'Active professional — gym, outdoor sports', 'klaviyo_value' => 'Active', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['intermediate']],
-                ['value' => 'desk', 'label' => 'Desk job — sedentary most of the day', 'klaviyo_value' => 'Desk Job', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['beginner']],
-                ['value' => 'busy_parent', 'label' => 'Busy parent — no time for self', 'klaviyo_value' => 'Busy Parent', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner', 'needs_education']],
+                ['value' => 'athlete', 'label' => 'Competitive athlete / bodybuilder', 'marketing_value' => 'Athlete', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['advanced', 'interested_muscle_growth']],
+                ['value' => 'active', 'label' => 'Active professional — gym, outdoor sports', 'marketing_value' => 'Active', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['intermediate']],
+                ['value' => 'desk', 'label' => 'Desk job — sedentary most of the day', 'marketing_value' => 'Desk Job', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['beginner']],
+                ['value' => 'busy_parent', 'label' => 'Busy parent — no time for self', 'marketing_value' => 'Busy Parent', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner', 'needs_education']],
             ],
         ]);
 
         // 18. Recovery Needs
         $this->slide($quiz, 'recovery_needs', [
             'question_text' => 'Do you have any recovery or healing needs?',
-            'klaviyo_property' => 'recovery_needs',
+            'marketing_property' => 'recovery_needs',
             'options' => [
-                ['value' => 'post_surgery', 'label' => 'Recovering from surgery', 'klaviyo_value' => 'Post Surgery', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['interested_injury_recovery', 'interested_bpc157']],
-                ['value' => 'sports_injury', 'label' => 'Sports or workout injury', 'klaviyo_value' => 'Sports Injury', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['interested_injury_recovery', 'interested_tb500']],
-                ['value' => 'chronic_pain', 'label' => 'Chronic pain or inflammation', 'klaviyo_value' => 'Chronic Pain', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_injury_recovery', 'interested_bpc157']],
-                ['value' => 'no', 'label' => 'No — just optimizing', 'klaviyo_value' => 'No', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 1, 'tags' => ['interested_general_wellness']],
+                ['value' => 'post_surgery', 'label' => 'Recovering from surgery', 'marketing_value' => 'Post Surgery', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['interested_injury_recovery', 'interested_bpc157']],
+                ['value' => 'sports_injury', 'label' => 'Sports or workout injury', 'marketing_value' => 'Sports Injury', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['interested_injury_recovery', 'interested_tb500']],
+                ['value' => 'chronic_pain', 'label' => 'Chronic pain or inflammation', 'marketing_value' => 'Chronic Pain', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_injury_recovery', 'interested_bpc157']],
+                ['value' => 'no', 'label' => 'No — just optimizing', 'marketing_value' => 'No', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 1, 'tags' => ['interested_general_wellness']],
             ],
         ]);
 
         // 19. How Soon Do You Want Results?
         $this->slide($quiz, 'timeline', [
             'question_text' => 'How soon do you want to see results?',
-            'klaviyo_property' => 'result_timeline',
+            'marketing_property' => 'result_timeline',
             'options' => [
-                ['value' => 'asap', 'label' => 'As soon as possible', 'klaviyo_value' => 'ASAP', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 4, 'tags' => ['high_intent', 'ready_to_buy']],
-                ['value' => '1-3_months', 'label' => 'Within 1–3 months', 'klaviyo_value' => '1-3 Months', 'score_tof' => 0, 'score_mof' => 3, 'score_bof' => 1, 'tags' => ['researching']],
-                ['value' => 'no_rush', 'label' => 'No rush — just exploring', 'klaviyo_value' => 'No Rush', 'score_tof' => 4, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['just_curious']],
-                ['value' => 'already_started', 'label' => 'Already started — want to adjust', 'klaviyo_value' => 'Already Started', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 4, 'tags' => ['advanced', 'wants_to_upgrade']],
+                ['value' => 'asap', 'label' => 'As soon as possible', 'marketing_value' => 'ASAP', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 4, 'tags' => ['high_intent', 'ready_to_buy']],
+                ['value' => '1-3_months', 'label' => 'Within 1–3 months', 'marketing_value' => '1-3 Months', 'score_tof' => 0, 'score_mof' => 3, 'score_bof' => 1, 'tags' => ['researching']],
+                ['value' => 'no_rush', 'label' => 'No rush — just exploring', 'marketing_value' => 'No Rush', 'score_tof' => 4, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['just_curious']],
+                ['value' => 'already_started', 'label' => 'Already started — want to adjust', 'marketing_value' => 'Already Started', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 4, 'tags' => ['advanced', 'wants_to_upgrade']],
             ],
         ]);
 
@@ -306,7 +306,7 @@ class PeptideFinderSeeder extends Seeder
             'question_text' => 'What concerns you most about your health right now?',
             'question_subtext' => 'Tell us in your own words — this helps personalize your recommendation.',
             'question_type' => QuizQuestion::TYPE_TEXT,
-            'klaviyo_property' => 'health_concerns_text',
+            'marketing_property' => 'health_concerns_text',
             'settings' => ['placeholder' => 'e.g., I\'ve been dealing with low energy and joint pain for months...'],
             'is_required' => false,
         ]);
@@ -322,26 +322,26 @@ class PeptideFinderSeeder extends Seeder
             'question_subtext' => 'Select all that apply.',
             'question_type' => QuizQuestion::TYPE_MULTIPLE,
             'max_selections' => 6,
-            'klaviyo_property' => 'symptoms',
+            'marketing_property' => 'symptoms',
             'options' => [
-                ['value' => 'fatigue', 'label' => 'Chronic fatigue', 'klaviyo_value' => 'Fatigue', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_general_wellness']],
-                ['value' => 'joint_pain', 'label' => 'Joint or muscle pain', 'klaviyo_value' => 'Joint Pain', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['interested_injury_recovery', 'interested_bpc157']],
-                ['value' => 'brain_fog', 'label' => 'Brain fog', 'klaviyo_value' => 'Brain Fog', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_cognitive', 'interested_semax']],
-                ['value' => 'weight_gain', 'label' => 'Unexplained weight gain', 'klaviyo_value' => 'Weight Gain', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_weight_loss', 'interested_tirzepatide']],
-                ['value' => 'low_libido', 'label' => 'Low libido', 'klaviyo_value' => 'Low Libido', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_sexual_health', 'interested_pt141']],
-                ['value' => 'none', 'label' => 'None of these', 'klaviyo_value' => 'None', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 1, 'tags' => []],
+                ['value' => 'fatigue', 'label' => 'Chronic fatigue', 'marketing_value' => 'Fatigue', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_general_wellness']],
+                ['value' => 'joint_pain', 'label' => 'Joint or muscle pain', 'marketing_value' => 'Joint Pain', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['interested_injury_recovery', 'interested_bpc157']],
+                ['value' => 'brain_fog', 'label' => 'Brain fog', 'marketing_value' => 'Brain Fog', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_cognitive', 'interested_semax']],
+                ['value' => 'weight_gain', 'label' => 'Unexplained weight gain', 'marketing_value' => 'Weight Gain', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_weight_loss', 'interested_tirzepatide']],
+                ['value' => 'low_libido', 'label' => 'Low libido', 'marketing_value' => 'Low Libido', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_sexual_health', 'interested_pt141']],
+                ['value' => 'none', 'label' => 'None of these', 'marketing_value' => 'None', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 1, 'tags' => []],
             ],
         ]);
 
         // 22. Pain Scale
         $this->slide($quiz, 'pain_scale', [
             'question_text' => 'On a scale of 1-10, how much does pain affect your daily life?',
-            'klaviyo_property' => 'pain_scale',
+            'marketing_property' => 'pain_scale',
             'options' => [
-                ['value' => '1-3', 'label' => '1–3 (Minimal)', 'klaviyo_value' => 'Minimal', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 1, 'tags' => []],
-                ['value' => '4-6', 'label' => '4–6 (Moderate)', 'klaviyo_value' => 'Moderate', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_injury_recovery']],
-                ['value' => '7-9', 'label' => '7–9 (Severe)', 'klaviyo_value' => 'Severe', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['interested_injury_recovery', 'interested_bpc157']],
-                ['value' => '10', 'label' => '10 (Debilitating)', 'klaviyo_value' => 'Debilitating', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3, 'tags' => ['interested_injury_recovery', 'high_intent']],
+                ['value' => '1-3', 'label' => '1–3 (Minimal)', 'marketing_value' => 'Minimal', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 1, 'tags' => []],
+                ['value' => '4-6', 'label' => '4–6 (Moderate)', 'marketing_value' => 'Moderate', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_injury_recovery']],
+                ['value' => '7-9', 'label' => '7–9 (Severe)', 'marketing_value' => 'Severe', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['interested_injury_recovery', 'interested_bpc157']],
+                ['value' => '10', 'label' => '10 (Debilitating)', 'marketing_value' => 'Debilitating', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3, 'tags' => ['interested_injury_recovery', 'high_intent']],
             ],
         ]);
 
@@ -357,37 +357,37 @@ class PeptideFinderSeeder extends Seeder
         // 24. Cognitive Function
         $this->slide($quiz, 'cognitive_function', [
             'question_text' => 'How sharp is your mental focus and memory?',
-            'klaviyo_property' => 'cognitive_function',
+            'marketing_property' => 'cognitive_function',
             'options' => [
-                ['value' => 'sharp', 'label' => 'Sharp — I want to get even better', 'klaviyo_value' => 'Sharp', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 2, 'tags' => ['interested_cognitive', 'high_intent']],
-                ['value' => 'declining', 'label' => 'Noticeably declining', 'klaviyo_value' => 'Declining', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_cognitive', 'interested_semax']],
-                ['value' => 'struggling', 'label' => 'Really struggling', 'klaviyo_value' => 'Struggling', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_cognitive', 'needs_education']],
-                ['value' => 'fine', 'label' => 'Fine — not my main concern', 'klaviyo_value' => 'Fine', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'sharp', 'label' => 'Sharp — I want to get even better', 'marketing_value' => 'Sharp', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 2, 'tags' => ['interested_cognitive', 'high_intent']],
+                ['value' => 'declining', 'label' => 'Noticeably declining', 'marketing_value' => 'Declining', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_cognitive', 'interested_semax']],
+                ['value' => 'struggling', 'label' => 'Really struggling', 'marketing_value' => 'Struggling', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_cognitive', 'needs_education']],
+                ['value' => 'fine', 'label' => 'Fine — not my main concern', 'marketing_value' => 'Fine', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => []],
             ],
         ]);
 
         // 25. Weight Management Approach
         $this->slide($quiz, 'weight_approach', [
             'question_text' => 'What has your weight management journey been like?',
-            'klaviyo_property' => 'weight_approach',
+            'marketing_property' => 'weight_approach',
             'options' => [
-                ['value' => 'tried_everything', 'label' => 'Tried everything — nothing sticks', 'klaviyo_value' => 'Tried Everything', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['interested_weight_loss', 'interested_tirzepatide']],
-                ['value' => 'need_boost', 'label' => 'On track but need a boost', 'klaviyo_value' => 'Need Boost', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['interested_weight_loss', 'interested_semaglutide']],
-                ['value' => 'just_starting', 'label' => 'Just starting my weight loss journey', 'klaviyo_value' => 'Just Starting', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_weight_loss', 'beginner']],
-                ['value' => 'not_relevant', 'label' => 'Weight isn\'t my concern', 'klaviyo_value' => 'Not Relevant', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'tried_everything', 'label' => 'Tried everything — nothing sticks', 'marketing_value' => 'Tried Everything', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['interested_weight_loss', 'interested_tirzepatide']],
+                ['value' => 'need_boost', 'label' => 'On track but need a boost', 'marketing_value' => 'Need Boost', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['interested_weight_loss', 'interested_semaglutide']],
+                ['value' => 'just_starting', 'label' => 'Just starting my weight loss journey', 'marketing_value' => 'Just Starting', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_weight_loss', 'beginner']],
+                ['value' => 'not_relevant', 'label' => 'Weight isn\'t my concern', 'marketing_value' => 'Not Relevant', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 0, 'tags' => []],
             ],
         ]);
 
         // 26. Aging Concerns
         $this->slide($quiz, 'aging_concerns', [
             'question_text' => 'Which aging-related concern matters most to you?',
-            'klaviyo_property' => 'aging_concern',
+            'marketing_property' => 'aging_concern',
             'options' => [
-                ['value' => 'skin', 'label' => 'Skin aging, wrinkles', 'klaviyo_value' => 'Skin', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_anti_aging', 'interested_ghk_cu']],
-                ['value' => 'energy', 'label' => 'Loss of energy and vitality', 'klaviyo_value' => 'Energy', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_anti_aging', 'interested_cjc1295_ipamorelin']],
-                ['value' => 'hormonal', 'label' => 'Hormonal decline', 'klaviyo_value' => 'Hormonal', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3, 'tags' => ['interested_anti_aging', 'advanced']],
-                ['value' => 'cellular', 'label' => 'Cellular aging / telomeres', 'klaviyo_value' => 'Cellular', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['interested_anti_aging', 'interested_epithalon']],
-                ['value' => 'not_concerned', 'label' => 'Not my main concern', 'klaviyo_value' => 'Not Concerned', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'skin', 'label' => 'Skin aging, wrinkles', 'marketing_value' => 'Skin', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_anti_aging', 'interested_ghk_cu']],
+                ['value' => 'energy', 'label' => 'Loss of energy and vitality', 'marketing_value' => 'Energy', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_anti_aging', 'interested_cjc1295_ipamorelin']],
+                ['value' => 'hormonal', 'label' => 'Hormonal decline', 'marketing_value' => 'Hormonal', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3, 'tags' => ['interested_anti_aging', 'advanced']],
+                ['value' => 'cellular', 'label' => 'Cellular aging / telomeres', 'marketing_value' => 'Cellular', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['interested_anti_aging', 'interested_epithalon']],
+                ['value' => 'not_concerned', 'label' => 'Not my main concern', 'marketing_value' => 'Not Concerned', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
             ],
         ]);
 
@@ -403,36 +403,36 @@ class PeptideFinderSeeder extends Seeder
         // 28. Immune System
         $this->slide($quiz, 'immune_system', [
             'question_text' => 'How often do you get sick?',
-            'klaviyo_property' => 'immune_strength',
+            'marketing_property' => 'immune_strength',
             'options' => [
-                ['value' => 'rarely', 'label' => 'Rarely — strong immune system', 'klaviyo_value' => 'Rarely', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 1, 'tags' => []],
-                ['value' => 'occasionally', 'label' => 'Occasionally — a few times a year', 'klaviyo_value' => 'Occasionally', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_immune']],
-                ['value' => 'frequently', 'label' => 'Frequently — always catching something', 'klaviyo_value' => 'Frequently', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_immune', 'interested_thymosin_alpha1']],
-                ['value' => 'compromised', 'label' => 'I have an autoimmune condition', 'klaviyo_value' => 'Compromised', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['interested_immune', 'interested_thymosin_alpha1']],
+                ['value' => 'rarely', 'label' => 'Rarely — strong immune system', 'marketing_value' => 'Rarely', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 1, 'tags' => []],
+                ['value' => 'occasionally', 'label' => 'Occasionally — a few times a year', 'marketing_value' => 'Occasionally', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_immune']],
+                ['value' => 'frequently', 'label' => 'Frequently — always catching something', 'marketing_value' => 'Frequently', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_immune', 'interested_thymosin_alpha1']],
+                ['value' => 'compromised', 'label' => 'I have an autoimmune condition', 'marketing_value' => 'Compromised', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['interested_immune', 'interested_thymosin_alpha1']],
             ],
         ]);
 
         // 29. Gut Health
         $this->slide($quiz, 'gut_health', [
             'question_text' => 'How would you describe your digestive health?',
-            'klaviyo_property' => 'gut_health',
+            'marketing_property' => 'gut_health',
             'options' => [
-                ['value' => 'great', 'label' => 'Great — no issues', 'klaviyo_value' => 'Great', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 1, 'tags' => []],
-                ['value' => 'bloating', 'label' => 'Frequent bloating or discomfort', 'klaviyo_value' => 'Bloating', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_gut_health', 'interested_bpc157']],
-                ['value' => 'ibs', 'label' => 'IBS or similar condition', 'klaviyo_value' => 'IBS', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['interested_gut_health', 'interested_bpc157']],
-                ['value' => 'leaky_gut', 'label' => 'Leaky gut / food sensitivities', 'klaviyo_value' => 'Leaky Gut', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['interested_gut_health', 'interested_bpc157']],
+                ['value' => 'great', 'label' => 'Great — no issues', 'marketing_value' => 'Great', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 1, 'tags' => []],
+                ['value' => 'bloating', 'label' => 'Frequent bloating or discomfort', 'marketing_value' => 'Bloating', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_gut_health', 'interested_bpc157']],
+                ['value' => 'ibs', 'label' => 'IBS or similar condition', 'marketing_value' => 'IBS', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['interested_gut_health', 'interested_bpc157']],
+                ['value' => 'leaky_gut', 'label' => 'Leaky gut / food sensitivities', 'marketing_value' => 'Leaky Gut', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['interested_gut_health', 'interested_bpc157']],
             ],
         ]);
 
         // 30. Sexual Health
         $this->slide($quiz, 'sexual_health', [
             'question_text' => 'Are you experiencing any sexual health concerns?',
-            'klaviyo_property' => 'sexual_health',
+            'marketing_property' => 'sexual_health',
             'options' => [
-                ['value' => 'low_desire', 'label' => 'Low desire / libido', 'klaviyo_value' => 'Low Desire', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['interested_sexual_health', 'interested_pt141']],
-                ['value' => 'performance', 'label' => 'Performance issues', 'klaviyo_value' => 'Performance', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['interested_sexual_health', 'interested_pt141']],
-                ['value' => 'no_concerns', 'label' => 'No concerns', 'klaviyo_value' => 'No Concerns', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
-                ['value' => 'prefer_not', 'label' => 'Prefer not to answer', 'klaviyo_value' => 'Prefer Not', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'low_desire', 'label' => 'Low desire / libido', 'marketing_value' => 'Low Desire', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['interested_sexual_health', 'interested_pt141']],
+                ['value' => 'performance', 'label' => 'Performance issues', 'marketing_value' => 'Performance', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['interested_sexual_health', 'interested_pt141']],
+                ['value' => 'no_concerns', 'label' => 'No concerns', 'marketing_value' => 'No Concerns', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'prefer_not', 'label' => 'Prefer not to answer', 'marketing_value' => 'Prefer Not', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
             ],
         ]);
 
@@ -447,24 +447,24 @@ class PeptideFinderSeeder extends Seeder
         // 32. Body Composition Goals
         $this->slide($quiz, 'body_comp', [
             'question_text' => 'What\'s your body composition goal?',
-            'klaviyo_property' => 'body_comp_goal',
+            'marketing_property' => 'body_comp_goal',
             'options' => [
-                ['value' => 'lose_fat', 'label' => 'Primarily lose fat', 'klaviyo_value' => 'Lose Fat', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_weight_loss', 'interested_tirzepatide']],
-                ['value' => 'build_muscle', 'label' => 'Primarily build muscle', 'klaviyo_value' => 'Build Muscle', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 1, 'tags' => ['interested_muscle_growth', 'interested_cjc1295_ipamorelin']],
-                ['value' => 'recomp', 'label' => 'Both — recomposition', 'klaviyo_value' => 'Recomp', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['interested_muscle_growth', 'interested_weight_loss']],
-                ['value' => 'maintain', 'label' => 'Maintain current physique', 'klaviyo_value' => 'Maintain', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 1, 'tags' => ['interested_general_wellness']],
+                ['value' => 'lose_fat', 'label' => 'Primarily lose fat', 'marketing_value' => 'Lose Fat', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_weight_loss', 'interested_tirzepatide']],
+                ['value' => 'build_muscle', 'label' => 'Primarily build muscle', 'marketing_value' => 'Build Muscle', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 1, 'tags' => ['interested_muscle_growth', 'interested_cjc1295_ipamorelin']],
+                ['value' => 'recomp', 'label' => 'Both — recomposition', 'marketing_value' => 'Recomp', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['interested_muscle_growth', 'interested_weight_loss']],
+                ['value' => 'maintain', 'label' => 'Maintain current physique', 'marketing_value' => 'Maintain', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 1, 'tags' => ['interested_general_wellness']],
             ],
         ]);
 
         // 33. Hormone History
         $this->slide($quiz, 'hormone_history', [
             'question_text' => 'Have you ever had your hormones tested?',
-            'klaviyo_property' => 'hormone_history',
+            'marketing_property' => 'hormone_history',
             'options' => [
-                ['value' => 'yes_optimized', 'label' => 'Yes — and I\'m on TRT/HRT', 'klaviyo_value' => 'Yes Optimized', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 4, 'tags' => ['advanced', 'high_intent']],
-                ['value' => 'yes_low', 'label' => 'Yes — my levels were low', 'klaviyo_value' => 'Yes Low', 'score_tof' => 0, 'score_mof' => 3, 'score_bof' => 1, 'tags' => ['researching']],
-                ['value' => 'no_interested', 'label' => 'No — but I\'m interested', 'klaviyo_value' => 'No Interested', 'score_tof' => 2, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['researching', 'needs_education']],
-                ['value' => 'no_not_relevant', 'label' => 'No — not relevant to me', 'klaviyo_value' => 'No', 'score_tof' => 2, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner']],
+                ['value' => 'yes_optimized', 'label' => 'Yes — and I\'m on TRT/HRT', 'marketing_value' => 'Yes Optimized', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 4, 'tags' => ['advanced', 'high_intent']],
+                ['value' => 'yes_low', 'label' => 'Yes — my levels were low', 'marketing_value' => 'Yes Low', 'score_tof' => 0, 'score_mof' => 3, 'score_bof' => 1, 'tags' => ['researching']],
+                ['value' => 'no_interested', 'label' => 'No — but I\'m interested', 'marketing_value' => 'No Interested', 'score_tof' => 2, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['researching', 'needs_education']],
+                ['value' => 'no_not_relevant', 'label' => 'No — not relevant to me', 'marketing_value' => 'No', 'score_tof' => 2, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner']],
             ],
         ]);
 
@@ -474,7 +474,7 @@ class PeptideFinderSeeder extends Seeder
             'question_text' => 'Describe your current daily health routine in a few words.',
             'question_subtext' => 'This helps us understand where peptides could fit in.',
             'question_type' => QuizQuestion::TYPE_TEXT,
-            'klaviyo_property' => 'daily_routine',
+            'marketing_property' => 'daily_routine',
             'settings' => ['placeholder' => 'e.g., Morning gym, supplements, healthy lunch, 8hrs sleep...'],
             'is_required' => false,
         ]);
@@ -485,13 +485,13 @@ class PeptideFinderSeeder extends Seeder
             'question_subtext' => 'Select all that apply.',
             'question_type' => QuizQuestion::TYPE_MULTIPLE,
             'max_selections' => 5,
-            'klaviyo_property' => 'health_investments',
+            'marketing_property' => 'health_investments',
             'options' => [
-                ['value' => 'gym', 'label' => 'Gym membership / personal trainer', 'klaviyo_value' => 'Gym', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 0, 'tags' => []],
-                ['value' => 'supplements', 'label' => 'Premium supplements ($100+/mo)', 'klaviyo_value' => 'Supplements', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 2, 'tags' => ['high_intent']],
-                ['value' => 'functional_med', 'label' => 'Functional medicine / naturopath', 'klaviyo_value' => 'Functional Med', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['advanced', 'high_intent']],
-                ['value' => 'telehealth', 'label' => 'Telehealth / online clinic', 'klaviyo_value' => 'Telehealth', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['prefers_telehealth', 'high_intent']],
-                ['value' => 'nothing_much', 'label' => 'Not much — this is new for me', 'klaviyo_value' => 'Nothing Much', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner', 'price_sensitive']],
+                ['value' => 'gym', 'label' => 'Gym membership / personal trainer', 'marketing_value' => 'Gym', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'supplements', 'label' => 'Premium supplements ($100+/mo)', 'marketing_value' => 'Supplements', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 2, 'tags' => ['high_intent']],
+                ['value' => 'functional_med', 'label' => 'Functional medicine / naturopath', 'marketing_value' => 'Functional Med', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['advanced', 'high_intent']],
+                ['value' => 'telehealth', 'label' => 'Telehealth / online clinic', 'marketing_value' => 'Telehealth', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['prefers_telehealth', 'high_intent']],
+                ['value' => 'nothing_much', 'label' => 'Not much — this is new for me', 'marketing_value' => 'Nothing Much', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner', 'price_sensitive']],
             ],
         ]);
 
@@ -509,13 +509,13 @@ class PeptideFinderSeeder extends Seeder
             'question_subtext' => 'Select any you recognize.',
             'question_type' => QuizQuestion::TYPE_MULTIPLE,
             'max_selections' => 10,
-            'klaviyo_property' => 'peptides_recognized',
+            'marketing_property' => 'peptides_recognized',
             'options' => [
-                ['value' => 'bpc-157', 'label' => 'BPC-157', 'klaviyo_value' => 'BPC-157', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['interested_bpc157', 'researching']],
-                ['value' => 'tirzepatide', 'label' => 'Tirzepatide / Mounjaro', 'klaviyo_value' => 'Tirzepatide', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['interested_tirzepatide', 'researching']],
-                ['value' => 'semaglutide', 'label' => 'Semaglutide / Ozempic', 'klaviyo_value' => 'Semaglutide', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_semaglutide', 'researching']],
-                ['value' => 'ghk-cu', 'label' => 'GHK-Cu', 'klaviyo_value' => 'GHK-Cu', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['interested_ghk_cu', 'researching']],
-                ['value' => 'none', 'label' => 'None — I\'m new to all of this', 'klaviyo_value' => 'None', 'score_tof' => 4, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner', 'needs_education']],
+                ['value' => 'bpc-157', 'label' => 'BPC-157', 'marketing_value' => 'BPC-157', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['interested_bpc157', 'researching']],
+                ['value' => 'tirzepatide', 'label' => 'Tirzepatide / Mounjaro', 'marketing_value' => 'Tirzepatide', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['interested_tirzepatide', 'researching']],
+                ['value' => 'semaglutide', 'label' => 'Semaglutide / Ozempic', 'marketing_value' => 'Semaglutide', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_semaglutide', 'researching']],
+                ['value' => 'ghk-cu', 'label' => 'GHK-Cu', 'marketing_value' => 'GHK-Cu', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['interested_ghk_cu', 'researching']],
+                ['value' => 'none', 'label' => 'None — I\'m new to all of this', 'marketing_value' => 'None', 'score_tof' => 4, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner', 'needs_education']],
             ],
         ]);
 
@@ -523,12 +523,12 @@ class PeptideFinderSeeder extends Seeder
         $this->slide($quiz, 'gh_interest', [
             'question_text' => 'Are you interested in growth hormone optimization?',
             'question_subtext' => 'Growth hormone secretagogues like CJC-1295/Ipamorelin are popular peptides.',
-            'klaviyo_property' => 'gh_interest',
+            'marketing_property' => 'gh_interest',
             'options' => [
-                ['value' => 'very', 'label' => 'Very interested — I\'ve researched it', 'klaviyo_value' => 'Very', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['interested_cjc1295_ipamorelin', 'researching']],
-                ['value' => 'somewhat', 'label' => 'Somewhat — tell me more', 'klaviyo_value' => 'Somewhat', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_cjc1295_ipamorelin', 'needs_education']],
-                ['value' => 'not_sure', 'label' => 'Not sure what that means', 'klaviyo_value' => 'Not Sure', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner', 'needs_education']],
-                ['value' => 'no', 'label' => 'Not interested', 'klaviyo_value' => 'No', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'very', 'label' => 'Very interested — I\'ve researched it', 'marketing_value' => 'Very', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['interested_cjc1295_ipamorelin', 'researching']],
+                ['value' => 'somewhat', 'label' => 'Somewhat — tell me more', 'marketing_value' => 'Somewhat', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_cjc1295_ipamorelin', 'needs_education']],
+                ['value' => 'not_sure', 'label' => 'Not sure what that means', 'marketing_value' => 'Not Sure', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner', 'needs_education']],
+                ['value' => 'no', 'label' => 'Not interested', 'marketing_value' => 'No', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
             ],
         ]);
 
@@ -544,12 +544,12 @@ class PeptideFinderSeeder extends Seeder
         // 40. Skin & Hair Concerns
         $this->slide($quiz, 'skin_hair', [
             'question_text' => 'Do you have any skin or hair concerns?',
-            'klaviyo_property' => 'skin_hair_concerns',
+            'marketing_property' => 'skin_hair_concerns',
             'options' => [
-                ['value' => 'wrinkles', 'label' => 'Wrinkles / fine lines', 'klaviyo_value' => 'Wrinkles', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_anti_aging', 'interested_ghk_cu']],
-                ['value' => 'hair_loss', 'label' => 'Hair thinning / loss', 'klaviyo_value' => 'Hair Loss', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_anti_aging', 'interested_ghk_cu']],
-                ['value' => 'both', 'label' => 'Both skin and hair concerns', 'klaviyo_value' => 'Both', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['interested_anti_aging', 'interested_ghk_cu']],
-                ['value' => 'none', 'label' => 'No concerns', 'klaviyo_value' => 'None', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'wrinkles', 'label' => 'Wrinkles / fine lines', 'marketing_value' => 'Wrinkles', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_anti_aging', 'interested_ghk_cu']],
+                ['value' => 'hair_loss', 'label' => 'Hair thinning / loss', 'marketing_value' => 'Hair Loss', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_anti_aging', 'interested_ghk_cu']],
+                ['value' => 'both', 'label' => 'Both skin and hair concerns', 'marketing_value' => 'Both', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['interested_anti_aging', 'interested_ghk_cu']],
+                ['value' => 'none', 'label' => 'No concerns', 'marketing_value' => 'None', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
             ],
         ]);
 
@@ -559,24 +559,24 @@ class PeptideFinderSeeder extends Seeder
             'question_subtext' => 'Select all that apply.',
             'question_type' => QuizQuestion::TYPE_MULTIPLE,
             'max_selections' => 4,
-            'klaviyo_property' => 'sleep_tried',
+            'marketing_property' => 'sleep_tried',
             'options' => [
-                ['value' => 'melatonin', 'label' => 'Melatonin / magnesium', 'klaviyo_value' => 'Melatonin', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_sleep']],
-                ['value' => 'prescription', 'label' => 'Prescription sleep aids', 'klaviyo_value' => 'Prescription', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 2, 'tags' => ['interested_sleep', 'interested_dsip']],
-                ['value' => 'nothing', 'label' => 'Nothing yet', 'klaviyo_value' => 'Nothing', 'score_tof' => 2, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_sleep', 'beginner']],
-                ['value' => 'sleep_fine', 'label' => 'My sleep is fine', 'klaviyo_value' => 'Fine', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'melatonin', 'label' => 'Melatonin / magnesium', 'marketing_value' => 'Melatonin', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_sleep']],
+                ['value' => 'prescription', 'label' => 'Prescription sleep aids', 'marketing_value' => 'Prescription', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 2, 'tags' => ['interested_sleep', 'interested_dsip']],
+                ['value' => 'nothing', 'label' => 'Nothing yet', 'marketing_value' => 'Nothing', 'score_tof' => 2, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['interested_sleep', 'beginner']],
+                ['value' => 'sleep_fine', 'label' => 'My sleep is fine', 'marketing_value' => 'Fine', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 0, 'tags' => []],
             ],
         ]);
 
         // 42. Workout Recovery Time
         $this->slide($quiz, 'recovery_time', [
             'question_text' => 'How long does it take you to recover after a hard workout?',
-            'klaviyo_property' => 'recovery_time',
+            'marketing_property' => 'recovery_time',
             'options' => [
-                ['value' => '1_day', 'label' => '1 day or less', 'klaviyo_value' => '1 Day', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 1, 'tags' => []],
-                ['value' => '2-3_days', 'label' => '2–3 days', 'klaviyo_value' => '2-3 Days', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_muscle_growth']],
-                ['value' => '4_plus', 'label' => '4+ days', 'klaviyo_value' => '4+ Days', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_muscle_growth', 'interested_bpc157']],
-                ['value' => 'dont_workout', 'label' => 'I don\'t work out regularly', 'klaviyo_value' => 'No Workout', 'score_tof' => 2, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner']],
+                ['value' => '1_day', 'label' => '1 day or less', 'marketing_value' => '1 Day', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 1, 'tags' => []],
+                ['value' => '2-3_days', 'label' => '2–3 days', 'marketing_value' => '2-3 Days', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['interested_muscle_growth']],
+                ['value' => '4_plus', 'label' => '4+ days', 'marketing_value' => '4+ Days', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['interested_muscle_growth', 'interested_bpc157']],
+                ['value' => 'dont_workout', 'label' => 'I don\'t work out regularly', 'marketing_value' => 'No Workout', 'score_tof' => 2, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner']],
             ],
         ]);
 
@@ -593,7 +593,7 @@ class PeptideFinderSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION_TEXT,
             'question_text' => 'If you could change ONE thing about your health overnight, what would it be?',
             'question_type' => QuizQuestion::TYPE_TEXT,
-            'klaviyo_property' => 'one_change',
+            'marketing_property' => 'one_change',
             'settings' => ['placeholder' => 'e.g., I\'d fix my chronic back pain / lose 30 pounds / sleep through the night...'],
             'is_required' => false,
         ]);
@@ -615,35 +615,35 @@ class PeptideFinderSeeder extends Seeder
         $this->slide($quiz, 'awareness_level', [
             'question_text' => 'Where are you on your peptide journey?',
             'question_subtext' => 'Be honest — there\'s no wrong answer.',
-            'klaviyo_property' => 'awareness_level',
+            'marketing_property' => 'awareness_level',
             'options' => [
-                ['value' => 'brand_new', 'label' => 'Brand new — just heard about peptides', 'klaviyo_value' => 'Brand New', 'score_tof' => 5, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner', 'just_curious']],
-                ['value' => 'researching', 'label' => 'Been researching but haven\'t tried any', 'klaviyo_value' => 'Researching', 'score_tof' => 0, 'score_mof' => 5, 'score_bof' => 0, 'tags' => ['intermediate', 'researching']],
-                ['value' => 'tried_one', 'label' => 'Tried one or two peptides before', 'klaviyo_value' => 'Tried One', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 4, 'tags' => ['intermediate', 'wants_to_upgrade']],
-                ['value' => 'experienced', 'label' => 'Experienced — currently using peptides', 'klaviyo_value' => 'Experienced', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5, 'tags' => ['advanced', 'wants_to_add']],
+                ['value' => 'brand_new', 'label' => 'Brand new — just heard about peptides', 'marketing_value' => 'Brand New', 'score_tof' => 5, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner', 'just_curious']],
+                ['value' => 'researching', 'label' => 'Been researching but haven\'t tried any', 'marketing_value' => 'Researching', 'score_tof' => 0, 'score_mof' => 5, 'score_bof' => 0, 'tags' => ['intermediate', 'researching']],
+                ['value' => 'tried_one', 'label' => 'Tried one or two peptides before', 'marketing_value' => 'Tried One', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 4, 'tags' => ['intermediate', 'wants_to_upgrade']],
+                ['value' => 'experienced', 'label' => 'Experienced — currently using peptides', 'marketing_value' => 'Experienced', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5, 'tags' => ['advanced', 'wants_to_add']],
             ],
         ]);
 
         // 47. Experience Level (if experienced)
         $this->slide($quiz, 'experience_level', [
             'question_text' => 'How would you describe your peptide knowledge?',
-            'klaviyo_property' => 'experience_level',
+            'marketing_property' => 'experience_level',
             'options' => [
-                ['value' => 'beginner', 'label' => 'Beginner — I need guidance on everything', 'klaviyo_value' => 'Beginner', 'score_tof' => 4, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner', 'barrier_education']],
-                ['value' => 'intermediate', 'label' => 'Intermediate — I know the basics', 'klaviyo_value' => 'Intermediate', 'score_tof' => 0, 'score_mof' => 4, 'score_bof' => 0, 'tags' => ['intermediate', 'researching']],
-                ['value' => 'advanced', 'label' => 'Advanced — I understand protocols', 'klaviyo_value' => 'Advanced', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 4, 'tags' => ['advanced', 'ready_to_buy']],
+                ['value' => 'beginner', 'label' => 'Beginner — I need guidance on everything', 'marketing_value' => 'Beginner', 'score_tof' => 4, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner', 'barrier_education']],
+                ['value' => 'intermediate', 'label' => 'Intermediate — I know the basics', 'marketing_value' => 'Intermediate', 'score_tof' => 0, 'score_mof' => 4, 'score_bof' => 0, 'tags' => ['intermediate', 'researching']],
+                ['value' => 'advanced', 'label' => 'Advanced — I understand protocols', 'marketing_value' => 'Advanced', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 4, 'tags' => ['advanced', 'ready_to_buy']],
             ],
         ]);
 
         // 48. Purchase Intent
         $this->slide($quiz, 'purchase_intent', [
             'question_text' => 'How likely are you to purchase a peptide in the next 30 days?',
-            'klaviyo_property' => 'purchase_intent',
+            'marketing_property' => 'purchase_intent',
             'options' => [
-                ['value' => 'definitely', 'label' => 'Definitely — I\'m ready to buy', 'klaviyo_value' => 'Definitely', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5, 'tags' => ['ready_to_buy', 'high_intent']],
-                ['value' => 'probably', 'label' => 'Probably — if I find the right one', 'klaviyo_value' => 'Probably', 'score_tof' => 0, 'score_mof' => 3, 'score_bof' => 2, 'tags' => ['researching']],
-                ['value' => 'maybe', 'label' => 'Maybe — still researching', 'klaviyo_value' => 'Maybe', 'score_tof' => 1, 'score_mof' => 3, 'score_bof' => 0, 'tags' => ['researching']],
-                ['value' => 'just_learning', 'label' => 'Just learning for now', 'klaviyo_value' => 'Just Learning', 'score_tof' => 4, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['just_curious', 'needs_education']],
+                ['value' => 'definitely', 'label' => 'Definitely — I\'m ready to buy', 'marketing_value' => 'Definitely', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5, 'tags' => ['ready_to_buy', 'high_intent']],
+                ['value' => 'probably', 'label' => 'Probably — if I find the right one', 'marketing_value' => 'Probably', 'score_tof' => 0, 'score_mof' => 3, 'score_bof' => 2, 'tags' => ['researching']],
+                ['value' => 'maybe', 'label' => 'Maybe — still researching', 'marketing_value' => 'Maybe', 'score_tof' => 1, 'score_mof' => 3, 'score_bof' => 0, 'tags' => ['researching']],
+                ['value' => 'just_learning', 'label' => 'Just learning for now', 'marketing_value' => 'Just Learning', 'score_tof' => 4, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['just_curious', 'needs_education']],
             ],
         ]);
 
@@ -658,26 +658,26 @@ class PeptideFinderSeeder extends Seeder
         // 50. Biggest Barrier
         $this->slide($quiz, 'biggest_barrier', [
             'question_text' => 'What\'s your biggest barrier to trying peptides?',
-            'klaviyo_property' => 'biggest_barrier',
+            'marketing_property' => 'biggest_barrier',
             'options' => [
-                ['value' => 'knowledge', 'label' => 'Don\'t know enough about them', 'klaviyo_value' => 'Knowledge', 'score_tof' => 4, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['barrier_education', 'needs_education']],
-                ['value' => 'sourcing', 'label' => 'Don\'t know where to buy safely', 'klaviyo_value' => 'Sourcing', 'score_tof' => 0, 'score_mof' => 3, 'score_bof' => 1, 'tags' => ['barrier_sourcing']],
-                ['value' => 'safety', 'label' => 'Worried about side effects', 'klaviyo_value' => 'Safety', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['barrier_safety']],
-                ['value' => 'needles', 'label' => 'Don\'t want to inject', 'klaviyo_value' => 'Needles', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['barrier_needles']],
-                ['value' => 'cost', 'label' => 'Cost / affordability', 'klaviyo_value' => 'Cost', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['price_sensitive']],
-                ['value' => 'no_barrier', 'label' => 'No barrier — I\'m ready', 'klaviyo_value' => 'No Barrier', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 4, 'tags' => ['ready_to_buy', 'high_intent']],
+                ['value' => 'knowledge', 'label' => 'Don\'t know enough about them', 'marketing_value' => 'Knowledge', 'score_tof' => 4, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['barrier_education', 'needs_education']],
+                ['value' => 'sourcing', 'label' => 'Don\'t know where to buy safely', 'marketing_value' => 'Sourcing', 'score_tof' => 0, 'score_mof' => 3, 'score_bof' => 1, 'tags' => ['barrier_sourcing']],
+                ['value' => 'safety', 'label' => 'Worried about side effects', 'marketing_value' => 'Safety', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['barrier_safety']],
+                ['value' => 'needles', 'label' => 'Don\'t want to inject', 'marketing_value' => 'Needles', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['barrier_needles']],
+                ['value' => 'cost', 'label' => 'Cost / affordability', 'marketing_value' => 'Cost', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['price_sensitive']],
+                ['value' => 'no_barrier', 'label' => 'No barrier — I\'m ready', 'marketing_value' => 'No Barrier', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 4, 'tags' => ['ready_to_buy', 'high_intent']],
             ],
         ]);
 
         // 51. Injection Comfort
         $this->slide($quiz, 'injection_comfort', [
             'question_text' => 'How comfortable are you with self-injection?',
-            'klaviyo_property' => 'injection_comfort',
+            'marketing_property' => 'injection_comfort',
             'options' => [
-                ['value' => 'comfortable', 'label' => 'Very comfortable — I do it already', 'klaviyo_value' => 'Comfortable', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['advanced']],
-                ['value' => 'willing', 'label' => 'Willing to learn', 'klaviyo_value' => 'Willing', 'score_tof' => 0, 'score_mof' => 3, 'score_bof' => 0, 'tags' => ['researching']],
-                ['value' => 'prefer_not', 'label' => 'Prefer oral or nasal peptides', 'klaviyo_value' => 'Prefer Non-Injection', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['barrier_needles']],
-                ['value' => 'no_way', 'label' => 'Absolutely not — no needles', 'klaviyo_value' => 'No Way', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['barrier_needles', 'beginner']],
+                ['value' => 'comfortable', 'label' => 'Very comfortable — I do it already', 'marketing_value' => 'Comfortable', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['advanced']],
+                ['value' => 'willing', 'label' => 'Willing to learn', 'marketing_value' => 'Willing', 'score_tof' => 0, 'score_mof' => 3, 'score_bof' => 0, 'tags' => ['researching']],
+                ['value' => 'prefer_not', 'label' => 'Prefer oral or nasal peptides', 'marketing_value' => 'Prefer Non-Injection', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['barrier_needles']],
+                ['value' => 'no_way', 'label' => 'Absolutely not — no needles', 'marketing_value' => 'No Way', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['barrier_needles', 'beginner']],
             ],
         ]);
 
@@ -687,25 +687,25 @@ class PeptideFinderSeeder extends Seeder
             'question_subtext' => 'Select up to 3.',
             'question_type' => QuizQuestion::TYPE_MULTIPLE,
             'max_selections' => 3,
-            'klaviyo_property' => 'trust_factors',
+            'marketing_property' => 'trust_factors',
             'options' => [
-                ['value' => 'lab_reports', 'label' => 'Third-party lab reports (COA)', 'klaviyo_value' => 'Lab Reports', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['values_lab_reports']],
-                ['value' => 'reviews', 'label' => 'Customer reviews & reputation', 'klaviyo_value' => 'Reviews', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['values_reviews']],
-                ['value' => 'medical', 'label' => 'Medical oversight / doctor involved', 'klaviyo_value' => 'Medical', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 2, 'tags' => ['prefers_telehealth']],
-                ['value' => 'price', 'label' => 'Best price', 'klaviyo_value' => 'Price', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['price_sensitive', 'prefers_affordable']],
+                ['value' => 'lab_reports', 'label' => 'Third-party lab reports (COA)', 'marketing_value' => 'Lab Reports', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['values_lab_reports']],
+                ['value' => 'reviews', 'label' => 'Customer reviews & reputation', 'marketing_value' => 'Reviews', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['values_reviews']],
+                ['value' => 'medical', 'label' => 'Medical oversight / doctor involved', 'marketing_value' => 'Medical', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 2, 'tags' => ['prefers_telehealth']],
+                ['value' => 'price', 'label' => 'Best price', 'marketing_value' => 'Price', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['price_sensitive', 'prefers_affordable']],
             ],
         ]);
 
         // 53. Hesitations
         $this->slide($quiz, 'hesitations', [
             'question_text' => 'What worries you most about peptides?',
-            'klaviyo_property' => 'hesitations',
+            'marketing_property' => 'hesitations',
             'options' => [
-                ['value' => 'too_many_choices', 'label' => 'Too many options — overwhelmed', 'klaviyo_value' => 'Overwhelmed', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['hesitation_too_many_choices']],
-                ['value' => 'vendor_trust', 'label' => 'Don\'t know which vendors to trust', 'klaviyo_value' => 'Vendor Trust', 'score_tof' => 1, 'score_mof' => 3, 'score_bof' => 0, 'tags' => ['hesitation_vendor_trust']],
-                ['value' => 'hype', 'label' => 'Worried it\'s all hype', 'klaviyo_value' => 'Hype', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['hesitation_hype_vs_real']],
-                ['value' => 'side_effects', 'label' => 'Potential side effects', 'klaviyo_value' => 'Side Effects', 'score_tof' => 2, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['barrier_safety']],
-                ['value' => 'nothing', 'label' => 'Nothing — I\'m confident', 'klaviyo_value' => 'Nothing', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['ready_to_buy']],
+                ['value' => 'too_many_choices', 'label' => 'Too many options — overwhelmed', 'marketing_value' => 'Overwhelmed', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['hesitation_too_many_choices']],
+                ['value' => 'vendor_trust', 'label' => 'Don\'t know which vendors to trust', 'marketing_value' => 'Vendor Trust', 'score_tof' => 1, 'score_mof' => 3, 'score_bof' => 0, 'tags' => ['hesitation_vendor_trust']],
+                ['value' => 'hype', 'label' => 'Worried it\'s all hype', 'marketing_value' => 'Hype', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['hesitation_hype_vs_real']],
+                ['value' => 'side_effects', 'label' => 'Potential side effects', 'marketing_value' => 'Side Effects', 'score_tof' => 2, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['barrier_safety']],
+                ['value' => 'nothing', 'label' => 'Nothing — I\'m confident', 'marketing_value' => 'Nothing', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['ready_to_buy']],
             ],
         ]);
 
@@ -721,25 +721,25 @@ class PeptideFinderSeeder extends Seeder
         // 55. Stacking Interest
         $this->slide($quiz, 'stacking_interest', [
             'question_text' => 'Are you interested in combining multiple peptides (stacking)?',
-            'klaviyo_property' => 'stacking_interest',
+            'marketing_property' => 'stacking_interest',
             'options' => [
-                ['value' => 'yes_know_what', 'label' => 'Yes — I know what I want to stack', 'klaviyo_value' => 'Yes Know What', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 4, 'tags' => ['wants_to_stack', 'advanced']],
-                ['value' => 'yes_need_help', 'label' => 'Yes — but I need guidance', 'klaviyo_value' => 'Yes Need Help', 'score_tof' => 0, 'score_mof' => 3, 'score_bof' => 1, 'tags' => ['wants_to_stack', 'researching']],
-                ['value' => 'one_at_time', 'label' => 'No — one at a time for now', 'klaviyo_value' => 'One at a Time', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['beginner']],
-                ['value' => 'not_sure', 'label' => 'What does stacking mean?', 'klaviyo_value' => 'Not Sure', 'score_tof' => 4, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner', 'needs_education']],
+                ['value' => 'yes_know_what', 'label' => 'Yes — I know what I want to stack', 'marketing_value' => 'Yes Know What', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 4, 'tags' => ['wants_to_stack', 'advanced']],
+                ['value' => 'yes_need_help', 'label' => 'Yes — but I need guidance', 'marketing_value' => 'Yes Need Help', 'score_tof' => 0, 'score_mof' => 3, 'score_bof' => 1, 'tags' => ['wants_to_stack', 'researching']],
+                ['value' => 'one_at_time', 'label' => 'No — one at a time for now', 'marketing_value' => 'One at a Time', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['beginner']],
+                ['value' => 'not_sure', 'label' => 'What does stacking mean?', 'marketing_value' => 'Not Sure', 'score_tof' => 4, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner', 'needs_education']],
             ],
         ]);
 
         // 56. Which Peptide for You (if aware)
         $this->slide($quiz, 'peptide_preference', [
             'question_text' => 'If you could try any peptide right now, which would it be?',
-            'klaviyo_property' => 'peptide_preference',
+            'marketing_property' => 'peptide_preference',
             'options' => [
-                ['value' => 'bpc-157', 'label' => 'BPC-157 (healing & gut)', 'klaviyo_value' => 'BPC-157', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3, 'tags' => ['interested_bpc157', 'ready_to_buy']],
-                ['value' => 'tirzepatide', 'label' => 'Tirzepatide (weight loss)', 'klaviyo_value' => 'Tirzepatide', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3, 'tags' => ['interested_tirzepatide', 'ready_to_buy']],
-                ['value' => 'cjc-ipa', 'label' => 'CJC-1295/Ipamorelin (growth hormone)', 'klaviyo_value' => 'CJC/Ipa', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3, 'tags' => ['interested_cjc1295_ipamorelin', 'ready_to_buy']],
-                ['value' => 'not_sure', 'label' => 'Not sure — recommend for me', 'klaviyo_value' => 'Not Sure', 'score_tof' => 2, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['needs_education']],
-                ['value' => 'other', 'label' => 'Something else', 'klaviyo_value' => 'Other', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['researching']],
+                ['value' => 'bpc-157', 'label' => 'BPC-157 (healing & gut)', 'marketing_value' => 'BPC-157', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3, 'tags' => ['interested_bpc157', 'ready_to_buy']],
+                ['value' => 'tirzepatide', 'label' => 'Tirzepatide (weight loss)', 'marketing_value' => 'Tirzepatide', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3, 'tags' => ['interested_tirzepatide', 'ready_to_buy']],
+                ['value' => 'cjc-ipa', 'label' => 'CJC-1295/Ipamorelin (growth hormone)', 'marketing_value' => 'CJC/Ipa', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3, 'tags' => ['interested_cjc1295_ipamorelin', 'ready_to_buy']],
+                ['value' => 'not_sure', 'label' => 'Not sure — recommend for me', 'marketing_value' => 'Not Sure', 'score_tof' => 2, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['needs_education']],
+                ['value' => 'other', 'label' => 'Something else', 'marketing_value' => 'Other', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['researching']],
             ],
         ]);
 
@@ -748,7 +748,7 @@ class PeptideFinderSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION_TEXT,
             'question_text' => 'Why did you choose that peptide (or what peptide interests you)?',
             'question_type' => QuizQuestion::TYPE_TEXT,
-            'klaviyo_property' => 'peptide_reason',
+            'marketing_property' => 'peptide_reason',
             'settings' => ['placeholder' => 'e.g., I heard BPC-157 helps with gut healing...'],
             'is_required' => false,
         ]);
@@ -756,25 +756,25 @@ class PeptideFinderSeeder extends Seeder
         // 58. How Did You Hear About Us?
         $this->slide($quiz, 'referral_source', [
             'question_text' => 'How did you find this quiz?',
-            'klaviyo_property' => 'referral_source',
+            'marketing_property' => 'referral_source',
             'options' => [
-                ['value' => 'google', 'label' => 'Google search', 'klaviyo_value' => 'Google', 'score_tof' => 2, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['researching']],
-                ['value' => 'social', 'label' => 'Social media (Instagram, TikTok, X)', 'klaviyo_value' => 'Social', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['just_curious']],
-                ['value' => 'youtube', 'label' => 'YouTube / Podcast', 'klaviyo_value' => 'YouTube', 'score_tof' => 1, 'score_mof' => 3, 'score_bof' => 0, 'tags' => ['researching']],
-                ['value' => 'friend', 'label' => 'Friend or family', 'klaviyo_value' => 'Friend', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 1, 'tags' => []],
-                ['value' => 'direct', 'label' => 'Went straight to the site', 'klaviyo_value' => 'Direct', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3, 'tags' => ['high_intent']],
+                ['value' => 'google', 'label' => 'Google search', 'marketing_value' => 'Google', 'score_tof' => 2, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['researching']],
+                ['value' => 'social', 'label' => 'Social media (Instagram, TikTok, X)', 'marketing_value' => 'Social', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['just_curious']],
+                ['value' => 'youtube', 'label' => 'YouTube / Podcast', 'marketing_value' => 'YouTube', 'score_tof' => 1, 'score_mof' => 3, 'score_bof' => 0, 'tags' => ['researching']],
+                ['value' => 'friend', 'label' => 'Friend or family', 'marketing_value' => 'Friend', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 1, 'tags' => []],
+                ['value' => 'direct', 'label' => 'Went straight to the site', 'marketing_value' => 'Direct', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3, 'tags' => ['high_intent']],
             ],
         ]);
 
         // 59. Buying Confidence
         $this->slide($quiz, 'buying_confidence', [
             'question_text' => 'How confident are you in making a peptide purchase decision?',
-            'klaviyo_property' => 'buying_confidence',
+            'marketing_property' => 'buying_confidence',
             'options' => [
-                ['value' => 'very', 'label' => 'Very — I know what I need', 'klaviyo_value' => 'Very', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5, 'tags' => ['ready_to_buy', 'high_intent']],
-                ['value' => 'somewhat', 'label' => 'Somewhat — need a bit more info', 'klaviyo_value' => 'Somewhat', 'score_tof' => 0, 'score_mof' => 3, 'score_bof' => 1, 'tags' => ['researching']],
-                ['value' => 'low', 'label' => 'Low — need lots of guidance', 'klaviyo_value' => 'Low', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['needs_education', 'beginner']],
-                ['value' => 'zero', 'label' => 'No confidence yet — just exploring', 'klaviyo_value' => 'Zero', 'score_tof' => 4, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['just_curious']],
+                ['value' => 'very', 'label' => 'Very — I know what I need', 'marketing_value' => 'Very', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5, 'tags' => ['ready_to_buy', 'high_intent']],
+                ['value' => 'somewhat', 'label' => 'Somewhat — need a bit more info', 'marketing_value' => 'Somewhat', 'score_tof' => 0, 'score_mof' => 3, 'score_bof' => 1, 'tags' => ['researching']],
+                ['value' => 'low', 'label' => 'Low — need lots of guidance', 'marketing_value' => 'Low', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['needs_education', 'beginner']],
+                ['value' => 'zero', 'label' => 'No confidence yet — just exploring', 'marketing_value' => 'Zero', 'score_tof' => 4, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['just_curious']],
             ],
         ]);
 
@@ -789,12 +789,12 @@ class PeptideFinderSeeder extends Seeder
         // 61. Buying Priority
         $this->slide($quiz, 'buying_priority', [
             'question_text' => 'When buying health products, what\'s your top priority?',
-            'klaviyo_property' => 'buying_priority',
+            'marketing_property' => 'buying_priority',
             'options' => [
-                ['value' => 'quality', 'label' => 'Quality — I want the best regardless of price', 'klaviyo_value' => 'Quality', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['high_intent', 'prefers_research_grade']],
-                ['value' => 'value', 'label' => 'Value — good quality at a fair price', 'klaviyo_value' => 'Value', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['prefers_affordable']],
-                ['value' => 'convenience', 'label' => 'Convenience — make it easy', 'klaviyo_value' => 'Convenience', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 2, 'tags' => ['prefers_telehealth']],
-                ['value' => 'cheapest', 'label' => 'Cheapest option available', 'klaviyo_value' => 'Cheapest', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['price_sensitive', 'prefers_affordable']],
+                ['value' => 'quality', 'label' => 'Quality — I want the best regardless of price', 'marketing_value' => 'Quality', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['high_intent', 'prefers_research_grade']],
+                ['value' => 'value', 'label' => 'Value — good quality at a fair price', 'marketing_value' => 'Value', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['prefers_affordable']],
+                ['value' => 'convenience', 'label' => 'Convenience — make it easy', 'marketing_value' => 'Convenience', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 2, 'tags' => ['prefers_telehealth']],
+                ['value' => 'cheapest', 'label' => 'Cheapest option available', 'marketing_value' => 'Cheapest', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['price_sensitive', 'prefers_affordable']],
             ],
         ]);
 
@@ -804,7 +804,7 @@ class PeptideFinderSeeder extends Seeder
             'question_text' => 'Enter your email to see your personalized peptide recommendation',
             'question_subtext' => 'We\'ll send your results and a custom peptide guide to your inbox.',
             'question_type' => QuizQuestion::TYPE_EMAIL,
-            'klaviyo_property' => 'email',
+            'marketing_property' => 'email',
             'content_title' => 'Get Your Results',
             'content_body' => 'Your personalized peptide match is ready. Enter your email to unlock your recommendation.',
         ]);
@@ -824,7 +824,7 @@ class PeptideFinderSeeder extends Seeder
             'question_text' => 'Anything else you want us to know?',
             'question_subtext' => 'Optional — any details help us personalize further.',
             'question_type' => QuizQuestion::TYPE_TEXT,
-            'klaviyo_property' => 'additional_notes',
+            'marketing_property' => 'additional_notes',
             'settings' => ['placeholder' => 'e.g., I\'m also interested in peptides for my spouse...'],
             'is_required' => false,
         ]);
@@ -845,37 +845,37 @@ class PeptideFinderSeeder extends Seeder
         // 66. Monthly Budget
         $this->slide($quiz, 'budget', [
             'question_text' => 'What\'s your monthly budget for peptide therapy?',
-            'klaviyo_property' => 'monthly_budget',
+            'marketing_property' => 'monthly_budget',
             'options' => [
-                ['value' => 'under_100', 'label' => 'Under $100/month', 'klaviyo_value' => 'Under $100', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['price_sensitive', 'prefers_affordable']],
-                ['value' => '100-250', 'label' => '$100–$250/month', 'klaviyo_value' => '$100-$250', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['prefers_affordable']],
-                ['value' => '250-500', 'label' => '$250–$500/month', 'klaviyo_value' => '$250-$500', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['high_intent']],
-                ['value' => '500_plus', 'label' => '$500+/month — willing to invest', 'klaviyo_value' => '$500+', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 4, 'tags' => ['high_intent', 'prefers_research_grade']],
+                ['value' => 'under_100', 'label' => 'Under $100/month', 'marketing_value' => 'Under $100', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['price_sensitive', 'prefers_affordable']],
+                ['value' => '100-250', 'label' => '$100–$250/month', 'marketing_value' => '$100-$250', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['prefers_affordable']],
+                ['value' => '250-500', 'label' => '$250–$500/month', 'marketing_value' => '$250-$500', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['high_intent']],
+                ['value' => '500_plus', 'label' => '$500+/month — willing to invest', 'marketing_value' => '$500+', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 4, 'tags' => ['high_intent', 'prefers_research_grade']],
             ],
         ]);
 
         // 67. Administration Preference
         $this->slide($quiz, 'admin_pref', [
             'question_text' => 'What\'s your preferred way to take peptides?',
-            'klaviyo_property' => 'administration_preference',
+            'marketing_property' => 'administration_preference',
             'options' => [
-                ['value' => 'injection', 'label' => 'Subcutaneous injection (most effective)', 'klaviyo_value' => 'Injection', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3, 'tags' => ['advanced']],
-                ['value' => 'nasal', 'label' => 'Nasal spray', 'klaviyo_value' => 'Nasal', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['barrier_needles']],
-                ['value' => 'oral', 'label' => 'Oral / sublingual', 'klaviyo_value' => 'Oral', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['barrier_needles', 'beginner']],
-                ['value' => 'topical', 'label' => 'Topical cream / patch', 'klaviyo_value' => 'Topical', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['barrier_needles']],
-                ['value' => 'any', 'label' => 'Whatever works best', 'klaviyo_value' => 'Any', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['researching']],
+                ['value' => 'injection', 'label' => 'Subcutaneous injection (most effective)', 'marketing_value' => 'Injection', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3, 'tags' => ['advanced']],
+                ['value' => 'nasal', 'label' => 'Nasal spray', 'marketing_value' => 'Nasal', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['barrier_needles']],
+                ['value' => 'oral', 'label' => 'Oral / sublingual', 'marketing_value' => 'Oral', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['barrier_needles', 'beginner']],
+                ['value' => 'topical', 'label' => 'Topical cream / patch', 'marketing_value' => 'Topical', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['barrier_needles']],
+                ['value' => 'any', 'label' => 'Whatever works best', 'marketing_value' => 'Any', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['researching']],
             ],
         ]);
 
         // 68. Vendor Type Preference
         $this->slide($quiz, 'vendor_type', [
             'question_text' => 'What type of vendor do you prefer?',
-            'klaviyo_property' => 'vendor_type_preference',
+            'marketing_property' => 'vendor_type_preference',
             'options' => [
-                ['value' => 'telehealth', 'label' => 'Telehealth clinic (doctor-prescribed)', 'klaviyo_value' => 'Telehealth', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3, 'tags' => ['prefers_telehealth']],
-                ['value' => 'research', 'label' => 'Research chemical company (affordable)', 'klaviyo_value' => 'Research', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['prefers_research_grade']],
-                ['value' => 'compounding', 'label' => 'Compounding pharmacy', 'klaviyo_value' => 'Compounding', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['prefers_telehealth', 'high_intent']],
-                ['value' => 'not_sure', 'label' => 'Not sure — recommend for me', 'klaviyo_value' => 'Not Sure', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['needs_education']],
+                ['value' => 'telehealth', 'label' => 'Telehealth clinic (doctor-prescribed)', 'marketing_value' => 'Telehealth', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 3, 'tags' => ['prefers_telehealth']],
+                ['value' => 'research', 'label' => 'Research chemical company (affordable)', 'marketing_value' => 'Research', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['prefers_research_grade']],
+                ['value' => 'compounding', 'label' => 'Compounding pharmacy', 'marketing_value' => 'Compounding', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['prefers_telehealth', 'high_intent']],
+                ['value' => 'not_sure', 'label' => 'Not sure — recommend for me', 'marketing_value' => 'Not Sure', 'score_tof' => 3, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['needs_education']],
             ],
         ]);
 
@@ -890,22 +890,22 @@ class PeptideFinderSeeder extends Seeder
         // 70. Shipping Preference
         $this->slide($quiz, 'shipping_pref', [
             'question_text' => 'How important is fast shipping?',
-            'klaviyo_property' => 'shipping_preference',
+            'marketing_property' => 'shipping_preference',
             'options' => [
-                ['value' => 'asap', 'label' => 'Need it ASAP — willing to pay for express', 'klaviyo_value' => 'ASAP', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['high_intent', 'ready_to_buy']],
-                ['value' => 'standard', 'label' => 'Standard shipping is fine', 'klaviyo_value' => 'Standard', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['researching']],
-                ['value' => 'not_in_rush', 'label' => 'Not in a rush', 'klaviyo_value' => 'Not In Rush', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['just_curious']],
+                ['value' => 'asap', 'label' => 'Need it ASAP — willing to pay for express', 'marketing_value' => 'ASAP', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['high_intent', 'ready_to_buy']],
+                ['value' => 'standard', 'label' => 'Standard shipping is fine', 'marketing_value' => 'Standard', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['researching']],
+                ['value' => 'not_in_rush', 'label' => 'Not in a rush', 'marketing_value' => 'Not In Rush', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['just_curious']],
             ],
         ]);
 
         // 71. Protocol Guidance
         $this->slide($quiz, 'protocol_guidance', [
             'question_text' => 'How much guidance do you need with dosing and protocols?',
-            'klaviyo_property' => 'protocol_guidance',
+            'marketing_property' => 'protocol_guidance',
             'options' => [
-                ['value' => 'full', 'label' => 'Full guidance — doctor-supervised', 'klaviyo_value' => 'Full', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 2, 'tags' => ['prefers_telehealth', 'beginner']],
-                ['value' => 'some', 'label' => 'Some guidance — I can follow instructions', 'klaviyo_value' => 'Some', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['intermediate']],
-                ['value' => 'none', 'label' => 'I know my protocols — just need the product', 'klaviyo_value' => 'None', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 4, 'tags' => ['advanced', 'ready_to_buy']],
+                ['value' => 'full', 'label' => 'Full guidance — doctor-supervised', 'marketing_value' => 'Full', 'score_tof' => 1, 'score_mof' => 0, 'score_bof' => 2, 'tags' => ['prefers_telehealth', 'beginner']],
+                ['value' => 'some', 'label' => 'Some guidance — I can follow instructions', 'marketing_value' => 'Some', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['intermediate']],
+                ['value' => 'none', 'label' => 'I know my protocols — just need the product', 'marketing_value' => 'None', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 4, 'tags' => ['advanced', 'ready_to_buy']],
             ],
         ]);
 
@@ -921,23 +921,23 @@ class PeptideFinderSeeder extends Seeder
         // 73. Community Value
         $this->slide($quiz, 'community_value', [
             'question_text' => 'Would you value a peptide community or support group?',
-            'klaviyo_property' => 'community_interest',
+            'marketing_property' => 'community_interest',
             'options' => [
-                ['value' => 'very', 'label' => 'Yes — I\'d love to connect with others', 'klaviyo_value' => 'Very', 'score_tof' => 2, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['values_reviews']],
-                ['value' => 'somewhat', 'label' => 'Maybe — for tips and protocols', 'klaviyo_value' => 'Somewhat', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['researching']],
-                ['value' => 'no', 'label' => 'No — I prefer to research alone', 'klaviyo_value' => 'No', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 1, 'tags' => []],
+                ['value' => 'very', 'label' => 'Yes — I\'d love to connect with others', 'marketing_value' => 'Very', 'score_tof' => 2, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['values_reviews']],
+                ['value' => 'somewhat', 'label' => 'Maybe — for tips and protocols', 'marketing_value' => 'Somewhat', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['researching']],
+                ['value' => 'no', 'label' => 'No — I prefer to research alone', 'marketing_value' => 'No', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 1, 'tags' => []],
             ],
         ]);
 
         // 74. Content Preference
         $this->slide($quiz, 'content_pref', [
             'question_text' => 'What type of content would help you most?',
-            'klaviyo_property' => 'content_preference',
+            'marketing_property' => 'content_preference',
             'options' => [
-                ['value' => 'dosing', 'label' => 'Dosing & protocol guides', 'klaviyo_value' => 'Dosing', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['researching']],
-                ['value' => 'research', 'label' => 'Research & clinical studies', 'klaviyo_value' => 'Research', 'score_tof' => 0, 'score_mof' => 3, 'score_bof' => 0, 'tags' => ['researching']],
-                ['value' => 'testimonials', 'label' => 'User testimonials & before/after', 'klaviyo_value' => 'Testimonials', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['needs_education']],
-                ['value' => 'comparison', 'label' => 'Peptide comparisons & guides', 'klaviyo_value' => 'Comparison', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['researching']],
+                ['value' => 'dosing', 'label' => 'Dosing & protocol guides', 'marketing_value' => 'Dosing', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['researching']],
+                ['value' => 'research', 'label' => 'Research & clinical studies', 'marketing_value' => 'Research', 'score_tof' => 0, 'score_mof' => 3, 'score_bof' => 0, 'tags' => ['researching']],
+                ['value' => 'testimonials', 'label' => 'User testimonials & before/after', 'marketing_value' => 'Testimonials', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['needs_education']],
+                ['value' => 'comparison', 'label' => 'Peptide comparisons & guides', 'marketing_value' => 'Comparison', 'score_tof' => 1, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['researching']],
             ],
         ]);
 
@@ -947,7 +947,7 @@ class PeptideFinderSeeder extends Seeder
             'question_text' => 'Want your full peptide report emailed to you?',
             'question_subtext' => 'We\'ll include your recommended peptides, dosing guides, and vendor comparisons.',
             'question_type' => QuizQuestion::TYPE_EMAIL,
-            'klaviyo_property' => 'email',
+            'marketing_property' => 'email',
             'content_title' => 'Get Your Full Report',
             'content_body' => 'Your personalized peptide report will include specific recommendations, dosing protocols, and trusted vendor options.',
         ]);
@@ -955,24 +955,24 @@ class PeptideFinderSeeder extends Seeder
         // 76. Use Case Specificity
         $this->slide($quiz, 'use_case', [
             'question_text' => 'What best describes your situation?',
-            'klaviyo_property' => 'use_case',
+            'marketing_property' => 'use_case',
             'options' => [
-                ['value' => 'personal', 'label' => 'Personal use — for myself', 'klaviyo_value' => 'Personal', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 1, 'tags' => []],
-                ['value' => 'couple', 'label' => 'For me and my partner', 'klaviyo_value' => 'Couple', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 2, 'tags' => ['high_intent']],
-                ['value' => 'family', 'label' => 'Researching for a family member', 'klaviyo_value' => 'Family', 'score_tof' => 2, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['researching']],
-                ['value' => 'professional', 'label' => 'Healthcare professional researching', 'klaviyo_value' => 'Professional', 'score_tof' => 0, 'score_mof' => 3, 'score_bof' => 1, 'tags' => ['advanced']],
+                ['value' => 'personal', 'label' => 'Personal use — for myself', 'marketing_value' => 'Personal', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 1, 'tags' => []],
+                ['value' => 'couple', 'label' => 'For me and my partner', 'marketing_value' => 'Couple', 'score_tof' => 0, 'score_mof' => 1, 'score_bof' => 2, 'tags' => ['high_intent']],
+                ['value' => 'family', 'label' => 'Researching for a family member', 'marketing_value' => 'Family', 'score_tof' => 2, 'score_mof' => 2, 'score_bof' => 0, 'tags' => ['researching']],
+                ['value' => 'professional', 'label' => 'Healthcare professional researching', 'marketing_value' => 'Professional', 'score_tof' => 0, 'score_mof' => 3, 'score_bof' => 1, 'tags' => ['advanced']],
             ],
         ]);
 
         // 77. Commitment Level
         $this->slide($quiz, 'commitment', [
             'question_text' => 'How long are you willing to commit to a peptide protocol?',
-            'klaviyo_property' => 'commitment_length',
+            'marketing_property' => 'commitment_length',
             'options' => [
-                ['value' => '1_month', 'label' => '1 month trial', 'klaviyo_value' => '1 Month', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['just_curious']],
-                ['value' => '3_months', 'label' => '3 months (recommended)', 'klaviyo_value' => '3 Months', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['researching']],
-                ['value' => '6_months', 'label' => '6+ months', 'klaviyo_value' => '6+ Months', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 4, 'tags' => ['high_intent', 'ready_to_buy']],
-                ['value' => 'ongoing', 'label' => 'Ongoing — this is a lifestyle', 'klaviyo_value' => 'Ongoing', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5, 'tags' => ['advanced', 'wants_to_stack']],
+                ['value' => '1_month', 'label' => '1 month trial', 'marketing_value' => '1 Month', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['just_curious']],
+                ['value' => '3_months', 'label' => '3 months (recommended)', 'marketing_value' => '3 Months', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['researching']],
+                ['value' => '6_months', 'label' => '6+ months', 'marketing_value' => '6+ Months', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 4, 'tags' => ['high_intent', 'ready_to_buy']],
+                ['value' => 'ongoing', 'label' => 'Ongoing — this is a lifestyle', 'marketing_value' => 'Ongoing', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5, 'tags' => ['advanced', 'wants_to_stack']],
             ],
         ]);
 
@@ -989,7 +989,7 @@ class PeptideFinderSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION_TEXT,
             'question_text' => 'Paint a picture: what does your ideal health outcome look like?',
             'question_type' => QuizQuestion::TYPE_TEXT,
-            'klaviyo_property' => 'ideal_outcome',
+            'marketing_property' => 'ideal_outcome',
             'settings' => ['placeholder' => 'e.g., In 6 months, I want to be 20 lbs lighter, pain-free, and sleeping 8 hours...'],
             'is_required' => false,
         ]);
@@ -997,11 +997,11 @@ class PeptideFinderSeeder extends Seeder
         // 80. Lab Testing Importance
         $this->slide($quiz, 'lab_testing', [
             'question_text' => 'How important are third-party lab reports (COA) to you?',
-            'klaviyo_property' => 'lab_testing_importance',
+            'marketing_property' => 'lab_testing_importance',
             'options' => [
-                ['value' => 'essential', 'label' => 'Essential — won\'t buy without them', 'klaviyo_value' => 'Essential', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['values_lab_reports']],
-                ['value' => 'important', 'label' => 'Important — nice to have', 'klaviyo_value' => 'Important', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['values_lab_reports']],
-                ['value' => 'not_sure', 'label' => 'Not sure what those are', 'klaviyo_value' => 'Not Sure', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner', 'needs_education']],
+                ['value' => 'essential', 'label' => 'Essential — won\'t buy without them', 'marketing_value' => 'Essential', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 2, 'tags' => ['values_lab_reports']],
+                ['value' => 'important', 'label' => 'Important — nice to have', 'marketing_value' => 'Important', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['values_lab_reports']],
+                ['value' => 'not_sure', 'label' => 'Not sure what those are', 'marketing_value' => 'Not Sure', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['beginner', 'needs_education']],
             ],
         ]);
 
@@ -1017,12 +1017,12 @@ class PeptideFinderSeeder extends Seeder
         // 82. Subscription vs One-Time
         $this->slide($quiz, 'purchase_model', [
             'question_text' => 'How would you prefer to purchase?',
-            'klaviyo_property' => 'purchase_model',
+            'marketing_property' => 'purchase_model',
             'options' => [
-                ['value' => 'subscription', 'label' => 'Monthly subscription (save 10-20%)', 'klaviyo_value' => 'Subscription', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['ready_to_buy', 'high_intent']],
-                ['value' => 'one_time', 'label' => 'One-time purchase first', 'klaviyo_value' => 'One Time', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['researching']],
-                ['value' => 'trial', 'label' => 'Sample or trial size', 'klaviyo_value' => 'Trial', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['just_curious']],
-                ['value' => 'not_buying', 'label' => 'Not ready to buy yet', 'klaviyo_value' => 'Not Buying', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['just_curious', 'needs_education']],
+                ['value' => 'subscription', 'label' => 'Monthly subscription (save 10-20%)', 'marketing_value' => 'Subscription', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 3, 'tags' => ['ready_to_buy', 'high_intent']],
+                ['value' => 'one_time', 'label' => 'One-time purchase first', 'marketing_value' => 'One Time', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['researching']],
+                ['value' => 'trial', 'label' => 'Sample or trial size', 'marketing_value' => 'Trial', 'score_tof' => 2, 'score_mof' => 1, 'score_bof' => 0, 'tags' => ['just_curious']],
+                ['value' => 'not_buying', 'label' => 'Not ready to buy yet', 'marketing_value' => 'Not Buying', 'score_tof' => 3, 'score_mof' => 0, 'score_bof' => 0, 'tags' => ['just_curious', 'needs_education']],
             ],
         ]);
 
@@ -1032,11 +1032,11 @@ class PeptideFinderSeeder extends Seeder
             'question_subtext' => 'Select all that apply.',
             'question_type' => QuizQuestion::TYPE_MULTIPLE,
             'max_selections' => 3,
-            'klaviyo_property' => 'feedback_preference',
+            'marketing_property' => 'feedback_preference',
             'options' => [
-                ['value' => 'email_guide', 'label' => 'Email guide with my results', 'klaviyo_value' => 'Email Guide', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => []],
-                ['value' => 'dosing_protocol', 'label' => 'Dosing protocol PDF', 'klaviyo_value' => 'Dosing Protocol', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['researching']],
-                ['value' => 'vendor_deals', 'label' => 'Vendor deals & discounts', 'klaviyo_value' => 'Vendor Deals', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 2, 'tags' => ['ready_to_buy', 'high_intent']],
+                ['value' => 'email_guide', 'label' => 'Email guide with my results', 'marketing_value' => 'Email Guide', 'score_tof' => 1, 'score_mof' => 1, 'score_bof' => 0, 'tags' => []],
+                ['value' => 'dosing_protocol', 'label' => 'Dosing protocol PDF', 'marketing_value' => 'Dosing Protocol', 'score_tof' => 0, 'score_mof' => 2, 'score_bof' => 1, 'tags' => ['researching']],
+                ['value' => 'vendor_deals', 'label' => 'Vendor deals & discounts', 'marketing_value' => 'Vendor Deals', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 2, 'tags' => ['ready_to_buy', 'high_intent']],
             ],
         ]);
 
@@ -1046,7 +1046,7 @@ class PeptideFinderSeeder extends Seeder
             'question_text' => 'Do you have any specific questions about peptides?',
             'question_subtext' => 'We\'ll address these in your personalized report.',
             'question_type' => QuizQuestion::TYPE_TEXT,
-            'klaviyo_property' => 'user_questions',
+            'marketing_property' => 'user_questions',
             'settings' => ['placeholder' => 'e.g., Can I take BPC-157 with my current medications?'],
             'is_required' => false,
         ]);
@@ -1070,7 +1070,7 @@ class PeptideFinderSeeder extends Seeder
             'question_text' => 'Last step — confirm your email to unlock your peptide match',
             'question_subtext' => 'Your full results, dosing guide, and vendor recommendations will be sent here.',
             'question_type' => QuizQuestion::TYPE_EMAIL,
-            'klaviyo_property' => 'email',
+            'marketing_property' => 'email',
             'content_title' => 'Unlock Your Results',
             'content_body' => 'Enter your email to receive your complete peptide recommendation report.',
         ]);

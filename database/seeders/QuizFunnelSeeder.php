@@ -61,11 +61,11 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'Where are you on your peptide journey?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'awareness_level',
+            'marketing_property' => 'awareness_level',
             'options' => [
-                ['value' => 'brand_new', 'label' => "I'm brand new to peptides", 'klaviyo_value' => 'brand_new', 'score_tof' => 10, 'score_mof' => 0, 'score_bof' => 0],
-                ['value' => 'researching', 'label' => "I've been researching but haven't tried one yet", 'klaviyo_value' => 'researching', 'score_tof' => 0, 'score_mof' => 10, 'score_bof' => 0],
-                ['value' => 'ready_to_buy', 'label' => 'I know what I want — ready to buy', 'klaviyo_value' => 'ready_to_buy', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 10],
+                ['value' => 'brand_new', 'label' => "I'm brand new to peptides", 'marketing_value' => 'brand_new', 'score_tof' => 10, 'score_mof' => 0, 'score_bof' => 0],
+                ['value' => 'researching', 'label' => "I've been researching but haven't tried one yet", 'marketing_value' => 'researching', 'score_tof' => 0, 'score_mof' => 10, 'score_bof' => 0],
+                ['value' => 'ready_to_buy', 'label' => 'I know what I want — ready to buy', 'marketing_value' => 'ready_to_buy', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 10],
             ],
         ]);
 
@@ -74,13 +74,13 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'Which best describes you?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'bof_intent',
+            'marketing_property' => 'bof_intent',
             'show_conditions' => $this->cond('seg', 'ready_to_buy'),
             'options' => [
                 // skip_to_question will be set in linkSkipToReferences()
-                ['value' => 'know_what_i_want', 'label' => 'I know exactly which peptide I want', 'klaviyo_value' => 'know_what_i_want', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5],
-                ['value' => 'know_my_goal', 'label' => 'I know my health goal — help me pick', 'klaviyo_value' => 'know_my_goal', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5],
-                ['value' => 'want_to_stack', 'label' => "I'm on a peptide and want to explore adding another", 'klaviyo_value' => 'want_to_stack', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5],
+                ['value' => 'know_what_i_want', 'label' => 'I know exactly which peptide I want', 'marketing_value' => 'know_what_i_want', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5],
+                ['value' => 'know_my_goal', 'label' => 'I know my health goal — help me pick', 'marketing_value' => 'know_my_goal', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5],
+                ['value' => 'want_to_stack', 'label' => "I'm on a peptide and want to explore adding another", 'marketing_value' => 'want_to_stack', 'score_tof' => 0, 'score_mof' => 0, 'score_bof' => 5],
             ],
         ]);
     }
@@ -115,7 +115,7 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What\'s your #1 health goal right now?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'health_goal',
+            'marketing_property' => 'health_goal',
             'show_conditions' => $tofCond,
             'options' => $this->healthGoalOptions(),
         ]);
@@ -136,13 +136,13 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What\'s been the biggest thing holding you back from trying peptides?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'barrier',
+            'marketing_property' => 'barrier',
             'show_conditions' => $tofCond,
             'options' => [
-                ['value' => 'education', 'label' => 'I don\'t know enough about them yet', 'klaviyo_value' => 'education'],
-                ['value' => 'sourcing', 'label' => 'I don\'t know where to get them safely', 'klaviyo_value' => 'sourcing'],
-                ['value' => 'safety', 'label' => 'I\'m worried about side effects', 'klaviyo_value' => 'safety'],
-                ['value' => 'needles', 'label' => 'I\'m not comfortable with injections', 'klaviyo_value' => 'needles'],
+                ['value' => 'education', 'label' => 'I don\'t know enough about them yet', 'marketing_value' => 'education'],
+                ['value' => 'sourcing', 'label' => 'I don\'t know where to get them safely', 'marketing_value' => 'sourcing'],
+                ['value' => 'safety', 'label' => 'I\'m worried about side effects', 'marketing_value' => 'safety'],
+                ['value' => 'needles', 'label' => 'I\'m not comfortable with injections', 'marketing_value' => 'needles'],
             ],
         ]);
 
@@ -160,7 +160,7 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What is your biological sex?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'gender',
+            'marketing_property' => 'gender',
             'show_conditions' => $tofCond,
             'options' => $this->genderOptions(),
         ]);
@@ -170,7 +170,7 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What\'s your age range?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'age_range',
+            'marketing_property' => 'age_range',
             'show_conditions' => $tofCond,
             'options' => $this->ageOptions(),
         ]);
@@ -180,7 +180,7 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'When it comes to buying peptides, what matters most to you?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'buying_priority',
+            'marketing_property' => 'buying_priority',
             'show_conditions' => $tofCond,
             'options' => $this->buyingPriorityOptions(),
         ]);
@@ -199,7 +199,7 @@ class QuizFunnelSeeder extends Seeder
         $this->slide($quiz, 'tof_email', [
             'slide_type' => QuizQuestion::SLIDE_EMAIL_CAPTURE,
             'question_text' => 'Get Your Results',
-            'klaviyo_property' => 'email',
+            'marketing_property' => 'email',
             'content_title' => 'Your personalized peptide recommendation is ready!',
             'content_body' => 'Enter your email to unlock your results and receive your free Peptide Quick-Start Guide.',
             'show_conditions' => $tofCond,
@@ -226,7 +226,7 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What would you like to learn more about?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'content_interest',
+            'marketing_property' => 'content_interest',
             'show_conditions' => $tofCond,
             'options' => $this->feedbackOptions(),
         ]);
@@ -263,7 +263,7 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What\'s the #1 health goal you\'re researching peptides for?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'health_goal',
+            'marketing_property' => 'health_goal',
             'show_conditions' => $mofCond,
             'options' => $this->healthGoalOptions(),
         ]);
@@ -284,12 +284,12 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'How much experience do you have with peptides?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'experience_level',
+            'marketing_property' => 'experience_level',
             'show_conditions' => $mofCond,
             'options' => [
-                ['value' => 'beginner', 'label' => 'Research only — haven\'t tried any yet', 'klaviyo_value' => 'beginner'],
-                ['value' => 'beginner', 'label' => 'Tried one peptide before', 'klaviyo_value' => 'beginner'],
-                ['value' => 'advanced', 'label' => 'Tried several — looking for the right one', 'klaviyo_value' => 'advanced'],
+                ['value' => 'beginner', 'label' => 'Research only — haven\'t tried any yet', 'marketing_value' => 'beginner'],
+                ['value' => 'beginner', 'label' => 'Tried one peptide before', 'marketing_value' => 'beginner'],
+                ['value' => 'advanced', 'label' => 'Tried several — looking for the right one', 'marketing_value' => 'advanced'],
             ],
         ]);
 
@@ -298,12 +298,12 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What\'s your biggest hesitation right now?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'hesitation',
+            'marketing_property' => 'hesitation',
             'show_conditions' => $mofCond,
             'options' => [
-                ['value' => 'too_many_choices', 'label' => 'Too many options — don\'t know which to pick', 'klaviyo_value' => 'too_many_choices'],
-                ['value' => 'vendor_trust', 'label' => 'Don\'t know which vendors to trust', 'klaviyo_value' => 'vendor_trust'],
-                ['value' => 'hype_vs_real', 'label' => 'Hard to tell what\'s hype vs what actually works', 'klaviyo_value' => 'hype_vs_real'],
+                ['value' => 'too_many_choices', 'label' => 'Too many options — don\'t know which to pick', 'marketing_value' => 'too_many_choices'],
+                ['value' => 'vendor_trust', 'label' => 'Don\'t know which vendors to trust', 'marketing_value' => 'vendor_trust'],
+                ['value' => 'hype_vs_real', 'label' => 'Hard to tell what\'s hype vs what actually works', 'marketing_value' => 'hype_vs_real'],
             ],
         ]);
 
@@ -340,7 +340,7 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What is your biological sex?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'gender',
+            'marketing_property' => 'gender',
             'show_conditions' => $mofCond,
             'options' => $this->genderOptions(),
         ]);
@@ -350,7 +350,7 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What\'s your age range?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'age_range',
+            'marketing_property' => 'age_range',
             'show_conditions' => $mofCond,
             'options' => $this->ageOptions(),
         ]);
@@ -360,7 +360,7 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'When it comes to buying peptides, what matters most to you?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'buying_priority',
+            'marketing_property' => 'buying_priority',
             'show_conditions' => $mofCond,
             'options' => $this->buyingPriorityOptions(),
         ]);
@@ -379,7 +379,7 @@ class QuizFunnelSeeder extends Seeder
         $this->slide($quiz, 'mof_email', [
             'slide_type' => QuizQuestion::SLIDE_EMAIL_CAPTURE,
             'question_text' => 'Get Your Results',
-            'klaviyo_property' => 'email',
+            'marketing_property' => 'email',
             'content_title' => 'Your personalized recommendation is ready!',
             'content_body' => 'Enter your email to see your matched peptide, vendor comparison, and receive our Peptide Research Guide.',
             'show_conditions' => $mofCond,
@@ -406,7 +406,7 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What would you like to learn more about?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'content_interest',
+            'marketing_property' => 'content_interest',
             'show_conditions' => $mofCond,
             'options' => $this->feedbackOptions(),
         ]);
@@ -434,7 +434,7 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'Which peptide are you looking for?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'selected_peptide',
+            'marketing_property' => 'selected_peptide',
             'show_conditions' => $bofACond,
             'options' => $this->peptideSelectionOptions(),
         ]);
@@ -444,12 +444,12 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What\'s your situation with this peptide?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'buying_context',
+            'marketing_property' => 'buying_context',
             'show_conditions' => $bofACond,
             'options' => [
-                ['value' => 'first_time', 'label' => 'First time buying this peptide', 'klaviyo_value' => 'first_time'],
-                ['value' => 'restocking', 'label' => 'Restocking — I\'ve used it before', 'klaviyo_value' => 'restocking'],
-                ['value' => 'switching', 'label' => 'Switching vendors — looking for a better source', 'klaviyo_value' => 'switching'],
+                ['value' => 'first_time', 'label' => 'First time buying this peptide', 'marketing_value' => 'first_time'],
+                ['value' => 'restocking', 'label' => 'Restocking — I\'ve used it before', 'marketing_value' => 'restocking'],
+                ['value' => 'switching', 'label' => 'Switching vendors — looking for a better source', 'marketing_value' => 'switching'],
             ],
         ]);
 
@@ -458,7 +458,7 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What would make you most confident in a vendor?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'buying_confidence',
+            'marketing_property' => 'buying_confidence',
             'show_conditions' => $bofACond,
             'options' => $this->buyingConfidenceOptions(),
         ]);
@@ -467,7 +467,7 @@ class QuizFunnelSeeder extends Seeder
         $this->slide($quiz, 'bofa_email', [
             'slide_type' => QuizQuestion::SLIDE_EMAIL_CAPTURE,
             'question_text' => 'Get Your Vendor Match',
-            'klaviyo_property' => 'email',
+            'marketing_property' => 'email',
             'content_title' => 'We found the best deals for your peptide!',
             'content_body' => 'Enter your email to see vendor pricing and receive exclusive deals.',
             'show_conditions' => $bofACond,
@@ -504,7 +504,7 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What health goal are you ready to tackle?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'health_goal',
+            'marketing_property' => 'health_goal',
             'show_conditions' => $bofBCond,
             'options' => $this->healthGoalOptions(),
         ]);
@@ -514,12 +514,12 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'How much peptide experience do you have for this goal?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'experience_level',
+            'marketing_property' => 'experience_level',
             'show_conditions' => $bofBCond,
             'options' => [
-                ['value' => 'beginner', 'label' => 'First time trying a peptide for this', 'klaviyo_value' => 'beginner'],
-                ['value' => 'advanced', 'label' => 'Switching from another peptide', 'klaviyo_value' => 'advanced'],
-                ['value' => 'advanced', 'label' => 'Restocking — I know what works', 'klaviyo_value' => 'advanced'],
+                ['value' => 'beginner', 'label' => 'First time trying a peptide for this', 'marketing_value' => 'beginner'],
+                ['value' => 'advanced', 'label' => 'Switching from another peptide', 'marketing_value' => 'advanced'],
+                ['value' => 'advanced', 'label' => 'Restocking — I know what works', 'marketing_value' => 'advanced'],
             ],
         ]);
 
@@ -528,7 +528,7 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What would make you most confident in a vendor?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'buying_confidence',
+            'marketing_property' => 'buying_confidence',
             'show_conditions' => $bofBCond,
             'options' => $this->buyingConfidenceOptions(),
         ]);
@@ -537,7 +537,7 @@ class QuizFunnelSeeder extends Seeder
         $this->slide($quiz, 'bofb_email', [
             'slide_type' => QuizQuestion::SLIDE_EMAIL_CAPTURE,
             'question_text' => 'Get Your Results',
-            'klaviyo_property' => 'email',
+            'marketing_property' => 'email',
             'content_title' => 'Your peptide match is ready!',
             'content_body' => 'Enter your email to see your recommendation and vendor comparison.',
             'show_conditions' => $bofBCond,
@@ -582,7 +582,7 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION_TEXT,
             'question_text' => 'What peptide are you currently taking?',
             'question_type' => QuizQuestion::TYPE_TEXT,
-            'klaviyo_property' => 'current_peptide',
+            'marketing_property' => 'current_peptide',
             'show_conditions' => $bofCCond,
         ]);
 
@@ -591,13 +591,13 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What are you looking to do?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'stacking_intent',
+            'marketing_property' => 'stacking_intent',
             'show_conditions' => $bofCCond,
             'options' => [
-                ['value' => 'add_to_stack', 'label' => 'Add another peptide to my current stack', 'klaviyo_value' => 'add_to_stack'],
-                ['value' => 'upgrade', 'label' => 'Upgrade to something more effective', 'klaviyo_value' => 'upgrade'],
-                ['value' => 'restart', 'label' => 'Start a fresh protocol', 'klaviyo_value' => 'restart'],
-                ['value' => 'browsing', 'label' => 'Just exploring what\'s out there', 'klaviyo_value' => 'browsing'],
+                ['value' => 'add_to_stack', 'label' => 'Add another peptide to my current stack', 'marketing_value' => 'add_to_stack'],
+                ['value' => 'upgrade', 'label' => 'Upgrade to something more effective', 'marketing_value' => 'upgrade'],
+                ['value' => 'restart', 'label' => 'Start a fresh protocol', 'marketing_value' => 'restart'],
+                ['value' => 'browsing', 'label' => 'Just exploring what\'s out there', 'marketing_value' => 'browsing'],
             ],
         ]);
 
@@ -606,7 +606,7 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What health goal do you want to target next?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'health_goal',
+            'marketing_property' => 'health_goal',
             'show_conditions' => $bofCCond,
             'options' => $this->healthGoalOptions(),
         ]);
@@ -616,7 +616,7 @@ class QuizFunnelSeeder extends Seeder
             'slide_type' => QuizQuestion::SLIDE_QUESTION,
             'question_text' => 'What would make you most confident in a vendor?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
-            'klaviyo_property' => 'buying_confidence',
+            'marketing_property' => 'buying_confidence',
             'show_conditions' => $bofCCond,
             'options' => $this->buyingConfidenceOptions(),
         ]);
@@ -625,7 +625,7 @@ class QuizFunnelSeeder extends Seeder
         $this->slide($quiz, 'bofc_email', [
             'slide_type' => QuizQuestion::SLIDE_EMAIL_CAPTURE,
             'question_text' => 'Get Your Stacking Guide',
-            'klaviyo_property' => 'email',
+            'marketing_property' => 'email',
             'content_title' => 'Your stacking recommendation is ready!',
             'content_body' => 'Enter your email to see your next peptide match and our Stacking Safety Guide.',
             'show_conditions' => $bofCCond,
@@ -778,81 +778,81 @@ class QuizFunnelSeeder extends Seeder
     private function healthGoalOptions(): array
     {
         return [
-            ['value' => 'fat_loss', 'label' => 'Lose fat & boost metabolism', 'klaviyo_value' => 'fat_loss'],
-            ['value' => 'muscle_growth', 'label' => 'Build muscle & recover faster', 'klaviyo_value' => 'muscle_growth'],
-            ['value' => 'anti_aging', 'label' => 'Look & feel younger', 'klaviyo_value' => 'anti_aging'],
-            ['value' => 'injury_recovery', 'label' => 'Heal an injury faster', 'klaviyo_value' => 'injury_recovery'],
-            ['value' => 'cognitive', 'label' => 'Think sharper & focus better', 'klaviyo_value' => 'cognitive'],
-            ['value' => 'sleep', 'label' => 'Sleep deeper & wake refreshed', 'klaviyo_value' => 'sleep'],
-            ['value' => 'immune', 'label' => 'Strengthen my immune system', 'klaviyo_value' => 'immune'],
-            ['value' => 'sexual_health', 'label' => 'Improve sexual health & vitality', 'klaviyo_value' => 'sexual_health'],
-            ['value' => 'gut_health', 'label' => 'Fix my gut & digestion', 'klaviyo_value' => 'gut_health'],
-            ['value' => 'general_wellness', 'label' => 'General wellness & energy', 'klaviyo_value' => 'general_wellness'],
+            ['value' => 'fat_loss', 'label' => 'Lose fat & boost metabolism', 'marketing_value' => 'fat_loss'],
+            ['value' => 'muscle_growth', 'label' => 'Build muscle & recover faster', 'marketing_value' => 'muscle_growth'],
+            ['value' => 'anti_aging', 'label' => 'Look & feel younger', 'marketing_value' => 'anti_aging'],
+            ['value' => 'injury_recovery', 'label' => 'Heal an injury faster', 'marketing_value' => 'injury_recovery'],
+            ['value' => 'cognitive', 'label' => 'Think sharper & focus better', 'marketing_value' => 'cognitive'],
+            ['value' => 'sleep', 'label' => 'Sleep deeper & wake refreshed', 'marketing_value' => 'sleep'],
+            ['value' => 'immune', 'label' => 'Strengthen my immune system', 'marketing_value' => 'immune'],
+            ['value' => 'sexual_health', 'label' => 'Improve sexual health & vitality', 'marketing_value' => 'sexual_health'],
+            ['value' => 'gut_health', 'label' => 'Fix my gut & digestion', 'marketing_value' => 'gut_health'],
+            ['value' => 'general_wellness', 'label' => 'General wellness & energy', 'marketing_value' => 'general_wellness'],
         ];
     }
 
     private function genderOptions(): array
     {
         return [
-            ['value' => 'male', 'label' => 'Male', 'klaviyo_value' => 'male'],
-            ['value' => 'female', 'label' => 'Female', 'klaviyo_value' => 'female'],
-            ['value' => 'prefer_not', 'label' => 'Prefer not to say', 'klaviyo_value' => 'prefer_not'],
+            ['value' => 'male', 'label' => 'Male', 'marketing_value' => 'male'],
+            ['value' => 'female', 'label' => 'Female', 'marketing_value' => 'female'],
+            ['value' => 'prefer_not', 'label' => 'Prefer not to say', 'marketing_value' => 'prefer_not'],
         ];
     }
 
     private function ageOptions(): array
     {
         return [
-            ['value' => '18-29', 'label' => '18-29', 'klaviyo_value' => '18-29'],
-            ['value' => '30-39', 'label' => '30-39', 'klaviyo_value' => '30-39'],
-            ['value' => '40-49', 'label' => '40-49', 'klaviyo_value' => '40-49'],
-            ['value' => '50-59', 'label' => '50-59', 'klaviyo_value' => '50-59'],
-            ['value' => '60+', 'label' => '60+', 'klaviyo_value' => '60+'],
+            ['value' => '18-29', 'label' => '18-29', 'marketing_value' => '18-29'],
+            ['value' => '30-39', 'label' => '30-39', 'marketing_value' => '30-39'],
+            ['value' => '40-49', 'label' => '40-49', 'marketing_value' => '40-49'],
+            ['value' => '50-59', 'label' => '50-59', 'marketing_value' => '50-59'],
+            ['value' => '60+', 'label' => '60+', 'marketing_value' => '60+'],
         ];
     }
 
     private function buyingPriorityOptions(): array
     {
         return [
-            ['value' => 'doctor_guidance', 'label' => 'I want a doctor\'s guidance (telehealth)', 'klaviyo_value' => 'doctor_guidance'],
-            ['value' => 'research_grade', 'label' => 'I want to do my own research (research-grade)', 'klaviyo_value' => 'research_grade'],
-            ['value' => 'affordable', 'label' => 'I want the most affordable option', 'klaviyo_value' => 'affordable'],
+            ['value' => 'doctor_guidance', 'label' => 'I want a doctor\'s guidance (telehealth)', 'marketing_value' => 'doctor_guidance'],
+            ['value' => 'research_grade', 'label' => 'I want to do my own research (research-grade)', 'marketing_value' => 'research_grade'],
+            ['value' => 'affordable', 'label' => 'I want the most affordable option', 'marketing_value' => 'affordable'],
         ];
     }
 
     private function buyingConfidenceOptions(): array
     {
         return [
-            ['value' => 'price', 'label' => 'Best price', 'klaviyo_value' => 'price'],
-            ['value' => 'lab_reports', 'label' => 'Third-party lab reports', 'klaviyo_value' => 'lab_reports'],
-            ['value' => 'reviews', 'label' => 'Community reviews & social proof', 'klaviyo_value' => 'reviews'],
-            ['value' => 'doctor', 'label' => 'Doctor consultation included', 'klaviyo_value' => 'doctor'],
+            ['value' => 'price', 'label' => 'Best price', 'marketing_value' => 'price'],
+            ['value' => 'lab_reports', 'label' => 'Third-party lab reports', 'marketing_value' => 'lab_reports'],
+            ['value' => 'reviews', 'label' => 'Community reviews & social proof', 'marketing_value' => 'reviews'],
+            ['value' => 'doctor', 'label' => 'Doctor consultation included', 'marketing_value' => 'doctor'],
         ];
     }
 
     private function feedbackOptions(): array
     {
         return [
-            ['value' => 'dosing', 'label' => 'Dosing & protocol guides', 'klaviyo_value' => 'dosing'],
-            ['value' => 'stacking', 'label' => 'Peptide stacking strategies', 'klaviyo_value' => 'stacking'],
-            ['value' => 'research', 'label' => 'Latest research & studies', 'klaviyo_value' => 'research'],
-            ['value' => 'community', 'label' => 'Community experiences & reviews', 'klaviyo_value' => 'community'],
+            ['value' => 'dosing', 'label' => 'Dosing & protocol guides', 'marketing_value' => 'dosing'],
+            ['value' => 'stacking', 'label' => 'Peptide stacking strategies', 'marketing_value' => 'stacking'],
+            ['value' => 'research', 'label' => 'Latest research & studies', 'marketing_value' => 'research'],
+            ['value' => 'community', 'label' => 'Community experiences & reviews', 'marketing_value' => 'community'],
         ];
     }
 
     private function peptideSelectionOptions(): array
     {
         return [
-            ['value' => 'bpc-157', 'label' => 'BPC-157', 'klaviyo_value' => 'BPC-157'],
-            ['value' => 'tirzepatide', 'label' => 'Tirzepatide', 'klaviyo_value' => 'Tirzepatide'],
-            ['value' => 'cjc-1295-ipamorelin', 'label' => 'CJC-1295 / Ipamorelin', 'klaviyo_value' => 'CJC-1295/Ipamorelin'],
-            ['value' => 'epithalon', 'label' => 'Epithalon', 'klaviyo_value' => 'Epithalon'],
-            ['value' => 'tb-500', 'label' => 'TB-500', 'klaviyo_value' => 'TB-500'],
-            ['value' => 'semax', 'label' => 'Semax', 'klaviyo_value' => 'Semax'],
-            ['value' => 'dsip', 'label' => 'DSIP', 'klaviyo_value' => 'DSIP'],
-            ['value' => 'thymosin-alpha-1', 'label' => 'Thymosin Alpha 1', 'klaviyo_value' => 'Thymosin Alpha 1'],
-            ['value' => 'pt-141', 'label' => 'PT-141', 'klaviyo_value' => 'PT-141'],
-            ['value' => 'ghk-cu', 'label' => 'GHK-Cu', 'klaviyo_value' => 'GHK-Cu'],
+            ['value' => 'bpc-157', 'label' => 'BPC-157', 'marketing_value' => 'BPC-157'],
+            ['value' => 'tirzepatide', 'label' => 'Tirzepatide', 'marketing_value' => 'Tirzepatide'],
+            ['value' => 'cjc-1295-ipamorelin', 'label' => 'CJC-1295 / Ipamorelin', 'marketing_value' => 'CJC-1295/Ipamorelin'],
+            ['value' => 'epithalon', 'label' => 'Epithalon', 'marketing_value' => 'Epithalon'],
+            ['value' => 'tb-500', 'label' => 'TB-500', 'marketing_value' => 'TB-500'],
+            ['value' => 'semax', 'label' => 'Semax', 'marketing_value' => 'Semax'],
+            ['value' => 'dsip', 'label' => 'DSIP', 'marketing_value' => 'DSIP'],
+            ['value' => 'thymosin-alpha-1', 'label' => 'Thymosin Alpha 1', 'marketing_value' => 'Thymosin Alpha 1'],
+            ['value' => 'pt-141', 'label' => 'PT-141', 'marketing_value' => 'PT-141'],
+            ['value' => 'ghk-cu', 'label' => 'GHK-Cu', 'marketing_value' => 'GHK-Cu'],
         ];
     }
 

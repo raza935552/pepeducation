@@ -26,7 +26,7 @@
         'question_text' => $question->question_text,
         'question_subtext' => $question->question_subtext,
         'question_type' => $question->question_type,
-        'klaviyo_property' => $question->klaviyo_property,
+        'marketing_property' => $question->marketing_property,
         'is_required' => (bool) $question->is_required,
         'max_selections' => $question->max_selections,
         'settings' => $question->settings ?? [],
@@ -183,8 +183,8 @@
 
         {{-- Inline meta chips --}}
         <div class="hidden sm:flex items-center gap-1.5 flex-shrink-0">
-            @if($question->klaviyo_property)
-                <span class="px-1.5 py-0.5 text-[10px] rounded bg-purple-50 text-purple-600 border border-purple-200">{{ $question->klaviyo_property }}</span>
+            @if($question->marketing_property)
+                <span class="px-1.5 py-0.5 text-[10px] rounded bg-purple-50 text-purple-600 border border-purple-200">{{ $question->marketing_property }}</span>
             @endif
             @if($optionCount > 0)
                 <span class="text-[10px] text-gray-400">{{ $optionCount }} opts</span>
@@ -312,10 +312,10 @@
             </div>
         @endif
 
-        {{-- Klaviyo property (mobile fallback) --}}
-        @if($question->klaviyo_property)
+        {{-- Marketing property (mobile fallback) --}}
+        @if($question->marketing_property)
             <div class="sm:hidden mt-2">
-                <span class="px-1.5 py-0.5 text-[10px] rounded bg-purple-50 text-purple-600 border border-purple-200">{{ $question->klaviyo_property }}</span>
+                <span class="px-1.5 py-0.5 text-[10px] rounded bg-purple-50 text-purple-600 border border-purple-200">{{ $question->marketing_property }}</span>
             </div>
         @endif
     </div>

@@ -7,11 +7,11 @@
         'order' => $q->order,
         'label' => '#' . $q->order . ' — ' . Str::limit($q->question_text ?: $q->content_title ?: \App\Models\QuizQuestion::getSlideTypeLabel($q->slide_type ?? 'question'), 40),
         'slide_type' => $q->slide_type ?? 'question',
-        'klaviyo_property' => $q->klaviyo_property,
+        'marketing_property' => $q->marketing_property,
         'options' => collect($q->options ?? [])->map(fn ($o) => [
             'value' => $o['value'] ?? $o['id'] ?? '',
             'label' => $o['text'] ?? $o['label'] ?? $o['value'] ?? '',
-            'klaviyo_value' => $o['klaviyo_value'] ?? '',
+            'marketing_value' => $o['marketing_value'] ?? '',
         ])->values()->toArray(),
     ])->toJson();
 
@@ -63,7 +63,7 @@
                         <div class="grid grid-cols-4 gap-2">
                             <template x-for="st in slideTypes" :key="st.value">
                                 <button type="button"
-                                    @click="question.slide_type = st.value; if (st.value === 'email_capture' && !question.klaviyo_property) question.klaviyo_property = 'email';"
+                                    @click="question.slide_type = st.value; if (st.value === 'email_capture' && !question.marketing_property) question.marketing_property = 'email';"
                                     :class="question.slide_type === st.value
                                         ? 'border-brand-gold bg-brand-gold/5 ring-1 ring-brand-gold/30'
                                         : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'"
@@ -345,15 +345,15 @@
                                         </div>
 
                                         {{-- Results Bank match indicator (health_goal slides) --}}
-                                        <template x-if="question.klaviyo_property === 'health_goal' && option.klaviyo_value">
+                                        <template x-if="question.marketing_property === 'health_goal' && option.marketing_value">
                                             <span class="flex-shrink-0 text-[9px] px-1.5 py-0.5 rounded-full font-medium whitespace-nowrap"
-                                                :class="hasResultsBankEntry(option.klaviyo_value) ? 'bg-green-50 text-green-600 border border-green-200' : 'bg-yellow-50 text-yellow-600 border border-yellow-200'"
-                                                x-text="hasResultsBankEntry(option.klaviyo_value) ? 'RB' : 'No RB'"
-                                                :title="hasResultsBankEntry(option.klaviyo_value) ? 'Has Results Bank entry' : 'Missing Results Bank entry'">
+                                                :class="hasResultsBankEntry(option.marketing_value) ? 'bg-green-50 text-green-600 border border-green-200' : 'bg-yellow-50 text-yellow-600 border border-yellow-200'"
+                                                x-text="hasResultsBankEntry(option.marketing_value) ? 'RB' : 'No RB'"
+                                                :title="hasResultsBankEntry(option.marketing_value) ? 'Has Results Bank entry' : 'Missing Results Bank entry'">
                                             </span>
                                         </template>
                                         {{-- Warning when health_goal slide option has no goal mapped --}}
-                                        <template x-if="question.klaviyo_property === 'health_goal' && !option.klaviyo_value">
+                                        <template x-if="question.marketing_property === 'health_goal' && !option.marketing_value">
                                             <span class="flex-shrink-0 text-[9px] px-1.5 py-0.5 rounded-full font-medium whitespace-nowrap bg-red-50 text-red-500 border border-red-200"
                                                 title="No health goal selected — expand this option and pick a goal">No Goal</span>
                                         </template>
@@ -389,25 +389,25 @@
                                         {{-- Value fields — smart dropdown for health_goal / experience_level --}}
                                         <div>
                                             {{-- Health Goal dropdown --}}
-                                            <template x-if="question.klaviyo_property === 'health_goal'">
+                                            <template x-if="question.marketing_property === 'health_goal'">
                                                 <div>
                                                     <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Health Goal <span class="font-normal text-gray-400">maps to Results Bank</span></label>
                                                     <div class="flex items-center gap-2">
-                                                        <select x-model="option.klaviyo_value"
-                                                            @change="if (!option.value) option.value = option.klaviyo_value"
+                                                        <select x-model="option.marketing_value"
+                                                            @change="if (!option.value) option.value = option.marketing_value"
                                                             class="flex-1 rounded border-gray-200 text-xs py-1">
                                                             <option value="">Select goal...</option>
                                                             <template x-for="[key, label] in Object.entries(resultsBankGoals)" :key="key">
                                                                 <option :value="key" x-text="label"></option>
                                                             </template>
                                                         </select>
-                                                        <template x-if="option.klaviyo_value && hasResultsBankEntry(option.klaviyo_value)">
+                                                        <template x-if="option.marketing_value && hasResultsBankEntry(option.marketing_value)">
                                                             <span class="flex-shrink-0 text-green-500" title="Results Bank entry exists">
                                                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                                                             </span>
                                                         </template>
-                                                        <template x-if="option.klaviyo_value && !hasResultsBankEntry(option.klaviyo_value)">
-                                                            <a :href="'{{ route('admin.results-bank.create') }}?health_goal=' + encodeURIComponent(option.klaviyo_value)"
+                                                        <template x-if="option.marketing_value && !hasResultsBankEntry(option.marketing_value)">
+                                                            <a :href="'{{ route('admin.results-bank.create') }}?health_goal=' + encodeURIComponent(option.marketing_value)"
                                                                 target="_blank"
                                                                 class="flex-shrink-0 text-yellow-500 hover:text-yellow-600"
                                                                 title="No Results Bank entry — click to create">
@@ -419,11 +419,11 @@
                                             </template>
 
                                             {{-- Experience Level dropdown --}}
-                                            <template x-if="question.klaviyo_property === 'experience_level'">
+                                            <template x-if="question.marketing_property === 'experience_level'">
                                                 <div>
                                                     <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Experience Level <span class="font-normal text-gray-400">maps to Results Bank</span></label>
-                                                    <select x-model="option.klaviyo_value"
-                                                        @change="if (!option.value) option.value = option.klaviyo_value"
+                                                    <select x-model="option.marketing_value"
+                                                        @change="if (!option.value) option.value = option.marketing_value"
                                                         class="w-full rounded border-gray-200 text-xs py-1">
                                                         <option value="">Select level...</option>
                                                         <template x-for="[key, label] in Object.entries(resultsBankLevels)" :key="key">
@@ -434,11 +434,11 @@
                                             </template>
 
                                             {{-- Buying Priority / Vendor Category dropdown --}}
-                                            <template x-if="question.klaviyo_property === 'buying_priority'">
+                                            <template x-if="question.marketing_property === 'buying_priority'">
                                                 <div>
                                                     <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Vendor Category <span class="font-normal text-gray-400">matches store category</span></label>
                                                     <select x-model="option.value"
-                                                        @change="if (!option.klaviyo_value) option.klaviyo_value = option.value"
+                                                        @change="if (!option.marketing_value) option.marketing_value = option.value"
                                                         class="w-full rounded border-gray-200 text-xs py-1">
                                                         <option value="">Select category...</option>
                                                         <template x-for="[key, label] in Object.entries(vendorCategories)" :key="key">
@@ -450,7 +450,7 @@
                                             </template>
 
                                             {{-- Default free-text inputs --}}
-                                            <template x-if="question.klaviyo_property !== 'health_goal' && question.klaviyo_property !== 'experience_level' && question.klaviyo_property !== 'buying_priority'">
+                                            <template x-if="question.marketing_property !== 'health_goal' && question.marketing_property !== 'experience_level' && question.marketing_property !== 'buying_priority'">
                                                 <div class="flex gap-3">
                                                     <div>
                                                         <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Internal Value <span class="font-normal text-gray-400">auto-generated if blank</span></label>
@@ -458,8 +458,8 @@
                                                             class="w-40 rounded border-gray-200 text-xs py-1">
                                                     </div>
                                                     <div>
-                                                        <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Klaviyo Value <span class="font-normal text-gray-400">override for profile sync</span></label>
-                                                        <input type="text" x-model="option.klaviyo_value" placeholder="same as value if blank"
+                                                        <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Marketing Value <span class="font-normal text-gray-400">override for profile sync</span></label>
+                                                        <input type="text" x-model="option.marketing_value" placeholder="same as value if blank"
                                                             class="w-40 rounded border-gray-200 text-xs py-1">
                                                     </div>
                                                 </div>
@@ -517,7 +517,7 @@
 
                                         {{-- Tags --}}
                                         <div x-data="{ tagSearch: '', tagOpen: false }">
-                                            <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Tags <span class="font-normal text-gray-400">Klaviyo segmentation labels</span></label>
+                                            <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Tags <span class="font-normal text-gray-400">marketing segmentation labels</span></label>
                                             <div class="flex flex-wrap gap-1 mb-1" x-show="option.tags && option.tags.length > 0">
                                                 <template x-for="(tag, ti) in (option.tags || [])" :key="ti">
                                                     <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded text-[10px]">
@@ -646,8 +646,8 @@
                             <div class="flex items-center gap-1 ml-2">
                                 <span x-show="question.show_conditions.conditions.length > 0"
                                     class="w-1.5 h-1.5 rounded-full bg-cyan-400" title="Has conditions"></span>
-                                <span x-show="question.klaviyo_property"
-                                    class="w-1.5 h-1.5 rounded-full bg-purple-400" title="Has Klaviyo sync"></span>
+                                <span x-show="question.marketing_property"
+                                    class="w-1.5 h-1.5 rounded-full bg-purple-400" title="Has marketing sync"></span>
                                 <span x-show="question.is_required === false"
                                     class="w-1.5 h-1.5 rounded-full bg-red-400" title="Not required"></span>
                                 <span x-show="question.max_selections"
@@ -747,15 +747,15 @@
                                 </template>
                             </div>
 
-                            {{-- Klaviyo Sync --}}
+                            {{-- Marketing Sync --}}
                             <div x-show="['question', 'question_text', 'email_capture'].includes(question.slide_type)">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Sync Answer to Profile</label>
                                 <div class="relative">
-                                    <input type="text" name="klaviyo_property" x-model="question.klaviyo_property"
-                                        list="klaviyo-property-suggestions"
+                                    <input type="text" name="marketing_property" x-model="question.marketing_property"
+                                        list="marketing-property-suggestions"
                                         placeholder="e.g. health_goal"
                                         class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
-                                    <datalist id="klaviyo-property-suggestions">
+                                    <datalist id="marketing-property-suggestions">
                                         <option value="health_goal">Health Goal</option>
                                         <option value="experience_level">Experience Level</option>
                                         <option value="awareness_level">Awareness Level</option>
@@ -774,13 +774,13 @@
                                         <option value="email">Email</option>
                                     </datalist>
                                 </div>
-                                <template x-if="suggestedKlaviyoProperty && !question.klaviyo_property">
-                                    <p class="text-xs text-amber-600 mt-1 flex items-center gap-1 cursor-pointer" @click="question.klaviyo_property = suggestedKlaviyoProperty">
+                                <template x-if="suggestedMarketingProperty && !question.marketing_property">
+                                    <p class="text-xs text-amber-600 mt-1 flex items-center gap-1 cursor-pointer" @click="question.marketing_property = suggestedMarketingProperty">
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                        Auto-detected: <strong x-text="suggestedKlaviyoProperty" class="underline"></strong> — click to apply
+                                        Auto-detected: <strong x-text="suggestedMarketingProperty" class="underline"></strong> — click to apply
                                     </p>
                                 </template>
-                                <p class="text-xs text-gray-400 mt-1" x-show="!suggestedKlaviyoProperty || question.klaviyo_property">Store the user's answer in their Klaviyo profile under this property name.</p>
+                                <p class="text-xs text-gray-400 mt-1" x-show="!suggestedMarketingProperty || question.marketing_property">Store the user's answer in their marketing profile under this property name.</p>
                             </div>
 
                             {{-- Dynamic Content Variants (intermission) --}}
@@ -804,12 +804,12 @@
                                         :class="question.dynamic_variants.length > 0 && !question.dynamic_content_key ? 'border-orange-300 ring-1 ring-orange-200' : ''">
                                         <option value="">Select a synced property...</option>
                                         @foreach($quiz->questions->sortBy('order') as $qs)
-                                            @if($qs->klaviyo_property)
-                                                <option value="{{ $qs->klaviyo_property }}">{{ $qs->klaviyo_property }} (#{{ $qs->order }} — {{ Str::limit($qs->question_text ?: $qs->content_title ?: 'Slide', 40) }})</option>
+                                            @if($qs->marketing_property)
+                                                <option value="{{ $qs->marketing_property }}">{{ $qs->marketing_property }} (#{{ $qs->order }} — {{ Str::limit($qs->question_text ?: $qs->content_title ?: 'Slide', 40) }})</option>
                                             @endif
                                         @endforeach
                                     </select>
-                                    <p class="text-[10px] text-gray-400 mt-0.5">The Klaviyo property from a previous slide whose value determines which variant to show.</p>
+                                    <p class="text-[10px] text-gray-400 mt-0.5">The marketing property from a previous slide whose value determines which variant to show.</p>
                                 </div>
 
                                 {{-- Shared datalist for variant key suggestions --}}
@@ -890,11 +890,11 @@ function questionModal() {
             question_text: '',
             question_subtext: '',
             question_type: 'single_choice',
-            klaviyo_property: '',
+            marketing_property: '',
             is_required: true,
             max_selections: null,
             settings: {},
-            options: [{ label: '', value: '', subtext: '', klaviyo_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: @json($quiz->type === 'segmentation') }],
+            options: [{ label: '', value: '', subtext: '', marketing_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: @json($quiz->type === 'segmentation') }],
             content_title: '',
             content_body: '',
             content_source: '',
@@ -911,7 +911,7 @@ function questionModal() {
             question_text: 'Free-text input. The user types their answer instead of choosing options. Great for open-ended questions.',
             intermission: 'Informational slide shown between questions. Share a relevant stat, testimonial, or fact to build trust.',
             loading: 'Animated checklist that simulates processing. Each line appears in sequence, then auto-advances. Creates anticipation.',
-            email_capture: 'Email collection form. Users enter their email or skip. Synced to Klaviyo if configured.',
+            email_capture: 'Email collection form. Users enter their email or skip. Synced to Customer.io if configured.',
             peptide_reveal: 'Shows the personalized peptide recommendation based on answers. Powered by the Results Bank.',
             vendor_reveal: 'Shows the recommended vendor with product details, pricing, and a link to their site.',
             bridge: 'Final slide with next-steps content and a call-to-action button.',
@@ -939,7 +939,7 @@ function questionModal() {
             loading: 'One checklist item per line. 3-5 items that suggest thorough analysis.',
             bridge: 'Steps or bullet points explaining what happens next.',
         },
-        get suggestedKlaviyoProperty() {
+        get suggestedMarketingProperty() {
             const st = this.question.slide_type;
             // Auto-detect for email_capture slides
             if (st === 'email_capture') return 'email';
@@ -977,7 +977,7 @@ function questionModal() {
             return bestMatch;
         },
         addOption() {
-            this.question.options.push({ label: '', value: '', subtext: '', klaviyo_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: this.quizType === 'segmentation' });
+            this.question.options.push({ label: '', value: '', subtext: '', marketing_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: this.quizType === 'segmentation' });
         },
         removeOption(index) {
             this.question.options.splice(index, 1);
@@ -997,10 +997,10 @@ function questionModal() {
         getVariantKeyOptions() {
             const key = this.question.dynamic_content_key;
             if (!key) return [];
-            const slide = this.allSlides.find(s => s.klaviyo_property === key);
+            const slide = this.allSlides.find(s => s.marketing_property === key);
             if (!slide || !slide.options) return [];
             return slide.options.map(o => ({
-                value: o.klaviyo_value || o.value,
+                value: o.marketing_value || o.value,
                 label: o.label,
             })).filter(o => o.value);
         },
@@ -1017,11 +1017,11 @@ function questionModal() {
                 question_text: '',
                 question_subtext: '',
                 question_type: 'single_choice',
-                klaviyo_property: '',
+                marketing_property: '',
                 is_required: true,
                 max_selections: null,
                 settings: {},
-                options: [{ label: '', value: '', subtext: '', klaviyo_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: autoExpand }],
+                options: [{ label: '', value: '', subtext: '', marketing_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: autoExpand }],
                 content_title: '',
                 content_body: '',
                 content_source: '',
@@ -1041,7 +1041,7 @@ function questionModal() {
             formData.append('question_text', this.question.question_text || this.question.content_title || 'Slide');
             formData.append('question_subtext', this.question.question_subtext || '');
             formData.append('question_type', this.question.question_type);
-            formData.append('klaviyo_property', this.question.klaviyo_property || '');
+            formData.append('marketing_property', this.question.marketing_property || '');
             formData.append('is_required', this.question.is_required ? '1' : '0');
             if (this.question.max_selections) {
                 formData.append('max_selections', this.question.max_selections);
@@ -1102,8 +1102,8 @@ function questionModal() {
                 this.question.options.forEach((opt, i) => {
                     formData.append(`options[${i}][label]`, opt.label);
                     formData.append(`options[${i}][value]`, opt.value || opt.label.toLowerCase().replace(/\s+/g, '_'));
-                    if (opt.klaviyo_value) {
-                        formData.append(`options[${i}][klaviyo_value]`, opt.klaviyo_value);
+                    if (opt.marketing_value) {
+                        formData.append(`options[${i}][marketing_value]`, opt.marketing_value);
                     }
                     if (opt.subtext) {
                         formData.append(`options[${i}][subtext]`, opt.subtext);
@@ -1209,7 +1209,7 @@ function editQuestion(id, questionData) {
 
     // Auto-expand advanced if relevant data exists
     const hasAdvanced = (parsedConds.conditions.length > 0)
-        || (questionData.klaviyo_property)
+        || (questionData.marketing_property)
         || (questionData.dynamic_content_key)
         || (questionData.is_required === false)
         || (questionData.max_selections);
@@ -1222,7 +1222,7 @@ function editQuestion(id, questionData) {
         question_text: questionData.question_text || '',
         question_subtext: questionData.question_subtext || '',
         question_type: questionData.question_type || 'single_choice',
-        klaviyo_property: questionData.klaviyo_property || '',
+        marketing_property: questionData.marketing_property || '',
         is_required: questionData.is_required !== undefined ? questionData.is_required : true,
         max_selections: questionData.max_selections || null,
         settings: questionData.settings || {},
@@ -1231,7 +1231,7 @@ function editQuestion(id, questionData) {
                 label: o.label || o.text || '',
                 value: o.value || '',
                 subtext: o.subtext || '',
-                klaviyo_value: o.klaviyo_value || '',
+                marketing_value: o.marketing_value || '',
                 score_tof: o.score_tof || 0,
                 score_mof: o.score_mof || 0,
                 score_bof: o.score_bof || 0,
@@ -1239,7 +1239,7 @@ function editQuestion(id, questionData) {
                 tags: o.tags || [],
                 _expanded: isSegQuiz,
             }))
-            : [{ label: '', value: '', subtext: '', klaviyo_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: isSegQuiz }],
+            : [{ label: '', value: '', subtext: '', marketing_value: '', score_tof: 0, score_mof: 0, score_bof: 0, skip_to_question: '', tags: [], _expanded: isSegQuiz }],
         content_title: questionData.content_title || '',
         content_body: questionData.content_body || '',
         content_source: questionData.content_source || '',

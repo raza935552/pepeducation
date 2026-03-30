@@ -149,7 +149,7 @@
                                 <h3 class="font-semibold text-gray-900">Question</h3>
                                 <p class="text-sm text-gray-600 mt-1">Choice question — user picks from options. Supports <strong>single-choice</strong> (pick one) and <strong>multiple-choice</strong> (pick several, with optional <code class="bg-gray-100 px-1 rounded text-xs">max_selections</code> limit). Each option can add TOF/MOF/BOF scores.</p>
                                 <p class="text-xs text-gray-500 mt-2"><strong>Example:</strong> "What's your primary health goal?" with options like Fat Loss, Muscle Growth, Recovery, etc.</p>
-                                <p class="text-xs text-gray-500 mt-1"><strong>Settings:</strong> Klaviyo Property, Question Type (single/multiple), Max Selections, Scores (TOF/MOF/BOF per option), Skip To, Tags, Subtext</p>
+                                <p class="text-xs text-gray-500 mt-1"><strong>Settings:</strong> Marketing Property, Question Type (single/multiple), Max Selections, Scores (TOF/MOF/BOF per option), Skip To, Tags, Subtext</p>
                             </div>
                         </div>
                     </div>
@@ -164,7 +164,7 @@
                                 <h3 class="font-semibold text-gray-900">Text Input</h3>
                                 <p class="text-sm text-gray-600 mt-1">Free text answer — user types a response instead of picking from options.</p>
                                 <p class="text-xs text-gray-500 mt-2"><strong>Example:</strong> "What peptide are you currently using?"</p>
-                                <p class="text-xs text-gray-500 mt-1"><strong>Settings:</strong> Klaviyo Property</p>
+                                <p class="text-xs text-gray-500 mt-1"><strong>Settings:</strong> Marketing Property</p>
                             </div>
                         </div>
                     </div>
@@ -207,7 +207,7 @@
                             </div>
                             <div>
                                 <h3 class="font-semibold text-gray-900">Email Capture</h3>
-                                <p class="text-sm text-gray-600 mt-1">Collects the user's email address and sends it to Klaviyo.</p>
+                                <p class="text-sm text-gray-600 mt-1">Collects the user's email address and sends it to Customer.io.</p>
                                 <p class="text-xs text-gray-500 mt-2"><strong>Example:</strong> "Get your personalized results via email"</p>
                                 <p class="text-xs text-gray-500 mt-1"><strong>Settings:</strong> Content Title, Body</p>
                             </div>
@@ -269,7 +269,7 @@
                                 <h3 class="font-semibold text-gray-900">Peptide Search</h3>
                                 <p class="text-sm text-gray-600 mt-1">Lets the user search and select a specific peptide from the full database. Used in <strong>Path 1</strong> for high-intent users who already know what they want.</p>
                                 <p class="text-xs text-gray-500 mt-2"><strong>Example:</strong> "Which peptide are you interested in?" with a searchable dropdown of all peptides</p>
-                                <p class="text-xs text-gray-500 mt-1"><strong>Settings:</strong> Klaviyo Property. Pulls peptides from the Stack Products database with vendor/pricing data.</p>
+                                <p class="text-xs text-gray-500 mt-1"><strong>Settings:</strong> Marketing Property. Pulls peptides from the Stack Products database with vendor/pricing data.</p>
                             </div>
                         </div>
                     </div>
@@ -401,8 +401,8 @@
                         <p class="text-xs text-gray-500 mt-1">Example: <code class="bg-gray-100 px-1 rounded">fat_loss</code></p>
                     </div>
                     <div class="card p-4">
-                        <h4 class="font-semibold text-gray-900">Klaviyo Value</h4>
-                        <p class="text-sm text-gray-600 mt-1">What gets sent to Klaviyo as the profile property value. Usually the same as the label, but can be customized.</p>
+                        <h4 class="font-semibold text-gray-900">Marketing Value</h4>
+                        <p class="text-sm text-gray-600 mt-1">What gets sent to Customer.io as the profile property value. Usually the same as the label, but can be customized.</p>
                         <p class="text-xs text-gray-500 mt-1">Example: <code class="bg-gray-100 px-1 rounded">Fat Loss & Metabolism</code></p>
                     </div>
                     <div class="card p-4">
@@ -422,7 +422,7 @@
                     </div>
                     <div class="card p-4">
                         <h4 class="font-semibold text-gray-900">Tags</h4>
-                        <p class="text-sm text-gray-600 mt-1">Labels attached to this option for Klaviyo segmentation. When a user picks this option, these tags are added to their Klaviyo profile for targeted email campaigns.</p>
+                        <p class="text-sm text-gray-600 mt-1">Labels attached to this option for marketing segmentation. When a user picks this option, these tags are added to their Customer.io profile for targeted email campaigns.</p>
                         <p class="text-xs text-gray-500 mt-1">Example: <code class="bg-gray-100 px-1 rounded">["weight_management", "glp1"]</code> on the Fat Loss option</p>
                     </div>
                 </div>
@@ -766,7 +766,7 @@
                                 <ul class="mt-2 space-y-1 text-xs text-gray-600">
                                     <li>&bull; <strong>Label:</strong> "Fat Loss" (what user sees)</li>
                                     <li>&bull; <strong>Value:</strong> "fat_loss" (internal key &mdash; used in show conditions later)</li>
-                                    <li>&bull; <strong>Klaviyo Property</strong> (on the question): "goal" (so we can match outcomes by answer)</li>
+                                    <li>&bull; <strong>Marketing Property</strong> (on the question): "goal" (so we can match outcomes by answer)</li>
                                     <li>&bull; <strong>Skip To:</strong> Select which slide this path should jump to</li>
                                     <li>&bull; <strong>Scores:</strong> Leave all at 0 for custom quizzes (scoring isn't used)</li>
                                 </ul>
@@ -824,7 +824,7 @@
                                 <span class="text-xs text-gray-600">"Always (default)" &rarr; Generic result page. <strong>Always add this last!</strong></span>
                             </div>
                         </div>
-                        <p class="text-xs text-gray-500 mt-3">The "question" in the outcome condition dropdown should be the Klaviyo Property name you set in step 3 (e.g., "goal"). The "value" is the option value (e.g., "fat_loss").</p>
+                        <p class="text-xs text-gray-500 mt-3">The "question" in the outcome condition dropdown should be the Marketing Property name you set in step 3 (e.g., "goal"). The "value" is the option value (e.g., "fat_loss").</p>
                     </div>
 
                     {{-- Step 6 --}}
@@ -840,7 +840,7 @@
                     <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-5">
                         <h4 class="font-semibold text-indigo-900 mb-3">Full Example: 3-Path Custom Quiz</h4>
                         <div class="font-mono text-xs text-indigo-800 space-y-1">
-                            <p><strong>Slide #1</strong> — Question: "What's your goal?" (klaviyo_property: "goal")</p>
+                            <p><strong>Slide #1</strong> — Question: "What's your goal?" (marketing_property: "goal")</p>
                             <p class="pl-4">Option "Fat Loss" (value: fat_loss, skip_to: slide #2)</p>
                             <p class="pl-4">Option "Muscle" (value: muscle, skip_to: slide #4)</p>
                             <p class="pl-4">Option "Recovery" (value: recovery, skip_to: slide #6)</p>
@@ -865,7 +865,7 @@
                         <ul class="space-y-2 text-sm text-red-800">
                             <li>&bull; <strong>No "Always" outcome</strong> — If no outcome matches, the user sees a generic "Thank you" page. Always add a fallback outcome as your last priority.</li>
                             <li>&bull; <strong>Missing show conditions on branch slides</strong> — Without conditions, ALL users see ALL slides, even ones meant for other paths.</li>
-                            <li>&bull; <strong>Forgot to set Klaviyo Property</strong> — The router question MUST have a Klaviyo Property set (e.g., "goal") so outcomes can match by answer. Without it, "When user answered..." conditions can't find the answer.</li>
+                            <li>&bull; <strong>Forgot to set Marketing Property</strong> — The router question MUST have a Marketing Property set (e.g., "goal") so outcomes can match by answer. Without it, "When user answered..." conditions can't find the answer.</li>
                             <li>&bull; <strong>Skip To pointing backward</strong> — Skip To can only jump forward. It can't loop back to a previous slide.</li>
                             <li>&bull; <strong>Using scores in custom quizzes</strong> — TOF/MOF/BOF scores still work but segment-based outcomes won't do anything useful in custom quizzes. Use answer-based outcomes instead.</li>
                         </ul>
@@ -1057,7 +1057,7 @@
                         <ol class="space-y-2 text-sm text-gray-700">
                             <li class="flex gap-3">
                                 <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand-gold text-white text-xs font-bold shrink-0">1</span>
-                                <span>Set <strong>"Dynamic Content Key"</strong> to the klaviyo_property you want to react to (e.g., <code class="bg-gray-200 px-1 rounded text-xs">health_goal</code>)</span>
+                                <span>Set <strong>"Dynamic Content Key"</strong> to the marketing_property you want to react to (e.g., <code class="bg-gray-200 px-1 rounded text-xs">health_goal</code>)</span>
                             </li>
                             <li class="flex gap-3">
                                 <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand-gold text-white text-xs font-bold shrink-0">2</span>
@@ -1073,25 +1073,25 @@
             </section>
 
             {{-- ============================================================ --}}
-            {{-- Section 12: Klaviyo Integration --}}
+            {{-- Section 12: Customer.io Integration --}}
             {{-- ============================================================ --}}
-            <section id="klaviyo">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">12. Klaviyo Integration</h2>
+            <section id="customerio">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">12. Customer.io Integration</h2>
 
                 <div class="space-y-6">
                     <div class="prose prose-sm max-w-none text-gray-700">
-                        <p>The quiz integrates with Klaviyo at <strong>three levels</strong>: quiz-wide settings, per-question properties, and per-outcome events. This is how quiz data flows into your email marketing.</p>
+                        <p>The quiz integrates with Customer.io at <strong>three levels</strong>: quiz-wide settings, per-question properties, and per-outcome events. This is how quiz data flows into your email marketing.</p>
                     </div>
 
                     <div class="space-y-3">
                         <h3 class="text-lg font-semibold text-gray-900">Quiz-Level</h3>
                         <div class="card p-4">
-                            <h4 class="font-semibold text-gray-900">Klaviyo List ID</h4>
-                            <p class="text-sm text-gray-600 mt-1">The Klaviyo list that quiz completers are added to. Set this on the quiz edit page.</p>
+                            <h4 class="font-semibold text-gray-900">Marketing List ID</h4>
+                            <p class="text-sm text-gray-600 mt-1">The Customer.io segment that quiz completers are added to. Set this on the quiz edit page.</p>
                         </div>
                         <div class="card p-4">
                             <h4 class="font-semibold text-gray-900">Start Event / Complete Event</h4>
-                            <p class="text-sm text-gray-600 mt-1">Custom Klaviyo event names fired when a user starts or completes the quiz. Useful for triggering automated flows.</p>
+                            <p class="text-sm text-gray-600 mt-1">Custom Customer.io event names fired when a user starts or completes the quiz. Useful for triggering automated flows.</p>
                             <p class="text-xs text-gray-500 mt-1">Example: <code class="bg-gray-100 px-1 rounded">Quiz Started - PeptideFinderPro</code>, <code class="bg-gray-100 px-1 rounded">Quiz Completed - PeptideFinderPro</code></p>
                         </div>
                     </div>
@@ -1099,35 +1099,35 @@
                     <div class="space-y-3">
                         <h3 class="text-lg font-semibold text-gray-900">Question-Level</h3>
                         <div class="card p-4">
-                            <h4 class="font-semibold text-gray-900">Klaviyo Property</h4>
-                            <p class="text-sm text-gray-600 mt-1">Each question slide has a <code class="bg-gray-100 px-1 rounded text-xs">klaviyo_property</code> that becomes the profile property name in Klaviyo. The user's answer becomes the value.</p>
-                            <p class="text-xs text-gray-500 mt-1">Example: Question with property <code class="bg-gray-100 px-1 rounded">health_goal</code> + user picks "Fat Loss" &rarr; Klaviyo profile gets <code class="bg-gray-100 px-1 rounded">health_goal = Fat Loss & Metabolism</code></p>
+                            <h4 class="font-semibold text-gray-900">Marketing Property</h4>
+                            <p class="text-sm text-gray-600 mt-1">Each question slide has a <code class="bg-gray-100 px-1 rounded text-xs">marketing_property</code> that becomes the profile property name in Customer.io. The user's answer becomes the value.</p>
+                            <p class="text-xs text-gray-500 mt-1">Example: Question with property <code class="bg-gray-100 px-1 rounded">health_goal</code> + user picks "Fat Loss" &rarr; Customer.io profile gets <code class="bg-gray-100 px-1 rounded">health_goal = Fat Loss & Metabolism</code></p>
                         </div>
                         <div class="card p-4">
-                            <h4 class="font-semibold text-gray-900">Klaviyo Value (per option)</h4>
-                            <p class="text-sm text-gray-600 mt-1">Override what gets sent to Klaviyo for a specific option. By default the label is sent, but you can set a custom value (e.g., send "Fat Loss" instead of "Fat Loss & Metabolism").</p>
+                            <h4 class="font-semibold text-gray-900">Marketing Value (per option)</h4>
+                            <p class="text-sm text-gray-600 mt-1">Override what gets sent to Customer.io for a specific option. By default the label is sent, but you can set a custom value (e.g., send "Fat Loss" instead of "Fat Loss & Metabolism").</p>
                         </div>
                     </div>
 
                     <div class="space-y-3">
                         <h3 class="text-lg font-semibold text-gray-900">Outcome-Level</h3>
                         <div class="card p-4">
-                            <h4 class="font-semibold text-gray-900">Outcome Klaviyo Event</h4>
+                            <h4 class="font-semibold text-gray-900">Outcome Marketing Event</h4>
                             <p class="text-sm text-gray-600 mt-1">Fire a custom event when this specific outcome is shown. Useful for outcome-specific email flows.</p>
                         </div>
                         <div class="card p-4">
-                            <h4 class="font-semibold text-gray-900">Outcome Klaviyo Properties</h4>
-                            <p class="text-sm text-gray-600 mt-1">Extra key-value pairs added to the user's Klaviyo profile when this outcome is shown (e.g., <code class="bg-gray-100 px-1 rounded text-xs">recommended_peptide = BPC-157</code>).</p>
+                            <h4 class="font-semibold text-gray-900">Outcome Marketing Properties</h4>
+                            <p class="text-sm text-gray-600 mt-1">Extra key-value pairs added to the user's Customer.io profile when this outcome is shown (e.g., <code class="bg-gray-100 px-1 rounded text-xs">recommended_peptide = BPC-157</code>).</p>
                         </div>
                         <div class="card p-4">
-                            <h4 class="font-semibold text-gray-900">Outcome Klaviyo List ID</h4>
-                            <p class="text-sm text-gray-600 mt-1">Override the quiz-level list &mdash; add users who get this specific outcome to a different Klaviyo list.</p>
+                            <h4 class="font-semibold text-gray-900">Outcome Marketing List ID</h4>
+                            <p class="text-sm text-gray-600 mt-1">Override the quiz-level list &mdash; add users who get this specific outcome to a different Customer.io segment.</p>
                         </div>
                     </div>
 
                     <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
-                        <h4 class="font-semibold text-blue-900 mb-2">Tags &rarr; Klaviyo</h4>
-                        <p class="text-sm text-blue-800">Tags on answer options are also sent to Klaviyo as profile properties. When a user picks an option with tags like <code class="bg-blue-100 px-1 rounded text-xs">["weight_management", "glp1"]</code>, those tags are added to their Klaviyo profile for segmentation and targeted campaigns.</p>
+                        <h4 class="font-semibold text-blue-900 mb-2">Tags &rarr; Customer.io</h4>
+                        <p class="text-sm text-blue-800">Tags on answer options are also sent to Customer.io as profile properties. When a user picks an option with tags like <code class="bg-blue-100 px-1 rounded text-xs">["weight_management", "glp1"]</code>, those tags are added to their Customer.io profile for segmentation and targeted campaigns.</p>
                     </div>
                 </div>
             </section>
@@ -1184,7 +1184,7 @@
                         </div>
                         <div>
                             <h4 class="font-semibold text-gray-900">Orange triangle on an outcome</h4>
-                            <p class="text-sm text-gray-600 mt-1">The answer condition references a klaviyo_property that no slide currently has.</p>
+                            <p class="text-sm text-gray-600 mt-1">The answer condition references a marketing_property that no slide currently has.</p>
                             <p class="text-xs text-gray-500 mt-1"><strong>Fix:</strong> Either re-create the missing slide or change the outcome condition to match an existing slide's property.</p>
                         </div>
                     </div>
@@ -1362,8 +1362,8 @@
                                 <td class="py-3 text-gray-500 text-xs">A question, an info page, the loading animation</td>
                             </tr>
                             <tr>
-                                <td class="py-3 pr-4 font-medium text-gray-900">Klaviyo Property</td>
-                                <td class="py-3 pr-4 text-gray-600">The label for this answer in your email tool (Klaviyo)</td>
+                                <td class="py-3 pr-4 font-medium text-gray-900">Marketing Property</td>
+                                <td class="py-3 pr-4 text-gray-600">The label for this answer in your email tool (Customer.io)</td>
                                 <td class="py-3 text-gray-500 text-xs"><code class="bg-gray-100 px-1 rounded">health_goal</code>, <code class="bg-gray-100 px-1 rounded">awareness_level</code>, <code class="bg-gray-100 px-1 rounded">email</code></td>
                             </tr>
                             <tr>
@@ -1418,7 +1418,7 @@
                             </tr>
                             <tr>
                                 <td class="py-3 pr-4 font-medium text-gray-900">Tags</td>
-                                <td class="py-3 pr-4 text-gray-600">Labels on options for Klaviyo segmentation and targeting</td>
+                                <td class="py-3 pr-4 text-gray-600">Labels on options for marketing segmentation and targeting</td>
                                 <td class="py-3 text-gray-500 text-xs"><code class="bg-gray-100 px-1 rounded">["weight_management", "glp1"]</code></td>
                             </tr>
                             <tr>
@@ -1505,7 +1505,7 @@
                 <a href="#custom-quiz-guide" class="block text-sm text-amber-600 hover:text-brand-gold py-1 transition-colors font-medium">10b. Custom Quiz Guide</a>
                 <a href="#segmentation-guide" class="block text-sm text-green-600 hover:text-brand-gold py-1 transition-colors font-medium">10c. Segmentation Guide</a>
                 <a href="#dynamic-content" class="block text-sm text-gray-600 hover:text-brand-gold py-1 transition-colors">11. Dynamic Content</a>
-                <a href="#klaviyo" class="block text-sm text-gray-600 hover:text-brand-gold py-1 transition-colors">12. Klaviyo Integration</a>
+                <a href="#customerio" class="block text-sm text-gray-600 hover:text-brand-gold py-1 transition-colors">12. Customer.io Integration</a>
                 <a href="#session-behavior" class="block text-sm text-gray-600 hover:text-brand-gold py-1 transition-colors">13. Session & Email</a>
                 <a href="#warnings" class="block text-sm text-gray-600 hover:text-brand-gold py-1 transition-colors">14. Warnings</a>
                 <a href="#admin-tools" class="block text-sm text-gray-600 hover:text-brand-gold py-1 transition-colors">15. Analytics & Tools</a>

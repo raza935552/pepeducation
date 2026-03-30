@@ -33,8 +33,8 @@ class MarketingQuizSeeder extends Seeder
                 'allow_back' => true,
                 'require_email' => false,
             ],
-            'klaviyo_start_event' => 'Segmentation Quiz Started',
-            'klaviyo_complete_event' => 'Segmentation Quiz Completed',
+            'marketing_start_event' => 'Segmentation Quiz Started',
+            'marketing_complete_event' => 'Segmentation Quiz Completed',
             'is_active' => true,
         ]);
 
@@ -44,13 +44,13 @@ class MarketingQuizSeeder extends Seeder
             'question_text' => 'How familiar are you with research peptides?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
             'order' => 1,
-            'klaviyo_property' => 'peptide_awareness',
+            'marketing_property' => 'peptide_awareness',
             'is_required' => true,
             'options' => [
                 [
                     'id' => Str::uuid()->toString(),
                     'text' => "I've never heard of them until now",
-                    'klaviyo_value' => 'never_heard',
+                    'marketing_value' => 'never_heard',
                     'score_tof' => 5,
                     'score_mof' => 0,
                     'score_bof' => 0,
@@ -58,7 +58,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => Str::uuid()->toString(),
                     'text' => "I've heard about them but don't know much",
-                    'klaviyo_value' => 'heard_not_much',
+                    'marketing_value' => 'heard_not_much',
                     'score_tof' => 3,
                     'score_mof' => 2,
                     'score_bof' => 0,
@@ -66,7 +66,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => Str::uuid()->toString(),
                     'text' => "I've researched them but never tried",
-                    'klaviyo_value' => 'researched_not_tried',
+                    'marketing_value' => 'researched_not_tried',
                     'score_tof' => 0,
                     'score_mof' => 5,
                     'score_bof' => 0,
@@ -74,7 +74,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => Str::uuid()->toString(),
                     'text' => "I've used peptides before",
-                    'klaviyo_value' => 'used_before',
+                    'marketing_value' => 'used_before',
                     'score_tof' => 0,
                     'score_mof' => 0,
                     'score_bof' => 5,
@@ -88,13 +88,13 @@ class MarketingQuizSeeder extends Seeder
             'question_text' => 'What best describes your current situation?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
             'order' => 2,
-            'klaviyo_property' => 'current_intent',
+            'marketing_property' => 'current_intent',
             'is_required' => true,
             'options' => [
                 [
                     'id' => Str::uuid()->toString(),
                     'text' => "Just curious about what peptides can do",
-                    'klaviyo_value' => 'curious',
+                    'marketing_value' => 'curious',
                     'score_tof' => 4,
                     'score_mof' => 1,
                     'score_bof' => 0,
@@ -102,7 +102,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => Str::uuid()->toString(),
                     'text' => "Comparing options and doing research",
-                    'klaviyo_value' => 'researching',
+                    'marketing_value' => 'researching',
                     'score_tof' => 1,
                     'score_mof' => 4,
                     'score_bof' => 0,
@@ -110,7 +110,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => Str::uuid()->toString(),
                     'text' => "Looking for a reliable source to buy from",
-                    'klaviyo_value' => 'looking_to_buy',
+                    'marketing_value' => 'looking_to_buy',
                     'score_tof' => 0,
                     'score_mof' => 1,
                     'score_bof' => 4,
@@ -118,7 +118,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => Str::uuid()->toString(),
                     'text' => "Ready to purchase, just need the right product",
-                    'klaviyo_value' => 'ready_to_buy',
+                    'marketing_value' => 'ready_to_buy',
                     'score_tof' => 0,
                     'score_mof' => 0,
                     'score_bof' => 5,
@@ -132,13 +132,13 @@ class MarketingQuizSeeder extends Seeder
             'question_text' => 'When are you looking to start your peptide journey?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
             'order' => 3,
-            'klaviyo_property' => 'purchase_timeline',
+            'marketing_property' => 'purchase_timeline',
             'is_required' => true,
             'options' => [
                 [
                     'id' => Str::uuid()->toString(),
                     'text' => "Not sure yet, still learning",
-                    'klaviyo_value' => 'not_sure',
+                    'marketing_value' => 'not_sure',
                     'score_tof' => 4,
                     'score_mof' => 1,
                     'score_bof' => 0,
@@ -146,7 +146,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => Str::uuid()->toString(),
                     'text' => "Within the next few months",
-                    'klaviyo_value' => 'few_months',
+                    'marketing_value' => 'few_months',
                     'score_tof' => 1,
                     'score_mof' => 3,
                     'score_bof' => 1,
@@ -154,7 +154,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => Str::uuid()->toString(),
                     'text' => "Within the next few weeks",
-                    'klaviyo_value' => 'few_weeks',
+                    'marketing_value' => 'few_weeks',
                     'score_tof' => 0,
                     'score_mof' => 2,
                     'score_bof' => 3,
@@ -162,7 +162,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => Str::uuid()->toString(),
                     'text' => "As soon as possible",
-                    'klaviyo_value' => 'asap',
+                    'marketing_value' => 'asap',
                     'score_tof' => 0,
                     'score_mof' => 0,
                     'score_bof' => 5,
@@ -176,13 +176,13 @@ class MarketingQuizSeeder extends Seeder
             'question_text' => "What's your primary health goal?",
             'question_type' => QuizQuestion::TYPE_SINGLE,
             'order' => 4,
-            'klaviyo_property' => 'health_goal',
+            'marketing_property' => 'health_goal',
             'is_required' => true,
             'options' => [
                 [
                     'id' => Str::uuid()->toString(),
                     'text' => "Fat loss & metabolism",
-                    'klaviyo_value' => 'fat_loss',
+                    'marketing_value' => 'fat_loss',
                     'score_tof' => 1,
                     'score_mof' => 1,
                     'score_bof' => 1,
@@ -190,7 +190,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => Str::uuid()->toString(),
                     'text' => "Muscle recovery & healing",
-                    'klaviyo_value' => 'recovery',
+                    'marketing_value' => 'recovery',
                     'score_tof' => 1,
                     'score_mof' => 1,
                     'score_bof' => 1,
@@ -198,7 +198,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => Str::uuid()->toString(),
                     'text' => "Anti-aging & skin health",
-                    'klaviyo_value' => 'anti_aging',
+                    'marketing_value' => 'anti_aging',
                     'score_tof' => 1,
                     'score_mof' => 1,
                     'score_bof' => 1,
@@ -206,7 +206,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => Str::uuid()->toString(),
                     'text' => "Cognitive enhancement & focus",
-                    'klaviyo_value' => 'cognitive',
+                    'marketing_value' => 'cognitive',
                     'score_tof' => 1,
                     'score_mof' => 1,
                     'score_bof' => 1,
@@ -225,8 +225,8 @@ class MarketingQuizSeeder extends Seeder
             'redirect_url' => '/peptides-101',
             'redirect_type' => 'page',
             'product_link' => null,
-            'klaviyo_event' => 'Segmented as TOF',
-            'klaviyo_properties' => ['segment' => 'TOF', 'funnel_stage' => 'awareness'],
+            'marketing_event' => 'Segmented as TOF',
+            'marketing_properties' => ['segment' => 'TOF', 'funnel_stage' => 'awareness'],
             'priority' => 1,
             'is_active' => true,
         ]);
@@ -241,8 +241,8 @@ class MarketingQuizSeeder extends Seeder
             'redirect_url' => '/peptide-tier-list',
             'redirect_type' => 'page',
             'product_link' => null,
-            'klaviyo_event' => 'Segmented as MOF',
-            'klaviyo_properties' => ['segment' => 'MOF', 'funnel_stage' => 'consideration'],
+            'marketing_event' => 'Segmented as MOF',
+            'marketing_properties' => ['segment' => 'MOF', 'funnel_stage' => 'consideration'],
             'priority' => 2,
             'is_active' => true,
         ]);
@@ -257,8 +257,8 @@ class MarketingQuizSeeder extends Seeder
             'redirect_url' => '/quiz/product-match',
             'redirect_type' => 'quiz',
             'product_link' => 'https://fastpeptix.com',
-            'klaviyo_event' => 'Segmented as BOF',
-            'klaviyo_properties' => ['segment' => 'BOF', 'funnel_stage' => 'decision'],
+            'marketing_event' => 'Segmented as BOF',
+            'marketing_properties' => ['segment' => 'BOF', 'funnel_stage' => 'decision'],
             'priority' => 3,
             'is_active' => true,
         ]);
@@ -282,8 +282,8 @@ class MarketingQuizSeeder extends Seeder
                 'require_email' => true,
                 'email_step' => 'before_results',
             ],
-            'klaviyo_start_event' => 'Product Quiz Started',
-            'klaviyo_complete_event' => 'Product Quiz Completed',
+            'marketing_start_event' => 'Product Quiz Started',
+            'marketing_complete_event' => 'Product Quiz Completed',
             'is_active' => true,
         ]);
 
@@ -293,13 +293,13 @@ class MarketingQuizSeeder extends Seeder
             'question_text' => "What's your #1 goal right now?",
             'question_type' => QuizQuestion::TYPE_SINGLE,
             'order' => 1,
-            'klaviyo_property' => 'primary_goal',
+            'marketing_property' => 'primary_goal',
             'is_required' => true,
             'options' => [
                 [
                     'id' => 'goal_fat_loss',
                     'text' => 'Lose stubborn fat & boost metabolism',
-                    'klaviyo_value' => 'fat_loss',
+                    'marketing_value' => 'fat_loss',
                     'score_tof' => 0,
                     'score_mof' => 0,
                     'score_bof' => 1,
@@ -308,7 +308,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => 'goal_recovery',
                     'text' => 'Heal injuries & recover faster',
-                    'klaviyo_value' => 'recovery',
+                    'marketing_value' => 'recovery',
                     'score_tof' => 0,
                     'score_mof' => 0,
                     'score_bof' => 1,
@@ -317,7 +317,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => 'goal_muscle',
                     'text' => 'Build muscle & improve strength',
-                    'klaviyo_value' => 'muscle',
+                    'marketing_value' => 'muscle',
                     'score_tof' => 0,
                     'score_mof' => 0,
                     'score_bof' => 1,
@@ -326,7 +326,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => 'goal_antiaging',
                     'text' => 'Anti-aging & better skin',
-                    'klaviyo_value' => 'anti_aging',
+                    'marketing_value' => 'anti_aging',
                     'score_tof' => 0,
                     'score_mof' => 0,
                     'score_bof' => 1,
@@ -335,7 +335,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => 'goal_cognitive',
                     'text' => 'Sharper focus & mental clarity',
-                    'klaviyo_value' => 'cognitive',
+                    'marketing_value' => 'cognitive',
                     'score_tof' => 0,
                     'score_mof' => 0,
                     'score_bof' => 1,
@@ -344,7 +344,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => 'goal_sleep',
                     'text' => 'Better sleep & relaxation',
-                    'klaviyo_value' => 'sleep',
+                    'marketing_value' => 'sleep',
                     'score_tof' => 0,
                     'score_mof' => 0,
                     'score_bof' => 1,
@@ -359,13 +359,13 @@ class MarketingQuizSeeder extends Seeder
             'question_text' => 'Have you used injectable research compounds before?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
             'order' => 2,
-            'klaviyo_property' => 'injection_experience',
+            'marketing_property' => 'injection_experience',
             'is_required' => true,
             'options' => [
                 [
                     'id' => 'exp_never',
                     'text' => 'No, this would be my first time',
-                    'klaviyo_value' => 'beginner',
+                    'marketing_value' => 'beginner',
                     'score_tof' => 2,
                     'score_mof' => 0,
                     'score_bof' => 0,
@@ -373,7 +373,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => 'exp_some',
                     'text' => 'Yes, a few times',
-                    'klaviyo_value' => 'intermediate',
+                    'marketing_value' => 'intermediate',
                     'score_tof' => 0,
                     'score_mof' => 1,
                     'score_bof' => 1,
@@ -381,7 +381,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => 'exp_regular',
                     'text' => 'Yes, I do it regularly',
-                    'klaviyo_value' => 'advanced',
+                    'marketing_value' => 'advanced',
                     'score_tof' => 0,
                     'score_mof' => 0,
                     'score_bof' => 2,
@@ -395,13 +395,13 @@ class MarketingQuizSeeder extends Seeder
             'question_text' => "What's your monthly budget for research peptides?",
             'question_type' => QuizQuestion::TYPE_SINGLE,
             'order' => 3,
-            'klaviyo_property' => 'budget_range',
+            'marketing_property' => 'budget_range',
             'is_required' => true,
             'options' => [
                 [
                     'id' => 'budget_low',
                     'text' => 'Under $100/month',
-                    'klaviyo_value' => 'budget_conscious',
+                    'marketing_value' => 'budget_conscious',
                     'score_tof' => 1,
                     'score_mof' => 1,
                     'score_bof' => 0,
@@ -409,7 +409,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => 'budget_mid',
                     'text' => '$100-$250/month',
-                    'klaviyo_value' => 'moderate_budget',
+                    'marketing_value' => 'moderate_budget',
                     'score_tof' => 0,
                     'score_mof' => 1,
                     'score_bof' => 1,
@@ -417,7 +417,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => 'budget_high',
                     'text' => '$250+/month',
-                    'klaviyo_value' => 'premium_budget',
+                    'marketing_value' => 'premium_budget',
                     'score_tof' => 0,
                     'score_mof' => 0,
                     'score_bof' => 2,
@@ -431,13 +431,13 @@ class MarketingQuizSeeder extends Seeder
             'question_text' => 'How quickly do you want to see results?',
             'question_type' => QuizQuestion::TYPE_SINGLE,
             'order' => 4,
-            'klaviyo_property' => 'result_timeline',
+            'marketing_property' => 'result_timeline',
             'is_required' => true,
             'options' => [
                 [
                     'id' => 'time_patient',
                     'text' => "I'm patient, 2-3 months is fine",
-                    'klaviyo_value' => 'patient',
+                    'marketing_value' => 'patient',
                     'score_tof' => 1,
                     'score_mof' => 1,
                     'score_bof' => 0,
@@ -445,7 +445,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => 'time_moderate',
                     'text' => 'I want to see something in 4-6 weeks',
-                    'klaviyo_value' => 'moderate_urgency',
+                    'marketing_value' => 'moderate_urgency',
                     'score_tof' => 0,
                     'score_mof' => 1,
                     'score_bof' => 1,
@@ -453,7 +453,7 @@ class MarketingQuizSeeder extends Seeder
                 [
                     'id' => 'time_fast',
                     'text' => 'I need results as fast as possible',
-                    'klaviyo_value' => 'high_urgency',
+                    'marketing_value' => 'high_urgency',
                     'score_tof' => 0,
                     'score_mof' => 0,
                     'score_bof' => 2,
@@ -512,8 +512,8 @@ class MarketingQuizSeeder extends Seeder
                 'redirect_url' => '/go/product-' . str_replace('_', '-', $goal),
                 'redirect_type' => 'outbound',
                 'product_link' => $data['product_link'],
-                'klaviyo_event' => 'Product Recommended: ' . $data['name'],
-                'klaviyo_properties' => [
+                'marketing_event' => 'Product Recommended: ' . $data['name'],
+                'marketing_properties' => [
                     'recommended_product' => $data['name'],
                     'primary_goal' => $goal,
                 ],

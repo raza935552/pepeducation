@@ -35,7 +35,7 @@ class QuizController extends Controller
             'description' => 'nullable|string',
             'settings' => 'nullable|array',
             'design' => 'nullable|array',
-            'klaviyo_list_id' => 'nullable|string',
+            'marketing_list_id' => 'nullable|string',
             'is_active' => 'boolean',
         ]);
 
@@ -55,7 +55,7 @@ class QuizController extends Controller
             'description' => $validated['description'] ?? null,
             'settings' => $validated['settings'] ?? $this->defaultSettings(),
             'design' => $validated['design'] ?? $this->defaultDesign(),
-            'klaviyo_list_id' => $validated['klaviyo_list_id'] ?? null,
+            'marketing_list_id' => $validated['marketing_list_id'] ?? null,
             'is_active' => $validated['is_active'] ?? false,
         ]);
 
@@ -94,7 +94,7 @@ class QuizController extends Controller
             'skip_to_question' => $q->skip_to_question,
             'dynamic_content_key' => $q->dynamic_content_key,
             'dynamic_content_map' => $q->dynamic_content_map ?? [],
-            'klaviyo_property' => $q->klaviyo_property,
+            'marketing_property' => $q->marketing_property,
         ])->values();
 
         // Serialize outcomes for simulator (sorted by priority like determineOutcome())
@@ -183,7 +183,7 @@ class QuizController extends Controller
         $valueToPhase = [];
         if ($segQuestion) {
             foreach ($segQuestion->options ?? [] as $opt) {
-                $value = $opt['value'] ?? $opt['klaviyo_value'] ?? '';
+                $value = $opt['value'] ?? $opt['marketing_value'] ?? '';
                 if (!$value) continue;
                 $scores = [
                     'tof' => (int) ($opt['score_tof'] ?? 0),
@@ -261,7 +261,7 @@ class QuizController extends Controller
             'description' => 'nullable|string',
             'settings' => 'nullable|array',
             'design' => 'nullable|array',
-            'klaviyo_list_id' => 'nullable|string',
+            'marketing_list_id' => 'nullable|string',
             'is_active' => 'boolean',
         ]);
 
@@ -281,7 +281,7 @@ class QuizController extends Controller
             'description' => $validated['description'] ?? null,
             'settings' => $validated['settings'] ?? $quiz->settings,
             'design' => $validated['design'] ?? $quiz->design,
-            'klaviyo_list_id' => $validated['klaviyo_list_id'] ?? null,
+            'marketing_list_id' => $validated['marketing_list_id'] ?? null,
             'is_active' => $validated['is_active'] ?? false,
         ]);
 

@@ -12,7 +12,7 @@ use App\Models\StackStore;
 use App\Models\StackStorePeptideLink;
 use App\Services\Quiz\QuizFunnelEngine;
 use App\Services\SubscriberService;
-use App\Services\Klaviyo\KlaviyoService;
+use App\Services\CustomerIo\CustomerIoService;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -113,7 +113,7 @@ class QuizPlayer extends Component
             }
         }
 
-        // Check if we already know this subscriber (e.g. from Klaviyo popup)
+        // Check if we already know this subscriber (e.g. from popup)
         $subscriberData = [];
         $ppEmail = request()->cookie('pp_email');
         if ($ppEmail) {
@@ -197,14 +197,14 @@ class QuizPlayer extends Component
 
     /**
      * Resolve the Results Bank entry for the peptide reveal slide.
-     * Looks up health_goal and experience_level from quiz answers by klaviyo_property.
+     * Looks up health_goal and experience_level from quiz answers by marketing_property.
      */
     public function getResultsBankEntryProperty(): ?ResultsBank
     {
-        $healthGoal = $this->getAnswerByKlaviyoProperty('health_goal');
-        $experienceLevel = $this->getAnswerByKlaviyoProperty('experience_level');
-        $categoryPref = $this->getAnswerByKlaviyoProperty('category_preference');
-        $peptidePref = $this->getAnswerByKlaviyoProperty('peptide_preference');
+        $healthGoal = $this->getAnswerByMarketingProperty('health_goal');
+        $experienceLevel = $this->getAnswerByMarketingProperty('experience_level');
+        $categoryPref = $this->getAnswerByMarketingProperty('category_preference');
+        $peptidePref = $this->getAnswerByMarketingProperty('peptide_preference');
 
         // Path 3 "same category": infer health goal from the peptide they were using
         if (!$healthGoal && $peptidePref) {
@@ -214,7 +214,7 @@ class QuizPlayer extends Component
         // Direct peptide selection (BOF-A peptide search): look up via StackProduct link
         // Note: inline the product lookup to avoid circular dependency with getStackProductProperty()
         if (!$healthGoal) {
-            $selectedPeptide = $this->getAnswerByKlaviyoProperty('selected_peptide');
+            $selectedPeptide = $this->getAnswerByMarketingProperty('selected_peptide');
             if ($selectedPeptide) {
                 $product = StackProduct::where('slug', $selectedPeptide)->first()
                     ?? StackProduct::where('name', $selectedPeptide)->first();
@@ -230,7 +230,7 @@ class QuizPlayer extends Component
         }
 
         // Map quiz answer values to ResultsBank experience levels
-        $bofIntent = $this->getAnswerByKlaviyoProperty('bof_intent');
+        $bofIntent = $this->getAnswerByMarketingProperty('bof_intent');
         $advancedValues = ['i\'ve_already_tried_peptides', 'tried_peptides', 'advanced', 'want_to_stack'];
         if (in_array($experienceLevel, $advancedValues, true) || $bofIntent === 'want_to_stack') {
             $experienceLevel = 'advanced';
@@ -252,13 +252,13 @@ class QuizPlayer extends Component
      */
     public function getStackProductProperty(): ?StackProduct
     {
-        $categoryPref = $this->getAnswerByKlaviyoProperty('category_preference');
+        $categoryPref = $this->getAnswerByMarketingProperty('category_preference');
 
         // Direct peptide selection: BOF-A (selected_peptide) or Path 1 (peptide_preference)
         // Skip peptide_preference for Path 3 — it's the peptide they're switching FROM
-        $selectedPeptide = $this->getAnswerByKlaviyoProperty('selected_peptide');
+        $selectedPeptide = $this->getAnswerByMarketingProperty('selected_peptide');
         if (!$categoryPref) {
-            $selectedPeptide = $selectedPeptide ?? $this->getAnswerByKlaviyoProperty('peptide_preference');
+            $selectedPeptide = $selectedPeptide ?? $this->getAnswerByMarketingProperty('peptide_preference');
         }
         if ($selectedPeptide) {
             $slugMap = ['kisspeptin' => 'kisspeptin-10'];
@@ -281,7 +281,7 @@ class QuizPlayer extends Component
      */
     public function getPreferredStoreCategoryProperty(): ?string
     {
-        $buyingPriority = $this->getAnswerByKlaviyoProperty('buying_priority');
+        $buyingPriority = $this->getAnswerByMarketingProperty('buying_priority');
         if (!$buyingPriority) return null;
 
         // Direct match: value is the exact store category slug
@@ -354,7 +354,7 @@ class QuizPlayer extends Component
     }
 
     /**
-     * Find an answer's klaviyo_value by its klaviyo_property name.
+     * Find an answer's marketing_value by its marketing_property name.
      */
     /**
      * Infer health goal from a peptide slug (for Path 3 "same category" logic).
@@ -368,12 +368,12 @@ class QuizPlayer extends Component
         return $entry?->health_goal;
     }
 
-    private function getAnswerByKlaviyoProperty(string $property): ?string
+    private function getAnswerByMarketingProperty(string $property): ?string
     {
         $result = null;
         foreach ($this->answers as $answer) {
-            if (($answer['klaviyo_property'] ?? null) === $property) {
-                $result = $answer['klaviyo_value'] ?? $answer['text_value'] ?? null;
+            if (($answer['marketing_property'] ?? null) === $property) {
+                $result = $answer['marketing_value'] ?? $answer['text_value'] ?? null;
             }
         }
         return $result;
@@ -418,9 +418,9 @@ class QuizPlayer extends Component
             'question_text' => $question['question_text'] ?? '',
             'option_id' => $optionId,
             'option_text' => $selectedOption['text'] ?? $selectedOption['label'] ?? '',
-            'klaviyo_property' => $question['klaviyo_property'] ?? null,
-            'klaviyo_value' => (!empty($selectedOption['klaviyo_value']))
-                ? $selectedOption['klaviyo_value']
+            'marketing_property' => $question['marketing_property'] ?? null,
+            'marketing_value' => (!empty($selectedOption['marketing_value']))
+                ? $selectedOption['marketing_value']
                 : ($selectedOption['value'] ?? $selectedOption['text'] ?? $selectedOption['label'] ?? ''),
             'tags' => $selectedOption['tags'] ?? [],
         ];
@@ -436,10 +436,10 @@ class QuizPlayer extends Component
             'navigation_history' => $this->navigationHistory,
         ]);
 
-        // Real-time Klaviyo sync
-        $this->syncAnswerToKlaviyo(
-            $question['klaviyo_property'] ?? null,
-            $this->answers[$questionIndex]['klaviyo_value'] ?? null
+        // Real-time marketing sync
+        $this->syncAnswerToMarketing(
+            $question['marketing_property'] ?? null,
+            $this->answers[$questionIndex]['marketing_value'] ?? null
         );
 
         // Check if we should collect email now (legacy setting — new system uses email_capture slides)
@@ -515,9 +515,9 @@ class QuizPlayer extends Component
             'option_texts' => $selectedOptions->map(fn ($o) => $o['text'] ?? $o['label'] ?? '')->values()->toArray(),
             'option_id' => implode(',', $this->multiSelections),
             'option_text' => $selectedOptions->map(fn ($o) => $o['text'] ?? $o['label'] ?? '')->implode(', '),
-            'klaviyo_property' => $question['klaviyo_property'] ?? null,
-            'klaviyo_value' => $selectedOptions->map(fn ($o) =>
-                (!empty($o['klaviyo_value'])) ? $o['klaviyo_value'] : ($o['value'] ?? $o['text'] ?? $o['label'] ?? '')
+            'marketing_property' => $question['marketing_property'] ?? null,
+            'marketing_value' => $selectedOptions->map(fn ($o) =>
+                (!empty($o['marketing_value'])) ? $o['marketing_value'] : ($o['value'] ?? $o['text'] ?? $o['label'] ?? '')
             )->implode(', '),
             'tags' => array_values(array_unique($tags)),
         ];
@@ -528,10 +528,10 @@ class QuizPlayer extends Component
             'navigation_history' => $this->navigationHistory,
         ]);
 
-        // Real-time Klaviyo sync
-        $this->syncAnswerToKlaviyo(
-            $question['klaviyo_property'] ?? null,
-            $this->answers[$questionIndex]['klaviyo_value'] ?? null
+        // Real-time marketing sync
+        $this->syncAnswerToMarketing(
+            $question['marketing_property'] ?? null,
+            $this->answers[$questionIndex]['marketing_value'] ?? null
         );
 
         $this->multiSelections = [];
@@ -555,8 +555,8 @@ class QuizPlayer extends Component
             'question_id' => $question['id'] ?? null,
             'question_text' => $question['question_text'] ?? '',
             'text_value' => $this->textAnswer,
-            'klaviyo_property' => $question['klaviyo_property'] ?? null,
-            'klaviyo_value' => $this->textAnswer,
+            'marketing_property' => $question['marketing_property'] ?? null,
+            'marketing_value' => $this->textAnswer,
         ];
 
         $this->response->update([
@@ -565,9 +565,9 @@ class QuizPlayer extends Component
             'navigation_history' => $this->navigationHistory,
         ]);
 
-        // Real-time Klaviyo sync
-        $this->syncAnswerToKlaviyo(
-            $question['klaviyo_property'] ?? null,
+        // Real-time marketing sync
+        $this->syncAnswerToMarketing(
+            $question['marketing_property'] ?? null,
             $this->textAnswer ?: null
         );
 
@@ -602,7 +602,7 @@ class QuizPlayer extends Component
 
         $service->setEmailCookie($this->email);
 
-        // Track Klaviyo events now that we have a subscriber
+        // Track marketing events now that we have a subscriber
         $this->trackEmailEvents($subscriber);
 
         // Store answer for email capture slides
@@ -614,8 +614,8 @@ class QuizPlayer extends Component
                     'question_id' => $question['id'] ?? null,
                     'question_text' => $question['question_text'] ?? 'Email',
                     'text_value' => $this->email,
-                    'klaviyo_property' => $question['klaviyo_property'] ?? 'email',
-                    'klaviyo_value' => $this->email,
+                    'marketing_property' => $question['marketing_property'] ?? 'email',
+                    'marketing_value' => $this->email,
                 ];
             }
         }
@@ -626,7 +626,7 @@ class QuizPlayer extends Component
 
     public function skipEmail(): void
     {
-        // If Klaviyo popup already captured email, use it instead of truly skipping
+        // If popup already captured email, use it instead of truly skipping
         $ppEmail = request()->cookie('pp_email');
         if ($ppEmail && filter_var($ppEmail, FILTER_VALIDATE_EMAIL)) {
             $this->email = $ppEmail;
@@ -655,8 +655,8 @@ class QuizPlayer extends Component
             'question_text' => $question['question_text'] ?? $question['content_title'] ?? 'Peptide Search',
             'option_id' => $hasDeal ? 'available' : 'unavailable',
             'text_value' => $peptideName,
-            'klaviyo_property' => $question['klaviyo_property'] ?? 'selected_peptide',
-            'klaviyo_value' => $peptideName,
+            'marketing_property' => $question['marketing_property'] ?? 'selected_peptide',
+            'marketing_value' => $peptideName,
         ];
 
         if ($this->response) {
@@ -666,8 +666,8 @@ class QuizPlayer extends Component
             ]);
         }
 
-        // Real-time Klaviyo sync
-        $this->syncAnswerToKlaviyo('selected_peptide', $peptideName);
+        // Real-time marketing sync
+        $this->syncAnswerToMarketing('selected_peptide', $peptideName);
 
         $this->nextStep();
     }
@@ -688,8 +688,8 @@ class QuizPlayer extends Component
                 $this->answers[$this->currentStep] = [
                     'question_id' => $question['id'] ?? null,
                     'question_text' => $question['question_text'] ?? 'Peptide Reveal',
-                    'klaviyo_property' => 'selected_peptide',
-                    'klaviyo_value' => $entry->peptide_name,
+                    'marketing_property' => 'selected_peptide',
+                    'marketing_value' => $entry->peptide_name,
                     'text_value' => $entry->peptide_name,
                 ];
 
@@ -700,8 +700,8 @@ class QuizPlayer extends Component
                     ]);
                 }
 
-                // Real-time Klaviyo sync
-                $this->syncAnswerToKlaviyo('selected_peptide', $entry->peptide_name);
+                // Real-time marketing sync
+                $this->syncAnswerToMarketing('selected_peptide', $entry->peptide_name);
             }
         }
 
@@ -738,8 +738,8 @@ class QuizPlayer extends Component
             'question_id' => $slide['id'] ?? null,
             'question_text' => $slide['question_text'] ?? 'Email',
             'text_value' => $ppEmail,
-            'klaviyo_property' => $slide['klaviyo_property'] ?? 'email',
-            'klaviyo_value' => $ppEmail,
+            'marketing_property' => $slide['marketing_property'] ?? 'email',
+            'marketing_value' => $ppEmail,
         ];
 
         $this->response->update([
@@ -856,11 +856,11 @@ class QuizPlayer extends Component
 
         $segment = $this->determineSegment();
         $this->outcome = $this->determineOutcome($segment);
-        $klaviyoProperties = $this->buildKlaviyoProperties();
+        $marketingProperties = $this->buildMarketingProperties();
 
         // Wrap everything in a transaction with pessimistic locking
         // to prevent race conditions on concurrent completion attempts
-        $updated = DB::transaction(function () use ($segment, $klaviyoProperties) {
+        $updated = DB::transaction(function () use ($segment, $marketingProperties) {
             // Lock the row to prevent concurrent completion
             $lockedResponse = DB::table('quiz_responses')
                 ->where('id', $this->response->id)
@@ -884,7 +884,7 @@ class QuizPlayer extends Component
                     'status' => 'completed',
                     'completed_at' => now(),
                     'duration_seconds' => now()->diffInSeconds($this->response->started_at),
-                    'klaviyo_properties' => json_encode($klaviyoProperties),
+                    'marketing_properties' => json_encode($marketingProperties),
                     'tags' => json_encode($this->collectAllTags()),
                     'updated_at' => now(),
                 ]);
@@ -913,7 +913,7 @@ class QuizPlayer extends Component
         session(['pp_segment' => $segment]);
         cookie()->queue('pp_segment', $segment, 60 * 24 * 30);
 
-        // Last-chance subscriber link from Klaviyo popup cookie
+        // Last-chance subscriber link from popup cookie
         if (!$this->response->subscriber_id) {
             $ppEmail = request()->cookie('pp_email');
             if ($ppEmail && filter_var($ppEmail, FILTER_VALIDATE_EMAIL)) {
@@ -928,9 +928,9 @@ class QuizPlayer extends Component
             }
         }
 
-        // Sync to Klaviyo outside transaction (external API call)
+        // Sync to Customer.io outside transaction (external API call)
         if ($this->response->subscriber_id) {
-            $this->syncToKlaviyo();
+            $this->syncToCustomerIo();
         }
 
         $this->dispatch('quiz-completed', [
@@ -941,7 +941,7 @@ class QuizPlayer extends Component
         ]);
     }
 
-    private function buildKlaviyoProperties(): array
+    private function buildMarketingProperties(): array
     {
         $properties = [
             'pp_segment' => $this->determineSegment(),
@@ -949,8 +949,8 @@ class QuizPlayer extends Component
         ];
 
         foreach ($this->answers as $answer) {
-            if (!empty($answer['klaviyo_property']) && !empty($answer['klaviyo_value'])) {
-                $properties[$answer['klaviyo_property']] = $answer['klaviyo_value'];
+            if (!empty($answer['marketing_property']) && !empty($answer['marketing_value'])) {
+                $properties[$answer['marketing_property']] = $answer['marketing_value'];
             }
         }
 
@@ -970,30 +970,30 @@ class QuizPlayer extends Component
         }
 
         // Add outcome properties
-        if ($this->outcome?->klaviyo_properties) {
-            $properties = array_merge($properties, $this->outcome->klaviyo_properties);
+        if ($this->outcome?->marketing_properties) {
+            $properties = array_merge($properties, $this->outcome->marketing_properties);
         }
 
         return $properties;
     }
 
-    private function syncToKlaviyo(): void
+    private function syncToCustomerIo(): void
     {
         try {
-            $klaviyo = app(KlaviyoService::class);
-            if ($klaviyo->isEnabled()) {
+            $customerIo = app(CustomerIoService::class);
+            if ($customerIo->isEnabled()) {
                 $this->response->load('subscriber');
-                $success = $klaviyo->trackQuizCompleted($this->response);
+                $success = $customerIo->trackQuizCompleted($this->response);
 
                 if (!$success) {
-                    logger()->warning('Klaviyo quiz sync returned false — will retry via scheduled command', [
+                    logger()->warning('Customer.io quiz sync returned false — will retry via scheduled command', [
                         'quiz_response_id' => $this->response->id,
                         'subscriber_id' => $this->response->subscriber_id,
                     ]);
                 }
             }
         } catch (\Exception $e) {
-            logger()->error('Klaviyo sync failed', [
+            logger()->error('Customer.io sync failed', [
                 'quiz_response_id' => $this->response->id,
                 'error' => $e->getMessage(),
             ]);
@@ -1001,30 +1001,30 @@ class QuizPlayer extends Component
     }
 
     /**
-     * Fire "Started Quiz" and "Email Captured" events to Klaviyo
+     * Fire "Started Quiz" and "Email Captured" events to Customer.io
      * once a subscriber is linked (after email submission).
      * Also subscribes to list and pushes all answers collected so far.
      */
     private function trackEmailEvents(\App\Models\Subscriber $subscriber): void
     {
         try {
-            $klaviyo = app(KlaviyoService::class);
-            if (!$klaviyo->isEnabled()) return;
+            $customerIo = app(CustomerIoService::class);
+            if (!$customerIo->isEnabled()) return;
 
             // Track quiz start (retroactively, using actual start time)
-            $klaviyo->trackQuizStarted($subscriber, $this->quiz->id, $this->quiz->name);
+            $customerIo->trackQuizStarted($subscriber, $this->quiz->id, $this->quiz->name);
 
             // Track email captured
             $this->response->load('quiz');
-            $klaviyo->trackEmailCaptured($subscriber, $this->response);
+            $customerIo->trackEmailCaptured($subscriber, $this->response);
 
             // Push all answers collected so far as profile properties
-            $properties = $this->buildKlaviyoProperties();
+            $properties = $this->buildMarketingProperties();
             if (!empty($properties)) {
-                $klaviyo->updateProfileProperties($subscriber, $properties);
+                $customerIo->updateProfileProperties($subscriber, $properties);
             }
         } catch (\Exception $e) {
-            logger()->warning('Klaviyo email event tracking failed', [
+            logger()->warning('Customer.io email event tracking failed', [
                 'error' => $e->getMessage(),
                 'subscriber_id' => $subscriber->id,
             ]);
@@ -1032,14 +1032,14 @@ class QuizPlayer extends Component
     }
 
     /**
-     * Push a single answer property to Klaviyo in real-time.
+     * Push a single answer property to Customer.io in real-time.
      * Only fires if subscriber is already linked (post-email capture).
      */
-    private function syncAnswerToKlaviyo(?string $property, ?string $value): void
+    private function syncAnswerToMarketing(?string $property, ?string $value): void
     {
         if (!$property || !$value) return;
 
-        // Refresh subscriber_id from DB in case Klaviyo popup linked it mid-quiz
+        // Refresh subscriber_id from DB in case popup linked it mid-quiz
         if (!$this->response?->subscriber_id) {
             $freshSubId = \Illuminate\Support\Facades\DB::table('quiz_responses')
                 ->where('id', $this->response->id)
@@ -1052,15 +1052,15 @@ class QuizPlayer extends Component
         }
 
         try {
-            $klaviyo = app(KlaviyoService::class);
-            if (!$klaviyo->isEnabled()) return;
+            $customerIo = app(CustomerIoService::class);
+            if (!$customerIo->isEnabled()) return;
 
             $subscriber = \App\Models\Subscriber::find($this->response->subscriber_id);
             if (!$subscriber) return;
 
-            $klaviyo->updateProfileProperties($subscriber, [$property => $value]);
+            $customerIo->updateProfileProperties($subscriber, [$property => $value]);
         } catch (\Exception $e) {
-            logger()->warning('Klaviyo real-time answer sync failed', [
+            logger()->warning('Customer.io real-time answer sync failed', [
                 'property' => $property,
                 'error' => $e->getMessage(),
             ]);

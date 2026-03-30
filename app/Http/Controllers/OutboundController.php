@@ -38,7 +38,7 @@ class OutboundController extends Controller
 
         $finalUrl = $link->buildFinalUrl($trackingData, $destinationOverride);
 
-        // Use TrackingManager for proper recording + Klaviyo sync
+        // Use TrackingManager for proper recording + Customer.io sync
         $tracking->recordOutboundClick($link, $finalUrl, $trackingData);
 
         return redirect()->away($finalUrl);

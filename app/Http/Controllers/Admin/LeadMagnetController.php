@@ -53,9 +53,9 @@ class LeadMagnetController extends Controller
             'landing_headline' => $validated['landing_headline'],
             'landing_description' => $validated['landing_description'],
             'landing_benefits' => $validated['landing_benefits'] ?? [],
-            'klaviyo_flow_id' => $validated['klaviyo_flow_id'],
-            'klaviyo_event' => $validated['klaviyo_event'] ?? 'Downloaded Lead Magnet',
-            'klaviyo_property_name' => $validated['klaviyo_property_name'],
+            'marketing_flow_id' => $validated['marketing_flow_id'],
+            'marketing_event' => $validated['marketing_event'] ?? 'Downloaded Lead Magnet',
+            'marketing_property_name' => $validated['marketing_property_name'],
             'is_active' => $validated['is_active'] ?? true,
         ]);
 
@@ -83,9 +83,9 @@ class LeadMagnetController extends Controller
             'landing_headline' => $validated['landing_headline'],
             'landing_description' => $validated['landing_description'],
             'landing_benefits' => $validated['landing_benefits'] ?? [],
-            'klaviyo_flow_id' => $validated['klaviyo_flow_id'],
-            'klaviyo_event' => $validated['klaviyo_event'],
-            'klaviyo_property_name' => $validated['klaviyo_property_name'],
+            'marketing_flow_id' => $validated['marketing_flow_id'],
+            'marketing_event' => $validated['marketing_event'],
+            'marketing_property_name' => $validated['marketing_property_name'],
             'is_active' => $validated['is_active'] ?? false,
         ];
 
@@ -143,9 +143,9 @@ class LeadMagnetController extends Controller
             'landing_headline' => 'nullable|string|max:255',
             'landing_description' => 'nullable|string',
             'landing_benefits' => 'nullable|array',
-            'klaviyo_flow_id' => 'nullable|string',
-            'klaviyo_event' => 'nullable|string|max:255',
-            'klaviyo_property_name' => 'nullable|string|max:255',
+            'marketing_flow_id' => 'nullable|string',
+            'marketing_event' => 'nullable|string|max:255',
+            'marketing_property_name' => 'nullable|string|max:255',
             'is_active' => 'boolean',
         ]);
     }

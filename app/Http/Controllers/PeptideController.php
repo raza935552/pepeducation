@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Peptide;
 use App\Models\Subscriber;
-use App\Services\Klaviyo\EventService;
+use App\Services\CustomerIo\CustomerIoService;
 use Illuminate\Http\Request;
 
 class PeptideController extends Controller
@@ -58,7 +58,7 @@ class PeptideController extends Controller
             ->limit(4)
             ->get();
 
-        // Track viewed product to Klaviyo (if subscriber identified)
+        // Track viewed product to Customer.io (if subscriber identified)
         $this->trackViewedProduct($peptide);
 
         return view('peptides.show', compact('peptide', 'relatedPeptides'));

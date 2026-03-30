@@ -26,7 +26,7 @@ class QuizOutcomeController extends Controller
             'redirect_type' => 'nullable|in:internal,external,product',
             'recommended_peptide_id' => 'nullable|exists:peptides,id',
             'product_link' => 'nullable|string',
-            'klaviyo_properties' => 'nullable|array',
+            'marketing_properties' => 'nullable|array',
         ]);
 
         $outcome = $quiz->outcomes()->create([
@@ -39,7 +39,7 @@ class QuizOutcomeController extends Controller
             'redirect_type' => $validated['redirect_type'] ?? 'internal',
             'recommended_peptide_id' => $validated['recommended_peptide_id'] ?? null,
             'product_link' => $validated['product_link'] ?? null,
-            'klaviyo_properties' => $validated['klaviyo_properties'] ?? [],
+            'marketing_properties' => $validated['marketing_properties'] ?? [],
             'priority' => $quiz->outcomes()->max('priority') + 1,
         ]);
 
@@ -67,7 +67,7 @@ class QuizOutcomeController extends Controller
             'redirect_type' => 'nullable|in:internal,external,product',
             'recommended_peptide_id' => 'nullable|exists:peptides,id',
             'product_link' => 'nullable|string',
-            'klaviyo_properties' => 'nullable|array',
+            'marketing_properties' => 'nullable|array',
         ]);
 
         $outcome->update([
@@ -80,7 +80,7 @@ class QuizOutcomeController extends Controller
             'redirect_type' => $validated['redirect_type'] ?? 'internal',
             'recommended_peptide_id' => $validated['recommended_peptide_id'] ?? null,
             'product_link' => $validated['product_link'] ?? null,
-            'klaviyo_properties' => $validated['klaviyo_properties'] ?? [],
+            'marketing_properties' => $validated['marketing_properties'] ?? [],
         ]);
 
         if ($request->wantsJson()) {
