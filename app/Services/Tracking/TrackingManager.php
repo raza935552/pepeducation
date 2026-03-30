@@ -11,7 +11,7 @@ use App\Models\OutboundClick;
 use App\Models\OutboundLink;
 use App\Services\Tracking\Contracts\TrackingDriver;
 use App\Services\Tracking\Drivers\LocalDriver;
-use App\Services\Tracking\Drivers\KlaviyoDriver;
+use App\Services\Tracking\Drivers\CustomerIoDriver;
 use App\Services\Tracking\Drivers\GA4Driver;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -37,10 +37,10 @@ class TrackingManager
         // Local driver is always registered
         $this->drivers->put('local', new LocalDriver($this->sessionManager));
 
-        // Klaviyo driver
-        $klaviyo = new KlaviyoDriver();
-        if ($klaviyo->isEnabled()) {
-            $this->drivers->put('klaviyo', $klaviyo);
+        // Customer.io driver
+        $customerIo = new CustomerIoDriver();
+        if ($customerIo->isEnabled()) {
+            $this->drivers->put('customerio', $customerIo);
         }
 
         // GA4 driver
@@ -194,12 +194,12 @@ class TrackingManager
             'segment' => $response->segment,
             'outcome' => $response->outcome?->name,
             'time_to_complete' => $response->duration_seconds,
-        ], $response->klaviyo_properties ?? []));
+        ], $response->marketing_properties ?? []));
 
-        // Sync to Klaviyo specifically for quiz responses
-        $klaviyoService = $this->getKlaviyoService();
-        if ($klaviyoService) {
-            $klaviyoService->trackQuizCompleted($response);
+        // Sync to Customer.io specifically for quiz responses
+        $customerIoService = $this->getCustomerIoService();
+        if ($customerIoService) {
+            $customerIoService->trackQuizCompleted($response);
         }
     }
 
@@ -210,11 +210,11 @@ class TrackingManager
             'goal_name' => $goalName,
         ]);
 
-        $klaviyoService = $this->getKlaviyoService();
-        if ($klaviyoService) {
+        $customerIoService = $this->getCustomerIoService();
+        if ($customerIoService) {
             $subscriber = $this->getSession()->subscriber;
             if ($subscriber) {
-                $klaviyoService->trackStackCompleted($subscriber, $goalSlug, $goalName);
+                $customerIoService->trackStackCompleted($subscriber, $goalSlug, $goalName);
             }
         }
     }
@@ -227,9 +227,9 @@ class TrackingManager
             'delivery_method' => $download->delivery_method,
         ]);
 
-        $klaviyoService = $this->getKlaviyoService();
-        if ($klaviyoService) {
-            $klaviyoService->trackLeadMagnetDownload($download);
+        $customerIoService = $this->getCustomerIoService();
+        if ($customerIoService) {
+            $customerIoService->trackLeadMagnetDownload($download);
         }
     }
 
@@ -241,17 +241,17 @@ class TrackingManager
             'segment' => $click->pp_segment,
         ]);
 
-        $klaviyoService = $this->getKlaviyoService();
-        if ($klaviyoService) {
-            $klaviyoService->trackOutboundClick($click);
+        $customerIoService = $this->getCustomerIoService();
+        if ($customerIoService) {
+            $customerIoService->trackOutboundClick($click);
         }
     }
 
-    protected function getKlaviyoService()
+    protected function getCustomerIoService()
     {
-        $driver = $this->drivers->get('klaviyo');
-        return $driver && method_exists($driver, 'getKlaviyoService')
-            ? $driver->getKlaviyoService()
+        $driver = $this->drivers->get('customerio');
+        return $driver && method_exists($driver, 'getCustomerIoService')
+            ? $driver->getCustomerIoService()
             : null;
     }
 
@@ -301,7 +301,7 @@ class TrackingManager
             $subscriber->increment('shop_clicks');
         }
 
-        // Broadcast to Klaviyo
+        // Broadcast to Customer.io
         $this->trackOutboundClick($click);
 
         return $click;
@@ -332,8 +332,8 @@ class TrackingManager
             'pp_engagement_score' => $session->engagement_score,
             'pp_email_hash' => $subscriber ? hash('sha256', $subscriber->email) : null,
             'pp_quiz_completed' => $session->converted && $session->conversion_type === 'quiz',
-            'pp_health_goal' => $quizResponse?->klaviyo_properties['pp_health_goal'] ?? null,
-            'pp_experience_level' => $quizResponse?->klaviyo_properties['pp_experience_level'] ?? null,
+            'pp_health_goal' => $quizResponse?->marketing_properties['pp_health_goal'] ?? null,
+            'pp_experience_level' => $quizResponse?->marketing_properties['pp_experience_level'] ?? null,
             'pp_recommended_peptide' => $quizResponse?->outcome?->recommended_peptides[0] ?? null,
             'pp_utm_source' => $session->utm_source,
             'pp_utm_campaign' => $session->utm_campaign,
