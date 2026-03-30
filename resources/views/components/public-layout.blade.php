@@ -1,4 +1,4 @@
-@props(['title' => null, 'description' => null, 'image' => null, 'canonical' => null])
+@props(['title' => null, 'description' => null, 'image' => null, 'canonical' => null, 'hideChrome' => false])
 
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
@@ -57,13 +57,17 @@
         Skip to main content
     </a>
 
-    @include('layouts.partials.public-header')
+    @unless($hideChrome)
+        @include('layouts.partials.public-header')
+    @endunless
 
     <main id="main-content" role="main">
         {{ $slot }}
     </main>
 
-    @include('layouts.partials.public-footer')
+    @unless($hideChrome)
+        @include('layouts.partials.public-footer')
+    @endunless
 
     {{-- Search Modal --}}
     @livewire('search-modal')

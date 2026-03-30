@@ -38,6 +38,8 @@
         </p>
     @endif
 
+    @include('livewire.partials.slide-accordion')
+
     {{-- CTA Button --}}
     @if($slideCta)
         <a href="{{ $slideCtaUrl ?? '#' }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary inline-block text-lg px-8 py-3">

@@ -1,4 +1,4 @@
-<x-public-layout>
+<x-public-layout :hide-chrome="true">
     <x-slot:title>{{ $quiz->title }}</x-slot:title>
     <x-slot:description>{{ $quiz->description }}</x-slot:description>
 

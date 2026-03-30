@@ -101,6 +101,8 @@
         </div>
     @endif
 
+    @include('livewire.partials.slide-accordion')
+
     {{-- CTA: Only show if admin set button text, or auto-generate from linked peptide page --}}
     @php
         $ctaUrl = $this->currentSlide['cta_url'] ?? null;

@@ -3,8 +3,8 @@
         <div class="flex h-16 items-center justify-between">
             {{-- Logo --}}
             <a href="{{ url('/') }}" class="flex items-center gap-1">
-                <span class="text-xl font-bold text-gold-500">Pep</span>
-                <span class="text-xl font-bold text-gray-900">Profesor</span>
+                <span class="text-xl font-bold text-gold-500">Professor</span>
+                <span class="text-xl font-bold text-gray-900">Peptides</span>
             </a>
 
             {{-- Desktop Navigation --}}
@@ -24,6 +24,10 @@
                 <a href="{{ route('stack-builder') }}"
                    class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('stack-builder*') ? 'text-gold-600 bg-gold-500/10' : 'text-gray-600 hover:text-gold-600 hover:bg-cream-200' }} transition-colors">
                     Stack Builder
+                </a>
+                <a href="{{ route('pep-guide') }}"
+                   class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('pep-guide') ? 'text-gold-600 bg-gold-500/10' : 'text-gray-600 hover:text-gold-600 hover:bg-cream-200' }} transition-colors">
+                    Pep Guide
                 </a>
                 <button type="button"
                         onclick="Livewire.dispatch('openPeptideRequestModal')"
@@ -147,6 +151,10 @@
             <a href="{{ route('stack-builder') }}"
                class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('stack-builder*') ? 'text-gold-600 bg-gold-500/10' : 'text-gray-700 hover:bg-cream-200' }} transition-colors">
                 Stack Builder
+            </a>
+            <a href="{{ route('pep-guide') }}"
+               class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('pep-guide') ? 'text-gold-600 bg-gold-500/10' : 'text-gray-700 hover:bg-cream-200' }} transition-colors">
+                Pep Guide
             </a>
             <button type="button"
                     onclick="Livewire.dispatch('openPeptideRequestModal'); mobileOpen = false;"

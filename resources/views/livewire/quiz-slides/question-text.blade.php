@@ -34,6 +34,8 @@
         </div>
     </form>
 
+    @include('livewire.partials.slide-accordion')
+
     {{-- Optional CTA --}}
     @if(!empty($this->currentSlide['cta_text']) && !empty($this->currentSlide['cta_url']))
         <div class="text-center mt-4">

@@ -15,6 +15,8 @@
         <p class="text-xs text-gray-400 mb-6 italic">Source: {{ $resolved['content_source'] }}</p>
     @endif
 
+    @include('livewire.partials.slide-accordion')
+
     {{-- Optional CTA --}}
     @if(!empty($this->currentSlide['cta_text']))
         <div class="text-center mb-6">

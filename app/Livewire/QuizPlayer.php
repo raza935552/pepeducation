@@ -370,12 +370,13 @@ class QuizPlayer extends Component
 
     private function getAnswerByKlaviyoProperty(string $property): ?string
     {
+        $result = null;
         foreach ($this->answers as $answer) {
             if (($answer['klaviyo_property'] ?? null) === $property) {
-                return $answer['klaviyo_value'] ?? $answer['text_value'] ?? null;
+                $result = $answer['klaviyo_value'] ?? $answer['text_value'] ?? null;
             }
         }
-        return null;
+        return $result;
     }
 
     /**

@@ -369,6 +369,10 @@ class QuizQuestionController extends Controller
             'settings.research_heading' => 'nullable|string|max:500',
             'settings.research_description' => 'nullable|string|max:500',
             'settings.research_unavailable_text' => 'nullable|string|max:500',
+            // Accordion sections (universal)
+            'settings.accordion_items' => 'nullable|array',
+            'settings.accordion_items.*.title' => 'required_with:settings.accordion_items|string|max:200',
+            'settings.accordion_items.*.content' => 'required_with:settings.accordion_items|string|max:2000',
             // Peptide reveal settings
             'settings.pre_headline' => 'nullable|string|max:500',
             'settings.benefits_heading' => 'nullable|string|max:500',

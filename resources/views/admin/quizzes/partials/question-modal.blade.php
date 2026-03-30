@@ -606,6 +606,36 @@
                         <p class="text-xs text-gray-400 mt-1">Checklist items animate in sequence during this time. Recommended: 4-8 seconds.</p>
                     </div>
 
+                    {{-- ═══════════ ACCORDION SECTIONS (optional, all types except loading) ═══════════ --}}
+                    <div x-show="question.slide_type !== 'loading'" x-cloak>
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Accordion Sections</span>
+                            <span class="text-xs text-gray-400">(optional)</span>
+                            <div class="flex-1 h-px bg-gray-200"></div>
+                        </div>
+                        <p class="text-xs text-gray-400 mb-3">Collapsible sections shown below the slide content. Users can tap to expand.</p>
+
+                        <template x-for="(item, ai) in (question.settings.accordion_items || [])" :key="ai">
+                            <div class="border rounded-lg p-3 mb-2 bg-gray-50/50">
+                                <div class="flex gap-2 items-start mb-2">
+                                    <div class="flex-1">
+                                        <input type="text" x-model="item.title" placeholder="Section title (e.g. What are peptides?)"
+                                            class="w-full rounded border-gray-200 text-sm focus:border-brand-gold focus:ring-brand-gold">
+                                    </div>
+                                    <button type="button" @click="question.settings.accordion_items.splice(ai, 1)" class="text-red-400 hover:text-red-600 p-1 flex-shrink-0" title="Remove section">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </button>
+                                </div>
+                                <textarea x-model="item.content" placeholder="Section content..." rows="2"
+                                    class="w-full rounded border-gray-200 text-sm focus:border-brand-gold focus:ring-brand-gold"></textarea>
+                            </div>
+                        </template>
+
+                        <button type="button"
+                            @click="if (!question.settings.accordion_items) question.settings.accordion_items = []; question.settings.accordion_items.push({ title: '', content: '' })"
+                            class="text-sm text-brand-gold hover:underline font-medium">+ Add Section</button>
+                    </div>
+
                     {{-- ═══════════ ADVANCED SETTINGS (collapsible) ═══════════ --}}
                     <div class="border-t border-gray-200 pt-4">
                         <button type="button" @click="advancedOpen = !advancedOpen"
@@ -1033,6 +1063,13 @@ function questionModal() {
                     if (this.question.settings[key]) {
                         formData.append('settings[' + key + ']', this.question.settings[key]);
                     }
+                });
+                // Accordion sections
+                const accordionItems = this.question.settings.accordion_items || [];
+                const validItems = accordionItems.filter(item => item.title && item.content);
+                validItems.forEach((item, i) => {
+                    formData.append(`settings[accordion_items][${i}][title]`, item.title);
+                    formData.append(`settings[accordion_items][${i}][content]`, item.content);
                 });
             }
             formData.append('content_title', this.question.content_title || '');

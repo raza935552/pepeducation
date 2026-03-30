@@ -120,6 +120,8 @@
         </div>
     @endif
 
+    @include('livewire.partials.slide-accordion')
+
     {{-- Optional CTA --}}
     @if(!empty($this->currentSlide['cta_text']))
         <div class="text-center mt-6">
