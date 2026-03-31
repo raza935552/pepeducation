@@ -14,7 +14,8 @@ export default {
     theme: {
         extend: {
             colors: {
-                primary: {
+                // Admin-only accent (sky blue) – immune to theme changes
+                'admin-primary': {
                     50: '#f0f9ff',
                     100: '#e0f2fe',
                     200: '#bae6fd',
@@ -27,50 +28,68 @@ export default {
                     900: '#0c4a6e',
                     950: '#082f49',
                 },
+
+                // Theme-controlled colors (driven by CSS variables)
+                primary: {
+                    DEFAULT: 'rgb(var(--primary) / <alpha-value>)',
+                    50: 'rgb(var(--primary-50) / <alpha-value>)',
+                    100: 'rgb(var(--primary-100) / <alpha-value>)',
+                    200: 'rgb(var(--primary-200) / <alpha-value>)',
+                    300: 'rgb(var(--primary-300) / <alpha-value>)',
+                    400: 'rgb(var(--primary-400) / <alpha-value>)',
+                    500: 'rgb(var(--primary-500) / <alpha-value>)',
+                    600: 'rgb(var(--primary-600) / <alpha-value>)',
+                    700: 'rgb(var(--primary-700) / <alpha-value>)',
+                    800: 'rgb(var(--primary-800) / <alpha-value>)',
+                    900: 'rgb(var(--primary-900) / <alpha-value>)',
+                    950: 'rgb(var(--primary-950) / <alpha-value>)',
+                },
                 secondary: {
-                    50: '#f5f3ff',
-                    100: '#ede9fe',
-                    200: '#ddd6fe',
-                    300: '#c4b5fd',
-                    400: '#a78bfa',
-                    500: '#8b5cf6',
-                    600: '#7c3aed',
-                    700: '#6d28d9',
-                    800: '#5b21b6',
-                    900: '#4c1d95',
-                    950: '#2e1065',
+                    DEFAULT: 'rgb(var(--secondary) / <alpha-value>)',
+                    50: 'rgb(var(--secondary-50) / <alpha-value>)',
+                    100: 'rgb(var(--secondary-100) / <alpha-value>)',
+                    200: 'rgb(var(--secondary-200) / <alpha-value>)',
+                    300: 'rgb(var(--secondary-300) / <alpha-value>)',
+                    400: 'rgb(var(--secondary-400) / <alpha-value>)',
+                    500: 'rgb(var(--secondary-500) / <alpha-value>)',
+                    600: 'rgb(var(--secondary-600) / <alpha-value>)',
+                    700: 'rgb(var(--secondary-700) / <alpha-value>)',
+                    800: 'rgb(var(--secondary-800) / <alpha-value>)',
+                    900: 'rgb(var(--secondary-900) / <alpha-value>)',
+                    950: 'rgb(var(--secondary-950) / <alpha-value>)',
                 },
-                // Hims-inspired warm palette
-                cream: {
-                    50: '#FDFCFA',
-                    100: '#F5F1EB',
-                    200: '#E8E4DE',
-                    300: '#D4CFC7',
-                    400: '#B8B0A5',
-                    500: '#9C9285',
+                surface: {
+                    DEFAULT: 'rgb(var(--bg) / <alpha-value>)',
+                    50: 'rgb(var(--bg-50) / <alpha-value>)',
+                    100: 'rgb(var(--bg-100) / <alpha-value>)',
+                    200: 'rgb(var(--bg-200) / <alpha-value>)',
+                    300: 'rgb(var(--bg-300) / <alpha-value>)',
+                    400: 'rgb(var(--bg-400) / <alpha-value>)',
+                    500: 'rgb(var(--bg-500) / <alpha-value>)',
+                    600: 'rgb(var(--bg-600) / <alpha-value>)',
+                    700: 'rgb(var(--bg-700) / <alpha-value>)',
+                    800: 'rgb(var(--bg-800) / <alpha-value>)',
+                    900: 'rgb(var(--bg-900) / <alpha-value>)',
+                    950: 'rgb(var(--bg-950) / <alpha-value>)',
                 },
-                gold: {
-                    300: '#D4B861',
-                    400: '#C9A227',
-                    500: '#9A7B4F',
-                    600: '#7A5F3D',
-                    700: '#5A452D',
+                dark: {
+                    DEFAULT: 'rgb(var(--dark) / <alpha-value>)',
+                    50: 'rgb(var(--dark-50) / <alpha-value>)',
+                    100: 'rgb(var(--dark-100) / <alpha-value>)',
+                    200: 'rgb(var(--dark-200) / <alpha-value>)',
+                    300: 'rgb(var(--dark-300) / <alpha-value>)',
+                    400: 'rgb(var(--dark-400) / <alpha-value>)',
+                    500: 'rgb(var(--dark-500) / <alpha-value>)',
+                    600: 'rgb(var(--dark-600) / <alpha-value>)',
+                    700: 'rgb(var(--dark-700) / <alpha-value>)',
+                    800: 'rgb(var(--dark-800) / <alpha-value>)',
+                    900: 'rgb(var(--dark-900) / <alpha-value>)',
+                    950: 'rgb(var(--dark-950) / <alpha-value>)',
                 },
-                caramel: {
-                    400: '#BF9270',
-                    500: '#A67B5B',
-                    600: '#8B6347',
-                    700: '#704F38',
-                },
-                brown: {
-                    600: '#4A433C',
-                    700: '#3D3630',
-                    800: '#2A2520',
-                    900: '#1A1714',
-                    950: '#0F0D0B',
-                },
-                // Semantic alias used across 28+ files
-                'brand-gold': '#9A7B4F',
+
+                // Flat semantic colors
+                heading: 'rgb(var(--heading) / <alpha-value>)',
+                body: 'rgb(var(--text) / <alpha-value>)',
             },
             fontFamily: {
                 sans: ['Inter', 'Figtree', ...defaultTheme.fontFamily.sans],
