@@ -1,9 +1,9 @@
 <x-public-layout title="About Us">
     {{-- Hero --}}
-    <section class="bg-gradient-to-b from-cream-100 to-cream-50 py-16 lg:py-24">
+    <section class="bg-gradient-to-b from-surface-100 to-surface-50 py-16 lg:py-24">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-                About <span class="text-gold-500">PepProfesor</span>
+                About <span class="text-primary-500">PepProfesor</span>
             </h1>
             <p class="text-lg text-gray-600 max-w-2xl mx-auto">
                 Your trusted source for peptide research information, designed for researchers, clinicians, and curious minds.
@@ -16,10 +16,10 @@
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="prose prose-lg max-w-none">
                 {{-- Mission --}}
-                <div class="bg-white rounded-2xl p-8 border border-cream-200 mb-8">
+                <div class="bg-white rounded-2xl p-8 border border-surface-200 mb-8">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="w-10 h-10 rounded-xl bg-gold-100 flex items-center justify-center">
-                            <svg aria-hidden="true" class="w-5 h-5 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center">
+                            <svg aria-hidden="true" class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                             </svg>
                         </div>
@@ -31,7 +31,7 @@
                 </div>
 
                 {{-- What We Offer --}}
-                <div class="bg-white rounded-2xl p-8 border border-cream-200 mb-8">
+                <div class="bg-white rounded-2xl p-8 border border-surface-200 mb-8">
                     <div class="flex items-center gap-3 mb-4">
                         <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
                             <svg aria-hidden="true" class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,25 +42,25 @@
                     </div>
                     <ul class="space-y-3 text-gray-600 m-0 list-none p-0">
                         <li class="flex items-start gap-3">
-                            <svg aria-hidden="true" class="w-5 h-5 text-gold-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <svg aria-hidden="true" class="w-5 h-5 text-primary-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                             </svg>
                             <span><strong>Comprehensive Database:</strong> Detailed profiles for 70+ peptides with research summaries, dosing information, and clinical applications.</span>
                         </li>
                         <li class="flex items-start gap-3">
-                            <svg aria-hidden="true" class="w-5 h-5 text-gold-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <svg aria-hidden="true" class="w-5 h-5 text-primary-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                             </svg>
                             <span><strong>Dosing Calculator:</strong> Precise reconstitution and dosing calculations for safe research practices.</span>
                         </li>
                         <li class="flex items-start gap-3">
-                            <svg aria-hidden="true" class="w-5 h-5 text-gold-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <svg aria-hidden="true" class="w-5 h-5 text-primary-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                             </svg>
                             <span><strong>Community Contributions:</strong> Researchers can suggest edits and improvements to keep information current.</span>
                         </li>
                         <li class="flex items-start gap-3">
-                            <svg aria-hidden="true" class="w-5 h-5 text-gold-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <svg aria-hidden="true" class="w-5 h-5 text-primary-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                             </svg>
                             <span><strong>Free Access:</strong> All information is freely available without paywalls or subscriptions.</span>
@@ -79,7 +79,7 @@
                         <h2 class="text-2xl font-bold text-gray-900 m-0">Important Note</h2>
                     </div>
                     <p class="text-gray-600 m-0">
-                        PepProfesor is for educational and research purposes only. We do not sell peptides or provide medical advice. Always consult qualified healthcare professionals before making any decisions related to your health. See our <a href="{{ route('disclaimer') }}" class="text-gold-600 hover:underline">full disclaimer</a> for more information.
+                        PepProfesor is for educational and research purposes only. We do not sell peptides or provide medical advice. Always consult qualified healthcare professionals before making any decisions related to your health. See our <a href="{{ route('disclaimer') }}" class="text-primary-600 hover:underline">full disclaimer</a> for more information.
                     </p>
                 </div>
             </div>

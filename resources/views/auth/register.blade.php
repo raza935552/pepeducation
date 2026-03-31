@@ -46,10 +46,10 @@
             </x-primary-button>
         </div>
 
-        <div class="text-center mt-6 pt-6 border-t border-cream-200">
+        <div class="text-center mt-6 pt-6 border-t border-surface-200">
             <p class="text-sm text-gray-600">
                 Already have an account?
-                <a href="{{ route('login') }}" class="text-gold-600 hover:text-gold-700 font-medium hover:underline">
+                <a href="{{ route('login') }}" class="text-primary-600 hover:text-primary-700 font-medium hover:underline">
                     Sign in
                 </a>
             </p>

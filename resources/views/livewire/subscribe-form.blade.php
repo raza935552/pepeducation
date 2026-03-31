@@ -19,10 +19,10 @@
                    wire:model="email"
                    placeholder="Your email"
                    autocomplete="email"
-                   class="flex-1 px-4 py-2.5 rounded-lg bg-brown-800 border border-brown-700 text-cream-100 placeholder-cream-500 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent">
+                   class="flex-1 px-4 py-2.5 rounded-lg bg-dark-800 border border-dark-700 text-surface-100 placeholder-surface-500 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
             <button type="submit"
                     wire:loading.attr="disabled"
-                    class="px-4 py-2.5 bg-gold-500 text-white font-medium text-sm rounded-lg hover:bg-gold-600 transition-colors disabled:opacity-50 flex items-center gap-2">
+                    class="px-4 py-2.5 bg-primary-500 text-white font-medium text-sm rounded-lg hover:bg-primary-600 transition-colors disabled:opacity-50 flex items-center gap-2">
                 <span wire:loading.remove>Subscribe</span>
                 <span wire:loading class="flex items-center gap-2">
                     <svg aria-hidden="true" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">

@@ -10,7 +10,7 @@
         @method('PUT')
 
         {{-- Notifications --}}
-        <div class="bg-white rounded-xl shadow-sm border border-cream-200 p-6">
+        <div class="bg-white rounded-xl shadow-sm border border-surface-200 p-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-6">Notifications</h2>
 
             <div class="space-y-5">
@@ -20,7 +20,7 @@
                         <input type="checkbox" name="notify_edit_status" value="1"
                                {{ $preferences->notify_edit_status ? 'checked' : '' }}
                                class="sr-only peer">
-                        <div class="w-11 h-6 bg-cream-200 rounded-full peer-checked:bg-gold-500 transition-colors"></div>
+                        <div class="w-11 h-6 bg-surface-200 rounded-full peer-checked:bg-primary-500 transition-colors"></div>
                         <div class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow peer-checked:translate-x-5 transition-transform"></div>
                     </div>
                     <div class="flex-1">
@@ -35,7 +35,7 @@
                         <input type="checkbox" name="notify_marketing" value="1"
                                {{ $preferences->notify_marketing ? 'checked' : '' }}
                                class="sr-only peer">
-                        <div class="w-11 h-6 bg-cream-200 rounded-full peer-checked:bg-gold-500 transition-colors"></div>
+                        <div class="w-11 h-6 bg-surface-200 rounded-full peer-checked:bg-primary-500 transition-colors"></div>
                         <div class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow peer-checked:translate-x-5 transition-transform"></div>
                     </div>
                     <div class="flex-1">
@@ -50,7 +50,7 @@
                         <input type="checkbox" name="notify_weekly_digest" value="1"
                                {{ $preferences->notify_weekly_digest ? 'checked' : '' }}
                                class="sr-only peer">
-                        <div class="w-11 h-6 bg-cream-200 rounded-full peer-checked:bg-gold-500 transition-colors"></div>
+                        <div class="w-11 h-6 bg-surface-200 rounded-full peer-checked:bg-primary-500 transition-colors"></div>
                         <div class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow peer-checked:translate-x-5 transition-transform"></div>
                     </div>
                     <div class="flex-1">
@@ -62,7 +62,7 @@
         </div>
 
         {{-- Privacy --}}
-        <div class="bg-white rounded-xl shadow-sm border border-cream-200 p-6">
+        <div class="bg-white rounded-xl shadow-sm border border-surface-200 p-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-6">Privacy & Data Usage</h2>
 
             <label class="flex items-start gap-4 cursor-pointer">
@@ -70,7 +70,7 @@
                     <input type="checkbox" name="data_usage_opt_in" value="1"
                            {{ $preferences->data_usage_opt_in ? 'checked' : '' }}
                            class="sr-only peer">
-                    <div class="w-11 h-6 bg-cream-200 rounded-full peer-checked:bg-gold-500 transition-colors"></div>
+                    <div class="w-11 h-6 bg-surface-200 rounded-full peer-checked:bg-primary-500 transition-colors"></div>
                     <div class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow peer-checked:translate-x-5 transition-transform"></div>
                 </div>
                 <div class="flex-1">
@@ -82,7 +82,7 @@
 
         {{-- Save --}}
         <div class="flex justify-end">
-            <button type="submit" class="px-6 py-2.5 bg-gold-500 text-white rounded-full font-medium text-sm hover:bg-gold-600 transition-colors">
+            <button type="submit" class="px-6 py-2.5 bg-primary-500 text-white rounded-full font-medium text-sm hover:bg-primary-600 transition-colors">
                 Save Preferences
             </button>
         </div>

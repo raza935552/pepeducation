@@ -27,7 +27,7 @@
                 }
 
                 // Row styling priority: cheapest (green) > recommended (amber) > default
-                $rowClass = 'bg-cream-50 border border-cream-200 hover:border-cream-300 hover:shadow-sm';
+                $rowClass = 'bg-surface-50 border border-surface-200 hover:border-surface-300 hover:shadow-sm';
                 if ($isCheapest) {
                     $rowClass = 'bg-green-50 border border-green-200 hover:border-green-300 hover:shadow-sm';
                 } elseif ($isRecommended) {
@@ -36,8 +36,8 @@
 
                 $nameClass = $isCheapest ? 'text-green-800' : ($isRecommended ? 'text-amber-800' : 'text-gray-700');
                 $priceClass = $isCheapest ? 'text-green-700' : 'text-gray-900';
-                $iconBgClass = $isCheapest ? 'bg-green-100 text-green-600' : ($isRecommended ? 'bg-amber-100 text-amber-600' : 'bg-cream-200 text-cream-500');
-                $btnClass = $isCheapest ? 'bg-green-600 text-white group-hover:bg-green-700' : ($isRecommended ? 'bg-amber-500 text-white group-hover:bg-amber-600' : 'bg-gold-500 text-white group-hover:bg-gold-600');
+                $iconBgClass = $isCheapest ? 'bg-green-100 text-green-600' : ($isRecommended ? 'bg-amber-100 text-amber-600' : 'bg-surface-200 text-surface-500');
+                $btnClass = $isCheapest ? 'bg-green-600 text-white group-hover:bg-green-700' : ($isRecommended ? 'bg-amber-500 text-white group-hover:bg-amber-600' : 'bg-primary-500 text-white group-hover:bg-primary-600');
             @endphp
             <a href="{{ $visitUrl }}" target="_blank" rel="noopener noreferrer"
                class="group flex items-center gap-2 px-2.5 py-2 rounded-lg transition-all duration-200 {{ $rowClass }}">
@@ -85,15 +85,15 @@
         }
     @endphp
     <a href="{{ $legacyUrl }}" target="_blank" rel="noopener noreferrer"
-       class="group flex items-center justify-between gap-2 px-2.5 py-2 rounded-lg bg-cream-50 border border-cream-200 hover:border-cream-300 hover:shadow-sm transition-all duration-200">
+       class="group flex items-center justify-between gap-2 px-2.5 py-2 rounded-lg bg-surface-50 border border-surface-200 hover:border-surface-300 hover:shadow-sm transition-all duration-200">
         <span class="text-sm font-bold text-gray-900">${{ number_format($product->current_price, 2) }}</span>
-        <span class="inline-flex items-center gap-0.5 px-2.5 py-1 rounded-md text-[11px] font-bold bg-gold-500 text-white group-hover:bg-gold-600 transition-all duration-200">
+        <span class="inline-flex items-center gap-0.5 px-2.5 py-1 rounded-md text-[11px] font-bold bg-primary-500 text-white group-hover:bg-primary-600 transition-all duration-200">
             Visit Store
             <svg class="w-2.5 h-2.5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
         </span>
     </a>
 @else
-    <div class="p-3 rounded-xl bg-cream-50 border border-cream-200 text-center">
+    <div class="p-3 rounded-xl bg-surface-50 border border-surface-200 text-center">
         <span class="text-sm text-gray-400">Store links coming soon</span>
     </div>
 @endif

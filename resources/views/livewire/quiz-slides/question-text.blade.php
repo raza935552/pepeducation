@@ -12,7 +12,7 @@
             rows="3"
             required
             placeholder="{{ $this->currentSlide['settings']['placeholder'] ?? 'Type your answer...' }}"
-            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold"
+            class="w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
         ></textarea>
         @error('textAnswer') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
 
@@ -39,7 +39,7 @@
     {{-- Optional CTA --}}
     @if(!empty($this->currentSlide['cta_text']) && !empty($this->currentSlide['cta_url']))
         <div class="text-center mt-4">
-            <a href="{{ $this->currentSlide['cta_url'] }}" target="_blank" rel="noopener noreferrer" class="text-sm text-brand-gold hover:underline">
+            <a href="{{ $this->currentSlide['cta_url'] }}" target="_blank" rel="noopener noreferrer" class="text-sm text-primary hover:underline">
                 {{ $this->currentSlide['cta_text'] }}
             </a>
         </div>

@@ -11,7 +11,7 @@
     <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg border border-gray-200 p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div class="flex-1 text-sm text-gray-600">
             We use cookies to improve your experience and analyze site usage.
-            <a href="/privacy-policy" class="underline text-brand-gold hover:text-brand-gold-dark">Learn more</a>
+            <a href="/privacy-policy" class="underline text-primary hover:text-primary-dark">Learn more</a>
         </div>
         <div class="flex gap-3 shrink-0">
             <button @click="show = false"
@@ -19,7 +19,7 @@
                 Decline
             </button>
             <button @click="window.PPTracker?.setConsent(true); show = false"
-                class="px-5 py-2 bg-brand-gold text-white text-sm font-medium rounded-lg hover:bg-brand-gold-dark">
+                class="px-5 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-dark">
                 Accept
             </button>
         </div>

@@ -81,7 +81,7 @@
                         Contributions
                         @php try { $pendingCount = Cache::remember('admin_pending_contributions', 120, fn() => \App\Models\Contribution::where('status', 'pending')->count()); } catch (\Throwable $e) { $pendingCount = 0; } @endphp
                         @if($pendingCount > 0)
-                            <span class="ml-auto bg-gold-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ $pendingCount }}</span>
+                            <span class="ml-auto bg-primary-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ $pendingCount }}</span>
                         @endif
                     </a>
                 </li>

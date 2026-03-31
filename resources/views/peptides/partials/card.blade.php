@@ -1,19 +1,19 @@
 <a href="{{ route('peptides.show', $peptide) }}"
-   class="group relative bg-white rounded-2xl border border-cream-200 overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-gold-500/10 hover:-translate-y-1 hover:border-gold-300 flex flex-col">
+   class="group relative bg-white rounded-2xl border border-surface-200 overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-1 hover:border-primary-300 flex flex-col">
 
     <!-- Top Accent Bar -->
-    <div class="h-1 w-full bg-gradient-to-r from-gold-400 via-gold-500 to-caramel-500 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+    <div class="h-1 w-full bg-gradient-to-r from-primary-400 via-primary-500 to-secondary-500 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
 
     <div class="p-5 flex flex-col flex-1">
         <!-- Header -->
         <div class="flex items-start justify-between gap-3 mb-4">
             <div class="flex-1 min-w-0">
                 @if($peptide->abbreviation)
-                    <span class="inline-block px-2 py-0.5 rounded text-xs font-mono bg-gold-100 text-gold-700 mb-2">
+                    <span class="inline-block px-2 py-0.5 rounded text-xs font-mono bg-primary-100 text-primary-700 mb-2">
                         {{ $peptide->abbreviation }}
                     </span>
                 @endif
-                <h3 class="text-lg font-bold text-gray-900 group-hover:text-gold-600 transition-colors truncate">
+                <h3 class="text-lg font-bold text-gray-900 group-hover:text-primary-600 transition-colors truncate">
                     {{ $peptide->name }}
                 </h3>
                 <p class="text-sm text-gray-500">{{ $peptide->type }}</p>
@@ -25,9 +25,9 @@
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center
                     {{ $badge['color'] === 'blue' ? 'bg-blue-100' : '' }}
                     {{ $badge['color'] === 'green' ? 'bg-emerald-100' : '' }}
-                    {{ $badge['color'] === 'yellow' ? 'bg-gold-100' : '' }}
-                    {{ $badge['color'] === 'gray' ? 'bg-cream-200' : '' }}">
-                    <svg aria-hidden="true" class="w-5 h-5 {{ $badge['color'] === 'blue' ? 'text-blue-600' : '' }}{{ $badge['color'] === 'green' ? 'text-emerald-600' : '' }}{{ $badge['color'] === 'yellow' ? 'text-gold-600' : '' }}{{ $badge['color'] === 'gray' ? 'text-gray-500' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {{ $badge['color'] === 'yellow' ? 'bg-primary-100' : '' }}
+                    {{ $badge['color'] === 'gray' ? 'bg-surface-200' : '' }}">
+                    <svg aria-hidden="true" class="w-5 h-5 {{ $badge['color'] === 'blue' ? 'text-blue-600' : '' }}{{ $badge['color'] === 'green' ? 'text-emerald-600' : '' }}{{ $badge['color'] === 'yellow' ? 'text-primary-600' : '' }}{{ $badge['color'] === 'gray' ? 'text-gray-500' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
@@ -52,12 +52,12 @@
                 </span>
             @endforeach
             @if($peptide->categories->count() > 3)
-                <span class="px-2.5 py-1 text-xs text-cream-500">+{{ $peptide->categories->count() - 3 }}</span>
+                <span class="px-2.5 py-1 text-xs text-surface-500">+{{ $peptide->categories->count() - 3 }}</span>
             @endif
         </div>
 
         <!-- Quick Info -->
-        <div class="pt-4 border-t border-cream-100">
+        <div class="pt-4 border-t border-surface-100">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-4 text-xs text-gray-500">
                     @if($peptide->typical_dose)
@@ -79,7 +79,7 @@
                 </div>
 
                 <!-- Arrow -->
-                <div class="w-8 h-8 rounded-full bg-cream-100 flex items-center justify-center group-hover:bg-gold-500 transition-colors">
+                <div class="w-8 h-8 rounded-full bg-surface-100 flex items-center justify-center group-hover:bg-primary-500 transition-colors">
                     <svg aria-hidden="true" class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                     </svg>

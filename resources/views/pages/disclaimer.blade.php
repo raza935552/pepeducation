@@ -1,6 +1,6 @@
 <x-public-layout title="Disclaimer">
     {{-- Hero --}}
-    <section class="bg-gradient-to-b from-cream-100 to-cream-50 py-16 lg:py-20">
+    <section class="bg-gradient-to-b from-surface-100 to-surface-50 py-16 lg:py-20">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
                 Disclaimer
@@ -31,7 +31,7 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl p-8 lg:p-12 border border-cream-200">
+            <div class="bg-white rounded-2xl p-8 lg:p-12 border border-surface-200">
                 <div class="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-600 prose-li:text-gray-600">
 
                     <h2>Educational Purpose</h2>

@@ -1,16 +1,16 @@
 <a href="{{ route('peptides.show', $peptide) }}"
-   class="group block bg-cream-50 rounded-2xl border border-cream-200 p-6 hover:shadow-xl hover:shadow-cream-300/50 hover:border-cream-300 transition-all duration-300 hover:-translate-y-1">
+   class="group block bg-surface-50 rounded-2xl border border-surface-200 p-6 hover:shadow-xl hover:shadow-surface-300/50 hover:border-surface-300 transition-all duration-300 hover:-translate-y-1">
     {{-- Header with badge and bookmark --}}
     <div class="flex items-start justify-between gap-3 mb-4">
         <div class="flex items-center gap-3">
             {{-- Abbreviation Badge --}}
-            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-gold-500 to-caramel-500 flex items-center justify-center shadow-lg shadow-gold-500/20">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center shadow-lg shadow-primary-500/20">
                 <span class="text-sm font-bold text-white">
                     {{ strtoupper(substr($peptide->abbreviation ?? $peptide->name, 0, 3)) }}
                 </span>
             </div>
             <div class="min-w-0">
-                <h3 class="text-lg font-bold text-gray-900 group-hover:text-gold-500 transition-colors truncate">
+                <h3 class="text-lg font-bold text-gray-900 group-hover:text-primary-500 transition-colors truncate">
                     {{ $peptide->name }}
                 </h3>
                 <p class="text-sm text-gray-500 truncate">
@@ -19,7 +19,7 @@
             </div>
         </div>
         {{-- Bookmark icon --}}
-        <button type="button" class="shrink-0 p-2 rounded-lg text-gray-400 hover:text-gold-500 hover:bg-gold-50 transition-colors" onclick="event.preventDefault();">
+        <button type="button" class="shrink-0 p-2 rounded-lg text-gray-400 hover:text-primary-500 hover:bg-primary-50 transition-colors" onclick="event.preventDefault();">
             <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
             </svg>
@@ -29,7 +29,7 @@
     {{-- Categories --}}
     <div class="flex flex-wrap gap-2 mb-4">
         @foreach($peptide->categories->take(3) as $category)
-            <span class="px-3 py-1 rounded-full text-xs font-medium bg-cream-200 text-gray-700">
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-surface-200 text-gray-700">
                 {{ $category->name }}
             </span>
         @endforeach
@@ -48,14 +48,14 @@
     @endif
 
     {{-- Footer --}}
-    <div class="flex items-center justify-between pt-4 border-t border-cream-200">
+    <div class="flex items-center justify-between pt-4 border-t border-surface-200">
         {{-- Research Status Badge --}}
         @php
             $researchLevel = $peptide->research_level ?? 'moderate';
             $badgeClasses = match($researchLevel) {
                 'extensive' => 'bg-emerald-100 text-emerald-700',
-                'well-researched' => 'bg-gold-100 text-gold-700',
-                default => 'bg-cream-200 text-gray-600'
+                'well-researched' => 'bg-primary-100 text-primary-700',
+                default => 'bg-surface-200 text-gray-600'
             };
             $badgeText = match($researchLevel) {
                 'extensive' => 'Extensively Studied',
@@ -68,7 +68,7 @@
         </span>
 
         {{-- Learn More --}}
-        <span class="inline-flex items-center gap-1 text-sm font-medium text-gold-500 group-hover:gap-2 transition-all">
+        <span class="inline-flex items-center gap-1 text-sm font-medium text-primary-500 group-hover:gap-2 transition-all">
             Learn More
             <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>

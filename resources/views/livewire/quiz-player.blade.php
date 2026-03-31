@@ -7,7 +7,7 @@
                     <span>{{ $this->progress }}%</span>
                 </div>
                 <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div class="h-full bg-brand-gold transition-all duration-300" style="width: {{ $this->progress }}%"></div>
+                    <div class="h-full bg-primary transition-all duration-300" style="width: {{ $this->progress }}%"></div>
                 </div>
             </div>
         @endif
@@ -22,7 +22,7 @@
                         wire:model="email"
                         placeholder="Enter your email"
                         autocomplete="email"
-                        class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold disabled:opacity-50 @error('email') border-red-500 ring-red-500 @enderror"
+                        class="w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary disabled:opacity-50 @error('email') border-red-500 ring-red-500 @enderror"
                         wire:loading.attr="disabled"
                     >
                     @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror

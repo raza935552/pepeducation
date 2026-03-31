@@ -61,7 +61,7 @@
                                     wire:model="email"
                                     autocomplete="email"
                                     placeholder="{{ $this->activePopup->design['placeholder'] ?? 'Enter your email' }}"
-                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-brand-gold focus:ring-brand-gold disabled:opacity-50"
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-primary focus:ring-primary disabled:opacity-50"
                                     required
                                     wire:loading.attr="disabled"
                                 >

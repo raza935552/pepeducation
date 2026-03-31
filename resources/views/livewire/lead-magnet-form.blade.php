@@ -11,7 +11,7 @@
                 <h3 class="text-xl font-bold text-gray-900 mb-2">Your download is ready!</h3>
                 <p class="text-gray-600 mb-4">Click the button below to download your free guide.</p>
                 <a href="{{ $downloadUrl }}"
-                   class="inline-flex items-center gap-2 bg-gradient-to-r from-gold-500 to-gold-600 text-white font-bold px-6 py-3 rounded-full hover:from-gold-600 hover:to-gold-700 transition-all shadow-lg"
+                   class="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-bold px-6 py-3 rounded-full hover:from-primary-600 hover:to-primary-700 transition-all shadow-lg"
                    download>
                     <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
@@ -36,7 +36,7 @@
                        required
                        autocomplete="email"
                        placeholder="Enter your email"
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-colors @error('email') border-red-500 @enderror">
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors @error('email') border-red-500 @enderror">
                 @error('email')
                     <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                 @enderror
@@ -51,13 +51,13 @@
                        wire:model="name"
                        autocomplete="name"
                        placeholder="Your name"
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-colors">
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
             </div>
 
             <button type="submit"
                     wire:loading.attr="disabled"
                     wire:loading.class="opacity-75 cursor-wait"
-                    class="w-full bg-gradient-to-r from-gold-500 to-gold-600 text-white font-bold px-6 py-4 rounded-full hover:from-gold-600 hover:to-gold-700 transition-all shadow-lg flex items-center justify-center gap-2">
+                    class="w-full bg-gradient-to-r from-primary-500 to-primary-600 text-white font-bold px-6 py-4 rounded-full hover:from-primary-600 hover:to-primary-700 transition-all shadow-lg flex items-center justify-center gap-2">
                 <span wire:loading.remove>
                     <svg aria-hidden="true" class="w-5 h-5 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>

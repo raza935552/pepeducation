@@ -1,6 +1,6 @@
 <x-public-layout title="Privacy Policy">
     {{-- Hero --}}
-    <section class="bg-gradient-to-b from-cream-100 to-cream-50 py-16 lg:py-20">
+    <section class="bg-gradient-to-b from-surface-100 to-surface-50 py-16 lg:py-20">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
                 Privacy Policy
@@ -14,7 +14,7 @@
     {{-- Content --}}
     <section class="py-16">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-white rounded-2xl p-8 lg:p-12 border border-cream-200">
+            <div class="bg-white rounded-2xl p-8 lg:p-12 border border-surface-200">
                 <div class="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-600 prose-li:text-gray-600">
 
                     <h2>1. Information We Collect</h2>
@@ -79,7 +79,7 @@
                     </ul>
 
                     <h2>8. Contact Us</h2>
-                    <p>If you have questions about this Privacy Policy, please contact us through our <button onclick="Livewire.dispatch('openContactModal')" class="text-gold-600 hover:underline">contact form</button>.</p>
+                    <p>If you have questions about this Privacy Policy, please contact us through our <button onclick="Livewire.dispatch('openContactModal')" class="text-primary-600 hover:underline">contact form</button>.</p>
 
                 </div>
             </div>

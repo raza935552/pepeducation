@@ -2,9 +2,9 @@
     <!-- Left Column: Inputs -->
     <div class="lg:col-span-2 space-y-6">
         <!-- Reconstitution Section -->
-        <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-surface-200 p-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <svg aria-hidden="true" class="w-5 h-5 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg aria-hidden="true" class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                 </svg>
                 Reconstitution
@@ -24,7 +24,7 @@
                             min="0.1"
                             max="100"
                             step="0.1"
-                            class="block w-full rounded-xl border-cream-300 focus:border-gold-500 focus:ring-gold-500 pr-12"
+                            class="block w-full rounded-xl border-surface-300 focus:border-primary-500 focus:ring-primary-500 pr-12"
                         >
                         <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">mg</span>
                     </div>
@@ -44,7 +44,7 @@
                             min="0.5"
                             max="10"
                             step="0.5"
-                            class="block w-full rounded-xl border-cream-300 focus:border-gold-500 focus:ring-gold-500 pr-12"
+                            class="block w-full rounded-xl border-surface-300 focus:border-primary-500 focus:ring-primary-500 pr-12"
                         >
                         <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">mL</span>
                     </div>
@@ -53,10 +53,10 @@
             </div>
 
             <!-- Concentration Result -->
-            <div class="mt-6 p-4 bg-cream-50 rounded-xl">
+            <div class="mt-6 p-4 bg-surface-50 rounded-xl">
                 <div class="flex justify-between items-center">
                     <span class="text-sm text-gray-600">Concentration:</span>
-                    <span class="text-lg font-bold text-gold-600">
+                    <span class="text-lg font-bold text-primary-600">
                         {{ number_format($this->concentration, 2) }} mcg/mL
                     </span>
                 </div>
@@ -70,9 +70,9 @@
         </div>
 
         <!-- Dosing Section -->
-        <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-surface-200 p-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <svg aria-hidden="true" class="w-5 h-5 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg aria-hidden="true" class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
                 Dosing
@@ -84,7 +84,7 @@
                     <input
                         type="checkbox"
                         wire:model.live="useBodyWeight"
-                        class="rounded border-cream-300 text-gold-500 focus:ring-gold-500"
+                        class="rounded border-surface-300 text-primary-500 focus:ring-primary-500"
                     >
                     <span class="text-sm text-gray-700">Calculate dose based on body weight</span>
                 </label>
@@ -101,11 +101,11 @@
                                 wire:model.live="bodyWeight"
                                 min="20"
                                 max="300"
-                                class="block w-full rounded-xl border-cream-300 focus:border-gold-500 focus:ring-gold-500"
+                                class="block w-full rounded-xl border-surface-300 focus:border-primary-500 focus:ring-primary-500"
                             >
                             <select
                                 wire:model.live="weightUnit"
-                                class="rounded-xl border-cream-300 focus:border-gold-500 focus:ring-gold-500"
+                                class="rounded-xl border-surface-300 focus:border-primary-500 focus:ring-primary-500"
                             >
                                 <option value="kg">kg</option>
                                 <option value="lb">lb</option>
@@ -121,15 +121,15 @@
                                 min="0.1"
                                 max="100"
                                 step="0.1"
-                                class="block w-full rounded-xl border-cream-300 focus:border-gold-500 focus:ring-gold-500 pr-16"
+                                class="block w-full rounded-xl border-surface-300 focus:border-primary-500 focus:ring-primary-500 pr-16"
                             >
                             <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">mcg/kg</span>
                         </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Calculated Dose</label>
-                        <div class="h-[42px] flex items-center px-4 bg-cream-50 rounded-xl">
-                            <span class="font-bold text-gold-600">{{ number_format($this->effectiveDose, 1) }} mcg</span>
+                        <div class="h-[42px] flex items-center px-4 bg-surface-50 rounded-xl">
+                            <span class="font-bold text-primary-600">{{ number_format($this->effectiveDose, 1) }} mcg</span>
                         </div>
                     </div>
                 </div>
@@ -144,7 +144,7 @@
                             min="1"
                             max="10000"
                             step="1"
-                            class="block w-full rounded-xl border-cream-300 focus:border-gold-500 focus:ring-gold-500 pr-14"
+                            class="block w-full rounded-xl border-surface-300 focus:border-primary-500 focus:ring-primary-500 pr-14"
                         >
                         <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">mcg</span>
                     </div>
@@ -159,8 +159,8 @@
                         <label class="flex-1">
                             <input type="radio" wire:model.live="syringeSize" value="{{ $value }}" class="sr-only peer">
                             <div class="text-center py-3 px-4 rounded-xl border-2 cursor-pointer transition-all
-                                peer-checked:border-gold-500 peer-checked:bg-gold-50
-                                border-cream-200 hover:border-gold-300">
+                                peer-checked:border-primary-500 peer-checked:bg-primary-50
+                                border-surface-200 hover:border-primary-300">
                                 <span class="text-sm font-medium text-gray-900">{{ $label }}</span>
                             </div>
                         </label>
@@ -170,9 +170,9 @@
         </div>
 
         <!-- Cycle Planning -->
-        <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-surface-200 p-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <svg aria-hidden="true" class="w-5 h-5 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg aria-hidden="true" class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 Cycle Planning
@@ -183,7 +183,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">Injections per Day</label>
                     <select
                         wire:model.live="injectionsPerDay"
-                        class="block w-full rounded-xl border-cream-300 focus:border-gold-500 focus:ring-gold-500"
+                        class="block w-full rounded-xl border-surface-300 focus:border-primary-500 focus:ring-primary-500"
                     >
                         @for($i = 1; $i <= 5; $i++)
                             <option value="{{ $i }}">{{ $i }}x daily</option>
@@ -197,24 +197,24 @@
                         wire:model.live="cycleDays"
                         min="1"
                         max="365"
-                        class="block w-full rounded-xl border-cream-300 focus:border-gold-500 focus:ring-gold-500"
+                        class="block w-full rounded-xl border-surface-300 focus:border-primary-500 focus:ring-primary-500"
                     >
                 </div>
             </div>
 
             <!-- Cycle Results -->
             <div class="mt-6 grid sm:grid-cols-3 gap-4">
-                <div class="p-4 bg-cream-50 rounded-xl text-center">
+                <div class="p-4 bg-surface-50 rounded-xl text-center">
                     <div class="text-2xl font-bold text-gray-900">{{ number_format($this->totalDosesInVial, 0) }}</div>
                     <div class="text-sm text-gray-500">doses per vial</div>
                 </div>
-                <div class="p-4 bg-cream-50 rounded-xl text-center">
+                <div class="p-4 bg-surface-50 rounded-xl text-center">
                     <div class="text-2xl font-bold text-gray-900">{{ number_format($this->totalPeptideForCycle, 1) }} mg</div>
                     <div class="text-sm text-gray-500">total for cycle</div>
                 </div>
-                <div class="p-4 bg-gold-50 rounded-xl text-center">
-                    <div class="text-2xl font-bold text-gold-600">{{ $this->vialsNeeded }}</div>
-                    <div class="text-sm text-gold-700">vials needed</div>
+                <div class="p-4 bg-primary-50 rounded-xl text-center">
+                    <div class="text-2xl font-bold text-primary-600">{{ $this->vialsNeeded }}</div>
+                    <div class="text-sm text-primary-700">vials needed</div>
                 </div>
             </div>
         </div>
@@ -223,8 +223,8 @@
     <!-- Right Column: Results & Syringe -->
     <div class="space-y-6">
         <!-- Main Result Card -->
-        <div class="bg-gradient-to-br from-brown-800 to-brown-900 rounded-2xl shadow-lg p-6 text-white sticky top-24">
-            <h3 class="text-lg font-medium text-cream-200 mb-2">Draw this amount:</h3>
+        <div class="bg-gradient-to-br from-dark-800 to-dark-900 rounded-2xl shadow-lg p-6 text-white sticky top-24">
+            <h3 class="text-lg font-medium text-surface-200 mb-2">Draw this amount:</h3>
 
             @if($this->exceedsSyringe)
                 <div class="bg-red-500/20 border border-red-400 rounded-xl p-4 mb-4">
@@ -236,18 +236,18 @@
             @endif
 
             <div class="text-center py-6">
-                <div class="text-6xl font-bold text-gold-400">
+                <div class="text-6xl font-bold text-primary-400">
                     {{ number_format($this->unitsToDrawRaw, 1) }}
                 </div>
-                <div class="text-xl text-cream-300 mt-1">units</div>
-                <div class="text-sm text-cream-400 mt-2">
+                <div class="text-xl text-surface-300 mt-1">units</div>
+                <div class="text-sm text-surface-400 mt-2">
                     ({{ number_format($this->volumeNeeded, 3) }} mL)
                 </div>
             </div>
 
             <!-- Syringe Visualization -->
             <div class="mt-6">
-                <div class="text-sm text-cream-300 mb-3 text-center">Syringe Preview ({{ $syringeSize }}u)</div>
+                <div class="text-sm text-surface-300 mb-3 text-center">Syringe Preview ({{ $syringeSize }}u)</div>
 
                 <!-- Syringe SVG -->
                 <div class="relative mx-auto" style="width: 200px; height: 60px;">
@@ -300,7 +300,7 @@
                 </div>
 
                 <!-- Scale labels -->
-                <div class="flex justify-between text-xs text-cream-400 mt-2 px-4">
+                <div class="flex justify-between text-xs text-surface-400 mt-2 px-4">
                     <span>0</span>
                     <span>{{ $this->maxSyringeUnits / 2 }}</span>
                     <span>{{ $this->maxSyringeUnits }}</span>
@@ -308,40 +308,40 @@
             </div>
 
             <!-- Quick Reference -->
-            <div class="mt-6 pt-6 border-t border-brown-700">
+            <div class="mt-6 pt-6 border-t border-dark-700">
                 <div class="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                        <span class="text-cream-400">Dose:</span>
-                        <span class="text-cream-100 font-medium ml-2">{{ number_format($this->effectiveDose, 1) }} mcg</span>
+                        <span class="text-surface-400">Dose:</span>
+                        <span class="text-surface-100 font-medium ml-2">{{ number_format($this->effectiveDose, 1) }} mcg</span>
                     </div>
                     <div>
-                        <span class="text-cream-400">Concentration:</span>
-                        <span class="text-cream-100 font-medium ml-2">{{ number_format($this->concentration, 0) }} mcg/mL</span>
+                        <span class="text-surface-400">Concentration:</span>
+                        <span class="text-surface-100 font-medium ml-2">{{ number_format($this->concentration, 0) }} mcg/mL</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Formula Reference -->
-        <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-surface-200 p-6">
             <h3 class="font-semibold text-gray-900 mb-4">Formulas Used</h3>
 
             <div class="space-y-4 text-sm">
                 <div>
                     <div class="text-gray-500 mb-1">Concentration</div>
-                    <code class="block bg-cream-50 px-3 py-2 rounded-lg text-gray-800">
+                    <code class="block bg-surface-50 px-3 py-2 rounded-lg text-gray-800">
                         (peptide mg × 1000) ÷ water mL
                     </code>
                 </div>
                 <div>
                     <div class="text-gray-500 mb-1">Volume Needed</div>
-                    <code class="block bg-cream-50 px-3 py-2 rounded-lg text-gray-800">
+                    <code class="block bg-surface-50 px-3 py-2 rounded-lg text-gray-800">
                         dose mcg ÷ concentration
                     </code>
                 </div>
                 <div>
                     <div class="text-gray-500 mb-1">Syringe Units</div>
-                    <code class="block bg-cream-50 px-3 py-2 rounded-lg text-gray-800">
+                    <code class="block bg-surface-50 px-3 py-2 rounded-lg text-gray-800">
                         volume mL × 100
                     </code>
                 </div>

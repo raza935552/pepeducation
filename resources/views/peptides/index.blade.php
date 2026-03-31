@@ -1,12 +1,12 @@
 <x-public-layout title="Browse Peptides">
     <!-- Hero Section -->
-    <section class="relative bg-gradient-to-br from-brown-800 via-brown-900 to-brown-950 overflow-hidden">
+    <section class="relative bg-gradient-to-br from-dark-800 via-dark-900 to-dark-950 overflow-hidden">
         <!-- Background Pattern -->
         <div class="absolute inset-0 opacity-10">
             <svg aria-hidden="true" class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <defs>
                     <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                        <circle cx="1" cy="1" r="0.5" fill="currentColor" class="text-gold-400"/>
+                        <circle cx="1" cy="1" r="0.5" fill="currentColor" class="text-primary-400"/>
                     </pattern>
                 </defs>
                 <rect width="100" height="100" fill="url(#grid)"/>
@@ -18,9 +18,9 @@
                 <!-- Left: Title & Search -->
                 <div class="flex-1 max-w-2xl">
                     <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
-                        Peptide <span class="text-gold-400">Database</span>
+                        Peptide <span class="text-primary-400">Database</span>
                     </h1>
-                    <p class="text-lg text-cream-300 mb-8">
+                    <p class="text-lg text-surface-300 mb-8">
                         Explore our comprehensive collection of research-backed peptide information
                     </p>
 
@@ -32,13 +32,13 @@
                         <div class="relative">
                             <input type="text" name="search" value="{{ request('search') }}"
                                    placeholder="Search by name, type, or benefits..."
-                                   class="w-full px-6 py-4 pl-14 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-cream-400 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent text-lg">
+                                   class="w-full px-6 py-4 pl-14 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-surface-400 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent text-lg">
                             <div class="absolute left-5 top-1/2 -translate-y-1/2">
-                                <svg aria-hidden="true" class="w-5 h-5 text-cream-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg aria-hidden="true" class="w-5 h-5 text-surface-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                                 </svg>
                             </div>
-                            <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 px-5 py-2 bg-gold-500 hover:bg-gold-600 text-white font-medium rounded-xl transition-colors">
+                            <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 px-5 py-2 bg-primary-500 hover:bg-primary-600 text-white font-medium rounded-xl transition-colors">
                                 Search
                             </button>
                         </div>
@@ -48,16 +48,16 @@
                 <!-- Right: Stats -->
                 <div class="flex gap-6 lg:gap-8">
                     <div class="text-center">
-                        <div class="text-3xl lg:text-4xl font-bold text-gold-400">{{ $peptides->total() }}</div>
-                        <div class="text-sm text-cream-400 mt-1">Peptides</div>
+                        <div class="text-3xl lg:text-4xl font-bold text-primary-400">{{ $peptides->total() }}</div>
+                        <div class="text-sm text-surface-400 mt-1">Peptides</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-3xl lg:text-4xl font-bold text-gold-400">{{ $categories->count() }}</div>
-                        <div class="text-sm text-cream-400 mt-1">Categories</div>
+                        <div class="text-3xl lg:text-4xl font-bold text-primary-400">{{ $categories->count() }}</div>
+                        <div class="text-sm text-surface-400 mt-1">Categories</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-3xl lg:text-4xl font-bold text-gold-400">100%</div>
-                        <div class="text-sm text-cream-400 mt-1">Free Access</div>
+                        <div class="text-3xl lg:text-4xl font-bold text-primary-400">100%</div>
+                        <div class="text-sm text-surface-400 mt-1">Free Access</div>
                     </div>
                 </div>
             </div>
@@ -65,7 +65,7 @@
     </section>
 
     <!-- Category Pills (2 Rows, Drag Scrollable) -->
-    <section class="bg-cream-50 py-4 border-b border-cream-200">
+    <section class="bg-surface-50 py-4 border-b border-surface-200">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div x-data="{
                     isDown: false,
@@ -105,13 +105,13 @@
                 <div class="inline-grid grid-rows-2 grid-flow-col auto-cols-max gap-2">
                     <a href="{{ route('peptides.index', array_filter(['search' => request('search'), 'research' => request('research')])) }}"
                        @click="handleClick($event)"
-                       class="px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap {{ !request('category') ? 'bg-gold-500 text-white' : 'bg-white text-gray-600 hover:bg-gold-50 border border-cream-200' }}">
+                       class="px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap {{ !request('category') ? 'bg-primary-500 text-white' : 'bg-white text-gray-600 hover:bg-primary-50 border border-surface-200' }}">
                         All Peptides
                     </a>
                     @foreach($categories as $cat)
                         <a href="{{ route('peptides.index', array_filter(['category' => $cat->slug, 'search' => request('search'), 'research' => request('research')])) }}"
                            @click="handleClick($event)"
-                           class="px-4 py-2 rounded-full text-sm font-medium transition-all inline-flex items-center gap-2 whitespace-nowrap {{ request('category') === $cat->slug ? 'bg-gold-500 text-white' : 'bg-white text-gray-600 hover:bg-gold-50 border border-cream-200' }}">
+                           class="px-4 py-2 rounded-full text-sm font-medium transition-all inline-flex items-center gap-2 whitespace-nowrap {{ request('category') === $cat->slug ? 'bg-primary-500 text-white' : 'bg-white text-gray-600 hover:bg-primary-50 border border-surface-200' }}">
                             <span class="w-2 h-2 rounded-full" style="background-color: {{ $cat->color }}"></span>
                             {{ $cat->name }}
                             <span class="text-xs opacity-60">({{ $cat->peptides_count }})</span>
@@ -123,15 +123,15 @@
     </section>
 
     <!-- Main Content -->
-    <section class="py-8 lg:py-12 bg-cream-50 min-h-screen">
+    <section class="py-8 lg:py-12 bg-surface-50 min-h-screen">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <!-- Active Filters & Sort -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
                 <div class="flex items-center gap-3 flex-wrap">
                     @if(request('search'))
-                        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gold-100 text-gold-700 text-sm">
+                        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary-100 text-primary-700 text-sm">
                             Search: "{{ request('search') }}"
-                            <a href="{{ route('peptides.index', array_filter(['category' => request('category'), 'research' => request('research')])) }}" class="hover:text-gold-900">
+                            <a href="{{ route('peptides.index', array_filter(['category' => request('category'), 'research' => request('research')])) }}" class="hover:text-primary-900">
                                 <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                 </svg>
@@ -139,9 +139,9 @@
                         </span>
                     @endif
                     @if(request('research'))
-                        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gold-100 text-gold-700 text-sm">
+                        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary-100 text-primary-700 text-sm">
                             {{ ucfirst(request('research')) }} Research
-                            <a href="{{ route('peptides.index', array_filter(['category' => request('category'), 'search' => request('search')])) }}" class="hover:text-gold-900">
+                            <a href="{{ route('peptides.index', array_filter(['category' => request('category'), 'search' => request('search')])) }}" class="hover:text-primary-900">
                                 <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                 </svg>
@@ -149,7 +149,7 @@
                         </span>
                     @endif
                     @if(request()->hasAny(['search', 'category', 'research']))
-                        <a href="{{ route('peptides.index') }}" class="text-sm text-gold-600 hover:underline">
+                        <a href="{{ route('peptides.index') }}" class="text-sm text-primary-600 hover:underline">
                             Clear all
                         </a>
                     @endif
@@ -161,7 +161,7 @@
                     <div class="flex gap-1">
                         @foreach(['extensive' => 'Extensive', 'well' => 'Well', 'emerging' => 'Emerging', 'limited' => 'Limited'] as $val => $label)
                             <a href="{{ route('peptides.index', array_filter(['research' => request('research') === $val ? null : $val, 'category' => request('category'), 'search' => request('search')])) }}"
-                               class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all {{ request('research') === $val ? 'bg-gold-500 text-white' : 'bg-white text-gray-600 hover:bg-cream-100 border border-cream-200' }}">
+                               class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all {{ request('research') === $val ? 'bg-primary-500 text-white' : 'bg-white text-gray-600 hover:bg-surface-100 border border-surface-200' }}">
                                 {{ $label }}
                             </a>
                         @endforeach

@@ -13,7 +13,7 @@
     $variants = [
         'primary' => 'bg-brand-navy text-white hover:bg-brand-navy/90 focus:ring-brand-navy',
         'secondary' => 'bg-white text-brand-navy border-2 border-brand-navy hover:bg-brand-navy hover:text-white focus:ring-brand-navy',
-        'gold' => 'bg-brand-gold text-white hover:bg-brand-gold/90 focus:ring-brand-gold',
+        'gold' => 'bg-primary text-white hover:bg-primary/90 focus:ring-primary',
     ];
 
     $sizes = [

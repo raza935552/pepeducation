@@ -2,11 +2,11 @@
     <x-slot name="title">Peptide Calculator</x-slot>
 
     <!-- Hero Section -->
-    <section class="bg-cream-100 py-12">
+    <section class="bg-surface-100 py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto">
                 <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                    Peptide <span class="text-gold-500">Calculator</span>
+                    Peptide <span class="text-primary-500">Calculator</span>
                 </h1>
                 <p class="text-lg text-gray-600">
                     Calculate reconstitution volumes and dosing for your peptide research
@@ -16,7 +16,7 @@
     </section>
 
     <!-- Calculator Section -->
-    <section class="py-12 bg-cream-50">
+    <section class="py-12 bg-surface-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <livewire:peptide-calculator />
         </div>
@@ -30,9 +30,9 @@
             </h2>
 
             <div class="space-y-6">
-                <div class="bg-cream-50 rounded-xl p-6">
+                <div class="bg-surface-50 rounded-xl p-6">
                     <h3 class="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-full bg-gold-500 text-white text-sm flex items-center justify-center">1</span>
+                        <span class="w-6 h-6 rounded-full bg-primary-500 text-white text-sm flex items-center justify-center">1</span>
                         Enter Peptide Amount
                     </h3>
                     <p class="text-gray-600 ml-8">
@@ -40,9 +40,9 @@
                     </p>
                 </div>
 
-                <div class="bg-cream-50 rounded-xl p-6">
+                <div class="bg-surface-50 rounded-xl p-6">
                     <h3 class="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-full bg-gold-500 text-white text-sm flex items-center justify-center">2</span>
+                        <span class="w-6 h-6 rounded-full bg-primary-500 text-white text-sm flex items-center justify-center">2</span>
                         Set Water Volume
                     </h3>
                     <p class="text-gray-600 ml-8">
@@ -50,9 +50,9 @@
                     </p>
                 </div>
 
-                <div class="bg-cream-50 rounded-xl p-6">
+                <div class="bg-surface-50 rounded-xl p-6">
                     <h3 class="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-full bg-gold-500 text-white text-sm flex items-center justify-center">3</span>
+                        <span class="w-6 h-6 rounded-full bg-primary-500 text-white text-sm flex items-center justify-center">3</span>
                         Enter Desired Dose
                     </h3>
                     <p class="text-gray-600 ml-8">
@@ -60,9 +60,9 @@
                     </p>
                 </div>
 
-                <div class="bg-cream-50 rounded-xl p-6">
+                <div class="bg-surface-50 rounded-xl p-6">
                     <h3 class="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-full bg-gold-500 text-white text-sm flex items-center justify-center">4</span>
+                        <span class="w-6 h-6 rounded-full bg-primary-500 text-white text-sm flex items-center justify-center">4</span>
                         Read the Result
                     </h3>
                     <p class="text-gray-600 ml-8">

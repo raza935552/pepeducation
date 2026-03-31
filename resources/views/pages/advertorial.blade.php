@@ -48,8 +48,8 @@
             <div class="prose prose-lg max-w-none
                         prose-headings:font-serif prose-headings:text-gray-900
                         prose-p:text-gray-700 prose-p:leading-relaxed
-                        prose-a:text-gold-600 prose-a:no-underline hover:prose-a:underline
-                        prose-blockquote:border-gold-500 prose-blockquote:bg-cream-50 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:rounded-r-lg
+                        prose-a:text-primary-600 prose-a:no-underline hover:prose-a:underline
+                        prose-blockquote:border-primary-500 prose-blockquote:bg-surface-50 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:rounded-r-lg
                         prose-strong:text-gray-900">
                 {!! $page->sanitizedHtml() !!}
             </div>
@@ -59,7 +59,7 @@
     {{-- Sticky CTA Bar (Mobile) --}}
     <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-50">
         <a href="{{ route('quiz.show', 'product-match') }}"
-           class="block w-full bg-gradient-to-r from-gold-500 to-caramel-500 text-white text-center font-bold py-4 rounded-full shadow-lg">
+           class="block w-full bg-gradient-to-r from-primary-500 to-secondary-500 text-white text-center font-bold py-4 rounded-full shadow-lg">
             Take The Quiz &rarr; Find Your Peptide
         </a>
     </div>

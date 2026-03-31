@@ -18,7 +18,7 @@
             placeholder="Enter your email"
             autocomplete="email"
             required
-            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold disabled:opacity-50"
+            class="w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary disabled:opacity-50"
             wire:loading.attr="disabled"
         >
         @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -36,7 +36,7 @@
     {{-- Optional CTA --}}
     @if(!empty($this->currentSlide['cta_text']) && !empty($this->currentSlide['cta_url']))
         <div class="text-center mt-4">
-            <a href="{{ $this->currentSlide['cta_url'] }}" target="_blank" rel="noopener noreferrer" class="text-sm text-brand-gold hover:underline">
+            <a href="{{ $this->currentSlide['cta_url'] }}" target="_blank" rel="noopener noreferrer" class="text-sm text-primary hover:underline">
                 {{ $this->currentSlide['cta_text'] }}
             </a>
         </div>

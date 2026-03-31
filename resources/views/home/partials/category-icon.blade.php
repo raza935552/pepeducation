@@ -1,5 +1,5 @@
 @php
-$iconClass = 'w-5 h-5 text-gold-600';
+$iconClass = 'w-5 h-5 text-primary-600';
 @endphp
 
 @switch($category)

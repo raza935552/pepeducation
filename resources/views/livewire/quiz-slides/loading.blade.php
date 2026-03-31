@@ -62,7 +62,7 @@
                      :class="currentItem >= {{ $index }} ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-3'"
                      :style="currentItem >= {{ $index }} ? '' : 'pointer-events: none'">
                     <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300"
-                         :class="currentItem > {{ $index }} ? 'bg-green-500 text-white scale-110' : currentItem === {{ $index }} ? 'bg-brand-gold/20 text-brand-gold' : 'bg-gray-200 text-gray-400'">
+                         :class="currentItem > {{ $index }} ? 'bg-green-500 text-white scale-110' : currentItem === {{ $index }} ? 'bg-primary/20 text-primary' : 'bg-gray-200 text-gray-400'">
                         {{-- Completed checkmark --}}
                         <svg x-show="currentItem > {{ $index }}" aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                              x-transition:enter="transition ease-out duration-200"
@@ -72,7 +72,7 @@
                         </svg>
                         {{-- Active pulsing dot --}}
                         <span x-show="currentItem === {{ $index }}" x-cloak
-                              class="w-2 h-2 rounded-full bg-brand-gold animate-pulse"></span>
+                              class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
                     </div>
                     <span class="text-sm font-medium transition-colors duration-300"
                           :class="currentItem > {{ $index }} ? 'text-gray-800' : currentItem === {{ $index }} ? 'text-gray-700' : 'text-gray-400'">{{ $item }}</span>

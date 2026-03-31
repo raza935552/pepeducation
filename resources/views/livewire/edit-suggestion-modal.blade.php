@@ -8,7 +8,7 @@
                 {{-- Modal --}}
                 <div class="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title" x-trap.inert.noscroll="true">
                     {{-- Header --}}
-                    <div class="flex items-center justify-between p-6 border-b border-cream-200">
+                    <div class="flex items-center justify-between p-6 border-b border-surface-200">
                         <div>
                             <h3 id="edit-modal-title" class="text-xl font-semibold text-gray-900">Suggest an Edit</h3>
                             @if($peptide)
@@ -32,7 +32,7 @@
                             </div>
                             <h4 class="text-lg font-semibold text-gray-900 mb-2">Thank You!</h4>
                             <p class="text-gray-600 mb-6">Your edit suggestion has been submitted for review. We'll notify you once it's been reviewed.</p>
-                            <button wire:click="close" class="px-6 py-2.5 bg-gold-500 text-white rounded-full font-medium hover:bg-gold-600">
+                            <button wire:click="close" class="px-6 py-2.5 bg-primary-500 text-white rounded-full font-medium hover:bg-primary-600">
                                 Close
                             </button>
                         </div>
@@ -49,7 +49,7 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Section *</label>
-                                <select wire:model.live="section" class="w-full rounded-lg border-cream-200 focus:ring-gold-500 focus:border-gold-500">
+                                <select wire:model.live="section" class="w-full rounded-lg border-surface-200 focus:ring-primary-500 focus:border-primary-500">
                                     <option value="">Select a section...</option>
                                     @foreach($this->getSectionOptions() as $value => $label)
                                         <option value="{{ $value }}">{{ $label }}</option>
@@ -61,7 +61,7 @@
                             @if($section && $originalContent)
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Current Content</label>
-                                    <div class="p-3 bg-cream-100 rounded-lg text-sm text-gray-600 max-h-32 overflow-y-auto">
+                                    <div class="p-3 bg-surface-100 rounded-lg text-sm text-gray-600 max-h-32 overflow-y-auto">
                                         {{ $originalContent }}
                                     </div>
                                 </div>
@@ -69,26 +69,26 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Your Suggested Edit *</label>
-                                <textarea wire:model="newContent" rows="6" class="w-full rounded-lg border-cream-200 focus:ring-gold-500 focus:border-gold-500" placeholder="Enter your suggested content..."></textarea>
+                                <textarea wire:model="newContent" rows="6" class="w-full rounded-lg border-surface-200 focus:ring-primary-500 focus:border-primary-500" placeholder="Enter your suggested content..."></textarea>
                                 @error('newContent') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Reason for Edit (optional)</label>
-                                <textarea wire:model="editReason" rows="2" class="w-full rounded-lg border-cream-200 focus:ring-gold-500 focus:border-gold-500" placeholder="Why should this change be made?"></textarea>
+                                <textarea wire:model="editReason" rows="2" class="w-full rounded-lg border-surface-200 focus:ring-primary-500 focus:border-primary-500" placeholder="Why should this change be made?"></textarea>
                             </div>
 
-                            <div class="bg-cream-100 rounded-lg p-4">
+                            <div class="bg-surface-100 rounded-lg p-4">
                                 <p class="text-sm text-gray-600">
                                     <span class="font-medium">Review process:</span> Your suggestion will be reviewed by our team. Approved edits help keep our information accurate and up-to-date.
                                 </p>
                             </div>
 
                             <div class="flex justify-end gap-3">
-                                <button type="button" wire:click="close" class="px-4 py-2.5 text-gray-700 hover:bg-cream-100 rounded-lg">
+                                <button type="button" wire:click="close" class="px-4 py-2.5 text-gray-700 hover:bg-surface-100 rounded-lg">
                                     Cancel
                                 </button>
-                                <button type="submit" class="px-6 py-2.5 bg-gold-500 text-white rounded-full font-medium hover:bg-gold-600 disabled:opacity-50" wire:loading.attr="disabled" @guest disabled @endguest>
+                                <button type="submit" class="px-6 py-2.5 bg-primary-500 text-white rounded-full font-medium hover:bg-primary-600 disabled:opacity-50" wire:loading.attr="disabled" @guest disabled @endguest>
                                     <span wire:loading.remove>Submit Suggestion</span>
                                     <span wire:loading>Submitting...</span>
                                 </button>

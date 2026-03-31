@@ -62,7 +62,7 @@
             </button>
 
             {{-- Header Gradient --}}
-            <div class="h-2 bg-gradient-to-r from-gold-400 via-gold-500 to-caramel-500"></div>
+            <div class="h-2 bg-gradient-to-r from-primary-400 via-primary-500 to-secondary-500"></div>
 
             <div class="p-8">
                 @if($success)
@@ -76,15 +76,15 @@
                         <h3 class="text-2xl font-bold text-gray-900 mb-2">You're In!</h3>
                         <p class="text-gray-600 mb-6">Check your inbox for the latest peptide research updates.</p>
                         <button @click="dismiss(); localStorage.setItem('emailPopupDismissed', 'true');"
-                                class="px-6 py-3 bg-gold-500 text-white font-medium rounded-xl hover:bg-gold-600 transition-colors">
+                                class="px-6 py-3 bg-primary-500 text-white font-medium rounded-xl hover:bg-primary-600 transition-colors">
                             Continue Browsing
                         </button>
                     </div>
                 @else
                     {{-- Form State --}}
                     <div class="text-center mb-6">
-                        <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gold-100 flex items-center justify-center">
-                            <svg aria-hidden="true" class="w-7 h-7 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-primary-100 flex items-center justify-center">
+                            <svg aria-hidden="true" class="w-7 h-7 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                             </svg>
                         </div>
@@ -98,14 +98,14 @@
                                    wire:model="email"
                                    autocomplete="email"
                                    placeholder="Enter your email"
-                                   class="w-full px-4 py-3 rounded-xl border border-cream-300 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent">
+                                   class="w-full px-4 py-3 rounded-xl border border-surface-300 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                             @error('email')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
                         <button type="submit"
                                 wire:loading.attr="disabled"
-                                class="w-full px-6 py-3 bg-gold-500 text-white font-semibold rounded-xl hover:bg-gold-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+                                class="w-full px-6 py-3 bg-primary-500 text-white font-semibold rounded-xl hover:bg-primary-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
                             <span wire:loading.remove>Subscribe for Free</span>
                             <span wire:loading class="flex items-center gap-2">
                                 <svg aria-hidden="true" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">

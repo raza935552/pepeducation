@@ -3,12 +3,12 @@
     description="Expert insights on peptides, research updates, and educational content from PepProfesor."
 >
     {{-- Hero Section --}}
-    <section class="relative bg-gradient-to-br from-brown-800 via-brown-900 to-brown-950 overflow-hidden">
+    <section class="relative bg-gradient-to-br from-dark-800 via-dark-900 to-dark-950 overflow-hidden">
         <div class="absolute inset-0 opacity-10">
             <svg aria-hidden="true" class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <defs>
                     <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                        <circle cx="1" cy="1" r="0.5" fill="currentColor" class="text-gold-400"/>
+                        <circle cx="1" cy="1" r="0.5" fill="currentColor" class="text-primary-400"/>
                     </pattern>
                 </defs>
                 <rect width="100" height="100" fill="url(#grid)"/>
@@ -18,9 +18,9 @@
         <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
             <div class="text-center max-w-3xl mx-auto">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
-                    The Peptide <span class="text-gold-400">Blog</span>
+                    The Peptide <span class="text-primary-400">Blog</span>
                 </h1>
-                <p class="text-lg text-cream-300 mb-8">
+                <p class="text-lg text-surface-300 mb-8">
                     Expert insights, research updates, and educational content
                 </p>
 
@@ -29,13 +29,13 @@
                     <div class="relative">
                         <input type="text" name="search" value="{{ request('search') }}"
                                placeholder="Search articles..."
-                               class="w-full px-6 py-4 pl-14 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-cream-400 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent text-lg">
+                               class="w-full px-6 py-4 pl-14 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-surface-400 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent text-lg">
                         <div class="absolute left-5 top-1/2 -translate-y-1/2">
-                            <svg aria-hidden="true" class="w-5 h-5 text-cream-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg aria-hidden="true" class="w-5 h-5 text-surface-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                             </svg>
                         </div>
-                        <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 px-5 py-2 bg-gold-500 hover:bg-gold-600 text-white font-medium rounded-xl transition-colors">
+                        <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 px-5 py-2 bg-primary-500 hover:bg-primary-600 text-white font-medium rounded-xl transition-colors">
                             Search
                         </button>
                     </div>
@@ -57,8 +57,8 @@
                                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
                                 </div>
                             @else
-                                <div class="aspect-[16/9] bg-gradient-to-br from-gold-100 to-cream-100 flex items-center justify-center">
-                                    <svg class="w-12 h-12 text-gold-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="aspect-[16/9] bg-gradient-to-br from-primary-100 to-surface-100 flex items-center justify-center">
+                                    <svg class="w-12 h-12 text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
                                     </svg>
                                 </div>
@@ -66,13 +66,13 @@
                         </a>
                         <div class="p-5">
                             <div class="flex items-center gap-2 mb-2">
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gold-100 text-gold-800">Featured</span>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">Featured</span>
                                 @if($featured->categories->isNotEmpty())
                                     <span class="text-xs text-gray-400">&middot;</span>
                                     <span class="text-xs text-gray-500">{{ $featured->categories->first()->name }}</span>
                                 @endif
                             </div>
-                            <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-brown-700 transition-colors">
+                            <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-dark-700 transition-colors">
                                 <a href="{{ route('blog.show', $featured->slug) }}">{{ $featured->title }}</a>
                             </h3>
                             <div class="flex items-center text-xs text-gray-400">
@@ -96,12 +96,12 @@
         <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-8">
             <div class="flex flex-wrap gap-2">
                 <a href="{{ route('blog.index') }}"
-                   class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors {{ !request('category') ? 'bg-brown-800 text-white' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}">
+                   class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors {{ !request('category') ? 'bg-dark-800 text-white' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}">
                     All
                 </a>
                 @foreach($categories as $cat)
                     <a href="{{ route('blog.index', ['category' => $cat->slug]) }}"
-                       class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors {{ request('category') === $cat->slug ? 'bg-brown-800 text-white' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}">
+                       class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors {{ request('category') === $cat->slug ? 'bg-dark-800 text-white' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}">
                         <span class="w-2 h-2 rounded-full mr-2" style="background-color: {{ $cat->color }}"></span>
                         {{ $cat->name }}
                         <span class="ml-1.5 text-xs opacity-60">{{ $cat->posts_count }}</span>
@@ -116,7 +116,7 @@
         @if(request('search'))
             <p class="text-gray-500 mb-6">
                 {{ $posts->total() }} result{{ $posts->total() !== 1 ? 's' : '' }} for "<strong>{{ request('search') }}</strong>"
-                <a href="{{ route('blog.index') }}" class="text-brown-600 hover:underline ml-2">Clear</a>
+                <a href="{{ route('blog.index') }}" class="text-dark-600 hover:underline ml-2">Clear</a>
             </p>
         @endif
 

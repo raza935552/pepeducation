@@ -1,5 +1,5 @@
 <x-account-layout>
-    <div class="bg-white rounded-xl shadow-sm border border-cream-200 p-6">
+    <div class="bg-white rounded-xl shadow-sm border border-surface-200 p-6">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-lg font-semibold text-gray-900">
                 Saved Peptides
@@ -10,9 +10,9 @@
         @if($bookmarks->count() > 0)
             <div class="space-y-3">
                 @foreach($bookmarks as $bookmark)
-                    <div class="flex items-center justify-between p-4 bg-cream-50 rounded-xl hover:bg-cream-100 transition-colors">
+                    <div class="flex items-center justify-between p-4 bg-surface-50 rounded-xl hover:bg-surface-100 transition-colors">
                         <a href="{{ route('peptides.show', $bookmark->peptide) }}" class="flex items-center gap-4 flex-1">
-                            <span class="text-xs font-mono bg-gold-100 text-gold-700 px-2.5 py-1 rounded-lg">
+                            <span class="text-xs font-mono bg-primary-100 text-primary-700 px-2.5 py-1 rounded-lg">
                                 {{ $bookmark->peptide->abbreviation ?? 'N/A' }}
                             </span>
                             <div>
@@ -45,14 +45,14 @@
         @else
             {{-- Empty State --}}
             <div class="text-center py-12">
-                <div class="w-16 h-16 bg-cream-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg aria-hidden="true" class="w-8 h-8 text-cream-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-16 h-16 bg-surface-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg aria-hidden="true" class="w-8 h-8 text-surface-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
                     </svg>
                 </div>
                 <h3 class="text-lg font-medium text-gray-900 mb-2">No bookmarks yet</h3>
                 <p class="text-gray-500 mb-6">Browse peptides and bookmark the ones you're interested in</p>
-                <a href="{{ route('peptides.index') }}" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gold-500 text-white rounded-full font-medium text-sm hover:bg-gold-600 transition-colors">
+                <a href="{{ route('peptides.index') }}" class="inline-flex items-center gap-2 px-6 py-2.5 bg-primary-500 text-white rounded-full font-medium text-sm hover:bg-primary-600 transition-colors">
                     Browse Peptides
                     <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>

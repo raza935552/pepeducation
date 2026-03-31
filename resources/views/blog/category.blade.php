@@ -3,10 +3,10 @@
     description="{{ $category->description ?? 'Browse articles in ' . $category->name }}"
 >
     {{-- Header --}}
-    <section class="bg-gradient-to-br from-brown-800 via-brown-900 to-brown-950">
+    <section class="bg-gradient-to-br from-dark-800 via-dark-900 to-dark-950">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
             <div class="max-w-3xl">
-                <nav class="flex items-center gap-2 text-sm text-cream-400 mb-4">
+                <nav class="flex items-center gap-2 text-sm text-surface-400 mb-4">
                     <a href="{{ route('blog.index') }}" class="hover:text-white transition-colors">Blog</a>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -18,7 +18,7 @@
                     {{ $category->name }}
                 </h1>
                 @if($category->description)
-                    <p class="text-lg text-cream-300">{{ $category->description }}</p>
+                    <p class="text-lg text-surface-300">{{ $category->description }}</p>
                 @endif
             </div>
         </div>

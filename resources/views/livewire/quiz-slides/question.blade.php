@@ -36,7 +36,7 @@
                 type="text"
                 x-model="search"
                 placeholder="Search options..."
-                class="w-full pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none"
+                class="w-full pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
                 style="padding-left: 2.5rem"
             />
         </div>
@@ -59,12 +59,12 @@
                     @if($showSearch) x-show="!search || '{{ strtolower(addslashes($optionLabel)) }}'.includes(search.toLowerCase())" @endif
                     class="w-full text-left p-4 rounded-lg border-2 transition-all flex items-center gap-3
                         {{ in_array($optionKey, $multiSelections)
-                            ? 'border-brand-gold bg-brand-gold/10'
-                            : ($atLimit ? 'border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed' : 'border-gray-200 hover:border-brand-gold/50 hover:bg-gray-50') }}"
+                            ? 'border-primary bg-primary/10'
+                            : ($atLimit ? 'border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed' : 'border-gray-200 hover:border-primary/50 hover:bg-gray-50') }}"
                 >
                     <span class="flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center
                         {{ in_array($optionKey, $multiSelections)
-                            ? 'border-brand-gold bg-brand-gold'
+                            ? 'border-primary bg-primary'
                             : 'border-gray-300' }}">
                         @if(in_array($optionKey, $multiSelections))
                             <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -88,8 +88,8 @@
                     @if($showSearch) x-show="!search || '{{ strtolower(addslashes($optionLabel)) }}'.includes(search.toLowerCase())" @endif
                     class="w-full text-left p-4 rounded-lg border-2 transition-all
                         {{ isset($answers[$currentStep]) && ($answers[$currentStep]['option_id'] ?? '') === $optionKey
-                            ? 'border-brand-gold bg-brand-gold/10'
-                            : 'border-gray-200 hover:border-brand-gold/50 hover:bg-gray-50' }}"
+                            ? 'border-primary bg-primary/10'
+                            : 'border-gray-200 hover:border-primary/50 hover:bg-gray-50' }}"
                 >
                     <span class="font-medium">{{ $optionLabel }}</span>
                     @if(!empty($option['subtext']))
@@ -112,7 +112,7 @@
                 wire:click="submitMultipleAnswer"
                 wire:loading.attr="disabled"
                 @if(empty($multiSelections)) disabled @endif
-                class="btn {{ empty($multiSelections) ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-brand-gold text-white hover:bg-brand-gold/90' }} disabled:opacity-50"
+                class="btn {{ empty($multiSelections) ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-primary text-white hover:bg-primary/90' }} disabled:opacity-50"
             >
                 <span wire:loading.remove wire:target="submitMultipleAnswer">Continue</span>
                 <span wire:loading wire:target="submitMultipleAnswer">Saving...</span>
@@ -126,7 +126,7 @@
     @if(!empty($this->currentSlide['cta_text']))
         <div class="text-center mt-6">
             @if(!empty($this->currentSlide['cta_url']))
-                <a href="{{ $this->currentSlide['cta_url'] }}" target="_blank" rel="noopener noreferrer" class="text-sm text-brand-gold hover:underline">
+                <a href="{{ $this->currentSlide['cta_url'] }}" target="_blank" rel="noopener noreferrer" class="text-sm text-primary hover:underline">
                     {{ $this->currentSlide['cta_text'] }}
                 </a>
             @endif

@@ -2,7 +2,7 @@
     <x-slot:title>{{ $quiz->title }}</x-slot:title>
     <x-slot:description>{{ $quiz->description }}</x-slot:description>
 
-    <div class="min-h-screen bg-gradient-to-b from-cream-50 to-white py-12 px-4">
+    <div class="min-h-screen bg-gradient-to-b from-surface-50 to-white py-12 px-4">
         <div class="max-w-2xl mx-auto">
             <!-- Quiz Header -->
             <div class="text-center mb-8">

@@ -1,6 +1,6 @@
 <x-account-layout>
     <div class="space-y-6">
-        <div class="bg-white rounded-xl shadow-sm border border-cream-200 p-6">
+        <div class="bg-white rounded-xl shadow-sm border border-surface-200 p-6">
             <div class="flex items-center justify-between mb-6">
                 <div>
                     <h2 class="text-lg font-semibold text-gray-900">Your Contributions</h2>
@@ -11,14 +11,14 @@
 
             @if($contributions->isEmpty())
                 <div class="text-center py-12">
-                    <div class="w-16 h-16 bg-cream-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div class="w-16 h-16 bg-surface-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <svg aria-hidden="true" class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                         </svg>
                     </div>
                     <h3 class="text-lg font-medium text-gray-900 mb-2">No contributions yet</h3>
                     <p class="text-gray-500 mb-6">Help improve our peptide information by suggesting edits.</p>
-                    <a href="{{ route('peptides.index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-gold-500 text-white rounded-full font-medium hover:bg-gold-600 transition-colors">
+                    <a href="{{ route('peptides.index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-primary-500 text-white rounded-full font-medium hover:bg-primary-600 transition-colors">
                         Browse Peptides
                         <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
@@ -29,11 +29,11 @@
                 <div class="space-y-4">
                     @foreach($contributions as $contribution)
                         @php $badge = $contribution->status_badge; @endphp
-                        <div class="border border-cream-200 rounded-lg p-4 hover:border-gold-300 transition-colors">
+                        <div class="border border-surface-200 rounded-lg p-4 hover:border-primary-300 transition-colors">
                             <div class="flex items-start justify-between gap-4">
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center gap-2 mb-1">
-                                        <a href="{{ route('peptides.show', $contribution->peptide) }}" class="font-medium text-gray-900 hover:text-gold-600">
+                                        <a href="{{ route('peptides.show', $contribution->peptide) }}" class="font-medium text-gray-900 hover:text-primary-600">
                                             {{ $contribution->peptide->name }}
                                         </a>
                                         <span class="text-gray-400">·</span>
@@ -73,7 +73,7 @@
         </div>
 
         {{-- Status Legend --}}
-        <div class="bg-cream-100 rounded-xl p-4">
+        <div class="bg-surface-100 rounded-xl p-4">
             <h4 class="text-sm font-medium text-gray-900 mb-3">Status Guide</h4>
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
                 <div class="flex items-center gap-2">

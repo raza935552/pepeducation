@@ -1,12 +1,12 @@
 <x-public-layout>
     <x-slot name="title">{{ $leadMagnet->landing_headline ?? $leadMagnet->name }}</x-slot>
 
-    <div class="min-h-screen bg-gradient-to-b from-cream-100 to-cream-50">
+    <div class="min-h-screen bg-gradient-to-b from-surface-100 to-surface-50">
         <!-- Hero Section -->
-        <div class="bg-gradient-to-br from-brown-800 to-brown-900 text-white py-16">
+        <div class="bg-gradient-to-br from-dark-800 to-dark-900 text-white py-16">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 @if($leadMagnet->segment && $leadMagnet->segment !== 'all')
-                    <span class="inline-block px-3 py-1 bg-gold-500/20 text-gold-400 text-sm font-medium rounded-full mb-4">
+                    <span class="inline-block px-3 py-1 bg-primary-500/20 text-primary-400 text-sm font-medium rounded-full mb-4">
                         FREE {{ strtoupper($leadMagnet->file_type ?? 'PDF') }}
                     </span>
                 @endif
@@ -39,12 +39,12 @@
                              loading="lazy"
                              class="w-full rounded-lg shadow-lg">
                     @else
-                        <div class="aspect-[3/4] bg-gradient-to-br from-gold-100 to-gold-200 rounded-lg flex items-center justify-center">
+                        <div class="aspect-[3/4] bg-gradient-to-br from-primary-100 to-primary-200 rounded-lg flex items-center justify-center">
                             <div class="text-center p-8">
-                                <svg aria-hidden="true" class="w-20 h-20 mx-auto text-gold-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg aria-hidden="true" class="w-20 h-20 mx-auto text-primary-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                                 </svg>
-                                <span class="text-gold-700 font-bold text-xl">{{ strtoupper($leadMagnet->file_type ?? 'PDF') }}</span>
+                                <span class="text-primary-700 font-bold text-xl">{{ strtoupper($leadMagnet->file_type ?? 'PDF') }}</span>
                             </div>
                         </div>
                     @endif

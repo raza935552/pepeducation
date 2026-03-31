@@ -11,7 +11,7 @@
 
     <div class="space-y-3">
         @foreach($peptide->what_to_expect as $index => $expectation)
-            <div class="bg-cream-50 rounded-xl p-4">
+            <div class="bg-surface-50 rounded-xl p-4">
                 <p class="text-gray-700">{{ $expectation }}</p>
             </div>
         @endforeach
