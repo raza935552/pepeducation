@@ -42,8 +42,8 @@
         <script>window.__ppConsentRequired = true;</script>
     @endif
 
-    <x-theme-variables />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <x-theme-variables />
 
     @livewireStyles
     @stack('head')
