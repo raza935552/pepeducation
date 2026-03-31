@@ -194,6 +194,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Settings (Integrations)
     Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::post('settings', [SettingsController::class, 'update'])->name('settings.update');
+    Route::get('settings/theme', [\App\Http\Controllers\Admin\ThemeController::class, 'edit'])->name('settings.theme');
+    Route::put('settings/theme', [\App\Http\Controllers\Admin\ThemeController::class, 'update'])->name('settings.theme.update');
+    Route::post('settings/theme/reset', [\App\Http\Controllers\Admin\ThemeController::class, 'resetDefaults'])->name('settings.theme.reset');
     Route::get('settings/customerio', [\App\Http\Controllers\Admin\CustomerIoSettingController::class, 'edit'])->name('settings.customerio');
     Route::put('settings/customerio', [\App\Http\Controllers\Admin\CustomerIoSettingController::class, 'update'])->name('settings.customerio.update');
     Route::post('settings/customerio/test', [\App\Http\Controllers\Admin\CustomerIoSettingController::class, 'test'])->name('settings.customerio.test');

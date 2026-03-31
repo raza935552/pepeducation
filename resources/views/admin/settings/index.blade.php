@@ -62,6 +62,26 @@
             </div>
         </div>
 
+        <!-- Theme & Colors -->
+        <div class="card p-6 border-l-4 border-purple-400">
+            <h3 class="text-lg font-semibold mb-1 flex items-center gap-2">
+                <svg aria-hidden="true" class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+                </svg>
+                Theme & Colors
+            </h3>
+            <p class="text-sm text-gray-500 mb-4">Customize your site's master color palette. Changes apply globally across all pages.</p>
+            @php $themeColors = \App\Services\ThemeService::getThemeColors(); @endphp
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-1.5">
+                    @foreach($themeColors as $key => $hex)
+                        <div class="w-7 h-7 rounded-full border border-gray-200 shadow-sm" style="background-color: {{ $hex }}" title="{{ ucfirst($key) }}: {{ $hex }}"></div>
+                    @endforeach
+                </div>
+                <a href="{{ route('admin.settings.theme') }}" class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium">Configure Theme</a>
+            </div>
+        </div>
+
         <!-- Customer.io Integration -->
         <div class="card p-6 border-l-4 border-green-400">
             <h3 class="text-lg font-semibold mb-1 flex items-center gap-2">
