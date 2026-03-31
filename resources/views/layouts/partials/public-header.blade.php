@@ -25,10 +25,12 @@
                    class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('stack-builder*') ? 'text-primary-600 bg-primary/10' : 'text-gray-600 hover:text-primary-600 hover:bg-surface-200' }} transition-colors">
                     Stack Builder
                 </a>
+                {{-- Pep Guide link — uncomment when route is created
                 <a href="{{ route('pep-guide') }}"
                    class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('pep-guide') ? 'text-primary-600 bg-primary/10' : 'text-gray-600 hover:text-primary-600 hover:bg-surface-200' }} transition-colors">
                     Pep Guide
                 </a>
+                --}}
                 <button type="button"
                         onclick="Livewire.dispatch('openPeptideRequestModal')"
                         class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-primary-600 hover:bg-surface-200 transition-colors">
@@ -152,10 +154,12 @@
                class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('stack-builder*') ? 'text-primary-600 bg-primary/10' : 'text-gray-700 hover:bg-surface-200' }} transition-colors">
                 Stack Builder
             </a>
+            {{-- Pep Guide link — uncomment when route is created
             <a href="{{ route('pep-guide') }}"
                class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('pep-guide') ? 'text-primary-600 bg-primary/10' : 'text-gray-700 hover:bg-surface-200' }} transition-colors">
                 Pep Guide
             </a>
+            --}}
             <button type="button"
                     onclick="Livewire.dispatch('openPeptideRequestModal'); mobileOpen = false;"
                     class="block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-gray-700 hover:bg-surface-200 transition-colors">
