@@ -82,6 +82,23 @@
         --dark-800: 42 37 32;
         --dark-900: 26 23 20;
         --dark-950: 15 13 11;
+
+        /* Section-specific flat colors */
+        --header-bg: 245 241 235;
+        --header-text: 154 123 79;
+        --nav-link: 75 85 99;
+        --nav-active: 122 95 61;
+        --btn-primary-bg: 31 41 55;
+        --btn-primary-text: 255 255 255;
+        --btn-accent-bg: 154 123 79;
+        --btn-accent-text: 255 255 255;
+        --link-color: 154 123 79;
+        --link-hover: 122 95 61;
+        --footer-bg: 26 23 20;
+        --footer-text: 184 176 165;
+        --footer-heading: 245 241 235;
+        --footer-link: 184 176 165;
+        --footer-link-hover: 154 123 79;
     }
 
     html {
@@ -99,7 +116,7 @@
     }
 
     .btn-primary {
-        @apply bg-gray-900 dark:bg-surface-100 text-white dark:text-dark-900 hover:bg-gray-800 dark:hover:bg-surface-200 focus:ring-primary;
+        @apply bg-btn-primary-bg text-btn-primary-text hover:opacity-90 focus:ring-primary;
     }
 
     .btn-secondary {
@@ -107,7 +124,7 @@
     }
 
     .btn-gold, .btn-accent {
-        @apply bg-primary text-white hover:bg-primary-600 focus:ring-primary;
+        @apply bg-btn-accent-bg text-btn-accent-text hover:opacity-90 focus:ring-primary;
     }
 
     .btn-outline {

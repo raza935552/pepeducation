@@ -90,6 +90,23 @@ export default {
                 // Flat semantic colors
                 heading: 'rgb(var(--heading) / <alpha-value>)',
                 body: 'rgb(var(--text) / <alpha-value>)',
+
+                // Section-specific overrides (flat, no shades)
+                'header-bg':     'rgb(var(--header-bg) / <alpha-value>)',
+                'header-text':   'rgb(var(--header-text) / <alpha-value>)',
+                'nav-link':      'rgb(var(--nav-link) / <alpha-value>)',
+                'nav-active':    'rgb(var(--nav-active) / <alpha-value>)',
+                'btn-primary-bg':   'rgb(var(--btn-primary-bg) / <alpha-value>)',
+                'btn-primary-text': 'rgb(var(--btn-primary-text) / <alpha-value>)',
+                'btn-accent-bg':    'rgb(var(--btn-accent-bg) / <alpha-value>)',
+                'btn-accent-text':  'rgb(var(--btn-accent-text) / <alpha-value>)',
+                'link':          'rgb(var(--link-color) / <alpha-value>)',
+                'link-hover':    'rgb(var(--link-hover) / <alpha-value>)',
+                'footer-bg':     'rgb(var(--footer-bg) / <alpha-value>)',
+                'footer-text':   'rgb(var(--footer-text) / <alpha-value>)',
+                'footer-heading':'rgb(var(--footer-heading) / <alpha-value>)',
+                'footer-link':   'rgb(var(--footer-link) / <alpha-value>)',
+                'footer-link-hover': 'rgb(var(--footer-link-hover) / <alpha-value>)',
             },
             fontFamily: {
                 sans: ['Inter', 'Figtree', ...defaultTheme.fontFamily.sans],

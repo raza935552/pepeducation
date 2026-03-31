@@ -19,14 +19,11 @@ class ThemeController extends Controller
 
     public function update(Request $request)
     {
-        $validated = $request->validate([
-            'primary'   => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
-            'secondary' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
-            'bg'        => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
-            'heading'   => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
-            'text'      => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
-            'dark'      => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
-        ]);
+        $rules = [];
+        foreach (array_keys(ThemeService::DEFAULTS) as $key) {
+            $rules[$key] = 'required|string|regex:/^#[0-9A-Fa-f]{6}$/';
+        }
+        $validated = $request->validate($rules);
 
         foreach ($validated as $key => $value) {
             Setting::setValue('theme', $key, $value);

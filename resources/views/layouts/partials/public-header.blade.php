@@ -1,44 +1,44 @@
-<header class="sticky top-0 z-50 bg-surface-100/90 backdrop-blur-md border-b border-surface-200" x-data="{ mobileOpen: false }">
+<header class="sticky top-0 z-50 bg-header-bg/90 backdrop-blur-md border-b border-surface-200" x-data="{ mobileOpen: false }">
     <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
             {{-- Logo --}}
             <a href="{{ url('/') }}" class="flex items-center gap-1">
-                <span class="text-xl font-bold text-primary">Professor</span>
+                <span class="text-xl font-bold text-header-text">Professor</span>
                 <span class="text-xl font-bold text-gray-900">Peptides</span>
             </a>
 
             {{-- Desktop Navigation --}}
             <div class="hidden md:flex items-center gap-1">
                 <a href="{{ url('/') }}"
-                   class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->is('/') ? 'text-primary-600 bg-primary/10' : 'text-gray-600 hover:text-primary-600 hover:bg-surface-200' }} transition-colors focus:outline-none focus:ring-2 focus:ring-primary">
+                   class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->is('/') ? 'text-nav-active bg-nav-active/10' : 'text-gray-600 hover:text-nav-active hover:bg-surface-200' }} transition-colors focus:outline-none focus:ring-2 focus:ring-primary">
                     Home
                 </a>
                 <a href="{{ route('peptides.index') }}"
-                   class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('peptides.*') ? 'text-primary-600 bg-primary/10' : 'text-gray-600 hover:text-primary-600 hover:bg-surface-200' }} transition-colors">
+                   class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('peptides.*') ? 'text-nav-active bg-nav-active/10' : 'text-gray-600 hover:text-nav-active hover:bg-surface-200' }} transition-colors">
                     Browse
                 </a>
                 <a href="{{ route('calculator') }}"
-                   class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('calculator') ? 'text-primary-600 bg-primary/10' : 'text-gray-600 hover:text-primary-600 hover:bg-surface-200' }} transition-colors">
+                   class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('calculator') ? 'text-nav-active bg-nav-active/10' : 'text-gray-600 hover:text-nav-active hover:bg-surface-200' }} transition-colors">
                     Calculator
                 </a>
                 <a href="{{ route('stack-builder') }}"
-                   class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('stack-builder*') ? 'text-primary-600 bg-primary/10' : 'text-gray-600 hover:text-primary-600 hover:bg-surface-200' }} transition-colors">
+                   class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('stack-builder*') ? 'text-nav-active bg-nav-active/10' : 'text-gray-600 hover:text-nav-active hover:bg-surface-200' }} transition-colors">
                     Stack Builder
                 </a>
                 {{-- Pep Guide link — uncomment when route is created
                 <a href="{{ route('pep-guide') }}"
-                   class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('pep-guide') ? 'text-primary-600 bg-primary/10' : 'text-gray-600 hover:text-primary-600 hover:bg-surface-200' }} transition-colors">
+                   class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('pep-guide') ? 'text-nav-active bg-nav-active/10' : 'text-gray-600 hover:text-nav-active hover:bg-surface-200' }} transition-colors">
                     Pep Guide
                 </a>
                 --}}
                 <button type="button"
                         onclick="Livewire.dispatch('openPeptideRequestModal')"
-                        class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-primary-600 hover:bg-surface-200 transition-colors">
+                        class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-nav-active hover:bg-surface-200 transition-colors">
                     Request Peptide
                 </button>
                 <button type="button"
                         onclick="Livewire.dispatch('openContactModal')"
-                        class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-primary-600 hover:bg-surface-200 transition-colors">
+                        class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-nav-active hover:bg-surface-200 transition-colors">
                     Contact
                 </button>
             </div>
@@ -139,24 +139,24 @@
          class="md:hidden border-t border-surface-200 bg-surface-50">
         <div class="px-4 py-3 space-y-1">
             <a href="{{ url('/') }}"
-               class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->is('/') ? 'text-primary-600 bg-primary/10' : 'text-gray-700 hover:bg-surface-200' }} transition-colors">
+               class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->is('/') ? 'text-nav-active bg-nav-active/10' : 'text-gray-700 hover:bg-surface-200' }} transition-colors">
                 Home
             </a>
             <a href="{{ route('peptides.index') }}"
-               class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('peptides.*') ? 'text-primary-600 bg-primary/10' : 'text-gray-700 hover:bg-surface-200' }} transition-colors">
+               class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('peptides.*') ? 'text-nav-active bg-nav-active/10' : 'text-gray-700 hover:bg-surface-200' }} transition-colors">
                 Browse Peptides
             </a>
             <a href="{{ route('calculator') }}"
-               class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('calculator') ? 'text-primary-600 bg-primary/10' : 'text-gray-700 hover:bg-surface-200' }} transition-colors">
+               class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('calculator') ? 'text-nav-active bg-nav-active/10' : 'text-gray-700 hover:bg-surface-200' }} transition-colors">
                 Calculator
             </a>
             <a href="{{ route('stack-builder') }}"
-               class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('stack-builder*') ? 'text-primary-600 bg-primary/10' : 'text-gray-700 hover:bg-surface-200' }} transition-colors">
+               class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('stack-builder*') ? 'text-nav-active bg-nav-active/10' : 'text-gray-700 hover:bg-surface-200' }} transition-colors">
                 Stack Builder
             </a>
             {{-- Pep Guide link — uncomment when route is created
             <a href="{{ route('pep-guide') }}"
-               class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('pep-guide') ? 'text-primary-600 bg-primary/10' : 'text-gray-700 hover:bg-surface-200' }} transition-colors">
+               class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('pep-guide') ? 'text-nav-active bg-nav-active/10' : 'text-gray-700 hover:bg-surface-200' }} transition-colors">
                 Pep Guide
             </a>
             --}}

@@ -8,12 +8,78 @@ use Illuminate\Support\Facades\Cache;
 class ThemeService
 {
     public const DEFAULTS = [
+        // Global
         'primary'   => '#9A7B4F',
         'secondary' => '#A67B5B',
         'bg'        => '#FDFCFA',
         'heading'   => '#1A1714',
         'text'      => '#4A433C',
         'dark'      => '#1A1714',
+        // Header
+        'header_bg'          => '#F5F1EB',
+        'header_text'        => '#9A7B4F',
+        'nav_link'           => '#4B5563',
+        'nav_active'         => '#7A5F3D',
+        // Buttons
+        'btn_primary_bg'     => '#1F2937',
+        'btn_primary_text'   => '#FFFFFF',
+        'btn_accent_bg'      => '#9A7B4F',
+        'btn_accent_text'    => '#FFFFFF',
+        // Links
+        'link_color'         => '#9A7B4F',
+        'link_hover'         => '#7A5F3D',
+        // Footer
+        'footer_bg'          => '#1A1714',
+        'footer_text'        => '#B8B0A5',
+        'footer_heading'     => '#F5F1EB',
+        'footer_link'        => '#B8B0A5',
+        'footer_link_hover'  => '#9A7B4F',
+    ];
+
+    /** Keys that get full shade scales generated */
+    public const SHADE_KEYS = ['primary', 'secondary', 'bg', 'heading', 'text', 'dark'];
+
+    /** Keys that are flat (single color, no shades) */
+    public const FLAT_KEYS = [
+        'header_bg', 'header_text', 'nav_link', 'nav_active',
+        'btn_primary_bg', 'btn_primary_text', 'btn_accent_bg', 'btn_accent_text',
+        'link_color', 'link_hover',
+        'footer_bg', 'footer_text', 'footer_heading', 'footer_link', 'footer_link_hover',
+    ];
+
+    /** Section grouping for admin UI */
+    public const SECTIONS = [
+        'Global Colors' => [
+            'primary'   => ['label' => 'Primary Color', 'desc' => 'Main brand color — used for accents, badges, focus rings'],
+            'secondary' => ['label' => 'Secondary Color', 'desc' => 'Gradients, secondary accents'],
+            'bg'        => ['label' => 'Page Background', 'desc' => 'Body background, card surfaces'],
+            'heading'   => ['label' => 'Heading Color', 'desc' => 'h1-h6, section titles'],
+            'text'      => ['label' => 'Body Text Color', 'desc' => 'Paragraphs, descriptions, muted text'],
+            'dark'      => ['label' => 'Dark Section Color', 'desc' => 'Dark section backgrounds'],
+        ],
+        'Header & Navigation' => [
+            'header_bg'   => ['label' => 'Header Background', 'desc' => 'Top navigation bar background'],
+            'header_text' => ['label' => 'Logo / Brand Color', 'desc' => 'Site logo text color'],
+            'nav_link'    => ['label' => 'Navigation Links', 'desc' => 'Inactive nav link text color'],
+            'nav_active'  => ['label' => 'Active Navigation', 'desc' => 'Currently active page link color'],
+        ],
+        'Buttons' => [
+            'btn_primary_bg'   => ['label' => 'Primary Button BG', 'desc' => 'Main CTA button background (Get Started, etc.)'],
+            'btn_primary_text' => ['label' => 'Primary Button Text', 'desc' => 'Text color on primary buttons'],
+            'btn_accent_bg'    => ['label' => 'Accent Button BG', 'desc' => 'Secondary CTA background (Learn More, etc.)'],
+            'btn_accent_text'  => ['label' => 'Accent Button Text', 'desc' => 'Text color on accent buttons'],
+        ],
+        'Links' => [
+            'link_color' => ['label' => 'Link Color', 'desc' => 'Default link text color throughout the site'],
+            'link_hover' => ['label' => 'Link Hover Color', 'desc' => 'Link color on mouse hover'],
+        ],
+        'Footer' => [
+            'footer_bg'         => ['label' => 'Footer Background', 'desc' => 'Footer section background color'],
+            'footer_text'       => ['label' => 'Footer Text', 'desc' => 'Footer paragraph and description text'],
+            'footer_heading'    => ['label' => 'Footer Headings', 'desc' => 'Footer section heading text (Quick Links, etc.)'],
+            'footer_link'       => ['label' => 'Footer Links', 'desc' => 'Footer link text color'],
+            'footer_link_hover' => ['label' => 'Footer Link Hover', 'desc' => 'Footer link color on hover'],
+        ],
     ];
 
     protected const SHADE_LIGHTNESS = [
@@ -55,17 +121,24 @@ class ThemeService
             $colors = self::getThemeColors();
             $lines = [];
 
-            foreach ($colors as $name => $hex) {
+            // Shade-based colors (primary, secondary, bg, heading, text, dark)
+            foreach (self::SHADE_KEYS as $name) {
+                $hex = $colors[$name] ?? self::DEFAULTS[$name];
                 $rgb = self::hexToRgb($hex);
                 $shades = self::generateShades($hex);
 
-                // The DEFAULT shade (used as --primary, --secondary, etc.)
                 $lines[] = "  --{$name}: {$rgb[0]} {$rgb[1]} {$rgb[2]};";
-
-                // All numbered shades
                 foreach ($shades as $shade => $shadeRgb) {
                     $lines[] = "  --{$name}-{$shade}: {$shadeRgb[0]} {$shadeRgb[1]} {$shadeRgb[2]};";
                 }
+            }
+
+            // Flat colors (header, buttons, links, footer — no shade generation)
+            foreach (self::FLAT_KEYS as $name) {
+                $hex = $colors[$name] ?? self::DEFAULTS[$name];
+                $rgb = self::hexToRgb($hex);
+                $cssName = str_replace('_', '-', $name);
+                $lines[] = "  --{$cssName}: {$rgb[0]} {$rgb[1]} {$rgb[2]};";
             }
 
             return ":root {\n" . implode("\n", $lines) . "\n}";

@@ -1,4 +1,4 @@
-<footer class="bg-dark-900">
+<footer class="bg-footer-bg">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
             {{-- Brand & Newsletter --}}
@@ -7,7 +7,7 @@
                     <span class="text-xl font-bold text-primary-400">Pep</span>
                     <span class="text-xl font-bold text-surface-100">Profesor</span>
                 </a>
-                <p class="text-sm text-surface-400 leading-relaxed mb-6">
+                <p class="text-sm text-footer-text leading-relaxed mb-6">
                     AI-curated from research and clinical sources, reviewed by the community. Educational content only.
                 </p>
                 {{-- Mini Newsletter --}}
@@ -18,27 +18,27 @@
 
             {{-- Quick Links --}}
             <div>
-                <h3 class="text-sm font-semibold text-surface-100 uppercase tracking-wider mb-4">
+                <h3 class="text-sm font-semibold text-footer-heading uppercase tracking-wider mb-4">
                     Quick Links
                 </h3>
                 <ul class="space-y-3">
                     <li>
-                        <a href="{{ route('peptides.index') }}" class="text-sm text-surface-400 hover:text-primary-400 transition-colors">
+                        <a href="{{ route('peptides.index') }}" class="text-sm text-footer-link hover:text-footer-link-hover transition-colors">
                             Browse Peptides
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('calculator') }}" class="text-sm text-surface-400 hover:text-primary-400 transition-colors">
+                        <a href="{{ route('calculator') }}" class="text-sm text-footer-link hover:text-footer-link-hover transition-colors">
                             Calculator
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('about') }}" class="text-sm text-surface-400 hover:text-primary-400 transition-colors">
+                        <a href="{{ route('about') }}" class="text-sm text-footer-link hover:text-footer-link-hover transition-colors">
                             About Us
                         </a>
                     </li>
                     <li>
-                        <button onclick="Livewire.dispatch('openContactModal')" class="text-sm text-surface-400 hover:text-primary-400 transition-colors">
+                        <button onclick="Livewire.dispatch('openContactModal')" class="text-sm text-footer-link hover:text-footer-link-hover transition-colors">
                             Contact Us
                         </button>
                     </li>
@@ -47,27 +47,27 @@
 
             {{-- Categories --}}
             <div>
-                <h3 class="text-sm font-semibold text-surface-100 uppercase tracking-wider mb-4">
+                <h3 class="text-sm font-semibold text-footer-heading uppercase tracking-wider mb-4">
                     Categories
                 </h3>
                 <ul class="space-y-3">
                     <li>
-                        <a href="{{ route('peptides.index', ['category' => 'wound-healing']) }}" class="text-sm text-surface-400 hover:text-primary-400 transition-colors">
+                        <a href="{{ route('peptides.index', ['category' => 'wound-healing']) }}" class="text-sm text-footer-link hover:text-footer-link-hover transition-colors">
                             Wound Healing
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('peptides.index', ['category' => 'weight-loss']) }}" class="text-sm text-surface-400 hover:text-primary-400 transition-colors">
+                        <a href="{{ route('peptides.index', ['category' => 'weight-loss']) }}" class="text-sm text-footer-link hover:text-footer-link-hover transition-colors">
                             Weight Loss
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('peptides.index', ['category' => 'anti-aging']) }}" class="text-sm text-surface-400 hover:text-primary-400 transition-colors">
+                        <a href="{{ route('peptides.index', ['category' => 'anti-aging']) }}" class="text-sm text-footer-link hover:text-footer-link-hover transition-colors">
                             Anti-Aging
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('peptides.index', ['category' => 'cognitive-enhancement']) }}" class="text-sm text-surface-400 hover:text-primary-400 transition-colors">
+                        <a href="{{ route('peptides.index', ['category' => 'cognitive-enhancement']) }}" class="text-sm text-footer-link hover:text-footer-link-hover transition-colors">
                             Cognitive
                         </a>
                     </li>
@@ -76,27 +76,27 @@
 
             {{-- Legal --}}
             <div>
-                <h3 class="text-sm font-semibold text-surface-100 uppercase tracking-wider mb-4">
+                <h3 class="text-sm font-semibold text-footer-heading uppercase tracking-wider mb-4">
                     Legal
                 </h3>
                 <ul class="space-y-3">
                     <li>
-                        <a href="{{ route('privacy') }}" class="text-sm text-surface-400 hover:text-primary-400 transition-colors">
+                        <a href="{{ route('privacy') }}" class="text-sm text-footer-link hover:text-footer-link-hover transition-colors">
                             Privacy Policy
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('terms') }}" class="text-sm text-surface-400 hover:text-primary-400 transition-colors">
+                        <a href="{{ route('terms') }}" class="text-sm text-footer-link hover:text-footer-link-hover transition-colors">
                             Terms of Service
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('disclaimer') }}" class="text-sm text-surface-400 hover:text-primary-400 transition-colors">
+                        <a href="{{ route('disclaimer') }}" class="text-sm text-footer-link hover:text-footer-link-hover transition-colors">
                             Disclaimer
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('faq') }}" class="text-sm text-surface-400 hover:text-primary-400 transition-colors">
+                        <a href="{{ route('faq') }}" class="text-sm text-footer-link hover:text-footer-link-hover transition-colors">
                             FAQ
                         </a>
                     </li>
@@ -109,7 +109,7 @@
         @if($supporters->isNotEmpty())
             <div class="mt-12 pt-8 border-t border-dark-700">
                 <div class="text-center mb-6">
-                    <h3 class="text-sm font-semibold text-surface-100 uppercase tracking-wider mb-2">Our Supporters</h3>
+                    <h3 class="text-sm font-semibold text-footer-heading uppercase tracking-wider mb-2">Our Supporters</h3>
                     <p class="text-xs text-surface-500">Thank you to our generous supporters</p>
                 </div>
                 <div class="flex flex-wrap items-center justify-center gap-6 lg:gap-8">
@@ -147,7 +147,7 @@
         {{-- Bottom Bar --}}
         <div class="mt-12 pt-8 border-t border-dark-700">
             <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-                <p class="text-sm text-surface-500">
+                <p class="text-sm text-footer-text">
                     &copy; {{ date('Y') }} PepProfesor. For educational and research purposes only.
                 </p>
                 {{-- Social links placeholder removed - add real URLs when accounts are created --}}
