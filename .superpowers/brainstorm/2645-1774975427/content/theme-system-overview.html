@@ -1,0 +1,119 @@
+<h2>Theme System Design Overview</h2>
+<p class="subtitle">6 master colors → auto-generated shades → CSS variables → applied everywhere</p>
+
+<div class="section">
+  <h3>How It Works</h3>
+  <div style="display:flex; gap:16px; flex-wrap:wrap; margin-top:12px;">
+    <div style="flex:1; min-width:200px; background:#1a1a2e; color:#e0e0e0; padding:20px; border-radius:12px; text-align:center;">
+      <div style="font-size:32px; margin-bottom:8px;">🎨</div>
+      <div style="font-weight:600; margin-bottom:4px;">1. Admin Picks</div>
+      <div style="font-size:13px; opacity:0.8;">6 color pickers in Settings</div>
+    </div>
+    <div style="flex:0 0 40px; display:flex; align-items:center; justify-content:center; font-size:24px; color:#666;">→</div>
+    <div style="flex:1; min-width:200px; background:#1a1a2e; color:#e0e0e0; padding:20px; border-radius:12px; text-align:center;">
+      <div style="font-size:32px; margin-bottom:8px;">⚙️</div>
+      <div style="font-weight:600; margin-bottom:4px;">2. Auto-Generate</div>
+      <div style="font-size:13px; opacity:0.8;">HSL math creates 50-950 shades</div>
+    </div>
+    <div style="flex:0 0 40px; display:flex; align-items:center; justify-content:center; font-size:24px; color:#666;">→</div>
+    <div style="flex:1; min-width:200px; background:#1a1a2e; color:#e0e0e0; padding:20px; border-radius:12px; text-align:center;">
+      <div style="font-size:32px; margin-bottom:8px;">💾</div>
+      <div style="font-weight:600; margin-bottom:4px;">3. Cache & Store</div>
+      <div style="font-size:13px; opacity:0.8;">Settings table + 1hr cache</div>
+    </div>
+    <div style="flex:0 0 40px; display:flex; align-items:center; justify-content:center; font-size:24px; color:#666;">→</div>
+    <div style="flex:1; min-width:200px; background:#1a1a2e; color:#e0e0e0; padding:20px; border-radius:12px; text-align:center;">
+      <div style="font-size:32px; margin-bottom:8px;">🖥️</div>
+      <div style="font-weight:600; margin-bottom:4px;">4. Inject CSS Vars</div>
+      <div style="font-size:13px; opacity:0.8;">:root variables in &lt;head&gt;</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>The 6 Master Colors</h3>
+  <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-top:12px;">
+    <div style="border:2px solid #333; border-radius:10px; overflow:hidden;">
+      <div style="height:60px; background:#9A7B4F;"></div>
+      <div style="padding:10px; background:#1a1a2e; color:#e0e0e0;">
+        <div style="font-weight:600;">Primary</div>
+        <div style="font-size:12px; opacity:0.7;">#9A7B4F — Buttons, links, CTAs, active states</div>
+      </div>
+    </div>
+    <div style="border:2px solid #333; border-radius:10px; overflow:hidden;">
+      <div style="height:60px; background:#A67B5B;"></div>
+      <div style="padding:10px; background:#1a1a2e; color:#e0e0e0;">
+        <div style="font-weight:600;">Secondary</div>
+        <div style="font-size:12px; opacity:0.7;">#A67B5B — Gradients, badges, accents</div>
+      </div>
+    </div>
+    <div style="border:2px solid #333; border-radius:10px; overflow:hidden;">
+      <div style="height:60px; background:#FDFCFA; border-bottom:1px solid #ddd;"></div>
+      <div style="padding:10px; background:#1a1a2e; color:#e0e0e0;">
+        <div style="font-weight:600;">Background</div>
+        <div style="font-size:12px; opacity:0.7;">#FDFCFA — Page body, cards, surfaces</div>
+      </div>
+    </div>
+    <div style="border:2px solid #333; border-radius:10px; overflow:hidden;">
+      <div style="height:60px; background:#1A1714;"></div>
+      <div style="padding:10px; background:#1a1a2e; color:#e0e0e0;">
+        <div style="font-weight:600;">Heading</div>
+        <div style="font-size:12px; opacity:0.7;">#1A1714 — h1-h6, section titles</div>
+      </div>
+    </div>
+    <div style="border:2px solid #333; border-radius:10px; overflow:hidden;">
+      <div style="height:60px; background:#4A433C;"></div>
+      <div style="padding:10px; background:#1a1a2e; color:#e0e0e0;">
+        <div style="font-weight:600;">Text</div>
+        <div style="font-size:12px; opacity:0.7;">#4A433C — Body paragraphs, descriptions</div>
+      </div>
+    </div>
+    <div style="border:2px solid #333; border-radius:10px; overflow:hidden;">
+      <div style="height:60px; background:#1A1714;"></div>
+      <div style="padding:10px; background:#1a1a2e; color:#e0e0e0;">
+        <div style="font-weight:600;">Dark/Footer</div>
+        <div style="font-size:12px; opacity:0.7;">#1A1714 — Footer bg, dark sections</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Auto-Generated Shade Scale (from Primary #9A7B4F)</h3>
+  <div style="display:flex; gap:4px; margin-top:12px; border-radius:10px; overflow:hidden;">
+    <div style="flex:1; height:50px; background:#F5F0E8; display:flex; align-items:flex-end; justify-content:center; padding:4px;"><span style="font-size:10px; color:#333;">50</span></div>
+    <div style="flex:1; height:50px; background:#E8DCC8; display:flex; align-items:flex-end; justify-content:center; padding:4px;"><span style="font-size:10px; color:#333;">100</span></div>
+    <div style="flex:1; height:50px; background:#D4C4A3; display:flex; align-items:flex-end; justify-content:center; padding:4px;"><span style="font-size:10px; color:#333;">200</span></div>
+    <div style="flex:1; height:50px; background:#C0AC7E; display:flex; align-items:flex-end; justify-content:center; padding:4px;"><span style="font-size:10px; color:#333;">300</span></div>
+    <div style="flex:1; height:50px; background:#AD9467; display:flex; align-items:flex-end; justify-content:center; padding:4px;"><span style="font-size:10px; color:#fff;">400</span></div>
+    <div style="flex:1; height:50px; background:#9A7B4F; display:flex; align-items:flex-end; justify-content:center; padding:4px;"><span style="font-size:10px; color:#fff;">500</span></div>
+    <div style="flex:1; height:50px; background:#7A623F; display:flex; align-items:flex-end; justify-content:center; padding:4px;"><span style="font-size:10px; color:#fff;">600</span></div>
+    <div style="flex:1; height:50px; background:#5A4930; display:flex; align-items:flex-end; justify-content:center; padding:4px;"><span style="font-size:10px; color:#fff;">700</span></div>
+    <div style="flex:1; height:50px; background:#3D3120; display:flex; align-items:flex-end; justify-content:center; padding:4px;"><span style="font-size:10px; color:#fff;">800</span></div>
+    <div style="flex:1; height:50px; background:#1F1910; display:flex; align-items:flex-end; justify-content:center; padding:4px;"><span style="font-size:10px; color:#fff;">900</span></div>
+    <div style="flex:1; height:50px; background:#100C08; display:flex; align-items:flex-end; justify-content:center; padding:4px;"><span style="font-size:10px; color:#fff;">950</span></div>
+  </div>
+  <p style="font-size:12px; color:#888; margin-top:8px;">Each master color generates a full scale using HSL lightness shifts. The 500 shade = the color you picked.</p>
+</div>
+
+<div class="section">
+  <h3>CSS Variable Mapping</h3>
+  <div style="background:#0d1117; color:#c9d1d9; padding:16px; border-radius:10px; font-family:monospace; font-size:13px; line-height:1.8; overflow-x:auto;">
+    <span style="color:#8b949e;">/* Injected in &lt;head&gt; from cached DB settings */</span><br>
+    <span style="color:#ff7b72;">:root</span> {<br>
+    &nbsp;&nbsp;<span style="color:#79c0ff;">--primary</span>: <span style="color:#a5d6ff;">154 123 79</span>;&nbsp;&nbsp;&nbsp;<span style="color:#8b949e;">/* RGB format for opacity support */</span><br>
+    &nbsp;&nbsp;<span style="color:#79c0ff;">--primary-50</span>: <span style="color:#a5d6ff;">245 240 232</span>;<br>
+    &nbsp;&nbsp;<span style="color:#79c0ff;">--primary-100</span>: <span style="color:#a5d6ff;">232 220 200</span>;<br>
+    &nbsp;&nbsp;<span style="color:#8b949e;">/* ... 200-400, 600-950 ... */</span><br>
+    &nbsp;&nbsp;<span style="color:#79c0ff;">--secondary</span>: <span style="color:#a5d6ff;">166 123 91</span>;<br>
+    &nbsp;&nbsp;<span style="color:#79c0ff;">--bg</span>: <span style="color:#a5d6ff;">253 252 250</span>;<br>
+    &nbsp;&nbsp;<span style="color:#79c0ff;">--heading</span>: <span style="color:#a5d6ff;">26 23 20</span>;<br>
+    &nbsp;&nbsp;<span style="color:#79c0ff;">--text</span>: <span style="color:#a5d6ff;">74 67 60</span>;<br>
+    &nbsp;&nbsp;<span style="color:#79c0ff;">--dark</span>: <span style="color:#a5d6ff;">26 23 20</span>;<br>
+    }<br><br>
+    <span style="color:#8b949e;">/* Tailwind uses them like: */</span><br>
+    .<span style="color:#ff7b72;">bg-primary</span> { background: <span style="color:#a5d6ff;">rgb(var(--primary))</span>; }<br>
+    .<span style="color:#ff7b72;">bg-primary/10</span> { background: <span style="color:#a5d6ff;">rgb(var(--primary) / 0.1)</span>; }<br>
+    .<span style="color:#ff7b72;">text-primary</span> { color: <span style="color:#a5d6ff;">rgb(var(--primary))</span>; }
+  </div>
+</div>

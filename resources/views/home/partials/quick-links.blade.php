@@ -1,5 +1,5 @@
 {{-- Quick Links Section --}}
-<section class="py-14 lg:py-18 bg-surface-50 border-t border-surface-200">
+<section class="py-14 lg:py-18 bg-blue-50/60 border-t border-gray-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center">
             <p class="text-sm font-semibold text-body/50 uppercase tracking-wider mb-8">Quick Links</p>

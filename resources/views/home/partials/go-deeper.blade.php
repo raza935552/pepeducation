@@ -1,5 +1,5 @@
 {{-- Go Deeper Section: Action-oriented CTAs --}}
-<section class="py-20 lg:py-28 bg-surface-50">
+<section class="py-20 lg:py-28 bg-blue-50/60">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {{-- Section Header --}}
         <div class="text-center mb-14 lg:mb-20">
