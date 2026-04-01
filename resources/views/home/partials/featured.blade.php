@@ -1,5 +1,5 @@
 {{-- Featured Peptides Section --}}
-<section class="py-16 lg:py-24 bg-surface-50">
+<section class="py-16 lg:py-24 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {{-- Section Header --}}
         <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10 lg:mb-14">

@@ -28,9 +28,9 @@
                     Browse our database of 70+ peptides with detailed research profiles and safety data.
                 </p>
                 <div class="flex flex-wrap gap-1.5">
-                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-surface-100 text-body/60">BPC-157</span>
-                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-surface-100 text-body/60">Semaglutide</span>
-                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-surface-100 text-body/60">GHK-Cu</span>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500">BPC-157</span>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500">Semaglutide</span>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500">GHK-Cu</span>
                 </div>
             </a>
 
@@ -49,9 +49,9 @@
                     Research-backed guides and protocols to deepen your understanding of peptide science.
                 </p>
                 <div class="flex flex-wrap gap-1.5">
-                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-surface-100 text-body/60">Protocols</span>
-                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-surface-100 text-body/60">Dosing</span>
-                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-surface-100 text-body/60">Research</span>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500">Protocols</span>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500">Dosing</span>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500">Research</span>
                 </div>
             </a>
 
@@ -70,8 +70,8 @@
                     Dosing calculators and reconstitution tools to plan your research protocols precisely.
                 </p>
                 <div class="flex flex-wrap gap-1.5">
-                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-surface-100 text-body/60">Dosing Calculator</span>
-                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-surface-100 text-body/60">Stack Builder</span>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500">Dosing Calculator</span>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500">Stack Builder</span>
                 </div>
             </a>
 
@@ -90,8 +90,8 @@
                     Find your perfect peptide match with our personalized recommendation quiz.
                 </p>
                 <div class="flex flex-wrap gap-1.5">
-                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-surface-100 text-body/60">Personalized</span>
-                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-surface-100 text-body/60">60 Seconds</span>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500">Personalized</span>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500">60 Seconds</span>
                 </div>
             </a>
         </div>

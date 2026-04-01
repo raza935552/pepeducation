@@ -22,7 +22,7 @@
     {{-- Categories --}}
     <div class="flex flex-wrap gap-1.5 mb-5">
         @foreach($peptide->categories->take(3) as $category)
-            <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-surface-100 text-body/70">
+            <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500">
                 {{ $category->name }}
             </span>
         @endforeach
