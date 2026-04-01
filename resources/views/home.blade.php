@@ -5,21 +5,24 @@
         @include('partials.schema-website')
     @endpush
 
-    {{-- Hero Section --}}
+    {{-- Hero Section (search-first) --}}
     @include('home.partials.hero')
 
-    {{-- Featured CTA (Caramel) --}}
-    @include('home.partials.featured-cta')
+    {{-- Feature Cards (what you can do here) --}}
+    @include('home.partials.features')
 
     {{-- Featured Peptides --}}
     @include('home.partials.featured')
 
-    {{-- How It Works --}}
-    @include('home.partials.how-it-works')
+    {{-- Go Deeper (action CTAs) --}}
+    @include('home.partials.go-deeper')
 
-    {{-- Categories Grid --}}
+    {{-- Browse by Category --}}
     @include('home.partials.categories')
 
     {{-- Newsletter CTA --}}
     @include('home.partials.cta')
+
+    {{-- Quick Links --}}
+    @include('home.partials.quick-links')
 </x-public-layout>

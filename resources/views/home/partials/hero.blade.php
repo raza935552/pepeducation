@@ -1,86 +1,89 @@
-<section class="relative bg-surface-100 overflow-hidden">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center py-16 lg:py-24">
-            {{-- Left: Text Content --}}
-            <div class="max-w-xl">
-                {{-- Rotating category text --}}
-                <div class="mb-6" x-data="{
-                    categories: ['Wound Healing', 'Weight Loss', 'Anti-Aging', 'Cognitive Enhancement', 'Muscle Growth'],
-                    current: 0,
-                    init() {
-                        setInterval(() => {
-                            this.current = (this.current + 1) % this.categories.length;
-                        }, 3000);
-                    }
-                }">
-                    <span class="text-lg sm:text-xl font-medium text-primary-500"
-                          x-text="categories[current]"
-                          x-transition:enter="transition ease-out duration-300"
-                          x-transition:enter-start="opacity-0 transform translate-y-2"
-                          x-transition:enter-end="opacity-100 transform translate-y-0">
-                        Wound Healing
-                    </span>
-                </div>
+{{-- Hero Section: Search-first, Google-style --}}
+<section class="relative bg-dark-900 overflow-hidden">
+    {{-- Subtle gradient overlay --}}
+    <div class="absolute inset-0">
+        <div class="absolute inset-0 bg-gradient-to-b from-dark-950 via-dark-900 to-dark-800"></div>
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-primary-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-secondary-500/5 rounded-full blur-3xl"></div>
+    </div>
 
-                {{-- Main Heading --}}
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.1] mb-6">
-                    Peptide research,
-                    <span class="block text-primary-500 italic">personalized to you</span>
-                </h1>
+    <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 text-center">
+        {{-- Trust badge --}}
+        <div class="mb-8">
+            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary-500/30 bg-primary-500/10 text-primary-300 text-sm font-medium shadow-lg shadow-primary-500/5">
+                <svg aria-hidden="true" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                Trusted by researchers worldwide
+            </span>
+        </div>
 
-                {{-- Subheading --}}
-                <p class="text-lg text-gray-600 mb-8 leading-relaxed">
-                    Comprehensive research data on 70+ peptides. Dosing calculators.
-                    Evidence-based protocols. All free, forever.
-                </p>
+        {{-- Main heading --}}
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-[1.1] mb-6">
+            Your Peptide <span class="text-primary-500">Research</span> Hub
+        </h1>
 
-                {{-- CTA Buttons --}}
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="{{ route('peptides.index') }}"
-                       class="inline-flex items-center justify-center px-8 py-4 bg-gray-900 text-white font-semibold rounded-full hover:bg-gray-800 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-                        Get Started
-                        <svg aria-hidden="true" class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                        </svg>
-                    </a>
-                    <button type="button"
-                            @click="$dispatch('open-search')"
-                            class="inline-flex items-center justify-center px-8 py-4 bg-surface-200 text-gray-900 font-semibold rounded-full hover:bg-surface-300 transition-all duration-300">
-                        <svg aria-hidden="true" class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                        Search Peptides
-                    </button>
-                </div>
+        {{-- Subtitle --}}
+        <p class="text-lg sm:text-xl text-dark-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+            Learn, track, compare, and optimize your peptide protocols — all in one place.
+        </p>
 
-                {{-- Trust indicators --}}
-                <div class="mt-10 pt-8 border-t border-surface-300">
-                    <div class="flex flex-wrap items-center gap-6 text-sm text-gray-500">
-                        <div class="flex items-center gap-2">
-                            <svg aria-hidden="true" class="w-5 h-5 text-primary-500" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>Evidence-based</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <svg aria-hidden="true" class="w-5 h-5 text-primary-500" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
-                            </svg>
-                            <span>Community-driven</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <svg aria-hidden="true" class="w-5 h-5 text-primary-500" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>100% Free</span>
-                        </div>
-                    </div>
-                </div>
+        {{-- Big search bar --}}
+        <div class="max-w-2xl mx-auto mb-8">
+            <button type="button"
+                    @click="$dispatch('open-search')"
+                    class="w-full flex items-center gap-3 px-6 py-4 sm:py-5 bg-white rounded-full shadow-2xl shadow-black/20 hover:shadow-primary-500/20 transition-all duration-300 group cursor-text"
+                    x-data
+            >
+                <svg aria-hidden="true" class="w-6 h-6 text-gray-400 group-hover:text-primary-500 transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <span class="text-gray-400 text-base sm:text-lg text-left">Search peptides, protocols, guides...</span>
+                <kbd class="hidden sm:inline-flex items-center gap-1 px-2 py-1 ml-auto text-xs text-gray-400 bg-gray-100 rounded border border-gray-200 font-mono">
+                    <span class="text-sm">⌘</span>K
+                </kbd>
+            </button>
+        </div>
+
+        {{-- Quick-link pills --}}
+        <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-14">
+            <a href="{{ route('peptides.show', 'bpc-157') }}"
+               class="px-4 py-2 rounded-full text-sm font-medium bg-dark-700/80 text-dark-200 border border-dark-600 hover:bg-primary-500/20 hover:border-primary-500/40 hover:text-primary-300 transition-all duration-200">
+                BPC-157
+            </a>
+            <a href="{{ route('peptides.index') }}"
+               class="px-4 py-2 rounded-full text-sm font-medium bg-dark-700/80 text-dark-200 border border-dark-600 hover:bg-primary-500/20 hover:border-primary-500/40 hover:text-primary-300 transition-all duration-200">
+                Peptide Database
+            </a>
+            <a href="{{ route('peptides.show', 'semaglutide') }}"
+               class="px-4 py-2 rounded-full text-sm font-medium bg-dark-700/80 text-dark-200 border border-dark-600 hover:bg-primary-500/20 hover:border-primary-500/40 hover:text-primary-300 transition-all duration-200">
+                Semaglutide
+            </a>
+            <a href="{{ route('peptides.show', 'ghk-cu') }}"
+               class="px-4 py-2 rounded-full text-sm font-medium bg-dark-700/80 text-dark-200 border border-dark-600 hover:bg-primary-500/20 hover:border-primary-500/40 hover:text-primary-300 transition-all duration-200">
+                GHK-Cu
+            </a>
+            <a href="{{ route('peptides.index') }}"
+               class="px-4 py-2 rounded-full text-sm font-medium bg-primary-500/20 text-primary-300 border border-primary-500/30 hover:bg-primary-500/30 hover:border-primary-500/50 transition-all duration-200">
+                All Categories
+            </a>
+        </div>
+
+        {{-- Stats row --}}
+        <div class="flex items-center justify-center gap-8 sm:gap-12 lg:gap-16">
+            <div class="text-center">
+                <div class="text-2xl sm:text-3xl font-bold text-primary-400">{{ $stats['peptides'] ?? '70' }}+</div>
+                <div class="text-sm text-dark-400 mt-1">Peptides</div>
             </div>
-
-            {{-- Right: Category Grid --}}
-            <div class="relative">
-                @include('home.partials.hero-categories')
+            <div class="w-px h-10 bg-dark-700"></div>
+            <div class="text-center">
+                <div class="text-2xl sm:text-3xl font-bold text-primary-400">500+</div>
+                <div class="text-sm text-dark-400 mt-1">Studies</div>
+            </div>
+            <div class="w-px h-10 bg-dark-700"></div>
+            <div class="text-center">
+                <div class="text-2xl sm:text-3xl font-bold text-primary-400">{{ $stats['categories'] ?? '20' }}+</div>
+                <div class="text-sm text-dark-400 mt-1">Categories</div>
             </div>
         </div>
     </div>

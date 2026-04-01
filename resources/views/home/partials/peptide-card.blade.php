@@ -1,74 +1,36 @@
+{{-- Peptide Card (cleaner design) --}}
 <a href="{{ route('peptides.show', $peptide) }}"
-   class="group block bg-surface-50 rounded-2xl border border-surface-200 p-6 hover:shadow-xl hover:shadow-surface-300/50 hover:border-surface-300 transition-all duration-300 hover:-translate-y-1">
-    {{-- Header with badge and bookmark --}}
-    <div class="flex items-start justify-between gap-3 mb-4">
-        <div class="flex items-center gap-3">
-            {{-- Abbreviation Badge --}}
-            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center shadow-lg shadow-primary-500/20">
-                <span class="text-sm font-bold text-white">
-                    {{ strtoupper(substr($peptide->abbreviation ?? $peptide->name, 0, 3)) }}
-                </span>
-            </div>
-            <div class="min-w-0">
-                <h3 class="text-lg font-bold text-gray-900 group-hover:text-primary-500 transition-colors truncate">
-                    {{ $peptide->name }}
-                </h3>
-                <p class="text-sm text-gray-500 truncate">
-                    {{ $peptide->type ?? Str::limit($peptide->overview, 30) }}
-                </p>
-            </div>
+   class="group block bg-white rounded-xl border border-surface-200 p-6 hover:shadow-xl hover:border-primary-300 transition-all duration-300 hover:-translate-y-1">
+    {{-- Header --}}
+    <div class="flex items-start gap-4 mb-4">
+        {{-- Abbreviation Badge --}}
+        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-lg shadow-primary-500/20 shrink-0">
+            <span class="text-base font-bold text-white tracking-wide">
+                {{ strtoupper(substr($peptide->abbreviation ?? $peptide->name, 0, 3)) }}
+            </span>
         </div>
-        {{-- Bookmark icon --}}
-        <button type="button" class="shrink-0 p-2 rounded-lg text-gray-400 hover:text-primary-500 hover:bg-primary-50 transition-colors" onclick="event.preventDefault();">
-            <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-            </svg>
-        </button>
+        <div class="min-w-0 flex-1">
+            <h3 class="text-lg font-bold text-heading group-hover:text-primary-600 transition-colors truncate">
+                {{ $peptide->name }}
+            </h3>
+            <p class="text-sm text-body/60 truncate mt-0.5">
+                {{ $peptide->type ?? Str::limit($peptide->overview, 40) }}
+            </p>
+        </div>
     </div>
 
     {{-- Categories --}}
-    <div class="flex flex-wrap gap-2 mb-4">
+    <div class="flex flex-wrap gap-1.5 mb-5">
         @foreach($peptide->categories->take(3) as $category)
-            <span class="px-3 py-1 rounded-full text-xs font-medium bg-surface-200 text-gray-700">
+            <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-surface-100 text-body/70">
                 {{ $category->name }}
             </span>
         @endforeach
     </div>
 
-    {{-- Common Research Uses --}}
-    @if($peptide->benefits && count($peptide->benefits) > 0)
-        <div class="mb-4">
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-                Common Research Uses
-            </p>
-            <p class="text-sm text-gray-600 line-clamp-2">
-                {{ implode(', ', array_slice($peptide->benefits, 0, 4)) }}
-            </p>
-        </div>
-    @endif
-
     {{-- Footer --}}
-    <div class="flex items-center justify-between pt-4 border-t border-surface-200">
-        {{-- Research Status Badge --}}
-        @php
-            $researchLevel = $peptide->research_level ?? 'moderate';
-            $badgeClasses = match($researchLevel) {
-                'extensive' => 'bg-emerald-100 text-emerald-700',
-                'well-researched' => 'bg-primary-100 text-primary-700',
-                default => 'bg-surface-200 text-gray-600'
-            };
-            $badgeText = match($researchLevel) {
-                'extensive' => 'Extensively Studied',
-                'well-researched' => 'Well Researched',
-                default => 'Limited Research'
-            };
-        @endphp
-        <span class="px-3 py-1 rounded-full text-xs font-medium {{ $badgeClasses }}">
-            {{ $badgeText }}
-        </span>
-
-        {{-- Learn More --}}
-        <span class="inline-flex items-center gap-1 text-sm font-medium text-primary-500 group-hover:gap-2 transition-all">
+    <div class="flex items-center justify-end pt-4 border-t border-surface-200">
+        <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-500 group-hover:gap-2.5 transition-all">
             Learn More
             <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
