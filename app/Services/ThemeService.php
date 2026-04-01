@@ -9,31 +9,31 @@ class ThemeService
 {
     public const DEFAULTS = [
         // Global
-        'primary'   => '#9A7B4F',
-        'secondary' => '#A67B5B',
-        'bg'        => '#FDFCFA',
-        'heading'   => '#1A1714',
-        'text'      => '#4A433C',
-        'dark'      => '#1A1714',
+        'primary'   => '#7F1D1D',
+        'secondary' => '#991B1B',
+        'bg'        => '#F8FAFC',
+        'heading'   => '#1E293B',
+        'text'      => '#64748B',
+        'dark'      => '#0F172A',
         // Header
-        'header_bg'          => '#F5F1EB',
-        'header_text'        => '#9A7B4F',
-        'nav_link'           => '#4B5563',
-        'nav_active'         => '#7A5F3D',
+        'header_bg'          => '#FFFFFF',
+        'header_text'        => '#1E293B',
+        'nav_link'           => '#64748B',
+        'nav_active'         => '#7F1D1D',
         // Buttons
-        'btn_primary_bg'     => '#1F2937',
+        'btn_primary_bg'     => '#1E293B',
         'btn_primary_text'   => '#FFFFFF',
-        'btn_accent_bg'      => '#9A7B4F',
+        'btn_accent_bg'      => '#7F1D1D',
         'btn_accent_text'    => '#FFFFFF',
         // Links
-        'link_color'         => '#9A7B4F',
-        'link_hover'         => '#7A5F3D',
+        'link_color'         => '#7F1D1D',
+        'link_hover'         => '#991B1B',
         // Footer
-        'footer_bg'          => '#1A1714',
-        'footer_text'        => '#B8B0A5',
-        'footer_heading'     => '#F5F1EB',
-        'footer_link'        => '#B8B0A5',
-        'footer_link_hover'  => '#9A7B4F',
+        'footer_bg'          => '#0F172A',
+        'footer_text'        => '#94A3B8',
+        'footer_heading'     => '#F1F5F9',
+        'footer_link'        => '#94A3B8',
+        'footer_link_hover'  => '#B91C1C',
     ];
 
     /** Keys that get full shade scales generated */
