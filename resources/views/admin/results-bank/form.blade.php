@@ -293,6 +293,59 @@
                 </div>
             </div>
 
+                {{-- Accordion Sections --}}
+                <div class="card p-6" x-data="{
+                    items: @js(old('accordion_items', $result?->accordion_items ?? [])),
+                    addItem() { this.items.push({ title: '', content: '' }); },
+                    removeItem(i) { this.items.splice(i, 1); },
+                }">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-lg font-semibold">Accordion Sections</h3>
+                            <p class="text-sm text-gray-500 mt-1">Collapsible info sections shown on the peptide reveal slide. Specific to this peptide.</p>
+                        </div>
+                        <button type="button" @click="addItem()" class="text-sm text-brand-gold hover:underline font-medium">+ Add Section</button>
+                    </div>
+
+                    <template x-if="items.length === 0">
+                        <p class="text-sm text-gray-400 italic">No accordion sections yet. Click "Add Section" to create one.</p>
+                    </template>
+
+                    <div class="space-y-3">
+                        <template x-for="(item, i) in items" :key="i">
+                            <div class="border rounded-lg p-4 bg-gray-50/50">
+                                <div class="flex items-start gap-2 mb-2">
+                                    <div class="flex-1">
+                                        <label class="block text-xs font-medium text-gray-600 mb-1" x-text="'Section ' + (i + 1) + ' Title'"></label>
+                                        <input type="text" x-model="item.title"
+                                            :name="'accordion_items[' + i + '][title]'"
+                                            placeholder="e.g. How does it work?"
+                                            class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold text-sm">
+                                    </div>
+                                    <button type="button" @click="removeItem(i)" class="mt-5 text-red-400 hover:text-red-600 p-1" title="Remove">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </button>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Content</label>
+                                    <textarea x-model="item.content"
+                                        :name="'accordion_items[' + i + '][content]'"
+                                        placeholder="Detailed content for this section..."
+                                        rows="3"
+                                        class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold text-sm"></textarea>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <template x-if="items.length > 0">
+                        <div class="mt-3">
+                            <button type="button" @click="addItem()" class="text-sm text-brand-gold hover:underline font-medium">+ Add Another Section</button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
             {{-- Sidebar --}}
             <div class="space-y-6">
                 <div class="card p-6">

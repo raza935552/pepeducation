@@ -6,6 +6,7 @@ use App\Models\Subscriber;
 use App\Models\QuizResponse;
 use App\Models\LeadMagnetDownload;
 use App\Models\OutboundClick;
+use App\Services\CustomerIo\CustomerIoClient;
 use Illuminate\Support\Facades\Log;
 
 trait EventMethods
@@ -164,7 +165,7 @@ trait EventMethods
         if (!$this->shouldTrack('subscribed')) return false;
 
         // Upsert the profile with subscription flag
-        $this->client->put("customers/{$subscriber->email}", [
+        $this->client->put('customers/' . CustomerIoClient::encodeId($subscriber->email), [
             'email' => $subscriber->email,
             'subscribed' => true,
             'subscription_source' => $source,
@@ -193,11 +194,11 @@ trait EventMethods
 
         // Ensure person exists (Customer.io requires it before tracking events)
         if (!in_array($email, static::$identifiedEmails)) {
-            $this->client->put("customers/{$email}", ['email' => $email]);
+            $this->client->put('customers/' . CustomerIoClient::encodeId($email), ['email' => $email]);
             static::$identifiedEmails[] = $email;
         }
 
-        $response = $this->client->post("customers/{$email}/events", [
+        $response = $this->client->post('customers/' . CustomerIoClient::encodeId($email) . '/events', [
             'name' => $eventName,
             'data' => $data,
         ]);

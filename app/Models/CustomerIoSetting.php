@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class CustomerIoSetting extends Model
 {
@@ -37,7 +38,7 @@ class CustomerIoSetting extends Model
     public function getSiteIdAttribute($value): ?string
     {
         if (!$value) return null;
-        try { return decrypt($value); } catch (\Exception $e) { return $value; }
+        try { return decrypt($value); } catch (\Exception $e) { Log::error('Customer.io: Failed to decrypt site_id'); return null; }
     }
 
     public function setApiKeyAttribute($value): void
@@ -48,7 +49,7 @@ class CustomerIoSetting extends Model
     public function getApiKeyAttribute($value): ?string
     {
         if (!$value) return null;
-        try { return decrypt($value); } catch (\Exception $e) { return $value; }
+        try { return decrypt($value); } catch (\Exception $e) { Log::error('Customer.io: Failed to decrypt api_key'); return null; }
     }
 
     public static function current(): ?self

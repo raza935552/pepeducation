@@ -52,10 +52,12 @@ class ResultsBankController extends Controller
         $validated = $request->validate($this->storeRules());
 
         $benefits = $this->parseBenefits($request->input('benefits_text'));
+        $accordionItems = $this->parseAccordionItems($validated['accordion_items'] ?? []);
         $levels = $validated['experience_levels'];
 
-        // Remove experience_levels from validated (not a model field)
-        unset($validated['experience_levels']);
+        // Remove non-model fields from validated
+        unset($validated['experience_levels'], $validated['accordion_items']);
+        $validated['accordion_items'] = $accordionItems ?: null;
 
         $created = [];
         $skipped = [];
@@ -109,9 +111,11 @@ class ResultsBankController extends Controller
         $validated = $request->validate($this->storeRules());
 
         $benefits = $this->parseBenefits($request->input('benefits_text'));
+        $accordionItems = $this->parseAccordionItems($validated['accordion_items'] ?? []);
         $levels = $validated['experience_levels'];
 
-        unset($validated['experience_levels']);
+        unset($validated['experience_levels'], $validated['accordion_items']);
+        $validated['accordion_items'] = $accordionItems ?: null;
 
         // Update the current entry with its level (or switch level if only one selected)
         $currentLevel = $results_bank->experience_level;
@@ -188,6 +192,9 @@ class ResultsBankController extends Controller
             'display_fields.star_rating' => 'nullable|boolean',
             'display_fields.testimonial' => 'nullable|boolean',
             'display_fields.benefits' => 'nullable|boolean',
+            'accordion_items' => 'nullable|array',
+            'accordion_items.*.title' => 'required_with:accordion_items|string|max:200',
+            'accordion_items.*.content' => 'required_with:accordion_items|string|max:2000',
         ];
     }
 
@@ -217,6 +224,9 @@ class ResultsBankController extends Controller
             'display_fields.star_rating' => 'nullable|boolean',
             'display_fields.testimonial' => 'nullable|boolean',
             'display_fields.benefits' => 'nullable|boolean',
+            'accordion_items' => 'nullable|array',
+            'accordion_items.*.title' => 'required_with:accordion_items|string|max:200',
+            'accordion_items.*.content' => 'required_with:accordion_items|string|max:2000',
         ];
     }
 
@@ -303,6 +313,13 @@ class ResultsBankController extends Controller
                 'health_goal_label' => $label ?: ucfirst(str_replace('_', ' ', $key)),
             ]);
         }
+    }
+
+    private function parseAccordionItems(array $items): array
+    {
+        return array_values(array_filter($items, fn ($item) =>
+            !empty(trim($item['title'] ?? '')) && !empty(trim($item['content'] ?? ''))
+        ));
     }
 
     private function parseBenefits(?string $text): array

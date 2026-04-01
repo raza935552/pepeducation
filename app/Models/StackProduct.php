@@ -61,7 +61,7 @@ class StackProduct extends Model
     public function stores(): BelongsToMany
     {
         return $this->belongsToMany(StackStore::class, 'stack_store_product')
-            ->withPivot('price', 'url', 'outbound_link_id', 'is_in_stock', 'is_recommended')
+            ->withPivot('price', 'url', 'outbound_link_id', 'is_in_stock', 'is_recommended', 'availability_status')
             ->withTimestamps()
             ->orderBy('stack_stores.order');
     }
