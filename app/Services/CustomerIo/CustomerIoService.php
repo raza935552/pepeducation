@@ -58,6 +58,7 @@ class CustomerIoService
             'outbound_click' => $this->settings->track_outbound_click,
             'stack_completed' => $this->settings->track_stack_completed,
             'subscribed' => $this->settings->track_subscribed,
+            'peptide_paired' => $this->settings->track_peptide_paired,
             'page_tracking' => $this->settings->enable_page_tracking,
             default => true,
         };
@@ -115,6 +116,7 @@ class CustomerIoService
 
         foreach ($responses as $response) {
             if ($this->trackQuizCompleted($response)) {
+                $this->trackPeptidePaired($response);
                 $synced++;
             } else {
                 $failed++;

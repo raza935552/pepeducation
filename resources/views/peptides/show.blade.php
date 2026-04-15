@@ -1,6 +1,11 @@
-<x-public-layout :title="$peptide->name" :description="Str::limit(strip_tags($peptide->overview), 160)">
+<x-public-layout
+    :title="$peptide->meta_title ?? $peptide->name . ' - Benefits, Dosing & Protocols'"
+    :description="$peptide->meta_description ?? Str::limit(strip_tags($peptide->overview), 155)"
+    :canonical="route('peptides.show', $peptide->slug)"
+>
     @push('head')
         @include('partials.schema-peptide')
+        @include('partials.schema-faq')
     @endpush
 
     <!-- Hero -->

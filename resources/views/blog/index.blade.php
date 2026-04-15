@@ -1,7 +1,14 @@
 <x-public-layout
-    title="Blog"
-    description="Expert insights on peptides, research updates, and educational content from PepProfesor."
+    :title="\App\Models\Setting::getValue('seo_pages', 'blog_index_title', 'Peptide Research Blog: Articles & Insights')"
+    :description="\App\Models\Setting::getValue('seo_pages', 'blog_index_description', 'Expert insights on peptides, research updates, and educational content from Professor Peptides.')"
 >
+    @push('head')
+        @include('partials.schema-breadcrumbs', ['breadcrumbs' => [
+            ['name' => 'Home', 'url' => route('home')],
+            ['name' => 'Blog'],
+        ]])
+    @endpush
+
     {{-- Hero Section --}}
     <section class="relative bg-gradient-to-br from-dark-800 via-dark-900 to-dark-950 overflow-hidden">
         <div class="absolute inset-0 opacity-10">

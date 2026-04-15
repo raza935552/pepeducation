@@ -13,7 +13,8 @@ class CustomerIoSetting extends Model
         'site_id', 'api_key', 'region', 'is_enabled',
         'track_quiz_started', 'track_quiz_completed', 'track_email_captured',
         'track_quiz_abandoned', 'track_lead_magnet_download', 'track_outbound_click',
-        'track_stack_completed', 'track_subscribed', 'enable_page_tracking', 'meta',
+        'track_stack_completed', 'track_subscribed', 'track_peptide_paired',
+        'enable_page_tracking', 'meta',
     ];
 
     protected $casts = [
@@ -26,6 +27,7 @@ class CustomerIoSetting extends Model
         'track_outbound_click' => 'boolean',
         'track_stack_completed' => 'boolean',
         'track_subscribed' => 'boolean',
+        'track_peptide_paired' => 'boolean',
         'enable_page_tracking' => 'boolean',
         'meta' => 'array',
     ];
@@ -64,7 +66,7 @@ class CustomerIoSetting extends Model
             'track_quiz_started' => true, 'track_quiz_completed' => true,
             'track_email_captured' => true, 'track_quiz_abandoned' => true,
             'track_lead_magnet_download' => true, 'track_outbound_click' => true,
-            'track_stack_completed' => true, 'track_subscribed' => true,
+            'track_stack_completed' => true, 'track_subscribed' => true, 'track_peptide_paired' => true,
             'enable_page_tracking' => false,
         ]);
     }

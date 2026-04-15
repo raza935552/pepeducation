@@ -144,6 +144,7 @@
                         ['name' => 'track_outbound_click', 'label' => 'Outbound Click', 'desc' => 'When user clicks to vendor shop'],
                         ['name' => 'track_stack_completed', 'label' => 'Stack Builder Completed', 'desc' => 'When stack builder is finished'],
                         ['name' => 'track_subscribed', 'label' => 'Subscribed', 'desc' => 'When user subscribes via popup/form'],
+                        ['name' => 'track_peptide_paired', 'label' => 'Peptide Paired', 'desc' => 'When user is matched with a peptide — use for flow branching'],
                         ['name' => 'enable_page_tracking', 'label' => 'Page View Tracking', 'desc' => 'Auto-track page views via JS snippet'],
                     ];
                 @endphp

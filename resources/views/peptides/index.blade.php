@@ -1,4 +1,15 @@
-<x-public-layout title="Browse Peptides">
+<x-public-layout
+    :title="\App\Models\Setting::getValue('seo_pages', 'peptides_index_title', 'Peptide Database: Research-Backed Guides')"
+    :description="\App\Models\Setting::getValue('seo_pages', 'peptides_index_description', 'Browse ' . $peptides->total() . '+ peptides with detailed protocols, dosing, benefits, and safety information.')"
+>
+    @push('head')
+        @include('partials.schema-peptide-list')
+        @include('partials.schema-breadcrumbs', ['breadcrumbs' => [
+            ['name' => 'Home', 'url' => route('home')],
+            ['name' => 'Peptide Database'],
+        ]])
+    @endpush
+
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-br from-dark-800 via-dark-900 to-dark-950 overflow-hidden">
         <!-- Background Pattern -->

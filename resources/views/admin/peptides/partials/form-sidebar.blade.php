@@ -52,20 +52,95 @@
 </div>
 
 <!-- SEO -->
-<div class="card">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">SEO</h3>
+<div class="card" x-data="seoFields()">
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-900">SEO</h3>
+        @if($peptide?->id)
+        <button type="button" @click="generateSeo()" :disabled="generating"
+            class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg transition"
+            :class="generating ? 'bg-gray-100 text-gray-400' : 'bg-purple-600 text-white hover:bg-purple-700'">
+            <svg x-show="!generating" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <svg x-show="generating" class="animate-spin w-3.5 h-3.5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+            <span x-text="generating ? 'Generating...' : 'Generate with AI'"></span>
+        </button>
+        @endif
+    </div>
+
+    <p x-show="seoMessage" x-cloak class="mb-3 text-xs p-2 rounded-lg"
+        :class="seoSuccess ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'" x-text="seoMessage"></p>
 
     <div class="space-y-4">
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
-            <input type="text" name="meta_title" value="{{ old('meta_title', $peptide?->meta_title) }}"
+            <div class="flex justify-between mb-1">
+                <label class="block text-sm font-medium text-gray-700">Meta Title</label>
+                <span class="text-xs" :class="titleLen > 60 ? 'text-red-500' : (titleLen > 50 ? 'text-yellow-500' : 'text-gray-400')" x-text="titleLen + '/60'"></span>
+            </div>
+            <input type="text" name="meta_title" x-model="title" x-ref="metaTitle"
+                   value="{{ old('meta_title', $peptide?->meta_title) }}"
                    class="input w-full" placeholder="SEO title...">
         </div>
 
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
-            <textarea name="meta_description" rows="3" class="input w-full"
+            <div class="flex justify-between mb-1">
+                <label class="block text-sm font-medium text-gray-700">Meta Description</label>
+                <span class="text-xs" :class="descLen > 155 ? 'text-red-500' : (descLen > 140 ? 'text-yellow-500' : 'text-gray-400')" x-text="descLen + '/155'"></span>
+            </div>
+            <textarea name="meta_description" rows="3" class="input w-full" x-model="desc" x-ref="metaDesc"
                       placeholder="SEO description...">{{ old('meta_description', $peptide?->meta_description) }}</textarea>
+        </div>
+
+        {{-- Google Preview --}}
+        <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <p class="text-xs text-gray-400 mb-1">Google Preview</p>
+            <p class="text-blue-700 text-sm font-medium truncate" x-text="title || '{{ $peptide?->name ?? 'Peptide Name' }}'"></p>
+            <p class="text-green-700 text-xs">professorpeptides.co/peptides/{{ $peptide?->slug ?? '...' }}</p>
+            <p class="text-gray-600 text-xs mt-0.5 line-clamp-2" x-text="desc || 'Enter a meta description...'"></p>
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+function seoFields() {
+    return {
+        title: '{{ addslashes(old('meta_title', $peptide?->meta_title ?? '')) }}',
+        desc: '{{ addslashes(old('meta_description', $peptide?->meta_description ?? '')) }}',
+        generating: false,
+        seoMessage: '',
+        seoSuccess: false,
+        get titleLen() { return this.title.length; },
+        get descLen() { return this.desc.length; },
+        async generateSeo() {
+            this.generating = true;
+            this.seoMessage = '';
+            try {
+                const res = await fetch('{{ route("admin.settings.seo.generate-one") }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({ peptide_id: {{ $peptide?->id ?? 0 }} }),
+                });
+                const data = await res.json();
+                if (data.success) {
+                    this.title = data.meta_title;
+                    this.desc = data.meta_description;
+                    this.seoMessage = 'SEO generated and saved!';
+                    this.seoSuccess = true;
+                } else {
+                    this.seoMessage = data.error || 'Generation failed.';
+                    this.seoSuccess = false;
+                }
+            } catch (e) {
+                this.seoMessage = 'Network error.';
+                this.seoSuccess = false;
+            }
+            this.generating = false;
+            setTimeout(() => this.seoMessage = '', 4000);
+        }
+    };
+}
+</script>
+@endpush

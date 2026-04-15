@@ -196,6 +196,96 @@
             @endif
         </div>
     @endif
+
+    {{-- Exit Intent Email Capture Popup --}}
+    @if(!$exitEmailCaptured && !$completed)
+    <div x-data="{ show: false, fired: false }" x-cloak
+         x-init="
+            const shouldTrigger = () => !fired && !$wire.exitEmailCaptured && !$wire.completed && !window.__quizCompleted;
+
+            // Desktop: mouse leaves viewport toward top (close button / address bar)
+            document.addEventListener('mouseleave', (e) => {
+                if (e.clientY < 5 && shouldTrigger()) {
+                    show = true;
+                    fired = true;
+                }
+            });
+
+            // Tab close / navigate away: show native 'are you sure?' dialog
+            // If user stays, show our email popup
+            window.addEventListener('beforeunload', (e) => {
+                if (shouldTrigger()) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                    // Browser shows native dialog. If user clicks 'Stay',
+                    // the page remains and we show our popup after a brief delay
+                    setTimeout(() => {
+                        if (shouldTrigger()) {
+                            show = true;
+                            fired = true;
+                        }
+                    }, 500);
+                }
+            });
+
+            // Mobile: page going to background (tab switch, app switch)
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible' && !show && shouldTrigger()) {
+                    // User came back to the tab - show popup now
+                    show = true;
+                    fired = true;
+                }
+            });
+         "
+         x-show="show"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+         style="background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);"
+         @keydown.escape.window="show = false">
+
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative"
+             @click.outside="show = false"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100">
+
+            {{-- Close button --}}
+            <button @click="show = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-7 h-7 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900">Don't lose your progress!</h3>
+                <p class="text-gray-600 mt-2 text-sm">Enter your email to save your quiz results. We'll send your personalized peptide recommendation.</p>
+            </div>
+
+            <form wire:submit="submitExitEmail" class="space-y-3">
+                <input type="email" wire:model="exitEmail" placeholder="your@email.com" required autocomplete="email"
+                    class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 text-center py-3 text-lg">
+                @error('exitEmail') <p class="text-red-500 text-xs text-center">{{ $message }}</p> @enderror
+                <button type="submit" wire:loading.attr="disabled"
+                    class="w-full py-3 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition disabled:opacity-50">
+                    <span wire:loading.remove wire:target="submitExitEmail">Save My Results</span>
+                    <span wire:loading wire:target="submitExitEmail">Saving...</span>
+                </button>
+            </form>
+
+            <button @click="show = false" class="block w-full text-center text-sm text-gray-400 hover:text-gray-600 mt-4">
+                No thanks, I'll start over later
+            </button>
+        </div>
+    </div>
+    @endif
 </div>
 
 @script
@@ -226,6 +316,14 @@
         }
         // Quiz completed — disable abandonment beacon
         window.__quizCompleted = true;
+    });
+
+    // Close exit popup when email is captured
+    $wire.on('exit-email-captured', () => {
+        const popup = document.querySelector('[x-data*="show: false, fired: false"]');
+        if (popup && popup.__x) {
+            popup.__x.$data.show = false;
+        }
     });
 
     // Mark quiz as abandoned when user navigates away mid-quiz

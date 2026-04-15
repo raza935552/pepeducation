@@ -1,5 +1,7 @@
-<x-public-layout>
-    <x-slot name="title">Home</x-slot>
+<x-public-layout
+    :title="\App\Models\Setting::getValue('seo_pages', 'home_title', 'Peptide Guide: Benefits, Dosing Protocols & Side Effects')"
+    :description="\App\Models\Setting::getValue('seo_pages', 'home_description', 'Explore ' . ($stats['peptides'] ?? '68') . '+ peptides with research-backed guides on benefits, dosing protocols, side effects, and safety.')"
+>
 
     @push('head')
         @include('partials.schema-website')

@@ -65,6 +65,8 @@
                         <option value="Synergistic">Synergistic</option>
                         <option value="Complementary">Complementary</option>
                         <option value="Stacking">Stacking</option>
+                        <option value="Being Studied">Being Studied</option>
+                        <option value="Avoid">Avoid</option>
                     </select>
                     <input type="hidden" :name="'compatible_peptides['+index+'][relationship]'" :value="item.relationship">
                     <button type="button" @click="items.splice(index, 1)" class="text-red-400 hover:text-red-600">

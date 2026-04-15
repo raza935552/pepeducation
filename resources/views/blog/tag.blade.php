@@ -1,7 +1,15 @@
 <x-public-layout
-    title="#{{ $tag->name }} - Blog"
-    description="Articles tagged with {{ $tag->name }}"
+    title="{{ $tag->name }} - Peptide Articles"
+    description="Articles tagged with {{ $tag->name }}. Peptide research, protocols, and insights from Professor Peptides."
 >
+    @push('head')
+        @include('partials.schema-breadcrumbs', ['breadcrumbs' => [
+            ['name' => 'Home', 'url' => route('home')],
+            ['name' => 'Blog', 'url' => route('blog.index')],
+            ['name' => $tag->name],
+        ]])
+    @endpush
+
     {{-- Header --}}
     <section class="bg-gradient-to-br from-dark-800 via-dark-900 to-dark-950">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 lg:py-16">

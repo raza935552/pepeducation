@@ -181,6 +181,28 @@ trait EventMethods
         ]);
     }
 
+    public function trackPeptidePaired(QuizResponse $response): bool
+    {
+        if (!$this->shouldTrack('peptide_paired')) return false;
+
+        if (!$response->subscriber) return false;
+
+        $marketingProps = $response->marketing_properties ?? [];
+        $peptide = $marketingProps['recommended_peptide'] ?? null;
+        $peptideSlug = $marketingProps['recommended_peptide_slug'] ?? null;
+
+        if (!$peptide) return false;
+
+        return $this->trackEvent($response->subscriber->email, 'Peptide Paired', [
+            'peptide' => $peptide,
+            'peptide_slug' => $peptideSlug,
+            'quiz_id' => $response->quiz_id,
+            'quiz_name' => $response->quiz?->name,
+            'segment' => $response->segment,
+            'outcome' => $response->outcome?->name,
+        ]);
+    }
+
     public function trackCustomEvent(string $eventName, string $email, array $properties = []): bool
     {
         if (!$this->isEnabled()) return false;

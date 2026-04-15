@@ -30,6 +30,7 @@ class CustomerIoSettingController extends Controller
             'track_outbound_click' => 'boolean',
             'track_stack_completed' => 'boolean',
             'track_subscribed' => 'boolean',
+            'track_peptide_paired' => 'boolean',
             'enable_page_tracking' => 'boolean',
         ]);
 

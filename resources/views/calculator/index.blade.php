@@ -1,5 +1,7 @@
-<x-public-layout>
-    <x-slot name="title">Peptide Calculator</x-slot>
+<x-public-layout
+    :title="\App\Models\Setting::getValue('seo_pages', 'calculator_title', 'Peptide Dosage Calculator')"
+    :description="\App\Models\Setting::getValue('seo_pages', 'calculator_description', 'Free peptide reconstitution and dosage calculator. Calculate your concentration, dose volume, and syringe units for any peptide.')"
+>
 
     <!-- Hero Section -->
     <section class="bg-surface-100 py-12">
@@ -16,8 +18,8 @@
     </section>
 
     <!-- Calculator Section -->
-    <section class="py-12 bg-surface-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section class="py-12 bg-cream-50">
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
             <livewire:peptide-calculator />
         </div>
     </section>

@@ -27,12 +27,12 @@
 
         {{-- Main heading --}}
         <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-[1.08] mb-6" style="text-shadow: 0 0 80px rgb(var(--primary-500) / 0.3), 0 2px 4px rgba(0,0,0,0.3);">
-            Your Peptide <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-300">Research</span> Hub
+            The <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-300">Peptide</span> Encyclopedia
         </h1>
 
         {{-- Subtitle --}}
         <p class="text-lg sm:text-xl text-dark-300 mb-12 max-w-2xl mx-auto leading-relaxed">
-            Learn, track, compare, and optimize your peptide protocols — all in one place.
+            Research-backed guides on {{ $stats['peptides'] ?? '68' }}+ peptides. Benefits, dosing protocols, side effects, and safety profiles.
         </p>
 
         {{-- Big search bar with pulse animation --}}

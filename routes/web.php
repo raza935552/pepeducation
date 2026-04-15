@@ -83,9 +83,15 @@ require __DIR__.'/auth.php';
 // Admin routes (must come before catch-all)
 require __DIR__.'/admin.php';
 
+// Pep Guide (Botpress chatbot)
+Route::get('/pep-guide', fn() => view('pep-guide'))->name('pep-guide');
+
 // Stack Builder
 Route::get('/stack-builder', fn() => view('stack-builder.index'))->name('stack-builder');
 Route::get('/stack-builder/{goal:slug}', fn(StackGoal $goal) => view('stack-builder.index', ['goalSlug' => $goal->slug]))->name('stack-builder.goal');
+
+// Sitemap
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
 // Blog
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');

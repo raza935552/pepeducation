@@ -197,6 +197,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('settings/theme', [\App\Http\Controllers\Admin\ThemeController::class, 'edit'])->name('settings.theme');
     Route::put('settings/theme', [\App\Http\Controllers\Admin\ThemeController::class, 'update'])->name('settings.theme.update');
     Route::post('settings/theme/reset', [\App\Http\Controllers\Admin\ThemeController::class, 'resetDefaults'])->name('settings.theme.reset');
+    // SEO AI Settings
+    Route::get('settings/seo', [\App\Http\Controllers\Admin\SeoSettingsController::class, 'index'])->name('settings.seo');
+    Route::put('settings/seo', [\App\Http\Controllers\Admin\SeoSettingsController::class, 'update'])->name('settings.seo.update');
+    Route::post('settings/seo/test', [\App\Http\Controllers\Admin\SeoSettingsController::class, 'testConnection'])->name('settings.seo.test');
+    Route::get('settings/seo/pending', [\App\Http\Controllers\Admin\SeoSettingsController::class, 'pendingPeptides'])->name('settings.seo.pending');
+    Route::post('settings/seo/generate-one', [\App\Http\Controllers\Admin\SeoSettingsController::class, 'generateOne'])->name('settings.seo.generate-one');
+    Route::post('settings/seo/rewrite-overview', [\App\Http\Controllers\Admin\SeoSettingsController::class, 'rewriteOverview'])->name('settings.seo.rewrite-overview');
+    Route::post('settings/seo/blog-outline', [\App\Http\Controllers\Admin\SeoSettingsController::class, 'generateBlogOutline'])->name('settings.seo.blog-outline');
+    Route::get('settings/seo/review', [\App\Http\Controllers\Admin\SeoSettingsController::class, 'review'])->name('settings.seo.review');
+    Route::put('settings/seo/update-seo', [\App\Http\Controllers\Admin\SeoSettingsController::class, 'updateSeo'])->name('settings.seo.update-seo');
+
     Route::get('settings/customerio', [\App\Http\Controllers\Admin\CustomerIoSettingController::class, 'edit'])->name('settings.customerio');
     Route::put('settings/customerio', [\App\Http\Controllers\Admin\CustomerIoSettingController::class, 'update'])->name('settings.customerio.update');
     Route::post('settings/customerio/test', [\App\Http\Controllers\Admin\CustomerIoSettingController::class, 'test'])->name('settings.customerio.test');

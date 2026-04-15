@@ -8,9 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ $title ? "$title - " : '' }}{{ config('app.name') }}</title>
-    @if($description)
-        <meta name="description" content="{{ $description }}">
-    @endif
+    <meta name="description" content="{{ $description ?? 'Professor Peptides is a free educational resource for peptide research, protocols, dosing, benefits, and safety information.' }}">
 
     {{-- Canonical URL --}}
     <link rel="canonical" href="{{ $canonical ?? url()->current() }}">
@@ -19,9 +17,7 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="{{ $title ?? config('app.name') }}">
     <meta property="og:site_name" content="{{ config('app.name') }}">
-    @if($description)
-        <meta property="og:description" content="{{ $description }}">
-    @endif
+    <meta property="og:description" content="{{ $description ?? 'Professor Peptides is a free educational resource for peptide research, protocols, dosing, benefits, and safety information.' }}">
     <meta property="og:image" content="{{ $image ?? asset('images/og-default.jpg') }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -30,9 +26,7 @@
     {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $title ?? config('app.name') }}">
-    @if($description)
-        <meta name="twitter:description" content="{{ $description }}">
-    @endif
+    <meta name="twitter:description" content="{{ $description ?? 'Professor Peptides is a free educational resource for peptide research, protocols, dosing, benefits, and safety information.' }}">
     <meta name="twitter:image" content="{{ $image ?? asset('images/og-default.jpg') }}">
 
     <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
@@ -44,6 +38,18 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <x-theme-variables />
+
+    {{-- Google Analytics 4 --}}
+    @php $ga4Id = \App\Models\Setting::getValue('tracking', 'ga4_measurement_id'); @endphp
+    @if($ga4Id)
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $ga4Id }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ $ga4Id }}');
+    </script>
+    @endif
 
     @livewireStyles
     @stack('head')

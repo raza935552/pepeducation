@@ -28,6 +28,8 @@ class QuizPlayer extends Component
     public bool $completed = false;
     public string $email = '';
     public bool $showEmailForm = false;
+    public bool $exitEmailCaptured = false;
+    public string $exitEmail = '';
 
     // Text input for question_text slides
     public string $textAnswer = '';
@@ -65,6 +67,7 @@ class QuizPlayer extends Component
         $ppEmail = request()->cookie('pp_email');
         if ($ppEmail) {
             $this->email = $ppEmail;
+            $this->exitEmailCaptured = true;
         }
 
         $this->startQuiz();
@@ -602,6 +605,7 @@ class QuizPlayer extends Component
         ]);
 
         $service->setEmailCookie($this->email);
+        $this->exitEmailCaptured = true;
 
         // Track marketing events now that we have a subscriber
         $this->trackEmailEvents($subscriber);
@@ -637,6 +641,43 @@ class QuizPlayer extends Component
 
         $this->showEmailForm = false;
         $this->nextStep();
+    }
+
+    /**
+     * Handle email submission from exit-intent popup.
+     * Captures the lead without disrupting quiz flow.
+     */
+    public function submitExitEmail(): void
+    {
+        $this->validate(
+            ['exitEmail' => 'required|email:rfc'],
+            ['exitEmail.required' => 'Please enter your email.', 'exitEmail.email' => 'Please enter a valid email.']
+        );
+
+        $service = app(SubscriberService::class);
+
+        $subscriber = $service->subscribe($this->exitEmail, [
+            'source' => 'quiz_exit:' . $this->quiz->slug,
+            'segment' => $this->determineSegment(),
+            'first_session_id' => $this->response?->session_id,
+            'first_landing_page' => url()->current(),
+        ]);
+
+        if ($this->response) {
+            $this->response->update([
+                'email' => $this->exitEmail,
+                'subscriber_id' => $subscriber->id,
+            ]);
+        }
+
+        $service->setEmailCookie($this->exitEmail);
+        $this->email = $this->exitEmail;
+        $this->exitEmailCaptured = true;
+
+        // Fire tracking events
+        $this->trackEmailEvents($subscriber);
+
+        $this->dispatch('exit-email-captured');
     }
 
     /**
@@ -985,6 +1026,7 @@ class QuizPlayer extends Component
             if ($customerIo->isEnabled()) {
                 $this->response->load('subscriber');
                 $success = $customerIo->trackQuizCompleted($this->response);
+                $customerIo->trackPeptidePaired($this->response);
 
                 if (!$success) {
                     logger()->warning('Customer.io quiz sync returned false — will retry via scheduled command', [

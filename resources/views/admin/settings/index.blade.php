@@ -82,6 +82,25 @@
             </div>
         </div>
 
+        <!-- SEO AI Settings -->
+        <div class="card p-6 border-l-4 border-purple-400">
+            <h3 class="text-lg font-semibold mb-1 flex items-center gap-2">
+                <svg aria-hidden="true" class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+                SEO & AI Content
+            </h3>
+            <p class="text-sm text-gray-500 mb-4">AI-powered meta generation, content rewriting, and blog outlines using Claude.</p>
+            <div class="flex items-center gap-4">
+                <a href="{{ route('admin.settings.seo') }}" class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium">Configure SEO AI</a>
+                @if(\App\Models\Setting::getValue('seo', 'claude_api_key'))
+                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">API Key Set</span>
+                @else
+                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-gray-100 text-gray-500 rounded-full">Not Configured</span>
+                @endif
+            </div>
+        </div>
+
         <!-- Customer.io Integration -->
         <div class="card p-6 border-l-4 border-green-400">
             <h3 class="text-lg font-semibold mb-1 flex items-center gap-2">
@@ -169,12 +188,22 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">{{ $setting->description }}</label>
                             <input type="text" name="settings[{{ 200 + $loop->index }}][value]" value="{{ $setting->value }}"
-                                class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+                                class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 font-mono text-sm"
+                                placeholder="{{ str_contains($setting->key, 'ga4') ? 'G-XXXXXXXXXX' : 'Enter pixel ID' }}">
                             <input type="hidden" name="settings[{{ 200 + $loop->index }}][group]" value="{{ $setting->group }}">
                             <input type="hidden" name="settings[{{ 200 + $loop->index }}][key]" value="{{ $setting->key }}">
+                            @if(str_contains($setting->key, 'ga4') && $setting->value)
+                                <p class="text-xs text-green-600 mt-1 flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                    Active: {{ $setting->value }}
+                                </p>
+                            @endif
                         </div>
                     @endif
                 @endforeach
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-200">
+                <button type="submit" class="btn btn-primary text-sm">Save Tracking Settings</button>
             </div>
         </div>
 

@@ -1,7 +1,15 @@
 <x-public-layout
-    title="{{ $category->name }} - Blog"
-    description="{{ $category->description ?? 'Browse articles in ' . $category->name }}"
+    title="{{ $category->name }} - Peptide Blog"
+    description="{{ $category->description ?? 'Browse articles about ' . $category->name . '. Research, guides, and expert insights from Professor Peptides.' }}"
 >
+    @push('head')
+        @include('partials.schema-breadcrumbs', ['breadcrumbs' => [
+            ['name' => 'Home', 'url' => route('home')],
+            ['name' => 'Blog', 'url' => route('blog.index')],
+            ['name' => $category->name],
+        ]])
+    @endpush
+
     {{-- Header --}}
     <section class="bg-gradient-to-br from-dark-800 via-dark-900 to-dark-950">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 lg:py-16">

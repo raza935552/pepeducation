@@ -234,14 +234,23 @@ class BlogPostController extends Controller
         }
 
         $name = Str::random(40) . '.' . $file->getClientOriginalExtension();
-        $dir = storage_path('app/public/blog');
+        $path = 'professorpeptides/blog/' . $name;
 
-        if (!is_dir($dir)) {
-            mkdir($dir, 0755, true);
+        // Try R2 first, fall back to local storage
+        try {
+            if (config('filesystems.disks.r2.key')) {
+                Storage::disk('r2')->put($path, file_get_contents($file->getPathname()), 'public');
+                $url = rtrim(config('filesystems.disks.r2.url'), '/') . '/' . $path;
+            } else {
+                throw new \RuntimeException('R2 not configured');
+            }
+        } catch (\Exception $e) {
+            // Fallback to local storage
+            $dir = storage_path('app/public/blog');
+            if (!is_dir($dir)) mkdir($dir, 0755, true);
+            $file->move($dir, $name);
+            $url = Storage::disk('public')->url('blog/' . $name);
         }
-
-        $file->move($dir, $name);
-        $url = Storage::disk('public')->url('blog/' . $name);
 
         return response()->json([
             'data' => [$url],
