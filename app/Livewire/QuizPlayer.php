@@ -30,6 +30,7 @@ class QuizPlayer extends Component
     public bool $showEmailForm = false;
     public bool $exitEmailCaptured = false;
     public string $exitEmail = '';
+    public string $exitReason = '';
 
     // Text input for question_text slides
     public string $textAnswer = '';
@@ -657,7 +658,7 @@ class QuizPlayer extends Component
         $service = app(SubscriberService::class);
 
         $subscriber = $service->subscribe($this->exitEmail, [
-            'source' => 'quiz_exit:' . $this->quiz->slug,
+            'source' => 'quiz_exit:' . $this->quiz->slug . ($this->exitReason ? ':' . $this->exitReason : ''),
             'segment' => $this->determineSegment(),
             'first_session_id' => $this->response?->session_id,
             'first_landing_page' => url()->current(),
@@ -749,6 +750,26 @@ class QuizPlayer extends Component
 
         $skipTo = $question['skip_to_question'] ?? null;
         $this->nextStep($skipTo ? (string) $skipTo : null);
+    }
+
+    /**
+     * Reset quiz state so the user can start over from the beginning.
+     * Clears answers, step, and navigation history. Creates a fresh QuizResponse.
+     */
+    public function retakeQuiz(): void
+    {
+        $this->currentStep = 0;
+        $this->answers = [];
+        $this->segmentScores = ['tof' => 0, 'mof' => 0, 'bof' => 0];
+        $this->outcome = null;
+        $this->completed = false;
+        $this->navigationHistory = [];
+        $this->textAnswer = '';
+        $this->multiSelections = [];
+        $this->response = null;
+
+        // Start a fresh quiz response
+        $this->startQuiz();
     }
 
     /**

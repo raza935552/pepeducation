@@ -136,19 +136,30 @@
     @endif
 
     {{-- CTA from slide config (always rendered regardless of product state) --}}
-    @if(!empty($this->currentSlide['cta_text']))
-        <div class="text-center mb-6">
-            @if(!empty($this->currentSlide['cta_url']))
-                <a href="{{ $this->currentSlide['cta_url'] }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary inline-block">
-                    {{ $this->currentSlide['cta_text'] }}
+    @if(!empty($resolved['cta_text']))
+        <div class="text-center mb-4">
+            @if(!empty($resolved['cta_url']))
+                <a href="{{ $resolved['cta_url'] }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary inline-block">
+                    {{ $resolved['cta_text'] }}
                 </a>
             @else
                 <button wire:click="advanceSlide" wire:loading.attr="disabled" class="btn btn-primary">
-                    {{ $this->currentSlide['cta_text'] }}
+                    {{ $resolved['cta_text'] }}
                 </button>
             @endif
         </div>
     @endif
+
+    {{-- Retake Quiz button --}}
+    <div class="text-center mb-6">
+        <button wire:click="retakeQuiz" wire:loading.attr="disabled"
+            class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            Retake Quiz
+        </button>
+    </div>
 
     @include('livewire.partials.slide-accordion')
 </div>

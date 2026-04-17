@@ -197,92 +197,129 @@
         </div>
     @endif
 
-    {{-- Exit Intent Email Capture Popup --}}
+    {{-- Exit Intent Multi-Step Popup (BioLinkX-style) --}}
     @if(!$exitEmailCaptured && !$completed)
-    <div x-data="{ show: false, fired: false }" x-cloak
-         x-init="
-            const shouldTrigger = () => !fired && !$wire.exitEmailCaptured && !$wire.completed && !window.__quizCompleted;
-
-            // Desktop: mouse leaves viewport toward top (close button / address bar)
-            document.addEventListener('mouseleave', (e) => {
-                if (e.clientY < 5 && shouldTrigger()) {
-                    show = true;
-                    fired = true;
-                }
-            });
-
-            // Tab close / navigate away: show native 'are you sure?' dialog
-            // If user stays, show our email popup
-            window.addEventListener('beforeunload', (e) => {
-                if (shouldTrigger()) {
-                    e.preventDefault();
-                    e.returnValue = '';
-                    // Browser shows native dialog. If user clicks 'Stay',
-                    // the page remains and we show our popup after a brief delay
-                    setTimeout(() => {
-                        if (shouldTrigger()) {
-                            show = true;
-                            fired = true;
-                        }
-                    }, 500);
-                }
-            });
-
-            // Mobile: page going to background (tab switch, app switch)
-            document.addEventListener('visibilitychange', () => {
-                if (document.visibilityState === 'visible' && !show && shouldTrigger()) {
-                    // User came back to the tab - show popup now
-                    show = true;
-                    fired = true;
-                }
-            });
-         "
-         x-show="show"
-         x-transition:enter="transition ease-out duration-200"
+    <div x-data="quizExitPopup()" x-cloak x-show="show"
+         x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
          class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-         style="background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);"
-         @keydown.escape.window="show = false">
+         style="background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);"
+         @keydown.escape.window="dismiss()"
+         @click.self="dismiss()">
 
-        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative"
-             @click.outside="show = false"
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0 scale-95"
-             x-transition:enter-end="opacity-100 scale-100">
+        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+             x-transition:enter-end="opacity-100 scale-100 translate-y-0">
 
             {{-- Close button --}}
-            <button @click="show = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <button @click="dismiss()" aria-label="Close"
+                class="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 hover:bg-white text-gray-500 hover:text-gray-700 shadow-sm transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
 
-            <div class="text-center mb-6">
-                <div class="w-14 h-14 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-7 h-7 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900">Don't lose your progress!</h3>
-                <p class="text-gray-600 mt-2 text-sm">Enter your email to save your quiz results. We'll send your personalized peptide recommendation.</p>
+            {{-- Progress dots --}}
+            <div class="flex justify-center gap-1.5 pt-6">
+                <div class="w-1.5 h-1.5 rounded-full transition-all" :class="currentStep === 1 ? 'bg-primary-500 w-6' : 'bg-gray-300'"></div>
+                <div class="w-1.5 h-1.5 rounded-full transition-all" :class="currentStep === 2 ? 'bg-primary-500 w-6' : 'bg-gray-300'"></div>
+                <div class="w-1.5 h-1.5 rounded-full transition-all" :class="currentStep === 3 ? 'bg-primary-500 w-6' : 'bg-gray-300'"></div>
             </div>
 
-            <form wire:submit="submitExitEmail" class="space-y-3">
-                <input type="email" wire:model="exitEmail" placeholder="your@email.com" required autocomplete="email"
-                    class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 text-center py-3 text-lg">
-                @error('exitEmail') <p class="text-red-500 text-xs text-center">{{ $message }}</p> @enderror
-                <button type="submit" wire:loading.attr="disabled"
-                    class="w-full py-3 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition disabled:opacity-50">
-                    <span wire:loading.remove wire:target="submitExitEmail">Save My Results</span>
-                    <span wire:loading wire:target="submitExitEmail">Saving...</span>
-                </button>
-            </form>
+            {{-- STEP 1: Why leaving / survey --}}
+            <div x-show="currentStep === 1" class="p-8 pt-6"
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 translate-x-4"
+                 x-transition:enter-end="opacity-100 translate-x-0">
+                <div class="text-center mb-6">
+                    <div class="w-14 h-14 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-7 h-7 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 leading-tight">Wait! Before you go...</h3>
+                    <p class="text-gray-600 mt-2 text-sm">You're almost done. What's on your mind?</p>
+                </div>
 
-            <button @click="show = false" class="block w-full text-center text-sm text-gray-400 hover:text-gray-600 mt-4">
-                No thanks, I'll start over later
-            </button>
+                <div class="space-y-2">
+                    <button type="button" @click="selectReason('want_results')"
+                        class="w-full py-3.5 px-4 text-left font-medium rounded-xl border-2 border-primary-200 bg-primary-50 text-primary-700 hover:bg-primary-100 hover:border-primary-300 transition">
+                        📬 Send me my results
+                    </button>
+                    <button type="button" @click="selectReason('too_many_questions')"
+                        class="w-full py-3.5 px-4 text-left font-medium rounded-xl border-2 border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition">
+                        ⏱️ Too many questions
+                    </button>
+                    <button type="button" @click="selectReason('not_sure')"
+                        class="w-full py-3.5 px-4 text-left font-medium rounded-xl border-2 border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition">
+                        🤔 Not sure peptides are right for me
+                    </button>
+                    <button type="button" @click="selectReason('later')"
+                        class="w-full py-3.5 px-4 text-left font-medium rounded-xl border-2 border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition">
+                        🕒 I'll come back later
+                    </button>
+                </div>
+
+                <button @click="dismiss()" class="block w-full text-center text-xs text-gray-400 hover:text-gray-600 mt-5 underline">
+                    No thanks, close this
+                </button>
+            </div>
+
+            {{-- STEP 2: Email capture with contextual copy --}}
+            <div x-show="currentStep === 2" class="p-8 pt-6"
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 translate-x-4"
+                 x-transition:enter-end="opacity-100 translate-x-0">
+                <div class="text-center mb-6">
+                    <div class="w-14 h-14 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-7 h-7 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900" x-text="step2Headline"></h3>
+                    <p class="text-gray-600 mt-2 text-sm" x-text="step2Subtitle"></p>
+                </div>
+
+                <form wire:submit="submitExitEmail" class="space-y-3" @submit="onEmailSubmit">
+                    <input type="email" wire:model="exitEmail" placeholder="your@email.com" required autocomplete="email"
+                        class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 text-center py-3.5 text-base">
+                    @error('exitEmail') <p class="text-red-500 text-xs text-center">{{ $message }}</p> @enderror
+                    <button type="submit" wire:loading.attr="disabled"
+                        class="w-full py-3.5 bg-primary-600 text-white font-bold rounded-xl hover:bg-primary-700 transition disabled:opacity-50 inline-flex items-center justify-center gap-2">
+                        <span wire:loading.remove wire:target="submitExitEmail" x-text="step2CTA"></span>
+                        <span wire:loading wire:target="submitExitEmail">Saving...</span>
+                    </button>
+                    <p class="text-center text-[11px] text-gray-400">No spam. Unsubscribe anytime.</p>
+                </form>
+
+                <button @click="currentStep = 1" class="block w-full text-center text-xs text-gray-400 hover:text-gray-600 mt-4">
+                    ← Go back
+                </button>
+            </div>
+
+            {{-- STEP 3: Success --}}
+            <div x-show="currentStep === 3" class="p-8 pt-6 text-center"
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900">You're all set!</h3>
+                <p class="text-gray-600 mt-2 text-sm mb-6">Your results are saved. We'll email your personalized peptide match if you don't finish today.</p>
+
+                <button @click="continueQuiz()" class="w-full py-3 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition">
+                    Finish the Quiz Now
+                </button>
+                <button @click="dismiss()" class="block w-full text-center text-xs text-gray-400 hover:text-gray-600 mt-3">
+                    I'll come back later
+                </button>
+            </div>
         </div>
     </div>
     @endif
@@ -290,6 +327,103 @@
 
 @script
 <script>
+    // Multi-step exit intent popup
+    window.quizExitPopup = function() {
+        return {
+            show: false,
+            fired: false,
+            currentStep: 1,
+            selectedReason: null,
+            step2Headline: 'Save your progress',
+            step2Subtitle: "We'll email your personalized peptide match.",
+            step2CTA: 'Save My Results',
+
+            shouldTrigger() {
+                return !this.fired && !this.$wire.exitEmailCaptured && !this.$wire.completed && !window.__quizCompleted;
+            },
+
+            trigger() {
+                if (this.shouldTrigger()) {
+                    this.show = true;
+                    this.fired = true;
+                }
+            },
+
+            init() {
+                // Desktop: mouseleave toward top
+                document.addEventListener('mouseleave', (e) => {
+                    if (e.clientY < 5) this.trigger();
+                });
+
+                // Tab close / navigate away
+                window.addEventListener('beforeunload', (e) => {
+                    if (this.shouldTrigger()) {
+                        e.preventDefault();
+                        e.returnValue = '';
+                        setTimeout(() => this.trigger(), 500);
+                    }
+                });
+
+                // Mobile: tab switch / app switch
+                document.addEventListener('visibilitychange', () => {
+                    if (document.visibilityState === 'visible' && !this.show && this.shouldTrigger()) {
+                        this.trigger();
+                    }
+                });
+
+                // Listen for successful exit email capture
+                this.$wire.on('exit-email-captured', () => {
+                    this.currentStep = 3;
+                });
+            },
+
+            selectReason(reason) {
+                this.selectedReason = reason;
+                this.$wire.set('exitReason', reason, false);
+                // Tailor step 2 copy based on selected reason
+                const copy = {
+                    want_results: {
+                        headline: "Where should we send your results?",
+                        subtitle: "Enter your email and we'll deliver your personalized peptide match.",
+                        cta: 'Send My Results'
+                    },
+                    too_many_questions: {
+                        headline: "Short on time?",
+                        subtitle: "Leave your email — we'll send a quick summary so you can finish when you're ready.",
+                        cta: 'Send Me a Summary'
+                    },
+                    not_sure: {
+                        headline: "Still curious?",
+                        subtitle: "Get a free peptide beginner's guide plus your quiz results.",
+                        cta: 'Send Me the Guide'
+                    },
+                    later: {
+                        headline: "Save your spot.",
+                        subtitle: "We'll email a link so you can pick up right where you left off.",
+                        cta: 'Email Me the Link'
+                    },
+                };
+                const c = copy[reason] || copy.want_results;
+                this.step2Headline = c.headline;
+                this.step2Subtitle = c.subtitle;
+                this.step2CTA = c.cta;
+                this.currentStep = 2;
+            },
+
+            onEmailSubmit() {
+                // Livewire will handle the submission, and we listen for exit-email-captured
+            },
+
+            continueQuiz() {
+                this.show = false;
+            },
+
+            dismiss() {
+                this.show = false;
+            }
+        };
+    };
+
     // Scroll quiz container into view after each slide transition
     Livewire.hook('morph.updated', ({ el }) => {
         if (el.classList && el.classList.contains('quiz-player')) {
@@ -316,14 +450,6 @@
         }
         // Quiz completed — disable abandonment beacon
         window.__quizCompleted = true;
-    });
-
-    // Close exit popup when email is captured
-    $wire.on('exit-email-captured', () => {
-        const popup = document.querySelector('[x-data*="show: false, fired: false"]');
-        if (popup && popup.__x) {
-            popup.__x.$data.show = false;
-        }
     });
 
     // Mark quiz as abandoned when user navigates away mid-quiz
