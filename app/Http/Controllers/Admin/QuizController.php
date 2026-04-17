@@ -428,6 +428,154 @@ class QuizController extends Controller
         return redirect()->route('admin.quizzes.edit', $newQuiz)->with('success', 'Quiz duplicated.');
     }
 
+    /**
+     * Export the full quiz structure as a plain-text document.
+     * Output is designed to be pasted into a Claude chat for briefing or improvement.
+     */
+    public function export(Quiz $quiz)
+    {
+        $quiz->load(['questions' => fn ($q) => $q->orderBy('order'), 'outcomes']);
+
+        $lines = [];
+        $lines[] = '================================================================';
+        $lines[] = 'QUIZ EXPORT: ' . $quiz->name;
+        $lines[] = '================================================================';
+        $lines[] = 'Slug: ' . $quiz->slug;
+        $lines[] = 'Type: ' . ($quiz->type ?? 'n/a');
+        $lines[] = 'Status: ' . ($quiz->is_active ? 'Active' : 'Inactive');
+        $lines[] = 'Questions: ' . $quiz->questions->count();
+        $lines[] = 'Outcomes: ' . $quiz->outcomes->count();
+        $lines[] = 'Exported: ' . now()->toDateTimeString();
+        $lines[] = '';
+
+        if (!empty($quiz->description)) {
+            $lines[] = 'DESCRIPTION:';
+            $lines[] = $quiz->description;
+            $lines[] = '';
+        }
+
+        if (!empty($quiz->intro_text)) {
+            $lines[] = 'INTRO TEXT:';
+            $lines[] = $quiz->intro_text;
+            $lines[] = '';
+        }
+
+        $lines[] = '================================================================';
+        $lines[] = 'SLIDES (in order)';
+        $lines[] = '================================================================';
+        $lines[] = '';
+
+        foreach ($quiz->questions as $i => $q) {
+            $num = $i + 1;
+            $lines[] = "---------- SLIDE #{$num} ----------";
+            $lines[] = "ID: {$q->id}";
+            $lines[] = "Order: {$q->order}";
+            $lines[] = "Type: {$q->slide_type}";
+            if (!empty($q->marketing_property)) {
+                $lines[] = "Marketing Property: {$q->marketing_property}";
+            }
+
+            if (!empty($q->question_text)) {
+                $lines[] = "Question: " . trim($q->question_text);
+            }
+            if (!empty($q->question_subtext)) {
+                $lines[] = "Subtext: " . trim($q->question_subtext);
+            }
+            if (!empty($q->content_title)) {
+                $lines[] = "Title: " . trim($q->content_title);
+            }
+            if (!empty($q->content_body)) {
+                $lines[] = "Body: " . trim($q->content_body);
+            }
+            if (!empty($q->content_source)) {
+                $lines[] = "Source: " . trim($q->content_source);
+            }
+            if (!empty($q->cta_text)) {
+                $lines[] = "CTA: {$q->cta_text}" . ($q->cta_url ? " -> {$q->cta_url}" : '');
+            }
+
+            // Options
+            if (!empty($q->options) && is_array($q->options)) {
+                $lines[] = "Options:";
+                foreach ($q->options as $idx => $opt) {
+                    $label = $opt['label'] ?? $opt['text'] ?? '(no label)';
+                    $value = $opt['value'] ?? $opt['id'] ?? '';
+                    $skip = $opt['skip_to_question'] ?? null;
+                    $scores = [];
+                    foreach (['tof', 'mof', 'bof'] as $seg) {
+                        if (!empty($opt["score_{$seg}"])) $scores[] = strtoupper($seg) . ':' . $opt["score_{$seg}"];
+                    }
+                    $parts = [];
+                    $parts[] = ($idx + 1) . '. ' . $label;
+                    $parts[] = "value={$value}";
+                    if ($skip) $parts[] = "skip_to_slide={$skip}";
+                    if ($scores) $parts[] = 'scores=[' . implode(',', $scores) . ']';
+                    if (!empty($opt['marketing_value'])) $parts[] = "mkt={$opt['marketing_value']}";
+                    $lines[] = '  ' . implode(' | ', $parts);
+                }
+            }
+
+            // Show conditions
+            if (!empty($q->show_conditions)) {
+                $conds = $q->show_conditions['conditions'] ?? [];
+                if ($conds) {
+                    $parts = [];
+                    foreach ($conds as $c) {
+                        $parts[] = "slide_{$c['question_id']}={$c['option_value']}";
+                    }
+                    $type = $q->show_conditions['type'] ?? 'and';
+                    $lines[] = "Show when: " . implode(" {$type} ", $parts);
+                }
+            }
+
+            // Skip to
+            if (!empty($q->skip_to_question)) {
+                $lines[] = "Default skip_to_slide: {$q->skip_to_question}";
+            }
+
+            // Dynamic content map summary
+            if (!empty($q->dynamic_content_key) && is_array($q->dynamic_content_map)) {
+                $lines[] = "Dynamic content (key={$q->dynamic_content_key}):";
+                foreach ($q->dynamic_content_map as $key => $content) {
+                    $title = $content['title'] ?? '';
+                    $body = $content['body'] ?? '';
+                    $lines[] = "  [{$key}] {$title}";
+                    if ($body) $lines[] = "    -> " . str_replace("\n", ' ', trim($body));
+                }
+            }
+
+            $lines[] = '';
+        }
+
+        // Outcomes
+        if ($quiz->outcomes->count()) {
+            $lines[] = '================================================================';
+            $lines[] = 'OUTCOMES';
+            $lines[] = '================================================================';
+            $lines[] = '';
+            foreach ($quiz->outcomes->sortBy('priority') as $o) {
+                $lines[] = "---------- OUTCOME: {$o->name} ----------";
+                $lines[] = "ID: {$o->id} | Priority: {$o->priority}";
+                if (!empty($o->conditions)) {
+                    $lines[] = "Conditions: " . json_encode($o->conditions, JSON_UNESCAPED_SLASHES);
+                }
+                if (!empty($o->result_title)) $lines[] = "Result title: {$o->result_title}";
+                if (!empty($o->result_message)) $lines[] = "Result message: " . trim($o->result_message);
+                if (!empty($o->recommended_peptide_id)) $lines[] = "Recommended peptide ID: {$o->recommended_peptide_id}";
+                if (!empty($o->marketing_event)) $lines[] = "Marketing event: {$o->marketing_event}";
+                $lines[] = '';
+            }
+        }
+
+        $content = implode("\n", $lines);
+        $filename = 'quiz-' . $quiz->slug . '-' . now()->format('Ymd-His') . '.txt';
+
+        return response($content, 200, [
+            'Content-Type' => 'text/plain; charset=utf-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
+    }
+
     protected function defaultSettings(): array
     {
         return [

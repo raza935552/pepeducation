@@ -53,6 +53,7 @@
                             </td>
                             <td class="px-6 py-4 text-right space-x-2">
                                 <a href="{{ route('admin.quizzes.edit', $quiz) }}" class="text-brand-gold hover:underline">Edit</a>
+                                <a href="{{ route('admin.quizzes.export', $quiz) }}" class="text-blue-600 hover:underline" title="Download quiz as .txt">Export</a>
                                 <form action="{{ route('admin.quizzes.duplicate', $quiz) }}" method="POST" class="inline">
                                     @csrf
                                     <button type="submit" class="text-gray-600 hover:underline">Duplicate</button>
