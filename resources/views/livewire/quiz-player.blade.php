@@ -436,17 +436,35 @@
     // Track quiz start
     $wire.on('quiz-started', ({ quizId }) => {
         console.log('Quiz started:', quizId);
-        if (window.PPTracker) {
-            window.PPTracker.trackQuizStart(quizId);
+        if (window.PPTracker) window.PPTracker.trackQuizStart(quizId);
+        if (window.PepTracking) window.PepTracking.track('Quiz Started', { quiz_id: quizId });
+    });
+
+    // Track individual quiz answers
+    $wire.on('quiz-answer', (data) => {
+        const payload = Array.isArray(data) ? data[0] : data;
+        if (window.PepTracking) {
+            window.PepTracking.track('Quiz Answer', {
+                question: payload.question || '',
+                answer: payload.answer || '',
+                step: payload.step || 0,
+                quiz_id: payload.quizId || null,
+            });
         }
     });
 
     // Track quiz completion
     $wire.on('quiz-completed', (data) => {
         console.log('Quiz completed:', data);
-        if (window.PPTracker) {
-            const payload = Array.isArray(data) ? data[0] : data;
-            window.PPTracker.trackQuizComplete(payload.quizId, payload);
+        const payload = Array.isArray(data) ? data[0] : data;
+        if (window.PPTracker) window.PPTracker.trackQuizComplete(payload.quizId, payload);
+        if (window.PepTracking) {
+            window.PepTracking.track('Quiz Completed', {
+                quiz_id: payload.quizId,
+                results: payload.outcomeId || payload.segment || null,
+                segment: payload.segment || null,
+                total_steps: Object.keys(payload.answers || {}).length,
+            });
         }
         // Quiz completed — disable abandonment beacon
         window.__quizCompleted = true;

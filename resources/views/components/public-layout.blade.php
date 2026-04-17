@@ -51,6 +51,9 @@
     </script>
     @endif
 
+    {{-- Customer.io CDP (cioanalytics) --}}
+    <x-cio-cdp />
+
     @livewireStyles
     @stack('head')
 </head>

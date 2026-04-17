@@ -446,6 +446,14 @@ class QuizPlayer extends Component
             $this->answers[$questionIndex]['marketing_value'] ?? null
         );
 
+        // Client-side CDP event (PepTracking.track)
+        $this->dispatch('quiz-answer', [
+            'quizId' => $this->quiz->id,
+            'question' => $question['question_text'] ?? '',
+            'answer' => $selectedOption['label'] ?? $selectedOption['text'] ?? $optionId,
+            'step' => $questionIndex + 1,
+        ]);
+
         // Check if we should collect email now (legacy setting — new system uses email_capture slides)
         if ($this->shouldCollectEmailNow()) {
             $this->showEmailForm = true;

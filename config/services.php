@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'customerio' => [
+        'cdp_write_key' => env('CUSTOMERIO_CDP_WRITE_KEY'),
+    ],
+
 ];
