@@ -87,6 +87,40 @@ export default {
                     950: 'rgb(var(--dark-950) / <alpha-value>)',
                 },
 
+                // Brand palette
+                cream: {
+                    50: '#FDFCFA',
+                    100: '#F5F1EB',
+                    200: '#E8E4DE',
+                    300: '#D4CFC7',
+                    400: '#B8B0A5',
+                    500: '#9C9285',
+                },
+                gold: {
+                    50: '#FBF7EE',
+                    100: '#F0E6D0',
+                    300: '#D4B861',
+                    400: '#C9A227',
+                    500: '#9A7B4F',
+                    600: '#7A5F3D',
+                    700: '#5A452D',
+                    900: '#3D2E1E',
+                },
+                caramel: {
+                    400: '#BF9270',
+                    500: '#A67B5B',
+                    600: '#8B6347',
+                    700: '#704F38',
+                },
+                brown: {
+                    600: '#4A433C',
+                    700: '#3D3630',
+                    800: '#2A2520',
+                    900: '#1A1714',
+                    950: '#0F0D0B',
+                },
+                'brand-gold': '#9A7B4F',
+
                 // Flat semantic colors
                 heading: 'rgb(var(--heading) / <alpha-value>)',
                 body: 'rgb(var(--text) / <alpha-value>)',

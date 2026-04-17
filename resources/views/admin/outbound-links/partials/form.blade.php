@@ -117,14 +117,18 @@
             @endif
 
             <button type="submit" class="w-full btn btn-primary">{{ $link ? 'Update' : 'Create' }}</button>
-
-            @if($link)
-                <form action="{{ route('admin.outbound-links.destroy', $link) }}" method="POST"
-                    onsubmit="return confirm('Delete this link?')">
-                    @csrf @method('DELETE')
-                    <button type="submit" class="w-full btn bg-red-500 text-white hover:bg-red-600">Delete</button>
-                </form>
-            @endif
         </div>
     </div>
 </form>
+
+@if($link)
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-3">
+        <div class="lg:col-span-1 lg:col-start-3">
+            <form action="{{ route('admin.outbound-links.destroy', $link) }}" method="POST"
+                onsubmit="return confirm('Delete this link?')">
+                @csrf @method('DELETE')
+                <button type="submit" class="w-full btn bg-red-500 text-white hover:bg-red-600">Delete</button>
+            </form>
+        </div>
+    </div>
+@endif

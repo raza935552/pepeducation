@@ -12,7 +12,8 @@ class PeptideCalculator extends Component
     public $waterAmount = 2; // mL of bacteriostatic water
 
     // Dosing inputs
-    public $desiredDose = 250; // mcg desired per injection
+    public $desiredDose = 250; // desired per injection
+    public $doseUnit = 'mcg'; // 'mcg' or 'mg'
     public $syringeSize = '100'; // 100u, 50u, or 30u
 
     // Body weight dosing
@@ -47,7 +48,7 @@ class PeptideCalculator extends Component
     }
 
     /**
-     * Get the effective desired dose (considering body weight if enabled)
+     * Get the effective desired dose in mcg (considering body weight and unit)
      */
     #[Computed]
     public function effectiveDose(): float
@@ -58,7 +59,10 @@ class PeptideCalculator extends Component
                 : $this->bodyWeight;
             return $this->dosePerKg * $weightInKg;
         }
-        return $this->desiredDose;
+        // Convert mg to mcg if needed
+        return $this->doseUnit === 'mg'
+            ? $this->desiredDose * 1000
+            : $this->desiredDose;
     }
 
     /**

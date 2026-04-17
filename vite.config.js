@@ -6,6 +6,7 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/css/app.css',
+                'resources/css/brand-presets.css',
                 'resources/js/app.js',
                 'resources/js/grapesjs-editor.js',
             ],

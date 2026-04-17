@@ -196,14 +196,18 @@
             </div>
 
             <button type="submit" class="w-full btn btn-primary">{{ $bundle ? 'Update Bundle' : 'Create Bundle' }}</button>
-
-            @if($bundle)
-                <form action="{{ route('admin.stack-bundles.destroy', $bundle) }}" method="POST"
-                    onsubmit="return confirm('Delete this bundle?')">
-                    @csrf @method('DELETE')
-                    <button type="submit" class="w-full btn bg-red-500 text-white hover:bg-red-600">Delete Bundle</button>
-                </form>
-            @endif
         </div>
     </div>
 </form>
+
+@if($bundle)
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-3">
+        <div class="lg:col-span-1 lg:col-start-3">
+            <form action="{{ route('admin.stack-bundles.destroy', $bundle) }}" method="POST"
+                onsubmit="return confirm('Delete this bundle?')">
+                @csrf @method('DELETE')
+                <button type="submit" class="w-full btn bg-red-500 text-white hover:bg-red-600">Delete Bundle</button>
+            </form>
+        </div>
+    </div>
+@endif

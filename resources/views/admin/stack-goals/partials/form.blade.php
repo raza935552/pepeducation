@@ -81,14 +81,18 @@
             </div>
 
             <button type="submit" class="w-full btn btn-primary">{{ $goal ? 'Update Goal' : 'Create Goal' }}</button>
-
-            @if($goal)
-                <form action="{{ route('admin.stack-goals.destroy', $goal) }}" method="POST"
-                    onsubmit="return confirm('Delete this goal? Associated product links will be removed.')">
-                    @csrf @method('DELETE')
-                    <button type="submit" class="w-full btn bg-red-500 text-white hover:bg-red-600">Delete Goal</button>
-                </form>
-            @endif
         </div>
     </div>
 </form>
+
+@if($goal)
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-3">
+        <div class="lg:col-span-1 lg:col-start-3">
+            <form action="{{ route('admin.stack-goals.destroy', $goal) }}" method="POST"
+                onsubmit="return confirm('Delete this goal? Associated product links will be removed.')">
+                @csrf @method('DELETE')
+                <button type="submit" class="w-full btn bg-red-500 text-white hover:bg-red-600">Delete Goal</button>
+            </form>
+        </div>
+    </div>
+@endif

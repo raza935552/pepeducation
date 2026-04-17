@@ -102,14 +102,18 @@
             </div>
 
             <button type="submit" class="w-full btn btn-primary">{{ $leadMagnet ? 'Update' : 'Create' }}</button>
-
-            @if($leadMagnet)
-                <form action="{{ route('admin.lead-magnets.destroy', $leadMagnet) }}" method="POST"
-                    onsubmit="return confirm('Delete this lead magnet?')">
-                    @csrf @method('DELETE')
-                    <button type="submit" class="w-full btn bg-red-500 text-white hover:bg-red-600">Delete</button>
-                </form>
-            @endif
         </div>
     </div>
 </form>
+
+@if($leadMagnet)
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-3">
+        <div class="lg:col-span-1 lg:col-start-3">
+            <form action="{{ route('admin.lead-magnets.destroy', $leadMagnet) }}" method="POST"
+                onsubmit="return confirm('Delete this lead magnet?')">
+                @csrf @method('DELETE')
+                <button type="submit" class="w-full btn bg-red-500 text-white hover:bg-red-600">Delete</button>
+            </form>
+        </div>
+    </div>
+@endif

@@ -223,15 +223,23 @@
                     class="panel-tab active flex-1 px-4 py-3 text-sm font-medium transition-colors">
                 Styles
             </button>
+            <button type="button" onclick="showRightPanel('classes')" id="tab-classes"
+                    class="panel-tab flex-1 px-4 py-3 text-sm font-medium transition-colors">
+                Classes
+            </button>
             <button type="button" onclick="showRightPanel('traits')" id="tab-traits"
                     class="panel-tab flex-1 px-4 py-3 text-sm font-medium transition-colors">
                 Settings
             </button>
         </div>
-        <!-- Selector Panel -->
-        <div id="selectors-panel" class="p-3 border-b border-gray-700"></div>
-        <!-- Styles Panel -->
-        <div id="styles-panel" class="flex-1 overflow-y-auto p-3"></div>
+        <!-- Styles wrapper: selectors + global colors + style sectors all scroll together -->
+        <div id="styles-wrapper" class="flex-1 overflow-y-auto">
+            <div id="selectors-panel" class="p-3 border-b border-gray-700"></div>
+            <!-- global-colors-panel is injected here by JS -->
+            <div id="styles-panel" class="p-3"></div>
+        </div>
+        <!-- Brand Classes Panel (own tab) -->
+        <div id="brand-classes-panel" class="flex-1 overflow-y-auto p-3 hidden"></div>
         <!-- Traits Panel -->
         <div id="traits-panel" class="flex-1 overflow-y-auto p-3 hidden"></div>
     </div>
@@ -409,6 +417,7 @@ document.addEventListener('DOMContentLoaded', function() {
         projectData: projectData,
         pageBaseCss: pageBaseCss,
         assets: [],
+        canvasStyles: ['{{ Vite::asset("resources/css/brand-presets.css") }}'],
     });
 
     // Initialize Autosave
@@ -565,9 +574,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     window.showRightPanel = function(panel) {
-        document.getElementById('styles-panel').classList.toggle('hidden', panel !== 'styles');
+        document.getElementById('styles-wrapper').classList.toggle('hidden', panel !== 'styles');
+        document.getElementById('brand-classes-panel').classList.toggle('hidden', panel !== 'classes');
         document.getElementById('traits-panel').classList.toggle('hidden', panel !== 'traits');
         document.getElementById('tab-styles').classList.toggle('active', panel === 'styles');
+        document.getElementById('tab-classes').classList.toggle('active', panel === 'classes');
         document.getElementById('tab-traits').classList.toggle('active', panel === 'traits');
     };
 

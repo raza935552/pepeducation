@@ -25,6 +25,7 @@ import registerCalculator from './grapesjs-calculator';
 import registerMobilePreview from './grapesjs-mobile-preview';
 import registerImportExport from './grapesjs-import-export';
 import registerAiContent from './grapesjs-ai-content';
+import registerBrandClasses from './grapesjs-brand-classes';
 import 'grapesjs/dist/css/grapes.min.css';
 
 window.initGrapesJS = function(config = {}) {
@@ -208,6 +209,7 @@ window.initGrapesJS = function(config = {}) {
     registerMobilePreview(editor);
     registerImportExport(editor);
     registerAiContent(editor);
+    registerBrandClasses(editor);
 
     // Make editor globally accessible
     window.gjsEditor = editor;

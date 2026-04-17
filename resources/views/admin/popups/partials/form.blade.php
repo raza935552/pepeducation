@@ -107,14 +107,18 @@
             </div>
 
             <button type="submit" class="w-full btn btn-primary">{{ $popup ? 'Update Popup' : 'Create Popup' }}</button>
-
-            @if($popup)
-                <form action="{{ route('admin.popups.destroy', $popup) }}" method="POST"
-                    onsubmit="return confirm('Delete this popup?')">
-                    @csrf @method('DELETE')
-                    <button type="submit" class="w-full btn bg-red-500 text-white hover:bg-red-600">Delete</button>
-                </form>
-            @endif
         </div>
     </div>
 </form>
+
+@if($popup)
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-3">
+        <div class="lg:col-span-1 lg:col-start-3">
+            <form action="{{ route('admin.popups.destroy', $popup) }}" method="POST"
+                onsubmit="return confirm('Delete this popup?')">
+                @csrf @method('DELETE')
+                <button type="submit" class="w-full btn bg-red-500 text-white hover:bg-red-600">Delete</button>
+            </form>
+        </div>
+    </div>
+@endif
