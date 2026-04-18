@@ -453,19 +453,33 @@
         }
     });
 
-    // Track quiz completion
+    // Fire "Completed Quiz" event with peptide_match at email capture.
+    // This is the event post-submission flows listen for to branch on peptide.
+    $wire.on('completed-quiz-event', (data) => {
+        const payload = Array.isArray(data) ? data[0] : data;
+        console.log('Completed Quiz event:', payload);
+        if (window.PepTracking) {
+            // Identify first so the event is attached to the right person
+            if (payload.email) {
+                window.PepTracking.identify(payload.email, {
+                    email: payload.email,
+                    peptide_match: payload.peptide_match || null,
+                    goal: payload.goal || null,
+                    level: payload.level || null,
+                });
+            }
+            // Fire the event — strip email from properties (already on profile)
+            const eventData = Object.assign({}, payload);
+            delete eventData.email;
+            window.PepTracking.track('Completed Quiz', eventData);
+        }
+    });
+
+    // Legacy quiz-completed event (kept for PPTracker compatibility)
     $wire.on('quiz-completed', (data) => {
-        console.log('Quiz completed:', data);
+        console.log('Quiz completed (final slide reached):', data);
         const payload = Array.isArray(data) ? data[0] : data;
         if (window.PPTracker) window.PPTracker.trackQuizComplete(payload.quizId, payload);
-        if (window.PepTracking) {
-            window.PepTracking.track('Quiz Completed', {
-                quiz_id: payload.quizId,
-                results: payload.outcomeId || payload.segment || null,
-                segment: payload.segment || null,
-                total_steps: Object.keys(payload.answers || {}).length,
-            });
-        }
         // Quiz completed — disable abandonment beacon
         window.__quizCompleted = true;
     });

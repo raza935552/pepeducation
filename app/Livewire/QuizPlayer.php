@@ -32,6 +32,9 @@ class QuizPlayer extends Component
     public string $exitEmail = '';
     public string $exitReason = '';
 
+    // Prevents duplicate Completed Quiz events across email capture and final completion
+    public bool $completedQuizEventFired = false;
+
     // Text input for question_text slides
     public string $textAnswer = '';
 
@@ -619,6 +622,12 @@ class QuizPlayer extends Component
         // Track marketing events now that we have a subscriber
         $this->trackEmailEvents($subscriber);
 
+        // Fire "Completed Quiz" event with peptide_match attributes.
+        // This happens at email capture so the post-submission email flow
+        // can branch on peptide_match even if the user bounces before reaching
+        // the final slide. Guarded against duplicate firing.
+        $this->fireCompletedQuizEvent($subscriber);
+
         // Store answer for email capture slides
         $question = $this->questions[$this->currentStep] ?? null;
         if ($question) {
@@ -685,6 +694,9 @@ class QuizPlayer extends Component
 
         // Fire tracking events
         $this->trackEmailEvents($subscriber);
+
+        // Fire Completed Quiz event for exit-captured leads too, so flow still matches them
+        $this->fireCompletedQuizEvent($subscriber);
 
         $this->dispatch('exit-email-captured');
     }
@@ -1054,6 +1066,13 @@ class QuizPlayer extends Component
             $customerIo = app(CustomerIoService::class);
             if ($customerIo->isEnabled()) {
                 $this->response->load('subscriber');
+
+                // Fire the unified Completed Quiz event with peptide_match payload.
+                // Guarded by completedQuizEventFired — won't duplicate if already
+                // fired at email capture time.
+                $this->fireCompletedQuizEvent($this->response->subscriber);
+
+                // Legacy/detailed tracking for Journey flows using profile properties
                 $success = $customerIo->trackQuizCompleted($this->response);
                 $customerIo->trackPeptidePaired($this->response);
 
@@ -1101,6 +1120,81 @@ class QuizPlayer extends Component
                 'subscriber_id' => $subscriber->id,
             ]);
         }
+    }
+
+    /**
+     * Build the standardized "Completed Quiz" event payload.
+     * Includes peptide_match, goal, level, and other attributes required
+     * by the post-submission email flow to branch on peptide type.
+     *
+     * Returns null if peptide match cannot be determined yet
+     * (e.g. user hasn't answered enough questions).
+     */
+    public function getQuizCompletedPayload(): array
+    {
+        $entry = $this->resultsBankEntry;
+        $healthGoalRaw = $this->getAnswerByMarketingProperty('health_goal');
+        $experienceRaw = $this->getAnswerByMarketingProperty('experience_level');
+
+        $advancedValues = ['i\'ve_already_tried_peptides', 'tried_peptides', 'advanced', 'want_to_stack'];
+        $level = in_array($experienceRaw, $advancedValues, true) ? 'advanced' : 'beginner';
+
+        // Humanize goal slug (e.g. "fat_loss" -> "Fat Loss")
+        $goalPretty = $healthGoalRaw
+            ? \Illuminate\Support\Str::of($healthGoalRaw)->replace('_', ' ')->title()->toString()
+            : null;
+
+        $payload = [
+            'quiz_id' => $this->quiz->id,
+            'quiz_name' => $this->quiz->name,
+            'quiz_slug' => $this->quiz->slug,
+            'segment' => $this->determineSegment(),
+            'peptide_match' => $entry?->peptide_name,
+            'peptide_slug' => $entry?->peptide_slug ?? $entry?->stackProduct?->slug,
+            'goal' => $goalPretty,
+            'goal_slug' => $healthGoalRaw,
+            'level' => $level,
+            'experience_level_raw' => $experienceRaw,
+            'outcome' => $this->outcome?->name,
+            'star_rating' => $entry?->star_rating,
+            'rating_label' => $entry?->rating_label,
+        ];
+
+        return array_filter($payload, fn ($v) => $v !== null && $v !== '');
+    }
+
+    /**
+     * Fire "Completed Quiz" event to both Customer.io classic API and CDP.
+     * Idempotent — sets completedQuizEventFired to avoid duplicates.
+     */
+    private function fireCompletedQuizEvent(?\App\Models\Subscriber $subscriber = null): void
+    {
+        if ($this->completedQuizEventFired) return;
+
+        $subscriber = $subscriber ?? $this->response?->subscriber;
+        if (!$subscriber) return;
+
+        $payload = $this->getQuizCompletedPayload();
+
+        // Fire server-side via classic Customer.io Track API
+        try {
+            $customerIo = app(CustomerIoService::class);
+            if ($customerIo->isEnabled()) {
+                $customerIo->trackCustomEvent('Completed Quiz', $subscriber->email, $payload);
+
+                // Also update profile properties so Customer.io has the latest peptide match on the user
+                $customerIo->updateProperties($subscriber, $payload);
+            }
+        } catch (\Exception $e) {
+            logger()->warning('Completed Quiz classic track failed', ['error' => $e->getMessage()]);
+        }
+
+        // Fire client-side via CDP (cioanalytics / PepTracking)
+        $this->dispatch('completed-quiz-event', array_merge($payload, [
+            'email' => $subscriber->email,
+        ]));
+
+        $this->completedQuizEventFired = true;
     }
 
     /**
