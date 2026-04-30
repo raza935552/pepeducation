@@ -14,15 +14,15 @@
             {{ $message }}
         </div>
     @else
-        <form wire:submit="subscribe" class="flex gap-2">
+        <form wire:submit="subscribe" class="flex flex-col sm:flex-row gap-2 w-full">
             <input type="email"
                    wire:model="email"
                    placeholder="Your email"
                    autocomplete="email"
-                   class="flex-1 px-4 py-2.5 rounded-lg bg-dark-800 border border-dark-700 text-surface-100 placeholder-surface-500 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                   class="flex-1 min-w-0 w-full px-4 py-2.5 rounded-lg bg-dark-800 border border-dark-700 text-surface-100 placeholder-surface-500 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
             <button type="submit"
                     wire:loading.attr="disabled"
-                    class="px-4 py-2.5 bg-primary-500 text-white font-medium text-sm rounded-lg hover:bg-primary-600 transition-colors disabled:opacity-50 flex items-center gap-2">
+                    class="shrink-0 px-4 py-2.5 bg-primary-500 text-white font-medium text-sm rounded-lg hover:bg-primary-600 transition-colors disabled:opacity-50 inline-flex items-center justify-center gap-2 whitespace-nowrap">
                 <span wire:loading.remove>Subscribe</span>
                 <span wire:loading class="flex items-center gap-2">
                     <svg aria-hidden="true" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
