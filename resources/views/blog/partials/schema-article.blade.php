@@ -1,12 +1,28 @@
 @props(['post'])
 
-<script type="application/ld+json">
-{!! json_encode([
-    '@' . 'context' => 'https://schema.org',
+@php
+$articleImage = null;
+if (!empty($post->featured_image)) {
+    $articleImage = \Illuminate\Support\Str::startsWith($post->featured_image, ['http://','https://'])
+        ? $post->featured_image
+        : url($post->featured_image);
+} else {
+    $logoUrl = \App\Models\Setting::getValue('branding', 'logo_url', null);
+    if (!empty($logoUrl)) {
+        $articleImage = \Illuminate\Support\Str::startsWith($logoUrl, ['http://','https://'])
+            ? $logoUrl
+            : url($logoUrl);
+    }
+}
+
+$articleDescription = trim((string) ($post->meta_description ?? $post->excerpt ?? ''));
+
+$articleSchema = array_filter([
+    '@context' => 'https://schema.org',
     '@type' => 'Article',
     'headline' => $post->title,
-    'description' => $post->excerpt ?? $post->meta_description ?? '',
-    'image' => $post->featured_image ? url($post->featured_image) : null,
+    'description' => $articleDescription !== '' ? $articleDescription : null,
+    'image' => $articleImage,
     'datePublished' => $post->published_at?->toIso8601String(),
     'dateModified' => $post->updated_at->toIso8601String(),
     'author' => [
@@ -31,5 +47,9 @@
             ['@type' => 'ListItem', 'position' => 3, 'name' => $post->title],
         ],
     ],
-], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}
+], fn ($v) => $v !== null);
+@endphp
+
+<script type="application/ld+json">
+{!! json_encode($articleSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}
 </script>

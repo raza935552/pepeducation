@@ -13,21 +13,38 @@
     {{-- Canonical URL --}}
     <link rel="canonical" href="{{ $canonical ?? url()->current() }}">
 
+    @php
+        $resolvedShareImage = $image;
+        if (!$resolvedShareImage) {
+            $configuredOg = \App\Models\Setting::getValue('seo', 'og_image', null)
+                ?: \App\Models\Setting::getValue('branding', 'logo_url', null);
+            if (!empty($configuredOg)) {
+                $resolvedShareImage = \Illuminate\Support\Str::startsWith($configuredOg, ['http://','https://'])
+                    ? $configuredOg
+                    : url($configuredOg);
+            }
+        }
+    @endphp
+
     {{-- Open Graph --}}
     <meta property="og:type" content="website">
     <meta property="og:title" content="{{ $title ?? config('app.name') }}">
     <meta property="og:site_name" content="{{ config('app.name') }}">
     <meta property="og:description" content="{{ $description ?? 'Professor Peptides is a free educational resource for peptide research, protocols, dosing, benefits, and safety information.' }}">
-    <meta property="og:image" content="{{ $image ?? asset('images/og-default.jpg') }}">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
+    @if($resolvedShareImage)
+        <meta property="og:image" content="{{ $resolvedShareImage }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+    @endif
     <meta property="og:url" content="{{ $canonical ?? url()->current() }}">
 
     {{-- Twitter Card --}}
-    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="{{ $resolvedShareImage ? 'summary_large_image' : 'summary' }}">
     <meta name="twitter:title" content="{{ $title ?? config('app.name') }}">
     <meta name="twitter:description" content="{{ $description ?? 'Professor Peptides is a free educational resource for peptide research, protocols, dosing, benefits, and safety information.' }}">
-    <meta name="twitter:image" content="{{ $image ?? asset('images/og-default.jpg') }}">
+    @if($resolvedShareImage)
+        <meta name="twitter:image" content="{{ $resolvedShareImage }}">
+    @endif
 
     <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700" rel="stylesheet" />
