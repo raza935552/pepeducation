@@ -591,4 +591,304 @@ class AnalyticsService
             ->limit(10)
             ->get();
     }
+
+    // ─── Deep Content Insights ───────────────────────────────
+
+    /**
+     * Comprehensive blog post performance: views, avg time, scroll depth,
+     * buy CTA clicks attributed to that post, and conversion rate (clicks/views).
+     */
+    public function getEnhancedBlogPerformance(Carbon $startDate, int $limit = 30): array
+    {
+        // View counts from page_view events
+        $views = DB::table('user_events')
+            ->where('created_at', '>=', $startDate)
+            ->where('event_type', 'page_view')
+            ->where('page_url', 'like', '%/blog/%')
+            ->where('page_url', 'not like', '%/blog/category/%')
+            ->where('page_url', 'not like', '%/blog/tag/%')
+            ->where('page_url', 'not like', '%/blog/author/%')
+            ->select('page_url', 'page_title', DB::raw('COUNT(*) as views'))
+            ->groupBy('page_url', 'page_title')
+            ->orderByDesc('views')
+            ->limit($limit)
+            ->get();
+
+        // Scroll metrics from scroll events
+        $engagement = DB::table('user_events')
+            ->where('created_at', '>=', $startDate)
+            ->where('event_type', 'scroll')
+            ->where('page_url', 'like', '%/blog/%')
+            ->select(
+                'page_url',
+                DB::raw('AVG(NULLIF(scroll_depth, 0)) as avg_scroll'),
+                DB::raw('MAX(scroll_depth) as max_scroll')
+            )
+            ->groupBy('page_url')
+            ->get()
+            ->keyBy('page_url');
+
+        // Average dwell time per page derived from event timestamps in same session+url
+        // Cap individual session dwell at 1800s (30 minutes) to filter out abandoned tabs
+        $timeOnPage = DB::query()
+            ->fromSub(function ($q) use ($startDate) {
+                $q->from('user_events')
+                  ->where('created_at', '>=', $startDate)
+                  ->where('page_url', 'like', '%/blog/%')
+                  ->whereNotNull('session_id')
+                  ->select('session_id', 'page_url', DB::raw('LEAST(1800, TIMESTAMPDIFF(SECOND, MIN(created_at), MAX(created_at))) as max_t'), DB::raw('COUNT(*) as event_count'))
+                  ->groupBy('session_id', 'page_url')
+                  ->havingRaw('event_count > 1');
+            }, 'sub')
+            ->select('page_url', DB::raw('AVG(max_t) as avg_time'))
+            ->groupBy('page_url')
+            ->get()
+            ->keyBy('page_url');
+
+        $stats = $views->map(function ($row) use ($engagement, $timeOnPage) {
+            $eng = $engagement->get($row->page_url);
+            $row->avg_scroll = $eng?->avg_scroll;
+            $row->avg_time = $timeOnPage->get($row->page_url)?->avg_time ?? 0;
+            return $row;
+        });
+
+        // Buy CTA clicks attributed to blog pages in this window (by source_url match)
+        $clicksByUrl = DB::table('buy_clicks')
+            ->where('created_at', '>=', $startDate)
+            ->where('source_url', 'like', '%/blog/%')
+            ->select('source_url', DB::raw('COUNT(*) as clicks'))
+            ->groupBy('source_url')
+            ->pluck('clicks', 'source_url')
+            ->toArray();
+
+        // Map URL to the BlogPost row so we can show author + reading time
+        $slugs = $stats->map(function ($row) {
+            if (preg_match('#/blog/([a-z0-9\-]+)#', $row->page_url, $m)) {
+                return $m[1];
+            }
+            return null;
+        })->filter()->unique()->values()->all();
+
+        $posts = \App\Models\BlogPost::whereIn('slug', $slugs)
+            ->with('author:id,name,slug')
+            ->select('id', 'slug', 'title', 'reading_time', 'created_by', 'published_at')
+            ->get()
+            ->keyBy('slug');
+
+        return $stats->map(function ($row) use ($clicksByUrl, $posts) {
+            $slug = preg_match('#/blog/([a-z0-9\-]+)#', $row->page_url, $m) ? $m[1] : null;
+            $post = $slug ? ($posts[$slug] ?? null) : null;
+            $clicks = (int) ($clicksByUrl[$row->page_url] ?? 0);
+            $views = (int) $row->views;
+
+            return [
+                'slug'        => $slug,
+                'title'       => $post?->title ?: $row->page_title ?: $slug,
+                'url'         => $row->page_url,
+                'views'       => $views,
+                'avg_scroll'  => round((float) ($row->avg_scroll ?? 0)),
+                'avg_time'    => round((float) ($row->avg_time ?? 0)),
+                'reading_min' => $post?->reading_time,
+                'author'      => $post?->author?->name,
+                'buy_clicks'  => $clicks,
+                'click_rate'  => $views > 0 ? round(($clicks / $views) * 100, 2) : 0,
+                'engagement'  => round(((float) ($row->avg_scroll ?? 0)) * 0.5 + min(100, ((float) ($row->avg_time ?? 0)) / 3) * 0.5),
+            ];
+        })->toArray();
+    }
+
+    /**
+     * Comprehensive peptide page performance: same as blog but for /peptides/{slug}.
+     */
+    public function getEnhancedPeptidePerformance(Carbon $startDate, int $limit = 30): array
+    {
+        $views = DB::table('user_events')
+            ->where('created_at', '>=', $startDate)
+            ->where('event_type', 'page_view')
+            ->where('page_url', 'like', '%/peptides/%')
+            ->where('page_url', 'not like', '%/peptides/compare%')
+            ->select('page_url', 'page_title', DB::raw('COUNT(*) as views'))
+            ->groupBy('page_url', 'page_title')
+            ->orderByDesc('views')
+            ->limit($limit)
+            ->get();
+
+        $engagement = DB::table('user_events')
+            ->where('created_at', '>=', $startDate)
+            ->where('event_type', 'scroll')
+            ->where('page_url', 'like', '%/peptides/%')
+            ->select('page_url', DB::raw('AVG(NULLIF(scroll_depth, 0)) as avg_scroll'))
+            ->groupBy('page_url')
+            ->get()
+            ->keyBy('page_url');
+
+        $timeOnPage = DB::query()
+            ->fromSub(function ($q) use ($startDate) {
+                $q->from('user_events')
+                  ->where('created_at', '>=', $startDate)
+                  ->where('page_url', 'like', '%/peptides/%')
+                  ->whereNotNull('session_id')
+                  ->select('session_id', 'page_url', DB::raw('LEAST(1800, TIMESTAMPDIFF(SECOND, MIN(created_at), MAX(created_at))) as max_t'), DB::raw('COUNT(*) as event_count'))
+                  ->groupBy('session_id', 'page_url')
+                  ->havingRaw('event_count > 1');
+            }, 'sub')
+            ->select('page_url', DB::raw('AVG(max_t) as avg_time'))
+            ->groupBy('page_url')
+            ->get()
+            ->keyBy('page_url');
+
+        $stats = $views->map(function ($row) use ($engagement, $timeOnPage) {
+            $eng = $engagement->get($row->page_url);
+            $row->avg_scroll = $eng?->avg_scroll;
+            $row->avg_time = $timeOnPage->get($row->page_url)?->avg_time ?? 0;
+            return $row;
+        });
+
+        $clicksByUrl = DB::table('buy_clicks')
+            ->where('created_at', '>=', $startDate)
+            ->where('source_url', 'like', '%/peptides/%')
+            ->select('source_url', DB::raw('COUNT(*) as clicks'))
+            ->groupBy('source_url')
+            ->pluck('clicks', 'source_url')
+            ->toArray();
+
+        $slugs = $stats->map(function ($row) {
+            if (preg_match('#/peptides/([a-z0-9\-]+)#', $row->page_url, $m)) {
+                return $m[1];
+            }
+            return null;
+        })->filter()->unique()->values()->all();
+
+        $peptides = \App\Models\Peptide::whereIn('slug', $slugs)
+            ->select('id', 'slug', 'name', 'is_published')
+            ->get()
+            ->keyBy('slug');
+
+        return $stats->map(function ($row) use ($clicksByUrl, $peptides) {
+            $slug = preg_match('#/peptides/([a-z0-9\-]+)#', $row->page_url, $m) ? $m[1] : null;
+            $peptide = $slug ? ($peptides[$slug] ?? null) : null;
+            $clicks = (int) ($clicksByUrl[$row->page_url] ?? 0);
+            $views = (int) $row->views;
+
+            return [
+                'slug'       => $slug,
+                'name'       => $peptide?->name ?: $row->page_title ?: $slug,
+                'url'        => $row->page_url,
+                'views'      => $views,
+                'avg_scroll' => round((float) ($row->avg_scroll ?? 0)),
+                'avg_time'   => round((float) ($row->avg_time ?? 0)),
+                'buy_clicks' => $clicks,
+                'click_rate' => $views > 0 ? round(($clicks / $views) * 100, 2) : 0,
+                'published'  => $peptide?->is_published ?? false,
+            ];
+        })->toArray();
+    }
+
+    /**
+     * Pages with notable mismatch between traffic and engagement.
+     * Returns:
+     *   gaps: high views, low engagement (need content quality work)
+     *   gems: high engagement, low views (need promotion)
+     */
+    public function getContentGapsAndGems(Carbon $startDate): array
+    {
+        $views = DB::table('user_events')
+            ->where('created_at', '>=', $startDate)
+            ->where('event_type', 'page_view')
+            ->where(function ($q) {
+                $q->where('page_url', 'like', '%/blog/%')
+                  ->orWhere('page_url', 'like', '%/peptides/%');
+            })
+            ->where('page_url', 'not like', '%/blog/category/%')
+            ->where('page_url', 'not like', '%/blog/tag/%')
+            ->where('page_url', 'not like', '%/peptides/compare%')
+            ->select('page_url', 'page_title', DB::raw('COUNT(*) as views'))
+            ->groupBy('page_url', 'page_title')
+            ->having('views', '>=', 5)
+            ->get();
+
+        $engagement = DB::table('user_events')
+            ->where('created_at', '>=', $startDate)
+            ->where('event_type', 'scroll')
+            ->select(
+                'page_url',
+                DB::raw('AVG(NULLIF(scroll_depth, 0)) as avg_scroll'),
+                DB::raw('AVG(NULLIF(time_on_page, 0)) as avg_time')
+            )
+            ->groupBy('page_url')
+            ->get()
+            ->keyBy('page_url');
+
+        $rows = $views->map(function ($row) use ($engagement) {
+            $eng = $engagement->get($row->page_url);
+            $row->avg_scroll = $eng?->avg_scroll;
+            $row->avg_time = $eng?->avg_time;
+            return $row;
+        });
+
+        if ($rows->isEmpty()) {
+            return ['gaps' => [], 'gems' => [], 'medianViews' => 0, 'medianEngagement' => 0];
+        }
+
+        $viewsArr = $rows->pluck('views')->sort()->values();
+        $medianViews = $viewsArr->get(intdiv($viewsArr->count(), 2));
+
+        $engagement = $rows->map(function ($r) {
+            return ((float) ($r->avg_scroll ?? 0)) * 0.5 + min(100, ((float) ($r->avg_time ?? 0)) / 3) * 0.5;
+        });
+        $engArr = $engagement->sort()->values();
+        $medianEng = $engArr->get(intdiv($engArr->count(), 2));
+
+        $gaps = [];
+        $gems = [];
+        foreach ($rows as $i => $r) {
+            $eng = ((float) ($r->avg_scroll ?? 0)) * 0.5 + min(100, ((float) ($r->avg_time ?? 0)) / 3) * 0.5;
+            $entry = [
+                'url' => $r->page_url,
+                'title' => $r->page_title ?: basename($r->page_url),
+                'views' => (int) $r->views,
+                'avg_scroll' => round((float) ($r->avg_scroll ?? 0)),
+                'avg_time' => round((float) ($r->avg_time ?? 0)),
+                'engagement' => round($eng),
+            ];
+
+            if ((int) $r->views > $medianViews && $eng < $medianEng) {
+                $gaps[] = $entry;
+            }
+            if ((int) $r->views < $medianViews && $eng > $medianEng) {
+                $gems[] = $entry;
+            }
+        }
+
+        usort($gaps, fn ($a, $b) => $b['views'] - $a['views']);
+        usort($gems, fn ($a, $b) => $b['engagement'] - $a['engagement']);
+
+        return [
+            'gaps' => array_slice($gaps, 0, 10),
+            'gems' => array_slice($gems, 0, 10),
+            'medianViews' => (int) $medianViews,
+            'medianEngagement' => round($medianEng),
+        ];
+    }
+
+    /**
+     * Internal site searches that produced zero results (content gap signal).
+     */
+    public function getInternalSearchGaps(Carbon $startDate): array
+    {
+        try {
+            return DB::table('search_logs')
+                ->where('created_at', '>=', $startDate)
+                ->where('result_count', 0)
+                ->select('query', DB::raw('COUNT(*) as searches'))
+                ->groupBy('query')
+                ->orderByDesc('searches')
+                ->limit(20)
+                ->get()
+                ->map(fn ($r) => ['query' => $r->query, 'searches' => (int) $r->searches])
+                ->toArray();
+        } catch (\Throwable $e) {
+            return [];
+        }
+    }
 }

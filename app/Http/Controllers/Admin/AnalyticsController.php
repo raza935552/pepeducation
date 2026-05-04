@@ -37,6 +37,10 @@ class AnalyticsController extends Controller
             // Content
             'topPages'        => $c('topPages', fn () => $this->analytics->getTopPages($startDate)),
             'blogPerformance' => $c('blogPerf', fn () => $this->analytics->getBlogPerformance($startDate)),
+            'enhancedBlogPerformance' => $c('enhBlogPerf', fn () => $this->analytics->getEnhancedBlogPerformance($startDate)),
+            'enhancedPeptidePerformance' => $c('enhPepPerf', fn () => $this->analytics->getEnhancedPeptidePerformance($startDate)),
+            'contentGapsGems' => $c('gapsGems', fn () => $this->analytics->getContentGapsAndGems($startDate)),
+            'searchGaps'      => $c('searchGaps', fn () => $this->analytics->getInternalSearchGaps($startDate)),
             'scrollDepth'     => $c('scroll', fn () => $this->analytics->getScrollDepthDistribution($startDate)),
             'avgTimeOnPage'   => $c('timeOnPage', fn () => $this->analytics->getAvgTimeOnPage($startDate)),
             // Funnels
