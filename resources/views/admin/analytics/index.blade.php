@@ -4,7 +4,7 @@
             <span>Analytics Dashboard</span>
             <form class="flex gap-2">
                 <select name="period" onchange="this.form.submit()"
-                    class="rounded-lg border-gray-300 text-sm focus:border-brand-gold focus:ring-brand-gold">
+                    class="rounded-lg border-gray-300 text-sm focus:border-admin-primary-500 focus:ring-admin-primary-500">
                     <option value="24h" {{ $period === '24h' ? 'selected' : '' }}>Last 24 Hours</option>
                     <option value="7d" {{ $period === '7d' ? 'selected' : '' }}>Last 7 Days</option>
                     <option value="30d" {{ $period === '30d' ? 'selected' : '' }}>Last 30 Days</option>
@@ -19,7 +19,7 @@
         <div class="flex gap-1 mb-6 border-b border-gray-200 overflow-x-auto">
             @foreach(['overview' => 'Overview', 'traffic' => 'Traffic', 'content' => 'Content', 'funnels' => 'Funnels', 'engagement' => 'Engagement'] as $key => $label)
                 <button @click="tab = '{{ $key }}'"
-                    :class="tab === '{{ $key }}' ? 'border-brand-gold text-brand-gold font-semibold' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                    :class="tab === '{{ $key }}' ? 'border-admin-primary-500 text-admin-primary-600 font-semibold' : 'border-transparent text-gray-500 hover:text-gray-700'"
                     class="px-4 py-2.5 text-sm font-medium border-b-2 whitespace-nowrap transition-colors">
                     {{ $label }}
                 </button>

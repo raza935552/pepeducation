@@ -12,13 +12,13 @@
                     <div class="text-xs text-gray-500">New ({{ $newVsReturning['newPct'] }}%)</div>
                 </div>
                 <div class="flex-1">
-                    <div class="text-2xl font-bold text-brand-gold">{{ number_format($newVsReturning['returning']) }}</div>
+                    <div class="text-2xl font-bold text-admin-primary-600">{{ number_format($newVsReturning['returning']) }}</div>
                     <div class="text-xs text-gray-500">Returning ({{ $newVsReturning['returningPct'] }}%)</div>
                 </div>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-3 flex overflow-hidden">
                 <div class="bg-blue-500 h-3" style="width: {{ $newVsReturning['newPct'] }}%"></div>
-                <div class="bg-brand-gold h-3" style="width: {{ $newVsReturning['returningPct'] }}%"></div>
+                <div class="bg-admin-primary-500 h-3" style="width: {{ $newVsReturning['returningPct'] }}%"></div>
             </div>
         @else
             <p class="text-gray-500 text-sm text-center py-4">No visitor data</p>

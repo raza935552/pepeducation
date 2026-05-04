@@ -9,7 +9,7 @@
             @foreach($conversionFunnel as $i => $step)
                 @php
                     $width = $maxCount > 0 ? max(round($step['count'] / $maxCount * 100), 4) : 4;
-                    $colors = ['bg-blue-500', 'bg-indigo-500', 'bg-purple-500', 'bg-brand-gold', 'bg-green-500'];
+                    $colors = ['bg-blue-500', 'bg-indigo-500', 'bg-purple-500', 'bg-admin-primary-500', 'bg-green-500'];
                 @endphp
                 <div>
                     <div class="flex items-center justify-between mb-1">

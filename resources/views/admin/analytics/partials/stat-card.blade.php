@@ -11,8 +11,8 @@
 
 <div class="card p-4">
     <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-brand-gold/10 flex items-center justify-center">
-            <svg aria-hidden="true" class="w-5 h-5 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="w-10 h-10 rounded-lg bg-admin-primary-500/10 flex items-center justify-center">
+            <svg aria-hidden="true" class="w-5 h-5 text-admin-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {!! $icons[$icon] ?? $icons['star'] !!}
             </svg>
         </div>
