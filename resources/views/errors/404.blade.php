@@ -23,7 +23,7 @@
 @endphp
 
 <x-public-layout title="Page Not Found" description="The page you were looking for doesn't exist or has been moved.">
-    <section class="bg-gradient-to-br from-primary-900 to-dark-900 text-white py-16 md:py-24">
+    <section class="bg-dark-900 text-white py-16 md:py-24">
         <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
             <p class="text-7xl md:text-9xl font-extrabold text-primary-400/80 leading-none mb-2">404</p>
             <h1 class="text-2xl md:text-4xl font-bold mb-4">This page took a detour</h1>

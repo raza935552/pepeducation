@@ -11,7 +11,7 @@
     @endpush
 
     {{-- Header --}}
-    <section class="bg-gradient-to-br from-primary-900 to-dark-900">
+    <section class="bg-dark-900">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
             <div class="max-w-3xl">
                 <nav class="flex items-center gap-2 text-sm text-surface-400 mb-4">
