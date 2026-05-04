@@ -55,165 +55,325 @@
     @endif
     @endpush
 
-    <section class="bg-gradient-to-br from-dark-900 via-dark-800 to-primary-900/30 text-white py-12 md:py-16">
+    {{-- Hero --}}
+    <section class="bg-gradient-to-br from-dark-900 via-dark-800 to-primary-900/30 text-white py-10 md:py-14">
         <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <nav class="flex items-center gap-2 text-sm text-surface-400 mb-6">
+            <nav class="flex items-center gap-2 text-xs sm:text-sm text-surface-400 mb-4">
+                <a href="{{ route('home') }}" class="hover:text-white transition-colors">Home</a>
+                <svg aria-hidden="true" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 <a href="{{ route('peptides.index') }}" class="hover:text-white transition-colors">Peptides</a>
-                <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <svg aria-hidden="true" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 <span class="text-white">Compare</span>
             </nav>
-            <h1 class="text-3xl md:text-5xl font-bold mb-3">
-                @if($peptideA && $peptideB)
-                    {{ $peptideA->name }} vs {{ $peptideB->name }}
-                @else
-                    Peptide Comparison Tool
-                @endif
-            </h1>
-            <p class="text-base md:text-lg text-surface-300 max-w-2xl">
-                @if($peptideA && $peptideB)
-                    Side-by-side breakdown of {{ $peptideA->name }} and {{ $peptideB->name }}. Dosing, half-life, mechanism, safety, and clinical use.
-                @else
-                    Pick any two peptides to compare side-by-side. Dosing, half-life, mechanism, safety, and use cases at a glance.
-                @endif
-            </p>
-        </div>
-    </section>
-
-    <section class="py-8 md:py-12 bg-surface-50">
-        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8" x-data="comparePicker(@js($peptideA?->slug), @js($peptideB?->slug))">
-            <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-3 sm:gap-4 items-end mb-8">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Peptide A</label>
-                    <select x-model="slugA" @change="navigate()"
-                        class="w-full rounded-lg border-gray-300 focus:border-primary-500 focus:ring-primary-500 text-sm">
-                        <option value="">Select a peptide...</option>
-                        @foreach($allPeptides as $p)
-                            <option value="{{ $p->slug }}">{{ $p->name }}{{ $p->abbreviation && $p->abbreviation !== $p->name ? ' ('.$p->abbreviation.')' : '' }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="text-center text-2xl font-bold text-gray-400 pb-2 hidden sm:block">VS</div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Peptide B</label>
-                    <select x-model="slugB" @change="navigate()"
-                        class="w-full rounded-lg border-gray-300 focus:border-primary-500 focus:ring-primary-500 text-sm">
-                        <option value="">Select a peptide...</option>
-                        @foreach($allPeptides as $p)
-                            <option value="{{ $p->slug }}">{{ $p->name }}{{ $p->abbreviation && $p->abbreviation !== $p->name ? ' ('.$p->abbreviation.')' : '' }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-
-            @if(!$peptideA || !$peptideB)
-                <div class="rounded-2xl bg-white border border-surface-200 p-8 text-center">
-                    <p class="text-gray-500 mb-4">Select two peptides above to see them compared.</p>
-                    <p class="text-sm text-gray-400">Or try a popular comparison:</p>
-                    <div class="mt-3 flex flex-wrap justify-center gap-2">
-                        <a href="{{ route('peptides.compare.pair', ['slugA' => 'tirzepatide', 'slugB' => 'semaglutide']) }}" class="px-3 py-1.5 rounded-full bg-primary-50 text-primary-700 text-xs font-medium hover:bg-primary-100">Tirzepatide vs Semaglutide</a>
-                        <a href="{{ route('peptides.compare.pair', ['slugA' => 'bpc-157', 'slugB' => 'tb-500']) }}" class="px-3 py-1.5 rounded-full bg-primary-50 text-primary-700 text-xs font-medium hover:bg-primary-100">BPC-157 vs TB-500</a>
-                        <a href="{{ route('peptides.compare.pair', ['slugA' => 'cjc-1295', 'slugB' => 'sermorelin']) }}" class="px-3 py-1.5 rounded-full bg-primary-50 text-primary-700 text-xs font-medium hover:bg-primary-100">CJC-1295 vs Sermorelin</a>
-                        <a href="{{ route('peptides.compare.pair', ['slugA' => 'retatrutide', 'slugB' => 'tirzepatide']) }}" class="px-3 py-1.5 rounded-full bg-primary-50 text-primary-700 text-xs font-medium hover:bg-primary-100">Retatrutide vs Tirzepatide</a>
-                        <a href="{{ route('peptides.compare.pair', ['slugA' => 'mk-677', 'slugB' => 'ipamorelin']) }}" class="px-3 py-1.5 rounded-full bg-primary-50 text-primary-700 text-xs font-medium hover:bg-primary-100">MK-677 vs Ipamorelin</a>
-                    </div>
-                </div>
+            @if($peptideA && $peptideB)
+                <h1 class="text-3xl md:text-5xl font-bold mb-2">
+                    {{ $peptideA->name }} <span class="text-primary-300">vs</span> {{ $peptideB->name }}
+                </h1>
+                <p class="text-sm md:text-base text-surface-300 max-w-2xl">A clear side-by-side breakdown so you can decide which peptide fits your goal.</p>
             @else
-                @php
-                    $rows = [
-                        ['Type', $peptideA->type, $peptideB->type],
-                        ['Full Name', $peptideA->full_name, $peptideB->full_name],
-                        ['Abbreviation', $peptideA->abbreviation, $peptideB->abbreviation],
-                        ['Route', $peptideA->route, $peptideB->route],
-                        ['Typical Dose', $peptideA->typical_dose, $peptideB->typical_dose],
-                        ['Frequency', $peptideA->dose_frequency, $peptideB->dose_frequency],
-                        ['Cycle', $peptideA->cycle, $peptideB->cycle],
-                        ['Half-Life', $peptideA->half_life, $peptideB->half_life],
-                        ['Peak Time', $peptideA->peak_time, $peptideB->peak_time],
-                        ['Storage', $peptideA->storage, $peptideB->storage],
-                        ['Research Status', ucfirst($peptideA->research_status ?? '-'), ucfirst($peptideB->research_status ?? '-')],
-                        ['Molecular Weight', $peptideA->molecular_weight, $peptideB->molecular_weight],
-                        ['Amino Acid Length', $peptideA->amino_acid_length, $peptideB->amino_acid_length],
-                    ];
-                @endphp
-                <div class="bg-white rounded-2xl border border-surface-200 overflow-hidden">
-                    <div class="grid grid-cols-[150px_1fr_1fr] sm:grid-cols-[200px_1fr_1fr] divide-y divide-surface-200">
-                        <div class="contents">
-                            <div class="p-4 bg-surface-50"></div>
-                            <div class="p-4 bg-surface-50">
-                                <a href="{{ route('peptides.show', $peptideA->slug) }}" class="font-bold text-gray-900 hover:text-primary-600 text-base sm:text-lg">{{ $peptideA->name }}</a>
-                                <div class="flex flex-wrap gap-1 mt-2">
-                                    @foreach($peptideA->categories->take(2) as $cat)
-                                        <span class="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full" style="background:{{ $cat->color }}20; color:{{ $cat->color }};">{{ $cat->name }}</span>
-                                    @endforeach
-                                </div>
-                            </div>
-                            <div class="p-4 bg-surface-50">
-                                <a href="{{ route('peptides.show', $peptideB->slug) }}" class="font-bold text-gray-900 hover:text-primary-600 text-base sm:text-lg">{{ $peptideB->name }}</a>
-                                <div class="flex flex-wrap gap-1 mt-2">
-                                    @foreach($peptideB->categories->take(2) as $cat)
-                                        <span class="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full" style="background:{{ $cat->color }}20; color:{{ $cat->color }};">{{ $cat->name }}</span>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                        @foreach($rows as $row)
-                            @if(!empty($row[1]) || !empty($row[2]))
-                                <div class="contents">
-                                    <div class="p-3 sm:p-4 text-xs sm:text-sm font-semibold text-gray-500 bg-surface-50/50">{{ $row[0] }}</div>
-                                    <div class="p-3 sm:p-4 text-sm text-gray-800 break-words">{{ $row[1] ?: '-' }}</div>
-                                    <div class="p-3 sm:p-4 text-sm text-gray-800 break-words">{{ $row[2] ?: '-' }}</div>
-                                </div>
-                            @endif
-                        @endforeach
-
-                        {{-- Mechanism of action (long-form) --}}
-                        @if($peptideA->mechanism_of_action || $peptideB->mechanism_of_action)
-                            <div class="contents">
-                                <div class="p-3 sm:p-4 text-xs sm:text-sm font-semibold text-gray-500 bg-surface-50/50">Mechanism</div>
-                                <div class="p-3 sm:p-4 text-sm text-gray-700">{{ \Illuminate\Support\Str::limit(strip_tags($peptideA->mechanism_of_action ?? '-'), 200) }}</div>
-                                <div class="p-3 sm:p-4 text-sm text-gray-700">{{ \Illuminate\Support\Str::limit(strip_tags($peptideB->mechanism_of_action ?? '-'), 200) }}</div>
-                            </div>
-                        @endif
-
-                        {{-- Key benefits --}}
-                        @if(!empty($peptideA->key_benefits) || !empty($peptideB->key_benefits))
-                            <div class="contents">
-                                <div class="p-3 sm:p-4 text-xs sm:text-sm font-semibold text-gray-500 bg-surface-50/50">Key Benefits</div>
-                                <div class="p-3 sm:p-4 text-sm text-gray-700">
-                                    @if(is_array($peptideA->key_benefits))
-                                        <ul class="list-disc pl-4 space-y-1">
-                                            @foreach(array_slice($peptideA->key_benefits, 0, 4) as $b)
-                                                <li>{{ $b }}</li>
-                                            @endforeach
-                                        </ul>
-                                    @else
-                                        -
-                                    @endif
-                                </div>
-                                <div class="p-3 sm:p-4 text-sm text-gray-700">
-                                    @if(is_array($peptideB->key_benefits))
-                                        <ul class="list-disc pl-4 space-y-1">
-                                            @foreach(array_slice($peptideB->key_benefits, 0, 4) as $b)
-                                                <li>{{ $b }}</li>
-                                            @endforeach
-                                        </ul>
-                                    @else
-                                        -
-                                    @endif
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-
-                {{-- Per-peptide CTAs --}}
-                <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <x-buy-cta :peptide="$peptideA" context="compare-A" variant="banner" />
-                    <x-buy-cta :peptide="$peptideB" context="compare-B" variant="banner" />
-                </div>
+                <h1 class="text-3xl md:text-5xl font-bold mb-2">Compare Any Two Peptides</h1>
+                <p class="text-sm md:text-base text-surface-300 max-w-2xl">Pick two peptides below and see them side-by-side: dosing, mechanism, benefits, safety, and more.</p>
             @endif
         </div>
     </section>
+
+    {{-- Picker --}}
+    <section class="bg-white border-b border-surface-200 py-5 sticky top-16 z-30 shadow-sm" x-data="comparePicker(@js($peptideA?->slug), @js($peptideB?->slug))">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row gap-3 sm:items-end">
+                <div class="flex-1">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">Peptide 1</label>
+                    <select x-model="slugA" @change="navigate()"
+                        class="w-full rounded-lg border-gray-300 focus:border-primary-500 focus:ring-primary-500 text-sm font-medium">
+                        <option value="">Pick a peptide...</option>
+                        @foreach($allPeptides as $p)
+                            <option value="{{ $p->slug }}">{{ $p->name }}{{ $p->abbreviation && $p->abbreviation !== $p->name ? ' ('.$p->abbreviation.')' : '' }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="hidden sm:flex items-end pb-2.5">
+                    <span class="text-xl font-bold text-gray-300">VS</span>
+                </div>
+                <div class="flex-1">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">Peptide 2</label>
+                    <select x-model="slugB" @change="navigate()"
+                        class="w-full rounded-lg border-gray-300 focus:border-primary-500 focus:ring-primary-500 text-sm font-medium">
+                        <option value="">Pick a peptide...</option>
+                        @foreach($allPeptides as $p)
+                            <option value="{{ $p->slug }}">{{ $p->name }}{{ $p->abbreviation && $p->abbreviation !== $p->name ? ' ('.$p->abbreviation.')' : '' }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                @if($peptideA && $peptideB)
+                <button type="button" @click="swap()"
+                    class="hidden sm:inline-flex items-center gap-1 px-3 py-2.5 rounded-lg border border-surface-200 bg-white text-gray-600 hover:bg-surface-50 text-sm">
+                    <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                    Swap
+                </button>
+                @endif
+            </div>
+        </div>
+    </section>
+
+    @if(!$peptideA || !$peptideB)
+        <section class="py-12 bg-surface-50">
+            <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                <div class="bg-white rounded-2xl border border-surface-200 p-8 text-center">
+                    <svg aria-hidden="true" class="w-12 h-12 mx-auto text-primary-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                    </svg>
+                    <h2 class="text-xl font-bold text-gray-900 mb-2">Pick two peptides to start</h2>
+                    <p class="text-sm text-gray-500 mb-6">Use the dropdowns above, or jump straight into a popular comparison:</p>
+                    <div class="flex flex-wrap justify-center gap-2 max-w-2xl mx-auto">
+                        @foreach([['tirzepatide','semaglutide'],['bpc-157','tb-500'],['cjc-1295','sermorelin'],['retatrutide','tirzepatide'],['mk-677','ipamorelin'],['semaglutide','cagrilintide'],['ipamorelin','sermorelin'],['ghk-cu','ahk-cu'],['selank','semax']] as [$a,$b])
+                            @php
+                                $pa = \App\Models\Peptide::where('slug',$a)->first();
+                                $pb = \App\Models\Peptide::where('slug',$b)->first();
+                            @endphp
+                            @if($pa && $pb)
+                                <a href="{{ route('peptides.compare.pair', ['slugA' => $a, 'slugB' => $b]) }}" class="inline-flex items-center px-4 py-2 rounded-lg bg-primary-50 text-primary-700 text-sm font-medium hover:bg-primary-100 transition">
+                                    {{ $pa->name }} vs {{ $pb->name }}
+                                </a>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </section>
+    @else
+        @php
+            // Field groups for organized comparison
+            $groups = [
+                'Quick Reference' => [
+                    ['Type', $peptideA->type, $peptideB->type, 'icon-tag'],
+                    ['Route', $peptideA->route, $peptideB->route, 'icon-route'],
+                    ['Typical Dose', $peptideA->typical_dose, $peptideB->typical_dose, 'icon-dose'],
+                    ['Frequency', $peptideA->dose_frequency, $peptideB->dose_frequency, 'icon-clock'],
+                    ['Cycle', $peptideA->cycle, $peptideB->cycle, 'icon-cycle'],
+                    ['Storage', $peptideA->storage, $peptideB->storage, 'icon-storage'],
+                ],
+                'Pharmacokinetics' => [
+                    ['Half-Life', $peptideA->half_life, $peptideB->half_life, 'icon-half'],
+                    ['Peak Time', $peptideA->peak_time, $peptideB->peak_time, 'icon-peak'],
+                    ['Clearance Time', $peptideA->clearance_time, $peptideB->clearance_time, 'icon-clearance'],
+                ],
+                'Molecular' => [
+                    ['Molecular Weight', $peptideA->molecular_weight ? $peptideA->molecular_weight.' Da' : null, $peptideB->molecular_weight ? $peptideB->molecular_weight.' Da' : null, 'icon-weight'],
+                    ['Amino Acid Length', $peptideA->amino_acid_length, $peptideB->amino_acid_length, 'icon-chain'],
+                    ['Research Status', ucfirst(str_replace('_', ' ', $peptideA->research_status ?? '-')), ucfirst(str_replace('_', ' ', $peptideB->research_status ?? '-')), 'icon-research'],
+                ],
+            ];
+        @endphp
+
+        {{-- Top peptide cards --}}
+        <section class="py-8 md:py-10 bg-surface-50">
+            <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    @foreach([['p' => $peptideA, 'label' => 'Peptide 1', 'gradient' => 'from-primary-500/15 to-primary-50'], ['p' => $peptideB, 'label' => 'Peptide 2', 'gradient' => 'from-emerald-500/15 to-emerald-50']] as $card)
+                        @php $p = $card['p']; @endphp
+                        <div class="relative bg-white rounded-2xl border border-surface-200 overflow-hidden">
+                            <div class="bg-gradient-to-br {{ $card['gradient'] }} p-6 border-b border-surface-200">
+                                <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-1">{{ $card['label'] }}</p>
+                                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
+                                    <a href="{{ route('peptides.show', $p->slug) }}" class="hover:text-primary-600 transition-colors">{{ $p->name }}</a>
+                                </h2>
+                                @if($p->full_name && $p->full_name !== $p->name)
+                                    <p class="text-sm text-gray-600 mb-3">{{ $p->full_name }}</p>
+                                @endif
+                                <div class="flex flex-wrap gap-1.5 mt-3">
+                                    @foreach($p->categories->take(3) as $cat)
+                                        <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full" style="background:{{ $cat->color }}20; color:{{ $cat->color }};">{{ $cat->name }}</span>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @if($p->overview)
+                                <div class="p-6">
+                                    <p class="text-sm text-gray-600 leading-relaxed line-clamp-4">{{ \Illuminate\Support\Str::limit(strip_tags($p->overview), 220) }}</p>
+                                    <a href="{{ route('peptides.show', $p->slug) }}" class="inline-flex items-center gap-1 mt-3 text-sm font-medium text-primary-600 hover:text-primary-700">
+                                        Full {{ $p->name }} guide
+                                        <svg aria-hidden="true" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
+        {{-- Detailed comparison sections --}}
+        <section class="py-8 md:py-12 bg-white">
+            <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 space-y-8">
+                @foreach($groups as $groupName => $rows)
+                    @php $hasContent = collect($rows)->contains(fn($r) => !empty($r[1]) || !empty($r[2])); @endphp
+                    @if($hasContent)
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <span class="w-1 h-6 bg-primary-500 rounded-full"></span>
+                            {{ $groupName }}
+                        </h2>
+                        <div class="bg-surface-50 rounded-2xl border border-surface-200 overflow-hidden">
+                            @foreach($rows as $i => $row)
+                                @if(!empty($row[1]) || !empty($row[2]))
+                                <div class="grid grid-cols-1 sm:grid-cols-[1fr_140px_1fr] gap-3 sm:gap-4 p-4 sm:p-5 {{ $i > 0 ? 'border-t border-surface-200' : '' }} hover:bg-white transition-colors">
+                                    <div class="order-2 sm:order-1 text-sm text-gray-800 sm:text-right">
+                                        <span class="sm:hidden text-[10px] uppercase tracking-wider text-primary-600 font-bold block mb-1">{{ $peptideA->name }}</span>
+                                        {{ $row[1] ?: '—' }}
+                                    </div>
+                                    <div class="order-1 sm:order-2 text-center">
+                                        <span class="text-[11px] font-bold uppercase tracking-widest text-gray-500">{{ $row[0] }}</span>
+                                    </div>
+                                    <div class="order-3 text-sm text-gray-800">
+                                        <span class="sm:hidden text-[10px] uppercase tracking-wider text-emerald-600 font-bold block mb-1">{{ $peptideB->name }}</span>
+                                        {{ $row[2] ?: '—' }}
+                                    </div>
+                                </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+                @endforeach
+
+                {{-- Mechanism section --}}
+                @if($peptideA->mechanism_of_action || $peptideB->mechanism_of_action)
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <span class="w-1 h-6 bg-primary-500 rounded-full"></span>
+                        How Each Works
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="bg-primary-50/40 border border-primary-200 rounded-2xl p-5">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-primary-700 mb-2">{{ $peptideA->name }}</p>
+                            <p class="text-sm text-gray-700 leading-relaxed">{{ \Illuminate\Support\Str::limit(strip_tags($peptideA->mechanism_of_action ?? '—'), 350) }}</p>
+                        </div>
+                        <div class="bg-emerald-50/40 border border-emerald-200 rounded-2xl p-5">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-emerald-700 mb-2">{{ $peptideB->name }}</p>
+                            <p class="text-sm text-gray-700 leading-relaxed">{{ \Illuminate\Support\Str::limit(strip_tags($peptideB->mechanism_of_action ?? '—'), 350) }}</p>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                {{-- Key benefits --}}
+                @if((is_array($peptideA->key_benefits) && count($peptideA->key_benefits)) || (is_array($peptideB->key_benefits) && count($peptideB->key_benefits)))
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <span class="w-1 h-6 bg-primary-500 rounded-full"></span>
+                        Key Benefits
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="bg-white border border-surface-200 rounded-2xl p-5">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-primary-700 mb-3">{{ $peptideA->name }}</p>
+                            @if(is_array($peptideA->key_benefits) && count($peptideA->key_benefits))
+                                <ul class="space-y-2">
+                                    @foreach(array_slice($peptideA->key_benefits, 0, 5) as $b)
+                                        <li class="flex items-start gap-2 text-sm text-gray-700">
+                                            <svg aria-hidden="true" class="w-4 h-4 text-primary-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                            {{ $b }}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p class="text-sm text-gray-400">No data available.</p>
+                            @endif
+                        </div>
+                        <div class="bg-white border border-surface-200 rounded-2xl p-5">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-emerald-700 mb-3">{{ $peptideB->name }}</p>
+                            @if(is_array($peptideB->key_benefits) && count($peptideB->key_benefits))
+                                <ul class="space-y-2">
+                                    @foreach(array_slice($peptideB->key_benefits, 0, 5) as $b)
+                                        <li class="flex items-start gap-2 text-sm text-gray-700">
+                                            <svg aria-hidden="true" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                            {{ $b }}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p class="text-sm text-gray-400">No data available.</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                {{-- Safety warnings --}}
+                @if((is_array($peptideA->safety_warnings) && count($peptideA->safety_warnings)) || (is_array($peptideB->safety_warnings) && count($peptideB->safety_warnings)))
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <span class="w-1 h-6 bg-red-500 rounded-full"></span>
+                        Safety Warnings
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="bg-red-50/30 border border-red-200 rounded-2xl p-5">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-red-700 mb-3">{{ $peptideA->name }}</p>
+                            @if(is_array($peptideA->safety_warnings) && count($peptideA->safety_warnings))
+                                <ul class="space-y-2">
+                                    @foreach(array_slice($peptideA->safety_warnings, 0, 4) as $w)
+                                        <li class="flex items-start gap-2 text-sm text-gray-700">
+                                            <svg aria-hidden="true" class="w-4 h-4 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                            {{ $w }}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p class="text-sm text-gray-400">No data available.</p>
+                            @endif
+                        </div>
+                        <div class="bg-red-50/30 border border-red-200 rounded-2xl p-5">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-red-700 mb-3">{{ $peptideB->name }}</p>
+                            @if(is_array($peptideB->safety_warnings) && count($peptideB->safety_warnings))
+                                <ul class="space-y-2">
+                                    @foreach(array_slice($peptideB->safety_warnings, 0, 4) as $w)
+                                        <li class="flex items-start gap-2 text-sm text-gray-700">
+                                            <svg aria-hidden="true" class="w-4 h-4 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                            {{ $w }}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p class="text-sm text-gray-400">No data available.</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @endif
+            </div>
+        </section>
+
+        {{-- Buy CTAs --}}
+        <section class="py-8 bg-surface-50">
+            <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">Where to source each one</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <x-buy-cta :peptide="$peptideA" context="compare-A" variant="banner" />
+                    <x-buy-cta :peptide="$peptideB" context="compare-B" variant="banner" />
+                </div>
+            </div>
+        </section>
+
+        {{-- Other comparisons --}}
+        <section class="py-8 bg-white border-t border-surface-200">
+            <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+                <p class="text-sm font-semibold text-gray-700 mb-3">Other popular comparisons:</p>
+                <div class="flex flex-wrap gap-2">
+                    @foreach([['tirzepatide','semaglutide'],['bpc-157','tb-500'],['cjc-1295','sermorelin'],['retatrutide','tirzepatide'],['mk-677','ipamorelin']] as [$a,$b])
+                        @if(($a !== $peptideA->slug || $b !== $peptideB->slug) && ($a !== $peptideB->slug || $b !== $peptideA->slug))
+                            @php
+                                $pa = \App\Models\Peptide::where('slug',$a)->first();
+                                $pb = \App\Models\Peptide::where('slug',$b)->first();
+                            @endphp
+                            @if($pa && $pb)
+                            <a href="{{ route('peptides.compare.pair', ['slugA' => $a, 'slugB' => $b]) }}" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-surface-50 hover:bg-primary-50 text-gray-700 hover:text-primary-700 text-sm border border-surface-200 hover:border-primary-300 transition">
+                                {{ $pa->name }} vs {{ $pb->name }}
+                            </a>
+                            @endif
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
 
     @push('scripts')
     <script>
@@ -222,10 +382,13 @@
             slugA: initialA || '',
             slugB: initialB || '',
             navigate() {
-                if (this.slugA && this.slugB) {
+                if (this.slugA && this.slugB && this.slugA !== this.slugB) {
                     window.location = '/peptides/compare/' + encodeURIComponent(this.slugA) + '/vs/' + encodeURIComponent(this.slugB);
-                } else if (this.slugA || this.slugB) {
-                    // Stay on the current page, just update the dropdowns
+                }
+            },
+            swap() {
+                if (this.slugA && this.slugB) {
+                    window.location = '/peptides/compare/' + encodeURIComponent(this.slugB) + '/vs/' + encodeURIComponent(this.slugA);
                 }
             },
         };
