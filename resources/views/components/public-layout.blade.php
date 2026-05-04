@@ -62,8 +62,13 @@
         <meta name="twitter:image" content="{{ $resolvedShareImage }}">
     @endif
 
+    {{-- Performance hints --}}
     <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700" rel="stylesheet" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://cdn.customer.io">
+    <link rel="dns-prefetch" href="https://api.indexnow.org">
+    <link rel="preload" as="style" href="https://fonts.bunny.net/css?family=inter:400,500,600,700">
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
 
     @if(\App\Models\Setting::getValue('tracking', 'cookie_consent_enabled', false))
         <script>window.__ppConsentRequired = true;</script>
@@ -109,6 +114,30 @@
 
     @livewireStyles
     @stack('head')
+
+    {{-- Buy CTA click tracking helper (fire-and-forget) --}}
+    <script>
+        window.ppTrackBuyClick = function(linkEl, marketingPayload, serverPayload) {
+            try {
+                if (window.PepMarketing && marketingPayload) {
+                    PepMarketing.track('Clicked Buy CTA', marketingPayload);
+                }
+                if (navigator.sendBeacon) {
+                    var fd = new FormData();
+                    Object.keys(serverPayload || {}).forEach(function(k){ fd.append(k, serverPayload[k]); });
+                    fd.append('source_url', window.location.href);
+                    navigator.sendBeacon('/track/buy-click', fd);
+                } else {
+                    fetch('/track/buy-click', {
+                        method: 'POST',
+                        keepalive: true,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(Object.assign({}, serverPayload || {}, { source_url: window.location.href })),
+                    }).catch(function(){});
+                }
+            } catch (e) {}
+        };
+    </script>
 </head>
 <body class="min-h-screen bg-surface-50 text-gray-900">
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg focus:outline-none">

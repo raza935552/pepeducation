@@ -213,48 +213,28 @@
                             {{ $groupName }}
                         </h2>
 
-                        {{-- Desktop: clean 3-column table layout --}}
-                        <div class="hidden sm:block bg-white rounded-2xl border border-surface-200 overflow-hidden shadow-sm">
-                            {{-- Column headers showing peptide names --}}
-                            <div class="grid grid-cols-[180px_1fr_1fr] bg-surface-50 border-b border-surface-200">
-                                <div class="px-5 py-3"></div>
-                                <div class="px-5 py-3 border-l border-surface-200">
-                                    <p class="text-xs font-bold uppercase tracking-wider text-primary-700">{{ $peptideA->name }}</p>
-                                </div>
-                                <div class="px-5 py-3 border-l border-surface-200">
-                                    <p class="text-xs font-bold uppercase tracking-wider text-emerald-700">{{ $peptideB->name }}</p>
-                                </div>
-                            </div>
-                            {{-- Data rows --}}
-                            @php $rowIndex = 0; @endphp
+                        {{-- Card grid: each spec is its own card with both values shown side-by-side --}}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             @foreach($rows as $row)
                                 @if(!empty($row[1]) || !empty($row[2]))
-                                <div class="grid grid-cols-[180px_1fr_1fr] {{ $rowIndex % 2 === 0 ? 'bg-white' : 'bg-surface-50/50' }} border-t border-surface-100">
-                                    <div class="px-5 py-4 text-sm font-semibold text-gray-600">{{ $row[0] }}</div>
-                                    <div class="px-5 py-4 text-sm text-gray-900 border-l border-surface-200 break-words">{{ $row[1] ?: '—' }}</div>
-                                    <div class="px-5 py-4 text-sm text-gray-900 border-l border-surface-200 break-words">{{ $row[2] ?: '—' }}</div>
-                                </div>
-                                @php $rowIndex++; @endphp
-                                @endif
-                            @endforeach
-                        </div>
-
-                        {{-- Mobile: stacked card per row --}}
-                        <div class="sm:hidden space-y-3">
-                            @foreach($rows as $row)
-                                @if(!empty($row[1]) || !empty($row[2]))
-                                <div class="bg-white rounded-xl border border-surface-200 overflow-hidden shadow-sm">
-                                    <div class="px-4 py-2.5 bg-surface-50 border-b border-surface-200">
-                                        <p class="text-xs font-bold uppercase tracking-wider text-gray-600">{{ $row[0] }}</p>
+                                @php $isDifferent = trim((string)$row[1]) !== trim((string)$row[2]) && !empty($row[1]) && !empty($row[2]); @endphp
+                                <div class="bg-white rounded-2xl border border-surface-200 overflow-hidden shadow-sm">
+                                    <div class="px-5 py-2.5 bg-gray-50 border-b border-surface-200 flex items-center justify-between">
+                                        <p class="text-xs font-bold uppercase tracking-wider text-gray-700">{{ $row[0] }}</p>
+                                        @if($isDifferent)
+                                            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Different</span>
+                                        @elseif(!empty($row[1]) && !empty($row[2]))
+                                            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gray-200 text-gray-600">Same</span>
+                                        @endif
                                     </div>
                                     <div class="grid grid-cols-2 divide-x divide-surface-200">
-                                        <div class="p-4">
-                                            <p class="text-[10px] font-bold uppercase tracking-wider text-primary-700 mb-1">{{ $peptideA->name }}</p>
-                                            <p class="text-sm text-gray-900">{{ $row[1] ?: '—' }}</p>
+                                        <div class="p-4 bg-primary-50/40">
+                                            <p class="text-[10px] font-bold uppercase tracking-widest text-primary-700 mb-1">{{ $peptideA->name }}</p>
+                                            <p class="text-sm md:text-base font-semibold text-gray-900 break-words">{{ $row[1] ?: '—' }}</p>
                                         </div>
-                                        <div class="p-4">
-                                            <p class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 mb-1">{{ $peptideB->name }}</p>
-                                            <p class="text-sm text-gray-900">{{ $row[2] ?: '—' }}</p>
+                                        <div class="p-4 bg-emerald-50/40">
+                                            <p class="text-[10px] font-bold uppercase tracking-widest text-emerald-700 mb-1">{{ $peptideB->name }}</p>
+                                            <p class="text-sm md:text-base font-semibold text-gray-900 break-words">{{ $row[2] ?: '—' }}</p>
                                         </div>
                                     </div>
                                 </div>

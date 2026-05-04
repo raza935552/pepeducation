@@ -98,6 +98,27 @@ Route::get('/stack-builder/{goal:slug}', fn(StackGoal $goal) => view('stack-buil
 // Sitemap
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
+// Buy CTA click tracking endpoint (fire-and-forget, no auth needed)
+Route::post('/track/buy-click', function (\Illuminate\Http\Request $request) {
+    try {
+        \Illuminate\Support\Facades\DB::table('buy_clicks')->insert([
+            'peptide_id' => is_numeric($request->input('peptide_id')) ? (int) $request->input('peptide_id') : null,
+            'context' => mb_substr((string) $request->input('context', ''), 0, 40),
+            'destination' => mb_substr((string) $request->input('destination', 'BioLinx Labs'), 0, 60),
+            'source_url' => mb_substr((string) $request->input('source_url', $request->headers->get('Referer', '')), 0, 500),
+            'target_url' => mb_substr((string) $request->input('target_url', ''), 0, 500),
+            'has_product' => (bool) $request->input('has_product', false),
+            'ip_hash' => hash('sha256', $request->ip().config('app.key')),
+            'user_agent_short' => mb_substr((string) $request->userAgent(), 0, 60),
+            'created_at' => now(),
+        ]);
+    } catch (\Throwable $e) {
+        // silently fail - tracking should never break user flow
+    }
+
+    return response()->json(['ok' => true]);
+})->name('track.buy-click');
+
 // IndexNow key verification file (Bing/Yandex). Filename is the key itself.
 Route::get('/{key}.txt', function (string $key) {
     $stored = \App\Models\Setting::getValue('seo', 'indexnow_key');
