@@ -32,11 +32,13 @@
                     @include('peptides.partials.show-timeline')
                     @include('peptides.partials.show-warnings')
                     @include('peptides.partials.show-references')
+                    <x-buy-cta :peptide="$peptide" context="peptide-bottom" variant="banner" />
                 </div>
 
                 <!-- Sidebar -->
                 <div class="space-y-6">
-                    <div class="lg:sticky lg:top-24">
+                    <div class="lg:sticky lg:top-24 space-y-6">
+                        <x-buy-cta :peptide="$peptide" context="peptide-sidebar" variant="card" />
                         @include('peptides.partials.show-quick-stats')
                         @include('peptides.partials.show-molecular')
                     </div>

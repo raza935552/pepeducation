@@ -155,7 +155,16 @@
                 <p class="text-sm text-footer-text">
                     &copy; {{ date('Y') }} PepProfesor. For educational and research purposes only.
                 </p>
-                {{-- Social links placeholder removed - add real URLs when accounts are created --}}
+                <p class="text-xs text-footer-text">
+                    Trusted research partner:
+                    <a href="{{ \App\Services\BioLinxService::homeUrl('footer') }}"
+                       target="_blank"
+                       rel="nofollow sponsored noopener"
+                       data-buy-cta="footer"
+                       class="text-primary-400 hover:text-primary-300 underline transition-colors">
+                        {{ \App\Services\BioLinxService::name() }}
+                    </a>
+                </p>
             </div>
         </div>
     </div>

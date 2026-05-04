@@ -90,6 +90,10 @@
                     {!! $post->sanitizedHtml() !!}
                 </div>
 
+                {{-- Buy CTA: deep-link if post mentions a single peptide, otherwise general --}}
+                @php $primaryPeptide = $post->peptides->first(); @endphp
+                <x-buy-cta :peptide="$primaryPeptide" context="blog-end" variant="banner" />
+
                 {{-- Related Peptides --}}
                 @if($post->peptides->isNotEmpty())
                     <section class="mt-12 pt-8 border-t border-gray-200">
