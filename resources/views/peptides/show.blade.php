@@ -6,6 +6,7 @@
     @push('head')
         @include('partials.schema-peptide')
         @include('partials.schema-faq')
+        @include('partials.schema-peptide-howto')
     @endpush
 
     <!-- Hero -->
