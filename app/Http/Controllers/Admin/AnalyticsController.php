@@ -41,6 +41,9 @@ class AnalyticsController extends Controller
             'enhancedPeptidePerformance' => $c('enhPepPerf', fn () => $this->analytics->getEnhancedPeptidePerformance($startDate)),
             'contentGapsGems' => $c('gapsGems', fn () => $this->analytics->getContentGapsAndGems($startDate)),
             'searchGaps'      => $c('searchGaps', fn () => $this->analytics->getInternalSearchGaps($startDate)),
+            'authorPerformance' => $c('authorPerf', fn () => $this->analytics->getAuthorPerformance($startDate)),
+            'categoryPerformance' => $c('catPerf', fn () => $this->analytics->getCategoryPerformance($startDate)),
+            'dailyContentTrend' => $c('dailyTrendContent', fn () => $this->analytics->getDailyContentTrend($startDate)),
             'scrollDepth'     => $c('scroll', fn () => $this->analytics->getScrollDepthDistribution($startDate)),
             'avgTimeOnPage'   => $c('timeOnPage', fn () => $this->analytics->getAvgTimeOnPage($startDate)),
             // Funnels

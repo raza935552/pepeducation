@@ -872,6 +872,209 @@ class AnalyticsService
     }
 
     /**
+     * Author conversion performance: which authors' posts drive BioLinx clicks.
+     */
+    public function getAuthorPerformance(Carbon $startDate): array
+    {
+        // Map source_url -> blog_post slug -> author
+        $blogPosts = \App\Models\BlogPost::where('status', 'published')
+            ->with('author:id,name,slug')
+            ->select('id', 'slug', 'created_by')
+            ->get()
+            ->keyBy('slug');
+
+        // Aggregate views per blog url
+        $viewsByUrl = DB::table('user_events')
+            ->where('created_at', '>=', $startDate)
+            ->where('event_type', 'page_view')
+            ->where('page_url', 'like', '%/blog/%')
+            ->where('page_url', 'not like', '%/blog/category/%')
+            ->where('page_url', 'not like', '%/blog/tag/%')
+            ->where('page_url', 'not like', '%/blog/author/%')
+            ->select('page_url', DB::raw('COUNT(*) as views'))
+            ->groupBy('page_url')
+            ->pluck('views', 'page_url')
+            ->toArray();
+
+        // Aggregate clicks per source_url where source is a blog post
+        $clicksByUrl = DB::table('buy_clicks')
+            ->where('created_at', '>=', $startDate)
+            ->where('source_url', 'like', '%/blog/%')
+            ->select('source_url', DB::raw('COUNT(*) as clicks'))
+            ->groupBy('source_url')
+            ->pluck('clicks', 'source_url')
+            ->toArray();
+
+        $authorStats = [];
+
+        foreach ($viewsByUrl as $url => $views) {
+            if (!preg_match('#/blog/([a-z0-9\-]+)#', $url, $m)) {
+                continue;
+            }
+            $slug = $m[1];
+            $post = $blogPosts->get($slug);
+            if (!$post || !$post->author) {
+                continue;
+            }
+            $authorId = $post->author->id;
+
+            if (!isset($authorStats[$authorId])) {
+                $authorStats[$authorId] = [
+                    'author_id' => $authorId,
+                    'name' => $post->author->name,
+                    'slug' => $post->author->slug,
+                    'posts' => 0,
+                    'views' => 0,
+                    'clicks' => 0,
+                ];
+            }
+            $authorStats[$authorId]['views'] += (int) $views;
+        }
+
+        foreach ($clicksByUrl as $url => $clicks) {
+            if (!preg_match('#/blog/([a-z0-9\-]+)#', $url, $m)) {
+                continue;
+            }
+            $slug = $m[1];
+            $post = $blogPosts->get($slug);
+            if (!$post || !$post->author) {
+                continue;
+            }
+            $authorId = $post->author->id;
+            if (isset($authorStats[$authorId])) {
+                $authorStats[$authorId]['clicks'] += (int) $clicks;
+            }
+        }
+
+        // Count published posts per author for the period
+        foreach (\App\Models\BlogPost::where('status', 'published')
+                    ->whereNotNull('created_by')
+                    ->select('created_by', DB::raw('COUNT(*) as cnt'))
+                    ->groupBy('created_by')
+                    ->get() as $row) {
+            if (isset($authorStats[$row->created_by])) {
+                $authorStats[$row->created_by]['posts'] = (int) $row->cnt;
+            }
+        }
+
+        $authors = array_values($authorStats);
+        foreach ($authors as &$a) {
+            $a['ctr'] = $a['views'] > 0 ? round(($a['clicks'] / $a['views']) * 100, 2) : 0;
+            $a['views_per_post'] = $a['posts'] > 0 ? round($a['views'] / $a['posts']) : 0;
+        }
+
+        usort($authors, fn ($x, $y) => $y['views'] - $x['views']);
+
+        return $authors;
+    }
+
+    /**
+     * Per-category content performance: views and conversion by blog category.
+     */
+    public function getCategoryPerformance(Carbon $startDate): array
+    {
+        $viewsByUrl = DB::table('user_events')
+            ->where('created_at', '>=', $startDate)
+            ->where('event_type', 'page_view')
+            ->where('page_url', 'like', '%/blog/%')
+            ->where('page_url', 'not like', '%/blog/category/%')
+            ->where('page_url', 'not like', '%/blog/tag/%')
+            ->where('page_url', 'not like', '%/blog/author/%')
+            ->select('page_url', DB::raw('COUNT(*) as views'))
+            ->groupBy('page_url')
+            ->pluck('views', 'page_url')
+            ->toArray();
+
+        $clicksByUrl = DB::table('buy_clicks')
+            ->where('created_at', '>=', $startDate)
+            ->where('source_url', 'like', '%/blog/%')
+            ->select('source_url', DB::raw('COUNT(*) as clicks'))
+            ->groupBy('source_url')
+            ->pluck('clicks', 'source_url')
+            ->toArray();
+
+        $categoryStats = [];
+
+        $posts = \App\Models\BlogPost::where('status', 'published')
+            ->with('categories:id,name,slug')
+            ->select('id', 'slug')
+            ->get();
+
+        foreach ($posts as $post) {
+            $url = route('blog.show', $post->slug);
+            $views = (int) ($viewsByUrl[$url] ?? 0);
+            $clicks = (int) ($clicksByUrl[$url] ?? 0);
+
+            foreach ($post->categories as $cat) {
+                if (!isset($categoryStats[$cat->id])) {
+                    $categoryStats[$cat->id] = [
+                        'category_id' => $cat->id,
+                        'name' => $cat->name,
+                        'slug' => $cat->slug,
+                        'posts' => 0,
+                        'views' => 0,
+                        'clicks' => 0,
+                    ];
+                }
+                $categoryStats[$cat->id]['posts']++;
+                $categoryStats[$cat->id]['views'] += $views;
+                $categoryStats[$cat->id]['clicks'] += $clicks;
+            }
+        }
+
+        $categories = array_values($categoryStats);
+        foreach ($categories as &$c) {
+            $c['ctr'] = $c['views'] > 0 ? round(($c['clicks'] / $c['views']) * 100, 2) : 0;
+            $c['views_per_post'] = $c['posts'] > 0 ? round($c['views'] / $c['posts']) : 0;
+        }
+
+        usort($categories, fn ($x, $y) => $y['views'] - $x['views']);
+
+        return $categories;
+    }
+
+    /**
+     * Daily traffic + conversion trend for charting.
+     */
+    public function getDailyContentTrend(Carbon $startDate): array
+    {
+        $views = DB::table('user_events')
+            ->where('created_at', '>=', $startDate)
+            ->where('event_type', 'page_view')
+            ->where(function ($q) {
+                $q->where('page_url', 'like', '%/blog/%')
+                  ->orWhere('page_url', 'like', '%/peptides/%');
+            })
+            ->where('page_url', 'not like', '%/blog/category/%')
+            ->where('page_url', 'not like', '%/blog/tag/%')
+            ->where('page_url', 'not like', '%/peptides/compare%')
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as views'))
+            ->groupBy('date')
+            ->pluck('views', 'date')
+            ->toArray();
+
+        $clicks = DB::table('buy_clicks')
+            ->where('created_at', '>=', $startDate)
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as clicks'))
+            ->groupBy('date')
+            ->pluck('clicks', 'date')
+            ->toArray();
+
+        $period = \Carbon\CarbonPeriod::create($startDate->copy()->startOfDay(), now()->startOfDay());
+        $result = [];
+        foreach ($period as $date) {
+            $key = $date->format('Y-m-d');
+            $result[] = [
+                'date' => $key,
+                'views' => (int) ($views[$key] ?? 0),
+                'clicks' => (int) ($clicks[$key] ?? 0),
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
      * Internal site searches that produced zero results (content gap signal).
      */
     public function getInternalSearchGaps(Carbon $startDate): array
