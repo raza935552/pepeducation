@@ -33,6 +33,21 @@ class HomeController extends Controller
             ];
         });
 
-        return view('home', compact('featuredPeptides', 'categories', 'stats'));
+        $trendingSearches = Cache::remember('home_trending_searches', 900, function () {
+            try {
+                return \Illuminate\Support\Facades\DB::table('search_logs')
+                    ->where('created_at', '>=', now()->subDays(30))
+                    ->where('result_count', '>', 0)
+                    ->select('query', \Illuminate\Support\Facades\DB::raw('COUNT(*) as searches'))
+                    ->groupBy('query')
+                    ->orderByDesc('searches')
+                    ->limit(8)
+                    ->pluck('query');
+            } catch (\Throwable $e) {
+                return collect();
+            }
+        });
+
+        return view('home', compact('featuredPeptides', 'categories', 'stats', 'trendingSearches'));
     }
 }

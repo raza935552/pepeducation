@@ -84,6 +84,9 @@ class PeptideController extends Controller
         // Track viewed product to Customer.io (if subscriber identified)
         $this->trackViewedProduct($peptide);
 
+        // Save last-viewed peptide slug as a cookie for the 404 page personalization
+        cookie()->queue(cookie('pp_last_peptide', $peptide->slug, 60 * 24 * 30, '/'));
+
         return view('peptides.show', compact('peptide', 'relatedPeptides', 'relatedPosts'));
     }
 

@@ -30,6 +30,11 @@ Route::get('/faq', [PageController::class, 'faq'])->name('faq');
 
 // Public Peptide Routes
 Route::get('/peptides', [PeptideController::class, 'index'])->name('peptides.index');
+// Comparison routes must be registered BEFORE the {peptide} wildcard
+Route::get('/peptides/compare', [\App\Http\Controllers\PeptideComparisonController::class, 'index'])->name('peptides.compare');
+Route::get('/peptides/compare/{slugA}/vs/{slugB}', [\App\Http\Controllers\PeptideComparisonController::class, 'index'])
+    ->where(['slugA' => '[a-z0-9][a-z0-9\-]*', 'slugB' => '[a-z0-9][a-z0-9\-]*'])
+    ->name('peptides.compare.pair');
 Route::get('/peptides/{peptide}', [PeptideController::class, 'show'])->name('peptides.show');
 
 // Calculator Route
@@ -110,6 +115,13 @@ Route::get('/blog/{slug}', [BlogController::class, 'show'])->where('slug', '[a-z
 
 // Author bio pages
 Route::get('/author/{user}', [\App\Http\Controllers\AuthorController::class, 'show'])->name('author.show');
+
+// Where to buy page (BioLinx-focused)
+Route::get('/where-to-buy', function () {
+    return view('public.where-to-buy', [
+        'peptides' => \App\Models\Peptide::published()->orderBy('name')->get(['name', 'slug']),
+    ]);
+})->name('where-to-buy');
 
 // Dynamic Pages (must be last to not conflict with other routes)
 Route::get('/{slug}', [PageController::class, 'show'])

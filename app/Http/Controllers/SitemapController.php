@@ -130,6 +130,41 @@ class SitemapController extends Controller
             'priority' => '0.6',
         ]);
 
+        // Peptide comparison tool
+        $urls->push([
+            'loc' => route('peptides.compare'),
+            'changefreq' => 'weekly',
+            'priority' => '0.7',
+        ]);
+
+        // Where to buy
+        $urls->push([
+            'loc' => route('where-to-buy'),
+            'changefreq' => 'weekly',
+            'priority' => '0.6',
+        ]);
+
+        // Featured peptide comparisons (high-volume "X vs Y" queries)
+        $popularComparisons = [
+            ['tirzepatide', 'semaglutide'],
+            ['bpc-157', 'tb-500'],
+            ['cjc-1295', 'sermorelin'],
+            ['retatrutide', 'tirzepatide'],
+            ['mk-677', 'ipamorelin'],
+            ['semaglutide', 'cagrilintide'],
+            ['ipamorelin', 'sermorelin'],
+            ['ghk-cu', 'ahk-cu'],
+            ['selank', 'semax'],
+            ['bpc-157', 'thymosin-beta-4'],
+        ];
+        foreach ($popularComparisons as [$a, $b]) {
+            $urls->push([
+                'loc' => route('peptides.compare.pair', ['slugA' => $a, 'slugB' => $b]),
+                'changefreq' => 'monthly',
+                'priority' => '0.6',
+            ]);
+        }
+
         // Author pages
         \App\Models\User::where('is_public_author', true)
             ->whereNotNull('slug')

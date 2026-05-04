@@ -1,6 +1,7 @@
 @php
     $popularPeptides = collect();
     $recentPosts     = collect();
+    $lastViewedPeptide = null;
     try {
         $popularPeptides = \App\Models\Peptide::published()
             ->whereIn('slug', ['semaglutide', 'tirzepatide', 'bpc-157', 'retatrutide', 'tb-500', 'mk-677', 'ghk-cu', 'ipamorelin'])
@@ -10,6 +11,12 @@
             ->latest('published_at')
             ->limit(4)
             ->get(['title', 'slug', 'featured_image', 'published_at', 'reading_time']);
+
+        // Personalization: show last-viewed peptide if cookie is set
+        $lastSlug = request()->cookie('pp_last_peptide');
+        if ($lastSlug) {
+            $lastViewedPeptide = \App\Models\Peptide::published()->where('slug', $lastSlug)->first(['id', 'name', 'slug']);
+        }
     } catch (\Throwable $e) {
         // Continue with empty collections if DB unavailable
     }
@@ -44,6 +51,15 @@
                     </svg>
                 </div>
             </form>
+
+            @if($lastViewedPeptide)
+                <p class="mt-6 text-sm text-surface-400">
+                    Or pick up where you left off:
+                    <a href="{{ route('peptides.show', $lastViewedPeptide->slug) }}" class="text-primary-300 hover:text-primary-200 underline ml-1">
+                        Back to {{ $lastViewedPeptide->name }}
+                    </a>
+                </p>
+            @endif
         </div>
     </section>
 

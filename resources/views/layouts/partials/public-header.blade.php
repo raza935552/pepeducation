@@ -17,6 +17,10 @@
                    class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('peptides.*') ? 'text-nav-active bg-nav-active/10' : 'text-gray-600 hover:text-nav-active hover:bg-surface-200' }} transition-colors">
                     Browse
                 </a>
+                <a href="{{ route('peptides.compare') }}"
+                   class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('peptides.compare*') ? 'text-nav-active bg-nav-active/10' : 'text-gray-600 hover:text-nav-active hover:bg-surface-200' }} transition-colors">
+                    Compare
+                </a>
                 <a href="{{ route('calculator') }}"
                    class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('calculator') ? 'text-nav-active bg-nav-active/10' : 'text-gray-600 hover:text-nav-active hover:bg-surface-200' }} transition-colors">
                     Calculator
