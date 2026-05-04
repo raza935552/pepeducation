@@ -142,12 +142,27 @@
                 <x-buy-cta :peptide="$primaryPeptide" context="blog-end" variant="banner" />
 
                 {{-- Inline newsletter capture --}}
+                @php
+                    $subscriberCount = \Illuminate\Support\Facades\Cache::remember('public_subscriber_count', 3600, function () {
+                        try {
+                            return \Illuminate\Support\Facades\DB::table('subscribers')->where('status','active')->count();
+                        } catch (\Throwable $e) {
+                            return 0;
+                        }
+                    });
+                @endphp
                 <section class="mt-10 rounded-2xl bg-dark-900 text-white p-6 sm:p-8">
                     <div class="max-w-2xl">
                         <p class="text-xs font-semibold uppercase tracking-wider text-primary-300 mb-2">Get the next research update</p>
                         <h3 class="text-xl sm:text-2xl font-bold mb-3">No spam, no fluff. Just new peptide research, delivered.</h3>
                         <p class="text-sm text-surface-300 mb-5">Be first to read every guide we publish. New protocols, side effect data, comparisons, and dosing breakdowns. Unsubscribe with one click.</p>
                         <livewire:subscribe-form source="blog-inline" />
+                        @if($subscriberCount >= 50)
+                            <p class="text-xs text-surface-400 mt-3 flex items-center gap-2">
+                                <svg aria-hidden="true" class="w-3.5 h-3.5 text-primary-400" fill="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                Joined by {{ number_format($subscriberCount) }}+ peptide researchers
+                            </p>
+                        @endif
                     </div>
                 </section>
 

@@ -3,6 +3,51 @@
 
     <div class="space-y-6">
 
+        {{-- Newsletter Conversion Analytics --}}
+        <div class="card p-6 border-l-4 border-emerald-400">
+            <div class="flex items-center justify-between mb-1">
+                <h3 class="text-lg font-semibold flex items-center gap-2">
+                    <svg aria-hidden="true" class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    Newsletter Conversion
+                </h3>
+                <div class="text-sm text-gray-500">
+                    <span class="font-semibold text-gray-900">{{ number_format($totalSubs) }}</span> total
+                    &middot;
+                    <span class="font-semibold text-gray-900">{{ number_format($subsLast30) }}</span> last 30 days
+                    &middot;
+                    <span class="font-semibold text-gray-900">{{ number_format($subsLast7) }}</span> last 7 days
+                </div>
+            </div>
+            <p class="text-sm text-gray-500 mb-4">Active subscribers grouped by signup source. Use to identify which placements convert best.</p>
+
+            @if($subsBySource->isEmpty())
+                <p class="text-sm text-gray-400 italic">No subscribers recorded yet.</p>
+            @else
+                <div class="border rounded-lg overflow-hidden">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500">Source</th>
+                                <th class="px-3 py-2 text-right text-xs font-medium text-gray-500 w-24">Subscribers</th>
+                                <th class="px-3 py-2 text-right text-xs font-medium text-gray-500 w-40">Last Signup</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            @foreach($subsBySource as $row)
+                                <tr>
+                                    <td class="px-3 py-2 text-gray-900 font-mono text-xs">{{ $row->source ?: '(direct)' }}</td>
+                                    <td class="px-3 py-2 text-right font-semibold">{{ number_format($row->subs) }}</td>
+                                    <td class="px-3 py-2 text-right text-gray-500 text-xs">{{ $row->last_at ? \Carbon\Carbon::parse($row->last_at)->diffForHumans() : '-' }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </div>
+
         {{-- Buy CTA Click Analytics --}}
         <div class="card p-6 border-l-4 border-cyan-400">
             <div class="flex items-center justify-between mb-1">

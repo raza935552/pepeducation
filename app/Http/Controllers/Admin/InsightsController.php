@@ -56,6 +56,18 @@ class InsightsController extends Controller
             ->limit(10)
             ->get();
 
+        // Newsletter conversion analytics (subscribers by source)
+        $totalSubs = DB::table('subscribers')->where('status', 'active')->count();
+        $subsLast30 = DB::table('subscribers')->where('status', 'active')->where('created_at', '>=', now()->subDays(30))->count();
+        $subsLast7 = DB::table('subscribers')->where('status', 'active')->where('created_at', '>=', now()->subDays(7))->count();
+
+        $subsBySource = DB::table('subscribers')
+            ->where('status', 'active')
+            ->select('source', DB::raw('COUNT(*) as subs'), DB::raw('MAX(created_at) as last_at'))
+            ->groupBy('source')
+            ->orderByDesc('subs')
+            ->get();
+
         // Buy CTA click analytics
         $totalClicks = DB::table('buy_clicks')->count();
         $clicksLast30 = DB::table('buy_clicks')->where('created_at', '>=', now()->subDays(30))->count();
@@ -78,7 +90,8 @@ class InsightsController extends Controller
         return view('admin.insights.index', compact(
             'totalSearches', 'searchesLast30', 'topSearches', 'zeroResultSearches',
             'authorStats', 'topPosts', 'peptidesByCat',
-            'totalClicks', 'clicksLast30', 'clicksLast7', 'clicksByContext', 'topClickedPeptides'
+            'totalClicks', 'clicksLast30', 'clicksLast7', 'clicksByContext', 'topClickedPeptides',
+            'totalSubs', 'subsLast30', 'subsLast7', 'subsBySource'
         ));
     }
 }
