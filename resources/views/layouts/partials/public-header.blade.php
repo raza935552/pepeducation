@@ -33,10 +33,6 @@
                    class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('blog.*') ? 'text-nav-active bg-nav-active/10' : 'text-gray-600 hover:text-nav-active hover:bg-surface-200' }} transition-colors">
                     Blog
                 </a>
-                <a href="{{ route('where-to-buy') }}"
-                   class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('where-to-buy') ? 'text-nav-active bg-nav-active/10' : 'text-gray-600 hover:text-nav-active hover:bg-surface-200' }} transition-colors">
-                    Where to Buy
-                </a>
                 {{-- Pep Guide link — uncomment when route is created
                 <a href="{{ route('pep-guide') }}"
                    class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('pep-guide') ? 'text-nav-active bg-nav-active/10' : 'text-gray-600 hover:text-nav-active hover:bg-surface-200' }} transition-colors">
@@ -173,10 +169,6 @@
             <a href="{{ route('blog.index') }}"
                class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('blog.*') ? 'text-nav-active bg-nav-active/10' : 'text-gray-700 hover:bg-surface-200' }} transition-colors">
                 Blog
-            </a>
-            <a href="{{ route('where-to-buy') }}"
-               class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('where-to-buy') ? 'text-nav-active bg-nav-active/10' : 'text-gray-700 hover:bg-surface-200' }} transition-colors">
-                Where to Buy
             </a>
             <button type="button"
                     onclick="Livewire.dispatch('openPeptideRequestModal'); mobileOpen = false;"
