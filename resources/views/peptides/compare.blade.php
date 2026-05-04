@@ -212,20 +212,50 @@
                             <span class="w-1 h-6 bg-primary-500 rounded-full"></span>
                             {{ $groupName }}
                         </h2>
-                        <div class="bg-surface-50 rounded-2xl border border-surface-200 overflow-hidden">
-                            @foreach($rows as $i => $row)
+
+                        {{-- Desktop: clean 3-column table layout --}}
+                        <div class="hidden sm:block bg-white rounded-2xl border border-surface-200 overflow-hidden shadow-sm">
+                            {{-- Column headers showing peptide names --}}
+                            <div class="grid grid-cols-[180px_1fr_1fr] bg-surface-50 border-b border-surface-200">
+                                <div class="px-5 py-3"></div>
+                                <div class="px-5 py-3 border-l border-surface-200">
+                                    <p class="text-xs font-bold uppercase tracking-wider text-primary-700">{{ $peptideA->name }}</p>
+                                </div>
+                                <div class="px-5 py-3 border-l border-surface-200">
+                                    <p class="text-xs font-bold uppercase tracking-wider text-emerald-700">{{ $peptideB->name }}</p>
+                                </div>
+                            </div>
+                            {{-- Data rows --}}
+                            @php $rowIndex = 0; @endphp
+                            @foreach($rows as $row)
                                 @if(!empty($row[1]) || !empty($row[2]))
-                                <div class="grid grid-cols-1 sm:grid-cols-[1fr_140px_1fr] gap-3 sm:gap-4 p-4 sm:p-5 {{ $i > 0 ? 'border-t border-surface-200' : '' }} hover:bg-white transition-colors">
-                                    <div class="order-2 sm:order-1 text-sm text-gray-800 sm:text-right">
-                                        <span class="sm:hidden text-[10px] uppercase tracking-wider text-primary-600 font-bold block mb-1">{{ $peptideA->name }}</span>
-                                        {{ $row[1] ?: '—' }}
+                                <div class="grid grid-cols-[180px_1fr_1fr] {{ $rowIndex % 2 === 0 ? 'bg-white' : 'bg-surface-50/50' }} border-t border-surface-100">
+                                    <div class="px-5 py-4 text-sm font-semibold text-gray-600">{{ $row[0] }}</div>
+                                    <div class="px-5 py-4 text-sm text-gray-900 border-l border-surface-200 break-words">{{ $row[1] ?: '—' }}</div>
+                                    <div class="px-5 py-4 text-sm text-gray-900 border-l border-surface-200 break-words">{{ $row[2] ?: '—' }}</div>
+                                </div>
+                                @php $rowIndex++; @endphp
+                                @endif
+                            @endforeach
+                        </div>
+
+                        {{-- Mobile: stacked card per row --}}
+                        <div class="sm:hidden space-y-3">
+                            @foreach($rows as $row)
+                                @if(!empty($row[1]) || !empty($row[2]))
+                                <div class="bg-white rounded-xl border border-surface-200 overflow-hidden shadow-sm">
+                                    <div class="px-4 py-2.5 bg-surface-50 border-b border-surface-200">
+                                        <p class="text-xs font-bold uppercase tracking-wider text-gray-600">{{ $row[0] }}</p>
                                     </div>
-                                    <div class="order-1 sm:order-2 text-center">
-                                        <span class="text-[11px] font-bold uppercase tracking-widest text-gray-500">{{ $row[0] }}</span>
-                                    </div>
-                                    <div class="order-3 text-sm text-gray-800">
-                                        <span class="sm:hidden text-[10px] uppercase tracking-wider text-emerald-600 font-bold block mb-1">{{ $peptideB->name }}</span>
-                                        {{ $row[2] ?: '—' }}
+                                    <div class="grid grid-cols-2 divide-x divide-surface-200">
+                                        <div class="p-4">
+                                            <p class="text-[10px] font-bold uppercase tracking-wider text-primary-700 mb-1">{{ $peptideA->name }}</p>
+                                            <p class="text-sm text-gray-900">{{ $row[1] ?: '—' }}</p>
+                                        </div>
+                                        <div class="p-4">
+                                            <p class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 mb-1">{{ $peptideB->name }}</p>
+                                            <p class="text-sm text-gray-900">{{ $row[2] ?: '—' }}</p>
+                                        </div>
                                     </div>
                                 </div>
                                 @endif
