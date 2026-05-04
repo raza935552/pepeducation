@@ -95,6 +95,5 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
             </svg>
         </a>
-        <p class="text-[11px] text-gray-400 mt-3 text-center">Affiliate partner. We may earn a referral fee.</p>
     </div>
 @endif
