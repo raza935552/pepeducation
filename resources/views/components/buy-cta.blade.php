@@ -13,10 +13,16 @@
     }
 
     $peptideName = is_object($peptide) ? ($peptide->name ?? null) : null;
-    $hasProduct  = \App\Services\BioLinxService::hasProductFor($resolvedSlug);
-    $url         = $resolvedSlug
-        ? \App\Services\BioLinxService::urlForSlug($resolvedSlug, $context)
-        : \App\Services\BioLinxService::homeUrl($context);
+
+    if (is_object($peptide)) {
+        $hasProduct = \App\Services\BioLinxService::hasProductForPeptide($peptide);
+        $url        = \App\Services\BioLinxService::urlForPeptide($peptide, $context);
+    } else {
+        $hasProduct = \App\Services\BioLinxService::hasProductFor($resolvedSlug);
+        $url        = $resolvedSlug
+            ? \App\Services\BioLinxService::urlForSlug($resolvedSlug, $context)
+            : \App\Services\BioLinxService::homeUrl($context);
+    }
 
     $brand = \App\Services\BioLinxService::name();
 
@@ -53,11 +59,10 @@
     <div class="rounded-xl border border-primary-200 bg-gradient-to-br from-primary-50 to-white p-5 sm:p-6 my-8">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <p class="text-xs font-semibold uppercase tracking-wider text-primary-600 mb-1">Trusted Research Partner</p>
+                <p class="text-xs font-semibold uppercase tracking-wider text-primary-600 mb-1">Available At</p>
                 <p class="text-base sm:text-lg font-semibold text-gray-900">
-                    {{ $hasProduct ? 'Get '.($peptideName ?? 'this peptide').' from '.$brand : 'Source quality research peptides at '.$brand }}
+                    {{ $hasProduct ? ($peptideName ?? 'This peptide').' is available at '.$brand : 'Browse research peptides at '.$brand }}
                 </p>
-                <p class="text-sm text-gray-500 mt-1">Third-party tested. Research-grade only. {{ $hasProduct ? '' : 'Browse the full catalog.' }}</p>
             </div>
             <a href="{{ $url }}"
                target="_blank"
@@ -75,14 +80,14 @@
 @else
     {{-- Default: 'card' (sidebar) --}}
     <div class="card border-2 border-primary-200 bg-gradient-to-br from-primary-50 to-white">
-        <p class="text-[11px] font-semibold uppercase tracking-wider text-primary-600 mb-2">Trusted Research Partner</p>
+        <p class="text-[11px] font-semibold uppercase tracking-wider text-primary-600 mb-2">Available At</p>
         <h3 class="text-base font-bold text-gray-900 mb-2">
-            {{ $hasProduct ? 'Get '.($peptideName ?? 'this peptide') : 'Shop Research Peptides' }}
+            {{ $hasProduct ? ($peptideName ?? 'This peptide').' at '.$brand : 'Browse '.$brand }}
         </h3>
         <p class="text-sm text-gray-600 mb-4">
             {{ $hasProduct
-                ? 'Available at '.$brand.'. Third-party tested research grade.'
-                : $brand.' offers third-party tested research peptides.' }}
+                ? 'View this product on '.$brand.'.'
+                : 'Browse the catalog on '.$brand.'.' }}
         </p>
         <a href="{{ $url }}"
            target="_blank"

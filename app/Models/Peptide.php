@@ -42,6 +42,7 @@ class Peptide extends Model
         'references',
         'meta_title',
         'meta_description',
+        'biolinx_url',
     ];
 
     protected $casts = [

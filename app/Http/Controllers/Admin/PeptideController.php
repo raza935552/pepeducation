@@ -127,6 +127,7 @@ class PeptideController extends Controller
             'clearance_time' => 'nullable|string|max:255',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
+            'biolinx_url' => 'nullable|url|max:500',
             'categories' => 'nullable|array',
             'categories.*' => 'exists:categories,id',
         ]);

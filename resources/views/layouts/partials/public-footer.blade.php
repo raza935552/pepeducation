@@ -156,7 +156,7 @@
                     &copy; {{ date('Y') }} PepProfesor. For educational and research purposes only.
                 </p>
                 <p class="text-xs text-footer-text">
-                    Trusted research partner:
+                    Source research peptides at
                     <a href="{{ \App\Services\BioLinxService::homeUrl('footer') }}"
                        target="_blank"
                        rel="nofollow sponsored noopener"

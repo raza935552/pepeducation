@@ -19,6 +19,30 @@
     </p>
 </div>
 
+<!-- BioLinx Product URL -->
+<div class="card">
+    <div class="flex items-center justify-between mb-3">
+        <h3 class="text-lg font-semibold text-gray-900">BioLinx Product URL</h3>
+        @php $defaultMap = config('biolinx.product_map', []); @endphp
+        @if($peptide && isset($defaultMap[$peptide->slug]))
+            <span class="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">Default mapped</span>
+        @endif
+    </div>
+    <input type="url" name="biolinx_url"
+           value="{{ old('biolinx_url', $peptide?->biolinx_url) }}"
+           placeholder="{{ ($peptide && isset($defaultMap[$peptide->slug])) ? $defaultMap[$peptide->slug] : 'https://biolinxlabs.com/products/...' }}"
+           class="input w-full text-sm">
+    <p class="mt-2 text-xs text-gray-500">
+        Direct product URL on BioLinx Labs. When set, the "Available At" buttons across the site link here. Leave blank to use the default mapped URL (if any) or fall back to the BioLinx home page.
+    </p>
+    @if($peptide?->biolinx_url)
+        <a href="{{ $peptide->biolinx_url }}" target="_blank" rel="noopener" class="mt-2 inline-flex items-center gap-1 text-xs text-blue-600 hover:underline">
+            Open current URL
+            <svg aria-hidden="true" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+    @endif
+</div>
+
 <!-- Research Status -->
 <div class="card">
     <h3 class="text-lg font-semibold text-gray-900 mb-4">Research Status</h3>
