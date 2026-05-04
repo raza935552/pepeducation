@@ -142,7 +142,7 @@
                 <x-buy-cta :peptide="$primaryPeptide" context="blog-end" variant="banner" />
 
                 {{-- Inline newsletter capture --}}
-                <section class="mt-10 rounded-2xl bg-gradient-to-br from-dark-900 to-primary-900/40 text-white p-6 sm:p-8">
+                <section class="mt-10 rounded-2xl bg-dark-900 text-white p-6 sm:p-8">
                     <div class="max-w-2xl">
                         <p class="text-xs font-semibold uppercase tracking-wider text-primary-300 mb-2">Get the next research update</p>
                         <h3 class="text-xl sm:text-2xl font-bold mb-3">No spam, no fluff. Just new peptide research, delivered.</h3>
