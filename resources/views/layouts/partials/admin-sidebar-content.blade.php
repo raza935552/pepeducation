@@ -300,6 +300,15 @@
                         Vendor Bank
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('admin.biolinx-urls.index') }}"
+                       class="{{ request()->routeIs('admin.biolinx-urls.*') ? 'bg-gray-100 text-admin-primary-600' : 'text-gray-700 hover:bg-gray-100' }} group flex gap-x-3 rounded-lg p-2 text-sm font-semibold leading-6 transition-colors">
+                        <svg aria-hidden="true" class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                        </svg>
+                        BioLinx URLs
+                    </a>
+                </li>
             </ul>
         </li>
 
