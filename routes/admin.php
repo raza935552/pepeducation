@@ -217,6 +217,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('biolinx-urls', [\App\Http\Controllers\Admin\BioLinxUrlController::class, 'index'])->name('biolinx-urls.index');
     Route::put('biolinx-urls/{peptide}', [\App\Http\Controllers\Admin\BioLinxUrlController::class, 'update'])->name('biolinx-urls.update');
 
+    // Insights & Analytics
+    Route::get('insights', [\App\Http\Controllers\Admin\InsightsController::class, 'index'])->name('insights.index');
+
     Route::get('settings/customerio', [\App\Http\Controllers\Admin\CustomerIoSettingController::class, 'edit'])->name('settings.customerio');
     Route::put('settings/customerio', [\App\Http\Controllers\Admin\CustomerIoSettingController::class, 'update'])->name('settings.customerio.update');
     Route::post('settings/customerio/test', [\App\Http\Controllers\Admin\CustomerIoSettingController::class, 'test'])->name('settings.customerio.test');

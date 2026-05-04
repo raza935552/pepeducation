@@ -15,6 +15,7 @@
             <meta property="article:tag" content="{{ $tag->name }}">
         @endforeach
         @include('blog.partials.schema-article', ['post' => $post])
+        @include('blog.partials.schema-howto', ['post' => $post])
     @endpush
 
     {{-- Article Hero --}}

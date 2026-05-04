@@ -15,7 +15,8 @@ class PeptideController extends Controller
         $query = Peptide::with('categories')->published();
 
         // Search
-        if ($rawSearch = $request->get('search')) {
+        $rawSearch = $request->get('search');
+        if ($rawSearch) {
             $search = str_replace(['%', '_'], ['\\%', '\\_'], $rawSearch);
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
@@ -39,6 +40,22 @@ class PeptideController extends Controller
             ->having('peptides_count', '>', 0)
             ->orderBy('name')
             ->get();
+
+        // Log search query for analytics (only if user actually searched)
+        if ($rawSearch && trim($rawSearch) !== '') {
+            try {
+                \Illuminate\Support\Facades\DB::table('search_logs')->insert([
+                    'query' => mb_substr(trim($rawSearch), 0, 200),
+                    'source' => 'peptides_index',
+                    'result_count' => $peptides->total(),
+                    'ip_hash' => hash('sha256', $request->ip().config('app.key')),
+                    'user_agent_short' => mb_substr($request->userAgent() ?? '', 0, 60),
+                    'created_at' => now(),
+                ]);
+            } catch (\Throwable $e) {
+                // Silent fail - analytics shouldn't break user search
+            }
+        }
 
         return view('peptides.index', compact('peptides', 'categories'));
     }
