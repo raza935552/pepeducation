@@ -43,20 +43,20 @@
         <h3 class="text-sm font-semibold text-gray-700 mb-4">Device Breakdown</h3>
         @if(!empty($deviceBreakdown))
             @php
-                $deviceTotal = collect($deviceBreakdown)->sum('count') ?: 1;
+                $deviceTotal = array_sum($deviceBreakdown) ?: 1;
                 $deviceColors = ['mobile' => 'cyan', 'desktop' => 'blue', 'tablet' => 'purple', 'other' => 'gray'];
             @endphp
             <div class="space-y-3">
-                @foreach($deviceBreakdown as $device)
+                @foreach($deviceBreakdown as $deviceName => $count)
                     @php
-                        $name = strtolower($device['device'] ?? 'other');
+                        $name = strtolower($deviceName);
                         $color = $deviceColors[$name] ?? 'gray';
-                        $pct = round(($device['count'] / $deviceTotal) * 100);
+                        $pct = round(($count / $deviceTotal) * 100);
                     @endphp
                     <div>
                         <div class="flex items-center justify-between text-sm mb-1">
-                            <span class="font-medium text-gray-700 capitalize">{{ $device['device'] ?? 'Other' }}</span>
-                            <span class="font-bold text-gray-900">{{ $fmtNum($device['count']) }} <span class="text-gray-500 font-normal">({{ $pct }}%)</span></span>
+                            <span class="font-medium text-gray-700 capitalize">{{ $deviceName }}</span>
+                            <span class="font-bold text-gray-900">{{ $fmtNum($count) }} <span class="text-gray-500 font-normal">({{ $pct }}%)</span></span>
                         </div>
                         <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
                             <div class="bg-{{ $color }}-500 rounded-full h-2" style="width: {{ $pct }}%"></div>
@@ -75,32 +75,24 @@
     <h3 class="text-sm font-semibold text-gray-700 mb-4">Traffic Sources</h3>
     @if(!empty($trafficSources))
         @php
-            $srcTotal = collect($trafficSources)->sum('sessions') ?: 1;
-            $sourceIcons = [
-                'direct'  => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9V3"/>',
-                'organic' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>',
-                'social'  => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>',
-                'referral'=> '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>',
-                'email'   => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>',
-                'paid'    => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>',
-            ];
+            $srcTotal = array_sum($trafficSources) ?: 1;
         @endphp
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-            @foreach($trafficSources as $source)
+            @foreach($trafficSources as $sourceName => $sessions)
                 @php
-                    $name = strtolower($source['source'] ?? 'unknown');
-                    $iconKey = collect(['direct','organic','social','referral','email','paid'])->first(fn ($k) => str_contains($name, $k)) ?? 'direct';
-                    $pct = round(($source['sessions'] / $srcTotal) * 100);
+                    $pct = round(($sessions / $srcTotal) * 100);
                 @endphp
                 <div class="p-4 rounded-xl border border-gray-200 hover:border-blue-300 transition">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-                                <svg aria-hidden="true" class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $sourceIcons[$iconKey] !!}</svg>
+                    <div class="flex items-center justify-between mb-2 gap-2">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                                <svg aria-hidden="true" class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                                </svg>
                             </div>
-                            <span class="font-semibold text-gray-900 capitalize">{{ $source['source'] ?? 'Unknown' }}</span>
+                            <span class="font-semibold text-gray-900 truncate" title="{{ $sourceName }}">{{ $sourceName }}</span>
                         </div>
-                        <span class="text-lg font-bold text-gray-900">{{ $fmtNum($source['sessions']) }}</span>
+                        <span class="text-lg font-bold text-gray-900 shrink-0">{{ $fmtNum($sessions) }}</span>
                     </div>
                     <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
                         <div class="bg-gradient-to-r from-blue-400 to-blue-600 rounded-full h-1.5" style="width: {{ $pct }}%"></div>
@@ -200,14 +192,14 @@
     <div class="card p-5">
         <h3 class="text-sm font-semibold text-gray-700 mb-4">Top Browsers</h3>
         @if(!empty($browserBreakdown))
-            @php $browserTotal = collect($browserBreakdown)->sum('count') ?: 1; @endphp
+            @php $browserTotal = array_sum($browserBreakdown) ?: 1; @endphp
             <div class="space-y-2">
-                @foreach(array_slice($browserBreakdown, 0, 6) as $b)
-                    @php $pct = round(($b['count'] / $browserTotal) * 100); @endphp
+                @foreach(array_slice($browserBreakdown, 0, 6, true) as $browserName => $count)
+                    @php $pct = round(($count / $browserTotal) * 100); @endphp
                     <div>
                         <div class="flex justify-between text-sm mb-1">
-                            <span class="text-gray-700">{{ $b['browser'] ?? 'Unknown' }}</span>
-                            <span class="font-semibold">{{ $fmtNum($b['count']) }} ({{ $pct }}%)</span>
+                            <span class="text-gray-700">{{ $browserName }}</span>
+                            <span class="font-semibold">{{ $fmtNum($count) }} ({{ $pct }}%)</span>
                         </div>
                         <div class="w-full bg-gray-100 rounded-full h-1.5">
                             <div class="bg-purple-500 rounded-full h-1.5" style="width: {{ $pct }}%"></div>
@@ -223,14 +215,14 @@
     <div class="card p-5">
         <h3 class="text-sm font-semibold text-gray-700 mb-4">Operating Systems</h3>
         @if(!empty($osBreakdown))
-            @php $osTotal = collect($osBreakdown)->sum('count') ?: 1; @endphp
+            @php $osTotal = array_sum($osBreakdown) ?: 1; @endphp
             <div class="space-y-2">
-                @foreach(array_slice($osBreakdown, 0, 6) as $o)
-                    @php $pct = round(($o['count'] / $osTotal) * 100); @endphp
+                @foreach(array_slice($osBreakdown, 0, 6, true) as $osName => $count)
+                    @php $pct = round(($count / $osTotal) * 100); @endphp
                     <div>
                         <div class="flex justify-between text-sm mb-1">
-                            <span class="text-gray-700">{{ $o['os'] ?? 'Unknown' }}</span>
-                            <span class="font-semibold">{{ $fmtNum($o['count']) }} ({{ $pct }}%)</span>
+                            <span class="text-gray-700">{{ $osName }}</span>
+                            <span class="font-semibold">{{ $fmtNum($count) }} ({{ $pct }}%)</span>
                         </div>
                         <div class="w-full bg-gray-100 rounded-full h-1.5">
                             <div class="bg-cyan-500 rounded-full h-1.5" style="width: {{ $pct }}%"></div>
