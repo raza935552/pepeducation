@@ -16,6 +16,7 @@
         @endforeach
         @include('blog.partials.schema-article', ['post' => $post])
         @include('blog.partials.schema-howto', ['post' => $post])
+        @include('blog.partials.schema-course', ['post' => $post])
     @endpush
 
     {{-- Article Hero --}}
@@ -81,8 +82,14 @@
 
     {{-- Featured Image --}}
     @if($post->featured_image)
+        @php
+            $imgAlt = $post->title;
+            if ($post->peptides->isNotEmpty()) {
+                $imgAlt .= ' - peptide research article on ' . $post->peptides->pluck('name')->take(2)->implode(' and ');
+            }
+        @endphp
         <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 -mt-8 relative z-10 mb-8">
-            <img src="{{ $post->featured_image }}" alt="{{ $post->title }}" loading="eager" fetchpriority="high" width="1200" height="630"
+            <img src="{{ $post->featured_image }}" alt="{{ $imgAlt }}" loading="eager" fetchpriority="high" width="1200" height="630"
                  class="w-full rounded-2xl shadow-lg object-cover max-h-[500px]">
         </div>
     @endif
@@ -133,6 +140,16 @@
                 {{-- Buy CTA: deep-link if post mentions a single peptide, otherwise general --}}
                 @php $primaryPeptide = $post->peptides->first(); @endphp
                 <x-buy-cta :peptide="$primaryPeptide" context="blog-end" variant="banner" />
+
+                {{-- Inline newsletter capture --}}
+                <section class="mt-10 rounded-2xl bg-gradient-to-br from-dark-900 to-primary-900/40 text-white p-6 sm:p-8">
+                    <div class="max-w-2xl">
+                        <p class="text-xs font-semibold uppercase tracking-wider text-primary-300 mb-2">Get the next research update</p>
+                        <h3 class="text-xl sm:text-2xl font-bold mb-3">No spam, no fluff. Just new peptide research, delivered.</h3>
+                        <p class="text-sm text-surface-300 mb-5">Be first to read every guide we publish. New protocols, side effect data, comparisons, and dosing breakdowns. Unsubscribe with one click.</p>
+                        <livewire:subscribe-form source="blog-inline" />
+                    </div>
+                </section>
 
                 {{-- Related Peptides --}}
                 @if($post->peptides->isNotEmpty())

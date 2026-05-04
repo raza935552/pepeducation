@@ -64,18 +64,28 @@ class SitemapController extends Controller
             'priority' => '0.8',
         ]);
 
-        // Blog posts
+        // Blog posts (with image entries when a featured image exists)
         BlogPost::published()
-            ->select('slug', 'published_at', 'updated_at')
+            ->select('id', 'title', 'slug', 'featured_image', 'published_at', 'updated_at')
             ->latest('published_at')
             ->chunk(200, function ($posts) use (&$urls) {
                 foreach ($posts as $post) {
-                    $urls->push([
+                    $entry = [
                         'loc' => route('blog.show', $post->slug),
                         'lastmod' => $post->updated_at->toW3cString(),
                         'changefreq' => 'monthly',
                         'priority' => '0.7',
-                    ]);
+                    ];
+                    if (!empty($post->featured_image)) {
+                        $img = \Illuminate\Support\Str::startsWith($post->featured_image, ['http://','https://'])
+                            ? $post->featured_image
+                            : url($post->featured_image);
+                        $entry['image'] = [
+                            'loc' => $img,
+                            'title' => $post->title,
+                        ];
+                    }
+                    $urls->push($entry);
                 }
             });
 
@@ -135,7 +145,7 @@ class SitemapController extends Controller
 
         // Build XML
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' . "\n";
 
         foreach ($urls as $url) {
             $xml .= '  <url>' . "\n";
@@ -145,6 +155,14 @@ class SitemapController extends Controller
             }
             $xml .= '    <changefreq>' . $url['changefreq'] . '</changefreq>' . "\n";
             $xml .= '    <priority>' . $url['priority'] . '</priority>' . "\n";
+            if (!empty($url['image']['loc'])) {
+                $xml .= '    <image:image>' . "\n";
+                $xml .= '      <image:loc>' . htmlspecialchars($url['image']['loc'], ENT_XML1) . '</image:loc>' . "\n";
+                if (!empty($url['image']['title'])) {
+                    $xml .= '      <image:title>' . htmlspecialchars($url['image']['title'], ENT_XML1) . '</image:title>' . "\n";
+                }
+                $xml .= '    </image:image>' . "\n";
+            }
             $xml .= '  </url>' . "\n";
         }
 
