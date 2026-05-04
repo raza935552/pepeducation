@@ -85,6 +85,13 @@ class ValidateSchemasCommand extends Command
 
         if (!$type || $type === 'stack') {
             $urls['Stack Builder'] = route('stack-builder');
+            try {
+                \App\Models\StackGoal::where('is_active', true)->each(function ($goal) use (&$urls) {
+                    $urls['Stack Goal: '.$goal->name] = route('stack-builder.goal', $goal->slug);
+                });
+            } catch (\Throwable $e) {
+                // continue
+            }
         }
 
         return $urls;

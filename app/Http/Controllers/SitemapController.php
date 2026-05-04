@@ -144,6 +144,22 @@ class SitemapController extends Controller
             'priority' => '0.6',
         ]);
 
+        // Stack builder goal pages
+        try {
+            \App\Models\StackGoal::where('is_active', true)
+                ->select('slug', 'updated_at')
+                ->each(function ($goal) use (&$urls) {
+                    $urls->push([
+                        'loc' => route('stack-builder.goal', $goal->slug),
+                        'lastmod' => $goal->updated_at?->toW3cString(),
+                        'changefreq' => 'weekly',
+                        'priority' => '0.7',
+                    ]);
+                });
+        } catch (\Throwable $e) {
+            // Continue without stack goals
+        }
+
         // Featured peptide comparisons (high-volume "X vs Y" queries)
         $popularComparisons = [
             ['tirzepatide', 'semaglutide'],
