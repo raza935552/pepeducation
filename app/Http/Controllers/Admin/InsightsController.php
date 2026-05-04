@@ -56,9 +56,29 @@ class InsightsController extends Controller
             ->limit(10)
             ->get();
 
+        // Buy CTA click analytics
+        $totalClicks = DB::table('buy_clicks')->count();
+        $clicksLast30 = DB::table('buy_clicks')->where('created_at', '>=', now()->subDays(30))->count();
+        $clicksLast7  = DB::table('buy_clicks')->where('created_at', '>=', now()->subDays(7))->count();
+
+        $clicksByContext = DB::table('buy_clicks')
+            ->select('context', DB::raw('COUNT(*) as clicks'))
+            ->groupBy('context')
+            ->orderByDesc('clicks')
+            ->get();
+
+        $topClickedPeptides = DB::table('buy_clicks')
+            ->join('peptides', 'buy_clicks.peptide_id', '=', 'peptides.id')
+            ->select('peptides.name', 'peptides.slug', DB::raw('COUNT(*) as clicks'))
+            ->groupBy('peptides.id', 'peptides.name', 'peptides.slug')
+            ->orderByDesc('clicks')
+            ->limit(15)
+            ->get();
+
         return view('admin.insights.index', compact(
             'totalSearches', 'searchesLast30', 'topSearches', 'zeroResultSearches',
-            'authorStats', 'topPosts', 'peptidesByCat'
+            'authorStats', 'topPosts', 'peptidesByCat',
+            'totalClicks', 'clicksLast30', 'clicksLast7', 'clicksByContext', 'topClickedPeptides'
         ));
     }
 }

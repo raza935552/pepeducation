@@ -3,6 +3,82 @@
 
     <div class="space-y-6">
 
+        {{-- Buy CTA Click Analytics --}}
+        <div class="card p-6 border-l-4 border-cyan-400">
+            <div class="flex items-center justify-between mb-1">
+                <h3 class="text-lg font-semibold flex items-center gap-2">
+                    <svg aria-hidden="true" class="w-6 h-6 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                    Buy CTA Click Analytics
+                </h3>
+                <div class="text-sm text-gray-500">
+                    <span class="font-semibold text-gray-900">{{ number_format($totalClicks) }}</span> total
+                    &middot;
+                    <span class="font-semibold text-gray-900">{{ number_format($clicksLast30) }}</span> last 30 days
+                    &middot;
+                    <span class="font-semibold text-gray-900">{{ number_format($clicksLast7) }}</span> last 7 days
+                </div>
+            </div>
+            <p class="text-sm text-gray-500 mb-4">Clicks on the BioLinx Labs CTAs. Use to measure which placements and peptides drive partner traffic.</p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="text-sm font-semibold text-gray-700 mb-2">Clicks by Placement</h4>
+                    @if($clicksByContext->isEmpty())
+                        <p class="text-sm text-gray-400 italic">No clicks recorded yet.</p>
+                    @else
+                        <div class="border rounded-lg overflow-hidden">
+                            <table class="w-full text-sm">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500">Placement</th>
+                                        <th class="px-3 py-2 text-right text-xs font-medium text-gray-500 w-24">Clicks</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100">
+                                    @foreach($clicksByContext as $row)
+                                        <tr>
+                                            <td class="px-3 py-2 text-gray-900 font-mono text-xs">{{ $row->context ?: '(unknown)' }}</td>
+                                            <td class="px-3 py-2 text-right font-semibold">{{ number_format($row->clicks) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-semibold text-gray-700 mb-2">Top Peptides by Clicks</h4>
+                    @if($topClickedPeptides->isEmpty())
+                        <p class="text-sm text-gray-400 italic">No peptide-specific clicks recorded yet.</p>
+                    @else
+                        <div class="border rounded-lg overflow-hidden">
+                            <table class="w-full text-sm">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500">Peptide</th>
+                                        <th class="px-3 py-2 text-right text-xs font-medium text-gray-500 w-24">Clicks</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100">
+                                    @foreach($topClickedPeptides as $row)
+                                        <tr>
+                                            <td class="px-3 py-2">
+                                                <a href="{{ route('peptides.show', $row->slug) }}" target="_blank" class="text-blue-600 hover:underline">{{ $row->name }}</a>
+                                            </td>
+                                            <td class="px-3 py-2 text-right font-semibold">{{ number_format($row->clicks) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
         {{-- Search Analytics --}}
         <div class="card p-6 border-l-4 border-blue-400">
             <div class="flex items-center justify-between mb-1">
