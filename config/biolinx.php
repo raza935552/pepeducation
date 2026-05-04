@@ -5,10 +5,13 @@ return [
     'shop_url' => 'https://biolinxlabs.com',
     'name'     => 'BioLinx Labs',
 
-    // Default UTM tags appended to all outbound links
+    // Default UTM tags appended to all outbound links.
+    // medium=affiliate is the standard label for partner/commission
+    // relationships in GA4 - it lands in the dedicated "Affiliates"
+    // channel rather than mixing with organic referral traffic.
     'utm' => [
         'source'   => 'professorpeptides',
-        'medium'   => 'referral',
+        'medium'   => 'affiliate',
         'campaign' => 'buy-cta',
     ],
 
