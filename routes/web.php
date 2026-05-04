@@ -93,6 +93,15 @@ Route::get('/stack-builder/{goal:slug}', fn(StackGoal $goal) => view('stack-buil
 // Sitemap
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
+// IndexNow key verification file (Bing/Yandex). Filename is the key itself.
+Route::get('/{key}.txt', function (string $key) {
+    $stored = \App\Models\Setting::getValue('seo', 'indexnow_key');
+    if ($stored && hash_equals($stored, $key)) {
+        return response($stored, 200)->header('Content-Type', 'text/plain');
+    }
+    abort(404);
+})->where('key', '[a-f0-9]{16,128}');
+
 // Blog
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/category/{category}', [BlogController::class, 'category'])->name('blog.category');

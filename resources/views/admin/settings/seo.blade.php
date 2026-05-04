@@ -12,6 +12,9 @@
     @if(session('success'))
         <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm">{{ session('success') }}</div>
     @endif
+    @if(session('error'))
+        <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">{{ session('error') }}</div>
+    @endif
 
     <div class="space-y-6">
 
@@ -211,6 +214,167 @@
                 <pre class="text-sm text-gray-800 whitespace-pre-wrap font-sans" x-text="outline"></pre>
             </div>
             <p x-show="error" x-cloak class="mt-2 text-sm text-red-600" x-text="error"></p>
+        </div>
+
+        {{-- Webmaster Verification --}}
+        <form action="{{ route('admin.settings.seo.webmaster') }}" method="POST">
+            @csrf
+            @method('PUT')
+            <div class="card p-6 border-l-4 border-orange-400">
+                <h3 class="text-lg font-semibold mb-1 flex items-center gap-2">
+                    <svg aria-hidden="true" class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                    Webmaster Verification
+                </h3>
+                <p class="text-sm text-gray-500 mb-4">Add verification meta tags so you can claim ownership in each search engine's webmaster console.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Google Search Console</label>
+                        <input type="text" name="google_verification" value="{{ $googleVerification }}"
+                            placeholder="abc123-XYZ_..."
+                            class="w-full rounded-lg border-gray-300 focus:border-orange-500 focus:ring-orange-500 font-mono text-sm">
+                        <p class="mt-1 text-xs text-gray-500">From <a href="https://search.google.com/search-console" target="_blank" class="text-blue-600 underline">search.google.com/search-console</a> -> "HTML tag" verification method. Paste the value from the content="..." attribute.</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Bing Webmaster (msvalidate.01)</label>
+                        <input type="text" name="bing_verification" value="{{ $bingVerification }}"
+                            placeholder="A1B2C3D4..."
+                            class="w-full rounded-lg border-gray-300 focus:border-orange-500 focus:ring-orange-500 font-mono text-sm">
+                        <p class="mt-1 text-xs text-gray-500">From <a href="https://www.bing.com/webmasters" target="_blank" class="text-blue-600 underline">bing.com/webmasters</a> -> "Meta tag" method. Paste the content="..." value.</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Yandex Webmaster</label>
+                        <input type="text" name="yandex_verification" value="{{ $yandexVerification }}"
+                            placeholder="abc123def456..."
+                            class="w-full rounded-lg border-gray-300 focus:border-orange-500 focus:ring-orange-500 font-mono text-sm">
+                        <p class="mt-1 text-xs text-gray-500">From <a href="https://webmaster.yandex.com" target="_blank" class="text-blue-600 underline">webmaster.yandex.com</a> -> "Meta tag" method. Paste the content="..." value.</p>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Yandex Metrica Counter ID</label>
+                    <input type="text" name="yandex_metrica_id" value="{{ $yandexMetricaId }}"
+                        placeholder="12345678"
+                        class="max-w-xs rounded-lg border-gray-300 focus:border-orange-500 focus:ring-orange-500 font-mono text-sm">
+                    <p class="mt-1 text-xs text-gray-500">Numeric counter ID from <a href="https://metrika.yandex.com" target="_blank" class="text-blue-600 underline">metrika.yandex.com</a> (Russia/CIS analytics, like GA4). Loads counter only when set.</p>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <button type="submit" class="btn btn-primary">Save Verification Settings</button>
+                </div>
+            </div>
+        </form>
+
+        {{-- IndexNow --}}
+        <div class="card p-6 border-l-4 border-cyan-400">
+            <h3 class="text-lg font-semibold mb-1 flex items-center gap-2">
+                <svg aria-hidden="true" class="w-6 h-6 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                IndexNow (Bing + Yandex Instant Indexing)
+            </h3>
+            <p class="text-sm text-gray-500 mb-4">Submit URLs to Bing and Yandex the moment you publish. Cuts indexing time from weeks to minutes. Auto-pings on peptide and blog publish/update.</p>
+
+            <div class="space-y-4">
+                {{-- Status --}}
+                <div class="rounded-lg bg-gray-50 border border-gray-200 p-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <span class="text-gray-500">API Key:</span>
+                            @if($indexnowKey)
+                                <span class="font-mono text-xs text-gray-800 break-all ml-1">{{ $indexnowKey }}</span>
+                            @else
+                                <span class="ml-1 text-gray-400 italic">not generated</span>
+                            @endif
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Verification file:</span>
+                            @if($indexnowKeyUrl)
+                                <a href="{{ $indexnowKeyUrl }}" target="_blank" class="text-blue-600 underline ml-1 break-all text-xs">{{ $indexnowKeyUrl }}</a>
+                            @else
+                                <span class="ml-1 text-gray-400 italic">-</span>
+                            @endif
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Auto-ping on save:</span>
+                            <span class="ml-1 font-medium {{ $indexnowEnabled ? 'text-green-600' : 'text-gray-400' }}">
+                                {{ $indexnowEnabled ? 'Enabled' : 'Disabled' }}
+                            </span>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Last manual submit:</span>
+                            <span class="ml-1 text-gray-700 text-xs">{{ $indexnowLastPing ? \Carbon\Carbon::parse($indexnowLastPing)->diffForHumans() : 'never' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Toggle --}}
+                <form action="{{ route('admin.settings.seo.indexnow') }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="indexnow_enabled" value="0">
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" name="indexnow_enabled" value="1" {{ $indexnowEnabled ? 'checked' : '' }}
+                            class="w-5 h-5 rounded border-gray-300 text-cyan-500 focus:ring-cyan-500">
+                        <div>
+                            <span class="font-medium text-gray-700">Auto-ping when peptide or blog post is saved</span>
+                            <p class="text-sm text-gray-500">Recommended. Generates a key automatically on first enable.</p>
+                        </div>
+                    </label>
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary text-sm">Save IndexNow Settings</button>
+                    </div>
+                </form>
+
+                {{-- Actions --}}
+                <div class="pt-4 border-t border-gray-200 flex flex-wrap gap-3">
+                    <form action="{{ route('admin.settings.seo.indexnow.generate') }}" method="POST" onsubmit="return confirm('Generate a NEW key? The old one will stop working immediately and you will need to refresh search consoles.');">
+                        @csrf
+                        <button type="submit" class="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                            {{ $indexnowKey ? 'Regenerate Key' : 'Generate Key' }}
+                        </button>
+                    </form>
+                    <form action="{{ route('admin.settings.seo.indexnow.submit-all') }}" method="POST" onsubmit="return confirm('Submit ALL published peptides and blog posts to IndexNow now?');">
+                        @csrf
+                        <button type="submit" class="px-4 py-2 text-sm font-medium rounded-lg bg-cyan-600 text-white hover:bg-cyan-700" {{ $indexnowKey ? '' : 'disabled' }}>
+                            Submit All Published URLs Now
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {{-- Sitemap submission helper --}}
+        <div class="card p-6 border-l-4 border-indigo-400">
+            <h3 class="text-lg font-semibold mb-1 flex items-center gap-2">
+                <svg aria-hidden="true" class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+                </svg>
+                Sitemap Submission
+            </h3>
+            <p class="text-sm text-gray-500 mb-4">Submit your sitemap to each search engine once after claiming ownership.</p>
+
+            <div class="rounded-lg bg-indigo-50 border border-indigo-200 p-4 mb-4">
+                <p class="text-sm text-gray-700">Your sitemap:</p>
+                <a href="{{ $sitemapUrl }}" target="_blank" class="text-indigo-700 underline font-mono text-sm break-all">{{ $sitemapUrl }}</a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <a href="https://search.google.com/search-console/sitemaps" target="_blank" class="block p-4 rounded-lg border border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition">
+                    <div class="font-medium text-gray-900">Google Search Console</div>
+                    <div class="text-xs text-gray-500 mt-1">Sitemaps -> Add new sitemap -> paste sitemap.xml</div>
+                </a>
+                <a href="https://www.bing.com/webmasters/sitemaps" target="_blank" class="block p-4 rounded-lg border border-gray-200 hover:border-cyan-400 hover:bg-cyan-50 transition">
+                    <div class="font-medium text-gray-900">Bing Webmaster</div>
+                    <div class="text-xs text-gray-500 mt-1">Sitemaps -> Submit sitemap -> paste sitemap.xml</div>
+                </a>
+                <a href="https://webmaster.yandex.com" target="_blank" class="block p-4 rounded-lg border border-gray-200 hover:border-red-400 hover:bg-red-50 transition">
+                    <div class="font-medium text-gray-900">Yandex Webmaster</div>
+                    <div class="text-xs text-gray-500 mt-1">Indexing -> Sitemap files -> Add sitemap.xml</div>
+                </a>
+            </div>
         </div>
 
     </div>

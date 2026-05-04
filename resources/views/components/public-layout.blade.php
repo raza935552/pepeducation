@@ -13,6 +13,22 @@
     {{-- Canonical URL --}}
     <link rel="canonical" href="{{ $canonical ?? url()->current() }}">
 
+    {{-- Webmaster verification --}}
+    @php
+        $googleVerify = \App\Models\Setting::getValue('seo', 'google_verification', '');
+        $bingVerify   = \App\Models\Setting::getValue('seo', 'bing_verification', '');
+        $yandexVerify = \App\Models\Setting::getValue('seo', 'yandex_verification', '');
+    @endphp
+    @if($googleVerify)
+        <meta name="google-site-verification" content="{{ $googleVerify }}">
+    @endif
+    @if($bingVerify)
+        <meta name="msvalidate.01" content="{{ $bingVerify }}">
+    @endif
+    @if($yandexVerify)
+        <meta name="yandex-verification" content="{{ $yandexVerify }}">
+    @endif
+
     @php
         $resolvedShareImage = $image;
         if (!$resolvedShareImage) {
@@ -66,6 +82,26 @@
         gtag('js', new Date());
         gtag('config', '{{ $ga4Id }}');
     </script>
+    @endif
+
+    {{-- Yandex Metrica --}}
+    @php $yandexMetricaId = \App\Models\Setting::getValue('tracking', 'yandex_metrica_id'); @endphp
+    @if($yandexMetricaId)
+    <script type="text/javascript">
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+        ym({{ (int) $yandexMetricaId }}, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true,
+            webvisor:true
+        });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/{{ (int) $yandexMetricaId }}" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
     @endif
 
     {{-- Customer.io CDP (cioanalytics) --}}

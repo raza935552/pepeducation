@@ -68,6 +68,20 @@ class Peptide extends Model
                 $peptide->slug = Str::slug($peptide->name);
             }
         });
+
+        static::saved(function ($peptide) {
+            if (!$peptide->is_published) {
+                return;
+            }
+            if (!\App\Services\Seo\IndexNowService::isEnabled()) {
+                return;
+            }
+            try {
+                \App\Services\Seo\IndexNowService::submitOne(route('peptides.show', $peptide->slug));
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('IndexNow ping failed for peptide '.$peptide->id.': '.$e->getMessage());
+            }
+        });
     }
 
     public function categories(): BelongsToMany

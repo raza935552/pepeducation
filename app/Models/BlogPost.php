@@ -34,6 +34,23 @@ class BlogPost extends Model
         'is_featured' => 'boolean',
     ];
 
+    protected static function booted()
+    {
+        static::saved(function ($post) {
+            if ($post->status !== 'published') {
+                return;
+            }
+            if (!\App\Services\Seo\IndexNowService::isEnabled()) {
+                return;
+            }
+            try {
+                \App\Services\Seo\IndexNowService::submitOne(route('blog.show', $post->slug));
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('IndexNow ping failed for blog post '.$post->id.': '.$e->getMessage());
+            }
+        });
+    }
+
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');

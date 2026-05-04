@@ -208,6 +208,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('settings/seo/blog-outline', [\App\Http\Controllers\Admin\SeoSettingsController::class, 'generateBlogOutline'])->name('settings.seo.blog-outline');
     Route::get('settings/seo/review', [\App\Http\Controllers\Admin\SeoSettingsController::class, 'review'])->name('settings.seo.review');
     Route::put('settings/seo/update-seo', [\App\Http\Controllers\Admin\SeoSettingsController::class, 'updateSeo'])->name('settings.seo.update-seo');
+    Route::put('settings/seo/webmaster', [\App\Http\Controllers\Admin\SeoSettingsController::class, 'webmasterUpdate'])->name('settings.seo.webmaster');
+    Route::put('settings/seo/indexnow', [\App\Http\Controllers\Admin\SeoSettingsController::class, 'indexnowUpdate'])->name('settings.seo.indexnow');
+    Route::post('settings/seo/indexnow/generate', [\App\Http\Controllers\Admin\SeoSettingsController::class, 'indexnowGenerate'])->name('settings.seo.indexnow.generate');
+    Route::post('settings/seo/indexnow/submit-all', [\App\Http\Controllers\Admin\SeoSettingsController::class, 'indexnowSubmitAll'])->name('settings.seo.indexnow.submit-all');
 
     Route::get('settings/customerio', [\App\Http\Controllers\Admin\CustomerIoSettingController::class, 'edit'])->name('settings.customerio');
     Route::put('settings/customerio', [\App\Http\Controllers\Admin\CustomerIoSettingController::class, 'update'])->name('settings.customerio.update');

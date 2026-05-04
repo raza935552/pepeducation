@@ -7,6 +7,7 @@ use App\Models\BlogPost;
 use App\Models\Page;
 use App\Models\Peptide;
 use App\Models\Setting;
+use App\Services\Seo\IndexNowService;
 use App\Services\Seo\Providers\ClaudeProvider;
 use App\Services\Seo\SeoGeneratorService;
 use Illuminate\Http\Request;
@@ -33,10 +34,88 @@ class SeoSettingsController extends Controller
 
         $totalPeptides = Peptide::published()->count();
 
+        // Webmaster verification + Yandex Metrica
+        $googleVerification = Setting::getValue('seo', 'google_verification', '');
+        $bingVerification   = Setting::getValue('seo', 'bing_verification', '');
+        $yandexVerification = Setting::getValue('seo', 'yandex_verification', '');
+        $yandexMetricaId    = Setting::getValue('tracking', 'yandex_metrica_id', '');
+
+        // IndexNow
+        $indexnowKey      = Setting::getValue('seo', 'indexnow_key', '');
+        $indexnowEnabled  = (bool) Setting::getValue('seo', 'indexnow_enabled', false);
+        $indexnowKeyUrl   = $indexnowKey ? rtrim(config('app.url'), '/').'/'.$indexnowKey.'.txt' : null;
+        $indexnowLastPing = Setting::getValue('seo', 'indexnow_last_ping_at', null);
+
+        $sitemapUrl = url('/sitemap.xml');
+
         return view('admin.settings.seo', compact(
             'claudeModels', 'claudeModel', 'maskedKey', 'hasKey',
-            'autoGenerate', 'missingCount', 'totalPeptides'
+            'autoGenerate', 'missingCount', 'totalPeptides',
+            'googleVerification', 'bingVerification', 'yandexVerification',
+            'yandexMetricaId',
+            'indexnowKey', 'indexnowEnabled', 'indexnowKeyUrl', 'indexnowLastPing',
+            'sitemapUrl'
         ));
+    }
+
+    public function webmasterUpdate(Request $request)
+    {
+        $request->validate([
+            'google_verification' => 'nullable|string|max:200',
+            'bing_verification'   => 'nullable|string|max:200',
+            'yandex_verification' => 'nullable|string|max:200',
+            'yandex_metrica_id'   => 'nullable|string|max:50',
+        ]);
+
+        Setting::setValue('seo', 'google_verification', trim($request->input('google_verification', '')));
+        Setting::setValue('seo', 'bing_verification', trim($request->input('bing_verification', '')));
+        Setting::setValue('seo', 'yandex_verification', trim($request->input('yandex_verification', '')));
+        Setting::setValue('tracking', 'yandex_metrica_id', trim($request->input('yandex_metrica_id', '')));
+
+        return back()->with('success', 'Webmaster verification settings saved.');
+    }
+
+    public function indexnowUpdate(Request $request)
+    {
+        $request->validate([
+            'indexnow_enabled' => 'nullable',
+        ]);
+
+        Setting::setValue('seo', 'indexnow_enabled', (bool) $request->input('indexnow_enabled'));
+
+        if (!IndexNowService::getKey()) {
+            IndexNowService::generateKey();
+        }
+
+        return back()->with('success', 'IndexNow settings saved.');
+    }
+
+    public function indexnowGenerate()
+    {
+        $key = IndexNowService::generateKey();
+
+        return back()->with('success', 'New IndexNow key generated: '.$key);
+    }
+
+    public function indexnowSubmitAll()
+    {
+        if (!IndexNowService::getKey()) {
+            return back()->with('error', 'Generate an IndexNow key first.');
+        }
+
+        $result = IndexNowService::submitAllPublished();
+
+        if (!($result['ok'] ?? false)) {
+            return back()->with('error', 'IndexNow submission failed: '.($result['reason'] ?? 'unknown'));
+        }
+
+        Setting::setValue('seo', 'indexnow_last_ping_at', now()->toIso8601String());
+
+        $endpointSummary = collect($result['endpoints'] ?? [])
+            ->map(fn ($r, $name) => $name.': '.($r['ok'] ? 'ok ('.$r['status'].')' : 'fail ('.$r['status'].')'))
+            ->implode(', ');
+
+        return back()->with('success', 'Submitted '.($result['submitted'] ?? 0).' URLs to IndexNow. '.$endpointSummary);
     }
 
     public function update(Request $request)
