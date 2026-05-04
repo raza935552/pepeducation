@@ -10,7 +10,7 @@
     @endpush
 
     {{-- Hero Section --}}
-    <section class="relative bg-gradient-to-br from-dark-800 via-dark-900 to-dark-950 overflow-hidden">
+    <section class="relative bg-gradient-to-br from-primary-900 to-dark-900 overflow-hidden">
         <div class="absolute inset-0 opacity-10">
             <svg aria-hidden="true" class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <defs>

@@ -27,11 +27,19 @@
 
                 if (mb_strlen($segmentText) < 30) continue;
 
+                if (mb_strlen($segmentText) > 500) {
+                    $cut = mb_substr($segmentText, 0, 500);
+                    $lastPeriod = mb_strrpos($cut, '.');
+                    $segmentText = $lastPeriod !== false && $lastPeriod > 250
+                        ? mb_substr($cut, 0, $lastPeriod + 1)
+                        : rtrim($cut, " ,;:-'\"").'.';
+                }
+
                 $steps[] = [
                     '@type' => 'HowToStep',
                     'position' => count($steps) + 1,
                     'name' => $name,
-                    'text' => mb_strlen($segmentText) > 500 ? mb_substr($segmentText, 0, 497).'...' : $segmentText,
+                    'text' => $segmentText,
                     'url' => route('blog.show', $post->slug).'#'.\Illuminate\Support\Str::slug($name),
                 ];
 

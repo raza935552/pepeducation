@@ -56,7 +56,7 @@
     @endpush
 
     {{-- Hero --}}
-    <section class="bg-gradient-to-br from-dark-900 via-dark-800 to-primary-900/30 text-white py-10 md:py-14">
+    <section class="bg-gradient-to-br from-primary-900 to-dark-900 text-white py-10 md:py-14">
         <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <nav class="flex items-center gap-2 text-xs sm:text-sm text-surface-400 mb-4">
                 <a href="{{ route('home') }}" class="hover:text-white transition-colors">Home</a>

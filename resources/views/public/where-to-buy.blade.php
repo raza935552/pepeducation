@@ -11,7 +11,7 @@
     description="Where to find research-grade peptides at {{ $brand }}, including direct product pages for the most popular peptides."
     :canonical="route('where-to-buy')"
 >
-    <section class="bg-gradient-to-br from-dark-900 via-dark-800 to-primary-900/30 text-white py-12 md:py-16">
+    <section class="bg-gradient-to-br from-primary-900 to-dark-900 text-white py-12 md:py-16">
         <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <h1 class="text-3xl md:text-5xl font-bold mb-4">Where to Buy Research Peptides</h1>
             <p class="text-base md:text-lg text-surface-300 max-w-2xl mb-6">
