@@ -120,6 +120,19 @@ class SitemapController extends Controller
             'priority' => '0.6',
         ]);
 
+        // Author pages
+        \App\Models\User::where('is_public_author', true)
+            ->whereNotNull('slug')
+            ->select('slug', 'updated_at')
+            ->each(function ($author) use (&$urls) {
+                $urls->push([
+                    'loc' => route('author.show', $author->slug),
+                    'lastmod' => $author->updated_at?->toW3cString(),
+                    'changefreq' => 'weekly',
+                    'priority' => '0.5',
+                ]);
+            });
+
         // Build XML
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";

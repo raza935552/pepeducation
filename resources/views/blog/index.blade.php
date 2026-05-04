@@ -60,7 +60,7 @@
                         <a href="{{ route('blog.show', $featured->slug) }}" class="block">
                             @if($featured->featured_image)
                                 <div class="aspect-[16/9] overflow-hidden">
-                                    <img src="{{ $featured->featured_image }}" alt="{{ $featured->title }}"
+                                    <img src="{{ $featured->featured_image }}" alt="{{ $featured->title }}" loading="eager" fetchpriority="high" width="1200" height="630"
                                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
                                 </div>
                             @else

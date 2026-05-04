@@ -108,6 +108,9 @@ Route::get('/blog/category/{category}', [BlogController::class, 'category'])->na
 Route::get('/blog/tag/{tag}', [BlogController::class, 'tag'])->name('blog.tag');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->where('slug', '[a-z0-9][a-z0-9\-]*')->name('blog.show');
 
+// Author bio pages
+Route::get('/author/{user}', [\App\Http\Controllers\AuthorController::class, 'show'])->name('author.show');
+
 // Dynamic Pages (must be last to not conflict with other routes)
 Route::get('/{slug}', [PageController::class, 'show'])
     ->where('slug', '[a-z0-9][a-z0-9\-]*')

@@ -14,11 +14,17 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
+        'slug',
         'email',
         'password',
         'role',
         'bio',
         'avatar',
+        'credentials',
+        'expertise',
+        'twitter_url',
+        'linkedin_url',
+        'is_public_author',
         'is_suspended',
         'suspended_at',
     ];
@@ -35,7 +41,27 @@ class User extends Authenticatable
             'password' => 'hashed',
             'is_suspended' => 'boolean',
             'suspended_at' => 'datetime',
+            'is_public_author' => 'boolean',
         ];
+    }
+
+    public function authoredPosts(): HasMany
+    {
+        return $this->hasMany(BlogPost::class, 'created_by');
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    public function expertiseList(): array
+    {
+        if (empty($this->expertise)) {
+            return [];
+        }
+
+        return array_map('trim', explode(',', $this->expertise));
     }
 
     public function isAdmin(): bool

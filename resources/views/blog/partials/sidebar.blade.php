@@ -27,7 +27,7 @@
                     <li>
                         <a href="{{ route('blog.show', $popular->slug) }}" class="group flex gap-3">
                             @if($popular->featured_image)
-                                <img src="{{ $popular->featured_image }}" alt=""
+                                <img src="{{ $popular->featured_image }}" alt="" loading="lazy" decoding="async" width="80" height="80"
                                      class="w-16 h-16 rounded-lg object-cover flex-shrink-0" loading="lazy">
                             @else
                                 <div class="w-16 h-16 rounded-lg bg-surface-100 flex items-center justify-center flex-shrink-0">

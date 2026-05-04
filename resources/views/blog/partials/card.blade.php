@@ -2,7 +2,7 @@
     <a href="{{ route('blog.show', $post->slug) }}" class="block">
         @if($post->featured_image)
             <div class="aspect-[16/9] overflow-hidden">
-                <img src="{{ $post->featured_image }}" alt="{{ $post->title }}"
+                <img src="{{ $post->featured_image }}" alt="{{ $post->title }}" loading="lazy" decoding="async" width="1200" height="630"
                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
             </div>
         @else

@@ -57,7 +57,13 @@
                         <div class="w-8 h-8 rounded-full bg-primary-500/20 flex items-center justify-center">
                             <span class="text-xs font-bold text-primary-400">{{ strtoupper(substr($post->author?->name ?? 'P', 0, 1)) }}</span>
                         </div>
-                        <span>{{ $post->author?->name ?? 'PepProfesor' }}</span>
+                        @if($post->author && $post->author->is_public_author && $post->author->slug)
+                            <a href="{{ route('author.show', $post->author->slug) }}" class="hover:text-white transition-colors">
+                                {{ $post->author->name }}
+                            </a>
+                        @else
+                            <span>{{ $post->author?->name ?? 'Professor Peptides' }}</span>
+                        @endif
                     </div>
                     <span>&middot;</span>
                     <time datetime="{{ $post->published_at?->toIso8601String() }}">
@@ -75,7 +81,7 @@
     {{-- Featured Image --}}
     @if($post->featured_image)
         <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 -mt-8 relative z-10 mb-8">
-            <img src="{{ $post->featured_image }}" alt="{{ $post->title }}"
+            <img src="{{ $post->featured_image }}" alt="{{ $post->title }}" loading="eager" fetchpriority="high" width="1200" height="630"
                  class="w-full rounded-2xl shadow-lg object-cover max-h-[500px]">
         </div>
     @endif
@@ -89,6 +95,39 @@
                 <div class="prose prose-lg max-w-none prose-headings:text-gray-900 prose-headings:font-bold prose-p:text-gray-600 prose-a:text-dark-600 prose-a:underline hover:prose-a:text-dark-800 prose-img:rounded-xl prose-img:shadow-sm">
                     {!! $post->sanitizedHtml() !!}
                 </div>
+
+                {{-- Author Bio Block --}}
+                @if($post->author && $post->author->is_public_author && $post->author->bio)
+                    <section class="mt-12 pt-8 border-t border-gray-200">
+                        <div class="rounded-2xl bg-surface-50 border border-surface-200 p-6">
+                            <div class="flex flex-col sm:flex-row gap-5">
+                                <div class="shrink-0">
+                                    <div class="w-16 h-16 rounded-full bg-primary-100 flex items-center justify-center overflow-hidden">
+                                        @if($post->author->avatar)
+                                            <img src="{{ \Illuminate\Support\Str::startsWith($post->author->avatar, ['http://','https://']) ? $post->author->avatar : asset($post->author->avatar) }}" alt="{{ $post->author->name }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                                        @else
+                                            <span class="text-xl font-bold text-primary-600">{{ strtoupper(substr($post->author->name, 0, 1)) }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-xs font-semibold uppercase tracking-wider text-primary-600 mb-1">Written By</p>
+                                    <h3 class="text-lg font-bold text-gray-900">
+                                        <a href="{{ route('author.show', $post->author->slug) }}" class="hover:text-primary-600 transition-colors">{{ $post->author->name }}</a>
+                                    </h3>
+                                    @if($post->author->credentials)
+                                        <p class="text-sm text-gray-500 mb-2">{{ $post->author->credentials }}</p>
+                                    @endif
+                                    <p class="text-sm text-gray-600 leading-relaxed">{{ \Illuminate\Support\Str::limit($post->author->bio, 280) }}</p>
+                                    <a href="{{ route('author.show', $post->author->slug) }}" class="inline-flex items-center gap-1 mt-3 text-sm text-primary-600 hover:text-primary-700 font-medium">
+                                        More articles by {{ $post->author->name }}
+                                        <svg aria-hidden="true" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                @endif
 
                 {{-- Buy CTA: deep-link if post mentions a single peptide, otherwise general --}}
                 @php $primaryPeptide = $post->peptides->first(); @endphp

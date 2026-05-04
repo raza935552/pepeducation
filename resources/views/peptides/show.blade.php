@@ -49,6 +49,9 @@
             @if($relatedPeptides->isNotEmpty())
                 @include('peptides.partials.show-related')
             @endif
+
+            <!-- Related Articles -->
+            @include('peptides.partials.show-related-posts')
         </div>
     </section>
     @push('scripts')

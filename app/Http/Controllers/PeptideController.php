@@ -58,10 +58,16 @@ class PeptideController extends Controller
             ->limit(4)
             ->get();
 
+        $relatedPosts = \App\Models\BlogPost::published()
+            ->whereHas('peptides', fn($q) => $q->where('peptides.id', $peptide->id))
+            ->latest('published_at')
+            ->limit(4)
+            ->get(['id', 'title', 'slug', 'excerpt', 'featured_image', 'reading_time', 'published_at']);
+
         // Track viewed product to Customer.io (if subscriber identified)
         $this->trackViewedProduct($peptide);
 
-        return view('peptides.show', compact('peptide', 'relatedPeptides'));
+        return view('peptides.show', compact('peptide', 'relatedPeptides', 'relatedPosts'));
     }
 
     protected function trackViewedProduct(Peptide $peptide): void
