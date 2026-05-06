@@ -49,6 +49,9 @@ deploy.php
 
 # Screenshots & Images (dev artifacts)
 *.png
+!public/favicon-*.png
+!public/apple-touch-icon.png
+!public/icon-*.png
 
 # Database
 database.sqlite
