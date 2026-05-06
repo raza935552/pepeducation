@@ -27,14 +27,29 @@ class PeptideCalculator extends Component
     public $cycleDays = 30;
 
     /**
+     * Coerce a Livewire-bound input to a float safely. Empty strings, "abc",
+     * etc. all become 0.0. Prevents PHP 8 "Unsupported operand types"
+     * fatals when the user clears an input or types a non-numeric value.
+     */
+    private function num($value): float
+    {
+        if ($value === null || $value === '' || !is_numeric($value)) {
+            return 0.0;
+        }
+
+        return (float) $value;
+    }
+
+    /**
      * Calculate concentration in mcg/mL
      * Formula: (peptide mg × 1000) ÷ water mL
      */
     #[Computed]
     public function concentration(): float
     {
-        if ($this->waterAmount <= 0) return 0;
-        return ($this->peptideAmount * 1000) / $this->waterAmount;
+        $water = $this->num($this->waterAmount);
+        if ($water <= 0) return 0;
+        return ($this->num($this->peptideAmount) * 1000) / $water;
     }
 
     /**
@@ -54,15 +69,17 @@ class PeptideCalculator extends Component
     public function effectiveDose(): float
     {
         if ($this->useBodyWeight) {
+            $weight = $this->num($this->bodyWeight);
             $weightInKg = $this->weightUnit === 'lb'
-                ? $this->bodyWeight * 0.453592
-                : $this->bodyWeight;
-            return $this->dosePerKg * $weightInKg;
+                ? $weight * 0.453592
+                : $weight;
+            return $this->num($this->dosePerKg) * $weightInKg;
         }
         // Convert mg to mcg if needed
+        $dose = $this->num($this->desiredDose);
         return $this->doseUnit === 'mg'
-            ? $this->desiredDose * 1000
-            : $this->desiredDose;
+            ? $dose * 1000
+            : $dose;
     }
 
     /**
@@ -125,7 +142,7 @@ class PeptideCalculator extends Component
     public function totalDosesInVial(): float
     {
         if ($this->effectiveDose <= 0) return 0;
-        return ($this->peptideAmount * 1000) / $this->effectiveDose;
+        return ($this->num($this->peptideAmount) * 1000) / $this->effectiveDose;
     }
 
     /**
@@ -134,7 +151,7 @@ class PeptideCalculator extends Component
     #[Computed]
     public function totalPeptideForCycle(): float
     {
-        $totalMcg = $this->effectiveDose * $this->injectionsPerDay * $this->cycleDays;
+        $totalMcg = $this->effectiveDose * $this->num($this->injectionsPerDay) * $this->num($this->cycleDays);
         return $totalMcg / 1000; // Convert to mg
     }
 
@@ -144,8 +161,9 @@ class PeptideCalculator extends Component
     #[Computed]
     public function vialsNeeded(): int
     {
-        if ($this->peptideAmount <= 0) return 0;
-        return (int) ceil($this->totalPeptideForCycle / $this->peptideAmount);
+        $vialMg = $this->num($this->peptideAmount);
+        if ($vialMg <= 0) return 0;
+        return (int) ceil($this->totalPeptideForCycle / $vialMg);
     }
 
     /**
