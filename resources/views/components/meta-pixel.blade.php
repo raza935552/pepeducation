@@ -2,11 +2,12 @@
     // Shared Meta pixel with Biolinx (same dataset) so the education → store funnel
     // is one audience. Seasons on PP traffic, sets _fbp/_fbc, and forwards the
     // ad-click identity to every Biolinx link.
-    $metaPixelId = \App\Models\Setting::getValue('meta', 'pixel_id', null);
-    $metaPixelOn = \App\Models\Setting::getValue('meta', 'pixel_enabled', true);
+    // Managed from Admin → Settings → Tracking Pixels (tracking.meta_pixel_id).
+    // Presence of an ID = enabled; clear the field in admin to turn it off.
+    $metaPixelId = \App\Models\Setting::getValue('tracking', 'meta_pixel_id', null);
 @endphp
 
-@if($metaPixelOn && $metaPixelId)
+@if(!empty($metaPixelId))
 <!-- Meta Pixel (shared with Biolinx) -->
 <script>
     !function(f,b,e,v,n,t,s)
