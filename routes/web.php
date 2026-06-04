@@ -66,6 +66,11 @@ Route::middleware('auth')->group(function () {
 // Outbound Link Tracking
 Route::get('/go/{slug}', [OutboundController::class, 'track'])->name('outbound.track');
 
+// Paid-ad bridge landers (Operator Brief) — season the pixel, CTA -> /go -> Biolinx
+Route::get('/lp/{slug}', [\App\Http\Controllers\LanderController::class, 'show'])
+    ->where('slug', '[a-z0-9-]+')
+    ->name('lander.show');
+
 // Quizzes
 Route::get('/quiz/{slug}', [QuizController::class, 'show'])->name('quiz.show');
 Route::get('/quiz/{slug}/embed', [QuizController::class, 'embed'])->name('quiz.embed');
