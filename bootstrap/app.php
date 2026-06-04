@@ -21,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Maintenance mode — check on every web request
         $middleware->web(append: [
             \App\Http\Middleware\MaintenanceMiddleware::class,
+            \App\Http\Middleware\CaptureMetaClickIds::class,
         ]);
 
         // Exclude tracking cookies from encryption (session/segment only)

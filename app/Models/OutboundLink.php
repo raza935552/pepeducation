@@ -83,6 +83,14 @@ class OutboundLink extends Model
             $params['pp_engagement_score'] = $trackingData['pp_engagement_score'];
         }
 
+        // Meta click identity — always forwarded (not flag-gated) so the ad-click
+        // survives the hand-off and the Biolinx Purchase CAPI can match it.
+        foreach (['fbclid', 'fbp', 'fbc'] as $metaKey) {
+            if (!empty($trackingData[$metaKey])) {
+                $params[$metaKey] = $trackingData[$metaKey];
+            }
+        }
+
         if (empty($params)) {
             return $url;
         }

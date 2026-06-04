@@ -13,6 +13,9 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        {{-- Meta Pixel (shared with Biolinx) — seasons PP traffic + forwards click IDs --}}
+        <x-meta-pixel />
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">

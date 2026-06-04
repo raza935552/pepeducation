@@ -337,6 +337,12 @@ class TrackingManager
             'pp_recommended_peptide' => $quizResponse?->outcome?->recommended_peptides[0] ?? null,
             'pp_utm_source' => $session->utm_source,
             'pp_utm_campaign' => $session->utm_campaign,
+            // Meta click identity — forwarded to Biolinx so the Purchase CAPI there
+            // matches back to the original ad click. Raw email goes via pp_email
+            // (the OutboundLink append_raw_email flag) so Biolinx can hash + match it.
+            'fbclid' => session('meta_fbclid'),
+            'fbp' => session('meta_fbp'),
+            'fbc' => session('meta_fbc'),
         ]);
     }
 
