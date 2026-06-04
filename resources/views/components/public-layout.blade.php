@@ -121,6 +121,9 @@
     {{-- Customer.io CDP (cioanalytics) --}}
     <x-cio-cdp />
 
+    {{-- Meta Pixel (shared with Biolinx) — seasons the pixel + sets _fbp/_fbc --}}
+    <x-meta-pixel />
+
     @livewireStyles
     @stack('head')
 
