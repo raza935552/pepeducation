@@ -1,4 +1,4 @@
-<x-public-layout
+<x-public-layout :no-pixel="true"
     title="{{ $tag->name }} - Peptide Articles"
     description="Articles tagged with {{ $tag->name }}. Peptide research, protocols, and insights from Professor Peptides."
 >

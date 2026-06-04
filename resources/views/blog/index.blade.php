@@ -1,4 +1,4 @@
-<x-public-layout
+<x-public-layout :no-pixel="true"
     :title="\App\Models\Setting::getValue('seo_pages', 'blog_index_title', 'Peptide Research Blog: Articles & Insights')"
     :description="\App\Models\Setting::getValue('seo_pages', 'blog_index_description', 'Expert insights on peptides, research updates, and educational content from Professor Peptides.')"
 >

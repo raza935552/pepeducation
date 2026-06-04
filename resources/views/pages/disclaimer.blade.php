@@ -1,4 +1,4 @@
-<x-public-layout title="Disclaimer">
+<x-public-layout :no-pixel="true" title="Disclaimer">
     {{-- Hero --}}
     <section class="bg-gradient-to-b from-surface-100 to-surface-50 py-16 lg:py-20">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

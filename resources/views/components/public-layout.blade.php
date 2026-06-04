@@ -1,4 +1,4 @@
-@props(['title' => null, 'description' => null, 'image' => null, 'canonical' => null, 'hideChrome' => false])
+@props(['title' => null, 'description' => null, 'image' => null, 'canonical' => null, 'hideChrome' => false, 'noPixel' => false])
 
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
@@ -121,8 +121,12 @@
     {{-- Customer.io CDP (cioanalytics) --}}
     <x-cio-cdp />
 
-    {{-- Meta Pixel (shared with Biolinx) — seasons the pixel + sets _fbp/_fbc --}}
-    <x-meta-pixel />
+    {{-- Meta Pixel (shared with Biolinx) — seasons the pixel + sets _fbp/_fbc.
+         Suppressed on pure-info pages (blog, legal) via :no-pixel="true" to keep
+         the education brand's Meta footprint to conversion-intent pages only. --}}
+    @unless($noPixel)
+        <x-meta-pixel />
+    @endunless
 
     @livewireStyles
     @stack('head')

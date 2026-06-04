@@ -1,4 +1,4 @@
-<x-public-layout
+<x-public-layout :no-pixel="true"
     title="{{ $category->name }} - Peptide Blog"
     description="{{ $category->description ?? 'Browse articles about ' . $category->name . '. Research, guides, and expert insights from Professor Peptides.' }}"
 >

@@ -1,4 +1,4 @@
-<x-public-layout
+<x-public-layout :no-pixel="true"
     :title="$post->meta_title ?? $post->title"
     :description="$post->meta_description ?? $post->excerpt"
     :image="$post->featured_image ? url($post->featured_image) : null"
