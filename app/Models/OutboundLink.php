@@ -47,11 +47,20 @@ class OutboundLink extends Model
         $url = $destinationOverride ?? $this->destination_url;
         $params = [];
 
-        // UTM params
-        if ($this->utm_source) $params['utm_source'] = $this->utm_source;
-        if ($this->utm_medium) $params['utm_medium'] = $this->utm_medium;
-        if ($this->utm_campaign) $params['utm_campaign'] = $this->utm_campaign;
-        if ($this->utm_content) $params['utm_content'] = $this->utm_content;
+        // UTM params — prefer the REAL ad UTMs the visitor landed with (Ad → Lander →
+        // Biolinx) so the purchase attributes to the actual ad/campaign. Fall back to
+        // the link's static UTM when there was no ad click (e.g. organic/direct).
+        $adUtm = $trackingData['ad_utm'] ?? [];
+        $utm = [
+            'utm_source'   => $adUtm['utm_source']   ?? $this->utm_source,
+            'utm_medium'   => $adUtm['utm_medium']   ?? $this->utm_medium,
+            'utm_campaign' => $adUtm['utm_campaign'] ?? $this->utm_campaign,
+            'utm_content'  => $adUtm['utm_content']  ?? $this->utm_content,
+            'utm_term'     => $adUtm['utm_term']     ?? null,
+        ];
+        foreach ($utm as $k => $val) {
+            if ($val !== null && $val !== '') $params[$k] = $val;
+        }
 
         // Pass through all pp_* params from getCrossDomainData()
         if ($this->append_session && isset($trackingData['pp_session'])) {

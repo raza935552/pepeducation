@@ -28,6 +28,9 @@ class LanderController extends Controller
 
     public function show(string $slug): View
     {
+        // Ad UTMs (Ad → Lander) are captured into the session by CaptureMetaClickIds
+        // and forwarded to Biolinx by the CTA hand-off (/go → buildFinalUrl).
+
         // CMS-driven landers (editable in admin) take precedence.
         $lander = \App\Models\Lander::where('slug', $slug)->where('is_active', true)->first();
         if ($lander) {

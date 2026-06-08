@@ -337,6 +337,17 @@ class TrackingManager
             'pp_recommended_peptide' => $quizResponse?->outcome?->recommended_peptides[0] ?? null,
             'pp_utm_source' => $session->utm_source,
             'pp_utm_campaign' => $session->utm_campaign,
+            // The REAL ad UTMs the visitor landed with (Ad → Lander), captured into
+            // the session by CaptureMetaClickIds. Forwarded as standard utm_* to
+            // Biolinx so the purchase attributes to the actual ad/campaign, not the
+            // lander's static UTM. Empty when it wasn't an ad click.
+            'ad_utm' => array_filter([
+                'utm_source' => session('ad_utm_source'),
+                'utm_medium' => session('ad_utm_medium'),
+                'utm_campaign' => session('ad_utm_campaign'),
+                'utm_content' => session('ad_utm_content'),
+                'utm_term' => session('ad_utm_term'),
+            ]),
             // Meta click identity — forwarded to Biolinx so the Purchase CAPI there
             // matches back to the original ad click. Raw email goes via pp_email
             // (the OutboundLink append_raw_email flag) so Biolinx can hash + match it.

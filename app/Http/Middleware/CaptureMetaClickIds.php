@@ -31,6 +31,15 @@ class CaptureMetaClickIds
             session(['meta_fbclid' => substr((string) $v, 0, 400)]);
         }
 
+        // Capture the ad UTMs from the landing URL into the session (same durable
+        // mechanism as fbclid) so the cross-domain hand-off forwards the REAL ad
+        // campaign — Ad → Lander → Biolinx. Latest ad click wins.
+        foreach (['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'] as $k) {
+            if ($v = $request->query($k)) {
+                session(['ad_' . $k => substr((string) $v, 0, 200)]);
+            }
+        }
+
         return $next($request);
     }
 }
