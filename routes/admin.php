@@ -157,6 +157,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Marketing: Outbound Links
     Route::resource('outbound-links', OutboundLinkController::class);
 
+    // Marketing: Landers (bridge landing pages — CMS)
+    Route::get('landers', [\App\Http\Controllers\Admin\LanderController::class, 'index'])->name('landers.index');
+    Route::get('landers/{lander}/edit', [\App\Http\Controllers\Admin\LanderController::class, 'edit'])->name('landers.edit');
+    Route::put('landers/{lander}', [\App\Http\Controllers\Admin\LanderController::class, 'update'])->name('landers.update');
+
     // Stack Builder
     Route::resource('stack-goals', StackGoalController::class)->except(['show']);
     Route::resource('stack-products', StackProductController::class)->except(['show']);
