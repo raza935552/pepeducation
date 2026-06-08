@@ -24,11 +24,17 @@ class LanderController extends Controller
         'coas-worthless'      => 'lp-coas-worthless',
         'suppliers-identical' => 'lp-suppliers-identical',
         'vetted-47'           => 'lp-vetted-47',
-        'hunger-fullness'     => 'lp-hunger-fullness',
     ];
 
     public function show(string $slug): View
     {
+        // CMS-driven landers (editable in admin) take precedence.
+        $lander = \App\Models\Lander::where('slug', $slug)->where('is_active', true)->first();
+        if ($lander) {
+            return view("landers.templates.{$lander->template}", compact('lander'));
+        }
+
+        // Legacy static landers (the original 5).
         abort_unless(array_key_exists($slug, self::LANDERS), 404);
 
         return view("landers.{$slug}");

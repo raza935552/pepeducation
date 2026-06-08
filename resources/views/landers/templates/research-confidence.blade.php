@@ -1,20 +1,34 @@
 @php
-    // Each Biolinx product link routes through /go (forwards UTM + fbclid/fbp/fbc to
-    // Biolinx for the Purchase CAPI match) and lands on the specific product via ?dest=.
-    $go = fn (string $product) => route('outbound.track', 'lp-hunger-fullness') . '?dest=' . urlencode($product);
-    $semaglutide = 'https://biolinxlabs.com/products/g1-s-5-mg';
-    $tirzepatide = 'https://biolinxlabs.com/products/g2-t-10-mg';
-    $retatrutide = 'https://biolinxlabs.com/products/g3-r-10-mg';
+    // CMS-driven render. All copy/links/images come from $lander->content; the layout
+    // (this file) is fixed so edits can never break the design.
+    $go = fn (string $dest) => $lander->outbound_slug
+        ? route('outbound.track', $lander->outbound_slug) . '?dest=' . urlencode($dest)
+        : $dest;
+    $icons = [
+        // science (4) + trust (5) line-icon svg paths, fixed to the layout slots
+        'science' => [
+            '<path d="M48 18v60M45 19c-5-7-17-5-21 3-7 0-13 6-13 14 0 3 1 6 3 8-5 3-8 8-8 15 0 10 8 18 18 18h21M51 19c5-7 17-5 21 3 7 0 13 6 13 14 0 3-1 6-3 8 5 3 8 8 8 15 0 10-8 18-18 18H51"/><path d="M25 34c5 0 9 3 10 8M22 58c5-1 10 1 13 5M72 34c-5 0-9 3-10 8M75 58c-5-1-10 1-13 5"/>',
+            '<path d="M42 10v23c0 10 16 10 24 22 11 17-1 35-23 35-17 0-32-10-32-27 0-14 12-21 25-29V10h6Z"/><path d="M52 58c-7 5-15 6-23 4"/>',
+            '<circle cx="32" cy="32" r="14"/><circle cx="64" cy="32" r="14"/><circle cx="32" cy="64" r="14"/><circle cx="64" cy="64" r="14"/><path d="M31 31c4-4 9-3 12 1M63 31c4-4 9-3 12 1M31 63c4-4 9-3 12 1M63 63c4-4 9-3 12 1"/>',
+            '<path d="M49 88c-21 0-35-13-35-33 0-16 12-28 24-42 0 15 8 20 9 31 9-10 15-24 14-38 18 13 27 31 27 50 0 19-15 32-39 32Z"/><path d="M50 82c10 0 18-7 18-16 0-8-5-14-11-21-2 8-7 14-14 19 0-7-4-10-8-15-5 6-8 11-8 17 0 9 10 16 23 16Z"/>',
+        ],
+        'trust' => [
+            '<path d="M32 8c13 0 24 11 24 24S45 56 32 56 8 45 8 32 19 8 32 8Z"/><path d="M23 41 41 23"/><circle cx="24" cy="24" r="3"/><circle cx="40" cy="40" r="3"/>',
+            '<path d="M32 9c13 12 22 25 22 36 0 8-7 14-22 14S10 53 10 45c0-11 9-24 22-36Z"/><path d="M23 38l6 6 13-15"/>',
+            '<path d="M22 12h20l6 6v34H16V12h6Z"/><path d="M22 29h20M22 39h12M25 47l5 4 10-13"/>',
+            '<circle cx="32" cy="32" r="24"/><path d="M22 33.5 29 40l14-16"/>',
+            '<path d="M32 8 52 17v15c0 13-8 22-20 26C20 54 12 45 12 32V17l20-9Z"/><path d="M23 33l6 6 13-16"/>',
+        ],
+    ];
 @endphp
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  {{-- Paid-ad bridge lander: not for organic indexing (also reduces compliance surface). --}}
-  <meta name="robots" content="noindex,nofollow" />
-  <title>Research With Confidence | Hunger & Fullness Research</title>
-  <meta name="description" content="Educational research-use-only landing page about hunger, fullness, appetite signaling, and source-quality evaluation." />
+  @if($lander->noindex)<meta name="robots" content="noindex,nofollow" />@endif
+  <title>{{ $lander->c('meta.title') }}</title>
+  <meta name="description" content="{{ $lander->c('meta.description') }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
@@ -32,132 +46,87 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="page-shell">
     <header class="topbar" aria-label="Main header">
-      <a class="brand" href="#top" aria-label="Research With Confidence home">
+      <a class="brand" href="#top">
         <span class="brand-mark" aria-hidden="true">✦</span>
-        <span class="brand-text"><strong>Research With Confidence</strong><em>Peptide Research Education</em></span>
+        <span class="brand-text"><strong>{{ $lander->c('brand.name') }}</strong><em>{{ $lander->c('brand.tagline') }}</em></span>
       </a>
       <nav class="nav-links" aria-label="Main navigation">
-        <a href="#science">Education</a>
-        <a href="#compounds">Research</a>
-        <a href="#source">Source Quality</a>
-        <a href="#framework">Checklist</a>
+        <a href="#science">Education</a><a href="#compounds">Research</a><a href="#source">Source Quality</a><a href="#framework">Checklist</a>
       </nav>
       <a class="nav-cta" href="#framework">Get the Guide</a>
     </header>
-
     <a class="sticky-compounds" href="#compounds">Compare Research Compounds ↓</a>
 
     <main id="main">
       <section id="top" class="hero section-card">
         <div class="hero-copy">
-          <p class="eyebrow">Women's research education</p>
-          <h1>Why more women are exploring <span>hunger &amp; fullness research.</span></h1>
-          <p class="hero-lede">The science. The pathways. The source-quality checklist.</p>
-          <p>After 30, many women become more curious about why hunger signals, cravings, and satisfaction can feel different than before.</p>
-          <p>Researchers are studying compounds and biological pathways connected to appetite signaling, satiety response, and metabolic research.</p>
+          <p class="eyebrow">{{ $lander->c('hero.eyebrow') }}</p>
+          <h1>{{ $lander->c('hero.headline') }} <span>{{ $lander->c('hero.headline_highlight') }}</span></h1>
+          <p class="hero-lede">{{ $lander->c('hero.lede') }}</p>
+          <p>{{ $lander->c('hero.para1') }}</p>
+          <p>{{ $lander->c('hero.para2') }}</p>
           <div class="hero-actions">
-            <a class="button primary" href="#science">Understand the Science</a>
-            <a class="button ghost" href="#compounds">View Research Compounds</a>
+            <a class="button primary" href="#science">{{ $lander->c('hero.primary_cta') }}</a>
+            <a class="button ghost" href="#compounds">{{ $lander->c('hero.ghost_cta') }}</a>
           </div>
-          <p class="micro-disclaimer">Research use only. Not for human consumption. Educational information only.</p>
+          <p class="micro-disclaimer">{{ $lander->c('hero.disclaimer') }}</p>
         </div>
-        <div class="hero-media" aria-label="Woman writing in notebook while researching">
-          <img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/ff937fd8-c45b-4f4a-a486-73f22cc0a3e9.png" alt="Woman writing research notes at a desk" loading="eager" />
-          <div class="molecule-badge" aria-hidden="true">
-            <svg viewBox="0 0 120 120"><circle cx="22" cy="56" r="7"/><circle cx="45" cy="42" r="7"/><circle cx="65" cy="61" r="7"/><circle cx="86" cy="41" r="7"/><circle cx="55" cy="84" r="7"/><circle cx="91" cy="81" r="7"/><path d="M29 53 38 46M51 47 59 56M71 56 81 47M62 68 57 78M72 66 84 76"/></svg>
-          </div>
+        <div class="hero-media">
+          <img src="{{ $lander->c('hero.image_url') }}" alt="{{ $lander->c('hero.headline') }}" loading="eager" />
+          <div class="molecule-badge" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="22" cy="56" r="7"/><circle cx="45" cy="42" r="7"/><circle cx="65" cy="61" r="7"/><circle cx="86" cy="41" r="7"/><circle cx="55" cy="84" r="7"/><circle cx="91" cy="81" r="7"/><path d="M29 53 38 46M51 47 59 56M71 56 81 47M62 68 57 78M72 66 84 76"/></svg></div>
         </div>
       </section>
 
       <section id="science" class="section-card science-block">
-        <div class="section-heading centered">
-          <h2>The body science behind hunger &amp; fullness</h2>
-          <p>Educational research areas commonly discussed in appetite, satiety, and metabolic pathway research.</p>
-        </div>
+        <div class="section-heading centered"><h2>{{ $lander->c('science.heading') }}</h2><p>{{ $lander->c('science.sub') }}</p></div>
         <div class="science-grid">
+          @foreach($lander->c('science.items', []) as $i => $item)
           <article class="science-item">
-            <svg class="line-icon" viewBox="0 0 96 96" aria-hidden="true"><path d="M48 18v60M45 19c-5-7-17-5-21 3-7 0-13 6-13 14 0 3 1 6 3 8-5 3-8 8-8 15 0 10 8 18 18 18h21M51 19c5-7 17-5 21 3 7 0 13 6 13 14 0 3-1 6-3 8 5 3 8 8 8 15 0 10-8 18-18 18H51"/><path d="M25 34c5 0 9 3 10 8M22 58c5-1 10 1 13 5M72 34c-5 0-9 3-10 8M75 58c-5-1-10 1-13 5"/></svg>
-            <h3>Hunger Signals</h3><p>Researchers study how communication between the gut and brain relates to hunger cues.</p>
+            <svg class="line-icon" viewBox="0 0 96 96" aria-hidden="true">{!! $icons['science'][$i] ?? '' !!}</svg>
+            <h3>{{ $item['title'] ?? '' }}</h3><p>{{ $item['body'] ?? '' }}</p>
           </article>
-          <article class="science-item">
-            <svg class="line-icon" viewBox="0 0 96 96" aria-hidden="true"><path d="M42 10v23c0 10 16 10 24 22 11 17-1 35-23 35-17 0-32-10-32-27 0-14 12-21 25-29V10h6Z"/><path d="M52 58c-7 5-15 6-23 4"/></svg>
-            <h3>Satiety Response</h3><p>Satiety research explores signals connected to fullness and satisfaction after food intake.</p>
-          </article>
-          <article class="science-item">
-            <svg class="line-icon" viewBox="0 0 96 96" aria-hidden="true"><circle cx="32" cy="32" r="14"/><circle cx="64" cy="32" r="14"/><circle cx="32" cy="64" r="14"/><circle cx="64" cy="64" r="14"/><path d="M31 31c4-4 9-3 12 1M63 31c4-4 9-3 12 1M31 63c4-4 9-3 12 1M63 63c4-4 9-3 12 1"/></svg>
-            <h3>Metabolic Function</h3><p>Metabolic research looks at pathways involved in nutrient processing and energy regulation.</p>
-          </article>
-          <article class="science-item">
-            <svg class="line-icon" viewBox="0 0 96 96" aria-hidden="true"><path d="M49 88c-21 0-35-13-35-33 0-16 12-28 24-42 0 15 8 20 9 31 9-10 15-24 14-38 18 13 27 31 27 50 0 19-15 32-39 32Z"/><path d="M50 82c10 0 18-7 18-16 0-8-5-14-11-21-2 8-7 14-14 19 0-7-4-10-8-15-5 6-8 11-8 17 0 9 10 16 23 16Z"/></svg>
-            <h3>Why It Changes</h3><p>Age, sleep, stress, and hormonal shifts may influence how these systems are studied.</p>
-          </article>
+          @endforeach
         </div>
       </section>
 
       <section id="framework" class="section-card framework pale">
-        <div class="section-heading centered narrow">
-          <h2>Before choosing a research source, here's what informed researchers compare.</h2>
-          <p>Not all peptide sources are evaluated the same way. These five checkpoints help separate clear, research-focused sources from vague ones.</p>
-        </div>
+        <div class="section-heading centered narrow"><h2>{{ $lander->c('framework.heading') }}</h2><p>{{ $lander->c('framework.sub') }}</p></div>
         <div class="check-grid">
-          <article><span class="round-number">1</span><h3>Understand the Science</h3><p>Start with the pathway being researched, not hype or social media claims.</p></article>
-          <article><span class="round-number">2</span><h3>Compare Compounds</h3><p>Review what each compound is being studied for in a laboratory research context.</p></article>
-          <article><span class="round-number">3</span><h3>Evaluate Source Quality</h3><p>Look for source transparency, testing practices, documentation access, and consistency.</p></article>
-          <article><span class="round-number">4</span><h3>Check Documentation</h3><p>COAs, batch records, and testing information should be current and easy to review.</p></article>
-          <article><span class="round-number">5</span><h3>Make Informed Decisions</h3><p>Research use only means clarity matters before anything is added to a cart.</p></article>
+          @foreach($lander->c('framework.items', []) as $i => $item)
+          <article><span class="round-number">{{ $i + 1 }}</span><h3>{{ $item['title'] ?? '' }}</h3><p>{{ $item['body'] ?? '' }}</p></article>
+          @endforeach
         </div>
       </section>
 
       <section id="compounds" class="section-card compounds">
-        <div class="section-heading centered">
-          <p class="eyebrow">Research categories currently being studied</p>
-          <h2>Compare research compounds</h2>
-          <p>For laboratory research use only. Not for human consumption.</p>
-        </div>
+        <div class="section-heading centered"><p class="eyebrow">{{ $lander->c('compounds.eyebrow') }}</p><h2>{{ $lander->c('compounds.heading') }}</h2><p>{{ $lander->c('compounds.sub') }}</p></div>
         <div class="product-grid">
-          <a class="product-card" href="{{ $go($semaglutide) }}" rel="nofollow noopener">
-            <div class="product-image-wrap"><img src="https://assets.sticky.io/images/originals/2026-03-04-14-00-00/c9XaACnJmzZUJUY8s5RqxHG3uGWwJbdyIz0YhRSP.jpg" alt="Semaglutide research product" loading="lazy" /></div>
-            <h3>Semaglutide Research</h3>
-            <p>Researchers are studying pathways related to appetite signaling, satiety response, and metabolic regulation.</p>
-            <span>View Research →</span>
+          @foreach($lander->c('compounds.products', []) as $p)
+          <a class="product-card" href="{{ $go($p['dest_url'] ?? '#') }}" rel="nofollow noopener">
+            <div class="product-image-wrap"><img src="{{ $p['image_url'] ?? '' }}" alt="{{ $p['name'] ?? '' }}" loading="lazy" /></div>
+            <h3>{{ $p['name'] ?? '' }}</h3><p>{{ $p['body'] ?? '' }}</p>
+            <span>{{ $p['cta_text'] ?? 'View Research →' }}</span>
           </a>
-          <a class="product-card" href="{{ $go($tirzepatide) }}" rel="nofollow noopener">
-            <div class="product-image-wrap"><img src="https://assets.sticky.io/images/originals/2026-03-04-14-00-00/1XKIKRV4BcmndAjFy0HRLazYws5lhJ7yVcX35s0j.jpg" alt="Tirzepatide research product" loading="lazy" /></div>
-            <h3>Tirzepatide Research</h3>
-            <p>Researchers are exploring multiple biological pathways involved in nutrient processing and appetite-related signaling.</p>
-            <span>View Research →</span>
-          </a>
-          <a class="product-card" href="{{ $go($retatrutide) }}" rel="nofollow noopener">
-            <div class="product-image-wrap"><img src="https://assets.sticky.io/images/originals/2026-03-04-14-00-00/hdfsWqacCyBE3Y7aFw2MWZLTjxiuuEvXKSh8uXml.jpg" alt="Retatrutide research product" loading="lazy" /></div>
-            <h3>Retatrutide Research</h3>
-            <p>An emerging area of research involving multiple receptor pathways currently being studied in laboratory settings.</p>
-            <span>View Research →</span>
-          </a>
+          @endforeach
         </div>
       </section>
 
       <section id="source" class="section-card trust-strip" aria-label="Source quality signals">
-        <div class="trust-item"><svg class="trust-svg" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8c13 0 24 11 24 24S45 56 32 56 8 45 8 32 19 8 32 8Z"/><path d="M23 41 41 23"/><circle cx="24" cy="24" r="3"/><circle cx="40" cy="40" r="3"/></svg><h3>Research Use Only</h3><p>Clearly positioned for laboratory research purposes.</p></div>
-        <div class="trust-item"><svg class="trust-svg" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 9c13 12 22 25 22 36 0 8-7 14-22 14S10 53 10 45c0-11 9-24 22-36Z"/><path d="M23 38l6 6 13-15"/></svg><h3>Third-Party Tested</h3><p>Testing information and COAs are part of the evaluation process.</p></div>
-        <div class="trust-item"><svg class="trust-svg" viewBox="0 0 64 64" aria-hidden="true"><path d="M22 12h20l6 6v34H16V12h6Z"/><path d="M22 29h20M22 39h12M25 47l5 4 10-13"/></svg><h3>Transparent Documentation</h3><p>Researchers can review product and batch documentation before deciding.</p></div>
-        <div class="trust-item"><svg class="trust-svg" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="24"/><path d="M22 33.5 29 40l14-16"/></svg><h3>Batch Consistency</h3><p>Consistency matters when comparing research sources.</p></div>
-        <div class="trust-item"><svg class="trust-svg" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8 52 17v15c0 13-8 22-20 26C20 54 12 45 12 32V17l20-9Z"/><path d="M23 33l6 6 13-16"/></svg><h3>Secure &amp; Discreet</h3><p>Clear ordering experience with responsible research-use framing.</p></div>
+        @foreach($lander->c('trust.items', []) as $i => $item)
+        <div class="trust-item"><svg class="trust-svg" viewBox="0 0 64 64" aria-hidden="true">{!! $icons['trust'][$i] ?? '' !!}</svg><h3>{{ $item['title'] ?? '' }}</h3><p>{{ $item['body'] ?? '' }}</p></div>
+        @endforeach
       </section>
 
       <section class="section-card navy final-cta">
-        <div>
-          <p class="eyebrow">Ready to compare research options?</p>
-          <h2>Choose the compound you want to review.</h2>
-          <p>Skip the overwhelming catalog. Start with the research category you came here to compare, then review product details and documentation.</p>
-        </div>
+        <div><p class="eyebrow">{{ $lander->c('final.eyebrow') }}</p><h2>{{ $lander->c('final.heading') }}</h2><p>{{ $lander->c('final.body') }}</p></div>
         <div class="final-links">
-          <a href="{{ $go($semaglutide) }}" rel="nofollow noopener">Semaglutide →</a>
-          <a href="{{ $go($tirzepatide) }}" rel="nofollow noopener">Tirzepatide →</a>
-          <a href="{{ $go($retatrutide) }}" rel="nofollow noopener">Retatrutide →</a>
+          @foreach($lander->c('final.links', []) as $link)
+          <a href="{{ $go($link['dest_url'] ?? '#') }}" rel="nofollow noopener">{{ $link['label'] ?? '' }}</a>
+          @endforeach
         </div>
       </section>
 
-      <p class="legal-note"><strong>Important:</strong> This page is for educational and informational purposes only. Products referenced are intended for laboratory research use only and are not for human consumption, medical use, diagnosis, treatment, or prevention of disease.</p>
+      <p class="legal-note"><strong>Important:</strong> {{ $lander->c('legal') }}</p>
     </main>
   </div>
 </body>
