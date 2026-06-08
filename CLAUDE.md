@@ -36,6 +36,20 @@ Uses Customer.io (not Klaviyo). Credentials managed via admin at `/admin/setting
 
 **Column naming:** Quiz/marketing-related columns use `marketing_*` prefix (e.g., `marketing_properties`, `marketing_event`). Subscriber-specific columns use `customerio_*` prefix.
 
+## Bridge Landers & the Ad→Biolinx→CAPI tracking flow (IMPORTANT)
+
+PP runs **paid-ad bridge landers** at `/lp/{slug}`. Whenever "tracking", "UTM", "pixel", or "CAPI" comes up for landers, this is the **closed loop** — keep it identical across all current AND future landers:
+
+**Meta Ad → `/lp/{slug}` (PP lander) → CTA `/go/{outbound_slug}` → biolinxlabs.com (product) → conversion → Biolinx Purchase CAPI sends back to Meta** (matched to the original ad click via fbp/fbc/fbclid, so Meta attributes the sale and optimises).
+
+How each hop works:
+1. **Lander** (`LanderController@show`): Meta Pixel via `<x-meta-pixel/>`. `CaptureMetaClickIds` middleware stores `fbclid/fbp/fbc` **and** the landing `utm_*` (as `ad_utm_*`) into the **Laravel session** (durable — don't rely on the `pp_session_id` cookie / DB UserSession for the hand-off).
+2. **CTA** → `route('outbound.track', $slug)` → `OutboundController` → `OutboundLink::buildFinalUrl()`. Product links use `?dest=<biolinx product url>` (dest override allowed when same domain as the link's `destination_url` = `https://biolinxlabs.com`).
+3. **`buildFinalUrl` forwards** the REAL ad UTMs (session `ad_utm_*`) as standard `utm_*` (falls back to the OutboundLink's static UTM for organic/direct) + `fbclid/fbp/fbc` + `pp_session` + email → Biolinx.
+4. **Biolinx** persists fbp/fbc/fbclid on the order; on purchase `SendMetaCapiEvent` fires the server-side Purchase Conversions API back to Meta (deduped vs the browser pixel on event_id).
+
+**Landers are a CMS** (`landers` table + `Lander` model): `content` is structured JSON with **fixed slot counts** so marketing edits copy/links/images/UTM via **Admin → Marketing → Landers** without breaking layout. Render templates live in `resources/views/landers/templates/{template}.blade.php`. The original 5 are still static blades in `resources/views/landers/`. New lander = a `landers` row (+ new template only for a new design). **Biolinx and PP are SEPARATE repos — never cross-commit.**
+
 ## Development Conventions
 
 - Use `Setting::getValue('group', 'key', default)` for admin-configurable values
