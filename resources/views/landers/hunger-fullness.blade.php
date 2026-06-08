@@ -62,7 +62,7 @@
           <p class="micro-disclaimer">Research use only. Not for human consumption. Educational information only.</p>
         </div>
         <div class="hero-media" aria-label="Woman writing in notebook while researching">
-          <img src="{{ asset('landers/hunger-fullness/hero-woman-research.png') }}" alt="Woman writing research notes at a desk" />
+          <img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/ff937fd8-c45b-4f4a-a486-73f22cc0a3e9.png" alt="Woman writing research notes at a desk" loading="eager" />
           <div class="molecule-badge" aria-hidden="true">
             <svg viewBox="0 0 120 120"><circle cx="22" cy="56" r="7"/><circle cx="45" cy="42" r="7"/><circle cx="65" cy="61" r="7"/><circle cx="86" cy="41" r="7"/><circle cx="55" cy="84" r="7"/><circle cx="91" cy="81" r="7"/><path d="M29 53 38 46M51 47 59 56M71 56 81 47M62 68 57 78M72 66 84 76"/></svg>
           </div>
