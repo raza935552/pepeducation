@@ -28,17 +28,22 @@ class LanderController extends Controller
 
     public function show(string $slug): View
     {
-        // Ad UTMs (Ad → Lander) are captured into the session by CaptureMetaClickIds
-        // and forwarded to Biolinx by the CTA hand-off (/go → buildFinalUrl).
+        // Ad UTMs (Ad → Lander) are captured into the session by CaptureMetaClickIds.
+        // Here we also stamp WHICH lander bridged the visit (+ its title), so the CTA
+        // hand-off (/go → buildFinalUrl) forwards "Professor Peptides + lander details"
+        // alongside the ad data → Biolinx knows: which ad, which PP lander, which page.
 
         // CMS-driven landers (editable in admin) take precedence.
         $lander = \App\Models\Lander::where('slug', $slug)->where('is_active', true)->first();
         if ($lander) {
+            session(['pp_lander' => $slug, 'pp_lander_title' => $lander->c('meta.title') ?: $lander->name]);
             return view("landers.templates.{$lander->template}", compact('lander'));
         }
 
         // Legacy static landers (the original 5).
         abort_unless(array_key_exists($slug, self::LANDERS), 404);
+
+        session(['pp_lander' => $slug, 'pp_lander_title' => null]);
 
         return view("landers.{$slug}");
     }

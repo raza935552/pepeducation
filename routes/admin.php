@@ -160,6 +160,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Marketing: Landers (bridge landing pages — CMS)
     Route::get('landers', [\App\Http\Controllers\Admin\LanderController::class, 'index'])->name('landers.index');
     Route::get('landers/{lander}/edit', [\App\Http\Controllers\Admin\LanderController::class, 'edit'])->name('landers.edit');
+    Route::get('landers/{lander}/preview', [\App\Http\Controllers\Admin\LanderController::class, 'preview'])->name('landers.preview');
     Route::put('landers/{lander}', [\App\Http\Controllers\Admin\LanderController::class, 'update'])->name('landers.update');
 
     // Stack Builder

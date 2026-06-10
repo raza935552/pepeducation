@@ -19,7 +19,12 @@ class LanderController extends Controller
     public function index()
     {
         $cmsLanders = Lander::orderBy('name')->get();
-        $staticLanders = collect(PublicLanderController::LANDERS)->keys();
+        // Only show as "legacy/static" the slugs that don't yet have a CMS row —
+        // once a legacy lander is imported into the CMS it moves to the editable table.
+        $cmsSlugs = $cmsLanders->pluck('slug')->all();
+        $staticLanders = collect(PublicLanderController::LANDERS)->keys()
+            ->reject(fn ($s) => in_array($s, $cmsSlugs))
+            ->values();
 
         return view('admin.landers.index', compact('cmsLanders', 'staticLanders'));
     }
@@ -30,6 +35,12 @@ class LanderController extends Controller
         $outbound = $lander->outbound_slug ? OutboundLink::where('slug', $lander->outbound_slug)->first() : null;
 
         return view('admin.landers.edit', compact('lander', 'outbound'));
+    }
+
+    /** Render the lander's CMS template regardless of active state (admin preview). */
+    public function preview(Lander $lander)
+    {
+        return view("landers.templates.{$lander->template}", compact('lander'));
     }
 
     public function update(Request $request, Lander $lander)
