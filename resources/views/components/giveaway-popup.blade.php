@@ -159,7 +159,7 @@
     })
     .catch(function (){
       submitting = false; btn.disabled = false; btn.textContent = btnLabel;
-      err.textContent = 'Something went wrong — please try again.'; err.hidden = false;
+      err.textContent = 'Something went wrong - please try again.'; err.hidden = false;
     });
   }
 

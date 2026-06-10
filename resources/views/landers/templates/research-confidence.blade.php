@@ -49,6 +49,14 @@
 @media(min-width:981px){.hero{max-height:none}.hero-copy .eyebrow{margin-bottom:12px}.hero-media{border-left:1px solid var(--line)}.hero-actions .button{white-space:nowrap}}
 @media(min-width:981px) and (max-width:1180px){.hero{grid-template-columns:1fr .9fr}.hero-copy{padding:60px 28px 48px 52px}h1{font-size:clamp(52px,6vw,78px)}.hero-media{min-height:650px}.molecule-badge{width:160px;height:160px}}
   </style>@endverbatim
+  @verbatim<style>
+    .science-intro{max-width:820px;margin:10px auto 0;text-align:left}
+    .science-intro p{margin:0 0 16px;font-size:19px;line-height:1.85;color:#2a3b57}
+    .science-intro p:last-child{margin-bottom:0}
+    .science-intro .science-intro-lead{font-family:'Playfair Display',Georgia,serif;font-weight:800;font-size:26px;line-height:1.25;color:#071d3a;margin:0 0 18px}
+    .science-intro p br{content:'';display:block;margin-top:10px}
+    @media(max-width:560px){.science-intro p{font-size:17px;line-height:1.75}.science-intro .science-intro-lead{font-size:22px}}
+  </style>@endverbatim
   <x-meta-pixel />
   <x-posthog-lander />
 </head>
@@ -63,7 +71,7 @@
       <nav class="nav-links" aria-label="Main navigation">
         <a href="#science">Education</a><a href="#compounds">Research</a><a href="#source">Source Quality</a><a href="#framework">Checklist</a>
       </nav>
-      <a class="nav-cta" href="#framework">Get the Guide</a>
+      <a class="nav-cta" href="#compounds">Compare Compounds</a>
     </header>
     <a class="sticky-compounds" href="#compounds">Compare Research Compounds ↓</a>
 
@@ -76,19 +84,35 @@
           <p>{{ $lander->c('hero.para1') }}</p>
           <p>{{ $lander->c('hero.para2') }}</p>
           <div class="hero-actions">
-            <a class="button primary" href="#science">{{ $lander->c('hero.primary_cta') }}</a>
-            <a class="button ghost" href="#compounds">{{ $lander->c('hero.ghost_cta') }}</a>
+            <a class="button primary" href="#compounds">{{ $lander->c('hero.primary_cta') }}</a>
+            <a class="button ghost" href="#science">{{ $lander->c('hero.ghost_cta') }}</a>
           </div>
           <p class="micro-disclaimer">{{ $lander->c('hero.disclaimer') }}</p>
         </div>
         <div class="hero-media">
-          <img src="{{ $lander->c('hero.image_url') }}" alt="{{ $lander->c('hero.headline') }}" loading="eager" />
+          <img src="{{ $lander->c('hero.image_url') }}" alt="{{ $lander->c('hero.headline') }}" loading="eager" fetchpriority="high" decoding="async" />
           <div class="molecule-badge" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="22" cy="56" r="7"/><circle cx="45" cy="42" r="7"/><circle cx="65" cy="61" r="7"/><circle cx="86" cy="41" r="7"/><circle cx="55" cy="84" r="7"/><circle cx="91" cy="81" r="7"/><path d="M29 53 38 46M51 47 59 56M71 56 81 47M62 68 57 78M72 66 84 76"/></svg></div>
         </div>
       </section>
 
       <section id="science" class="section-card science-block">
-        <div class="section-heading centered"><h2>{{ $lander->c('science.heading') }}</h2><p>{{ $lander->c('science.sub') }}</p></div>
+        @php
+            $sciSub = (string) $lander->c('science.sub');
+            $sciParts = preg_split('/\r?\n/', $sciSub, 2);
+            $sciLead = trim($sciParts[0] ?? '');
+            $sciRest = trim($sciParts[1] ?? '');
+        @endphp
+        <div class="section-heading centered">
+          <p class="eyebrow">{{ $lander->c('science.heading') }}</p>
+          <div class="science-intro">
+            @if($sciRest !== '')
+              <h2 class="science-intro-lead">{{ $sciLead }}</h2>
+              <p>{!! nl2br(e($sciRest)) !!}</p>
+            @else
+              <p>{!! nl2br(e($sciSub)) !!}</p>
+            @endif
+          </div>
+        </div>
         <div class="science-grid">
           @foreach($lander->c('science.items', []) as $i => $item)
           <article class="science-item">
