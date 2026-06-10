@@ -39,6 +39,7 @@
   <meta name="twitter:description" content="{{ $lander->c('meta.description') }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
   @verbatim<style>
 :root{--ink:#071d3a;--ink-2:#223655;--muted:#52617d;--pink:#da3f76;--pink-2:#ffeaf1;--pink-3:#fff5f8;--line:#e9edf4;--soft:#f7f8fb;--white:#fff;--shadow:0 24px 80px rgba(7,29,58,.10);--radius:28px;--radius-sm:16px;--serif:'Playfair Display',Georgia,serif;--sans:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
@@ -137,6 +138,11 @@
       </section>
 
       <p class="legal-note"><strong>Important:</strong> {{ $lander->c('legal') }}</p>
+      <p class="legal-note" style="margin-top:8px">
+        <a href="{{ route('privacy') }}" style="color:#6f7788;text-decoration:underline">Privacy</a> ·
+        <a href="{{ route('terms') }}" style="color:#6f7788;text-decoration:underline">Terms</a> ·
+        <a href="{{ route('disclaimer') }}" style="color:#6f7788;text-decoration:underline">Research-Use Policy</a> · 18+
+      </p>
     </main>
   </div>
 </body>
