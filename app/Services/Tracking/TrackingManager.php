@@ -266,7 +266,7 @@ class TrackingManager
             'variant' => session('lander_variant'),
             'subscriber_id' => $session->subscriber_id,
             'user_id' => $session->user_id,
-            'source_page' => request()->header('referer'),
+            'source_page' => mb_substr((string) request()->header('referer'), 0, 250) ?: null,
             'final_url' => $finalUrl,
             'passed_data' => $passedData,
             'pp_session' => $passedData['pp_session'] ?? null,
