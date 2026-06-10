@@ -82,10 +82,19 @@
                         @forelse ($entries as $e)
                             <tr class="hover:bg-gray-50 align-top">
                                 <td class="px-4 py-2.5 text-gray-500 whitespace-nowrap">{{ optional($e->created_at)->diffForHumans() }}</td>
-                                <td class="px-4 py-2.5 max-w-md">
-                                    <span class="text-gray-900 break-all" title="{{ $e->landing_url }}">{{ \Illuminate\Support\Str::limit($e->landing_url, 90) }}</span>
+                                <td class="px-4 py-2.5 max-w-xl">
+                                    <a href="{{ $e->landing_url }}" target="_blank" rel="noopener noreferrer"
+                                       class="text-admin-primary-600 hover:underline break-all text-xs leading-snug block">{{ $e->landing_url }}</a>
                                 </td>
-                                <td class="px-4 py-2.5 text-gray-600 break-all max-w-[180px]">{{ $e->referrer_domain ?: ($e->referrer ? \Illuminate\Support\Str::limit($e->referrer, 40) : '—') }}</td>
+                                <td class="px-4 py-2.5 text-gray-600 break-all max-w-[200px]">
+                                    @if ($e->referrer_domain)
+                                        {{ $e->referrer_domain }}
+                                    @elseif ($e->is_ad)
+                                        <span class="text-gray-700">{{ $e->utm_source ?: 'ad' }} <span class="text-gray-400">(ad click)</span></span>
+                                    @else
+                                        <span class="text-gray-400">direct / none</span>
+                                    @endif
+                                </td>
                                 <td class="px-4 py-2.5">
                                     @if ($e->is_ad)
                                         <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-semibold bg-admin-primary-50 text-admin-primary-700">{{ $e->utm_source ?: 'ad' }}{{ $e->utm_campaign ? ' · '.$e->utm_campaign : '' }}</span>
