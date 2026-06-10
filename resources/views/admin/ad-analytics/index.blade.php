@@ -21,32 +21,45 @@
 
         {{-- Context banner --}}
         <div class="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
-            <strong>How to read this:</strong> only <em>ad traffic</em> is shown (visits carrying a Meta <code>fbclid</code> or <code>utm_source</code>). Visit logging began when this dashboard was installed, so older periods read low until data accrues. <strong>Conversions/revenue are tracked on Biolinx</strong> (order → Attribution panel, by lander) — PP can’t see the store database, so this page is top-of-funnel: visits → clicks → CTR.
+            <strong>The full funnel:</strong> ad visit → click → <strong>order → revenue</strong>. Only <em>ad traffic</em> is shown (visits carrying a Meta <code>fbclid</code> or <code>utm_source</code>). Orders &amp; revenue are mirrored from Biolinx by the conversion bridge (updates every ~15 min). Visit logging began when this dashboard was installed, so older periods read low until data accrues.
         </div>
 
-        {{-- Summary cards --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white rounded-xl border border-gray-200 p-5">
+        {{-- Funnel summary cards --}}
+        <div class="grid grid-cols-2 lg:grid-cols-6 gap-3">
+            <div class="bg-white rounded-xl border border-gray-200 p-4">
                 <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Ad Visits</div>
-                <div class="mt-2 text-3xl font-bold text-gray-900">{{ number_format($totalVisits) }}</div>
-                <div class="text-xs text-gray-400 mt-1">lander loads from ads</div>
+                <div class="mt-1 text-2xl font-bold text-gray-900">{{ number_format($totalVisits) }}</div>
             </div>
-            <div class="bg-white rounded-xl border border-gray-200 p-5">
-                <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Unique Visitors</div>
-                <div class="mt-2 text-3xl font-bold text-gray-900">{{ number_format($uniqueVisitors) }}</div>
-                <div class="text-xs text-gray-400 mt-1">distinct sessions</div>
+            <div class="bg-white rounded-xl border border-gray-200 p-4">
+                <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Clicks</div>
+                <div class="mt-1 text-2xl font-bold text-gray-900">{{ number_format($totalClicks) }}</div>
+                <div class="text-[11px] text-gray-400 mt-0.5">CTR {{ $overallCtr }}%</div>
             </div>
-            <div class="bg-white rounded-xl border border-gray-200 p-5">
-                <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Clicks → Biolinx</div>
-                <div class="mt-2 text-3xl font-bold text-gray-900">{{ number_format($totalClicks) }}</div>
-                <div class="text-xs text-gray-400 mt-1">CTA clicks to the store</div>
+            <div class="bg-white rounded-xl border border-gray-200 p-4">
+                <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Orders</div>
+                <div class="mt-1 text-2xl font-bold text-gray-900">{{ number_format($totalOrders) }}</div>
+                <div class="text-[11px] text-gray-400 mt-0.5">CVR {{ $overallCvr }}%</div>
             </div>
-            <div class="bg-white rounded-xl border border-gray-200 p-5">
-                <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">CTR</div>
-                <div class="mt-2 text-3xl font-bold text-admin-primary-600">{{ $overallCtr }}%</div>
-                <div class="text-xs text-gray-400 mt-1">clicks ÷ visits</div>
+            <div class="bg-white rounded-xl border border-gray-200 p-4">
+                <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Revenue</div>
+                <div class="mt-1 text-2xl font-bold text-green-700">${{ number_format($totalRevenue, 2) }}</div>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-200 p-4">
+                <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">AOV</div>
+                <div class="mt-1 text-2xl font-bold text-gray-900">${{ number_format($aov, 2) }}</div>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-200 p-4">
+                <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Unique</div>
+                <div class="mt-1 text-2xl font-bold text-gray-900">{{ number_format($uniqueVisitors) }}</div>
+                <div class="text-[11px] text-gray-400 mt-0.5">visitors</div>
             </div>
         </div>
+
+        @unless($hasRevenue)
+            <div class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-2.5 text-xs text-amber-800">
+                No orders mirrored from Biolinx yet — the conversion bridge populates revenue as ad-driven orders come in (or after the first <code>pp:push-conversions</code> sync runs on Biolinx).
+            </div>
+        @endunless
 
         {{-- Per-lander --}}
         @include('admin.ad-analytics._table', [

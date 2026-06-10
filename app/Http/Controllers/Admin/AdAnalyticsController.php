@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\LanderConversion;
 use App\Models\LanderVisit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -86,16 +87,34 @@ class AdAnalyticsController extends Controller
             $clicksByAd[$ad]           = ($clicksByAd[$ad] ?? 0) + 1;
         }
 
-        // ---------- Merge into report rows (visits + clicks + CTR) ----------
-        $perLander   = $this->mergeRows($visitsByLander, $clicksByLander);
-        $perCampaign = $this->mergeRows($visitsByCampaign, $clicksByCampaign);
-        $perAd       = $this->mergeRows($visitsByAd, $clicksByAd);
+        // ---------- CONVERSIONS (orders + revenue from Biolinx) ----------
+        // Mirrored from Biolinx by the pp:push-conversions bridge. Filtered by the
+        // SELECTED period (not the visit-tracking floor) so real revenue shows even
+        // for orders that predate visit logging. (CVR vs clicks is only fully
+        // apples-to-apples for periods within the tracking window — see note in UI.)
+        $convQ = LanderConversion::query();
+        if ($start) {
+            $convQ->where('ordered_at', '>=', $start);
+        }
+        $ordersByLander  = (clone $convQ)->whereNotNull('pp_lander')->selectRaw('pp_lander k, count(*) c, sum(revenue) r')->groupBy('k')->get()->keyBy('k');
+        $ordersByCampaign = (clone $convQ)->selectRaw("COALESCE(NULLIF(utm_campaign,''),'(no campaign)') k, count(*) c, sum(revenue) r")->groupBy('k')->get()->keyBy('k');
+        $ordersByAd       = (clone $convQ)->selectRaw("COALESCE(NULLIF(utm_content,''),'(no ad name)') k, count(*) c, sum(revenue) r")->groupBy('k')->get()->keyBy('k');
+        $totalOrders   = (clone $convQ)->count();
+        $totalRevenue  = (float) (clone $convQ)->sum('revenue');
+
+        // ---------- Merge into report rows (visits + clicks + orders + revenue) ----------
+        $perLander   = $this->mergeRows($visitsByLander, $clicksByLander, $ordersByLander);
+        $perCampaign = $this->mergeRows($visitsByCampaign, $clicksByCampaign, $ordersByCampaign);
+        $perAd       = $this->mergeRows($visitsByAd, $clicksByAd, $ordersByAd);
 
         // ---------- Recent ad activity ----------
         $recent = (clone $visitQ)->orderByDesc('id')->limit(25)
             ->get(['lander_slug', 'utm_campaign', 'utm_content', 'utm_source', 'created_at']);
 
         $overallCtr = $totalVisits > 0 ? round($totalClicks / $totalVisits * 100, 1) : 0.0;
+        $overallCvr = $totalClicks > 0 ? round($totalOrders / $totalClicks * 100, 1) : 0.0;
+        $aov        = $totalOrders > 0 ? round($totalRevenue / $totalOrders, 2) : 0.0;
+        $hasRevenue = LanderConversion::exists();
 
         return view('admin.ad-analytics.index', [
             'period'         => $period,
@@ -103,6 +122,11 @@ class AdAnalyticsController extends Controller
             'uniqueVisitors' => $uniqueVisitors,
             'totalClicks'    => $totalClicks,
             'overallCtr'     => $overallCtr,
+            'totalOrders'    => $totalOrders,
+            'totalRevenue'   => $totalRevenue,
+            'overallCvr'     => $overallCvr,
+            'aov'            => $aov,
+            'hasRevenue'     => $hasRevenue,
             'perLander'      => $perLander,
             'perCampaign'    => $perCampaign,
             'perAd'          => $perAd,
@@ -110,22 +134,32 @@ class AdAnalyticsController extends Controller
         ]);
     }
 
-    /** Combine visit + click maps into sorted rows with CTR. */
-    private function mergeRows(array $visits, array $clicks): array
+    /**
+     * Combine visit + click + conversion maps into sorted rows.
+     * $orders is keyed map of objects with ->c (count) and ->r (revenue sum).
+     */
+    private function mergeRows(array $visits, array $clicks, $orders = null): array
     {
-        $keys = array_unique(array_merge(array_keys($visits), array_keys($clicks)));
+        $orderKeys = $orders ? array_keys($orders->toArray()) : [];
+        $keys = array_unique(array_merge(array_keys($visits), array_keys($clicks), $orderKeys));
         $rows = [];
         foreach ($keys as $k) {
             $v = $visits[$k] ?? 0;
             $c = $clicks[$k] ?? 0;
+            $o = ($orders && isset($orders[$k])) ? (int) $orders[$k]->c : 0;
+            $rev = ($orders && isset($orders[$k])) ? (float) $orders[$k]->r : 0.0;
             $rows[] = [
-                'key'    => $k,
-                'visits' => $v,
-                'clicks' => $c,
-                'ctr'    => $v > 0 ? round($c / $v * 100, 1) : ($c > 0 ? null : 0.0),
+                'key'     => $k,
+                'visits'  => $v,
+                'clicks'  => $c,
+                'ctr'     => $v > 0 ? round($c / $v * 100, 1) : ($c > 0 ? null : 0.0),
+                'orders'  => $o,
+                'revenue' => $rev,
+                'cvr'     => $c > 0 ? round($o / $c * 100, 1) : ($o > 0 ? null : 0.0),
             ];
         }
-        usort($rows, fn ($a, $b) => ($b['visits'] <=> $a['visits']) ?: ($b['clicks'] <=> $a['clicks']));
+        // Sort by revenue first (money matters most), then visits.
+        usort($rows, fn ($a, $b) => ($b['revenue'] <=> $a['revenue']) ?: ($b['visits'] <=> $a['visits']));
         return $rows;
     }
 }

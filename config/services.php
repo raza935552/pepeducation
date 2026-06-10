@@ -39,4 +39,9 @@ return [
         'cdp_write_key' => env('CUSTOMERIO_CDP_WRITE_KEY'),
     ],
 
+    // Shared secret for the Biolinx -> PP conversion bridge (revenue per lander).
+    'pp_conversions' => [
+        'secret' => env('PP_CONVERSIONS_SECRET'),
+    ],
+
 ];
