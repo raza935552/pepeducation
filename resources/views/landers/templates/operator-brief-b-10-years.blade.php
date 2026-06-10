@@ -264,10 +264,10 @@
         <main class="doc">
             <div class="wrap">
 
-                {{-- HERO + image 1 + first-viewport CTA - all copy from CMS (same slots as control) --}}
-                <div class="eyebrow">{{ $c('hero.eyebrow') }}</div>
-                <h1>{{ $c('hero.h1') }}</h1>
-                <p class="dek">{!! $c('hero.dek') !!}</p>
+                {{-- HERO + image 1 + first-viewport CTA (B: original bold direct-response copy) --}}
+                <div class="eyebrow">Founder's Field Notes // Supplier Vetting</div>
+                <h1>I ran 4 checks on every peptide supplier I could find. Almost all of them failed at least one.</h1>
+                <p class="dek">Ten years vetting vendors for risk taught me the four that actually matter. Run them in 60 seconds below, then see the one supplier I quietly point people to.</p>
 
                 @if($c('hero.image_url'))
                     <figure class="figframe">
@@ -275,23 +275,24 @@
                     </figure>
                 @endif
 
-                {{-- CTA #1: first viewport, anchor jump to #gate (copy = control's hero.skip_text) --}}
-                <p style="margin:4px 0 0"><a class="jump" href="#gate">{{ $c('hero.skip_text', 'Take me to the recommended supplier →') }}</a></p>
+                {{-- CTA #1: first viewport, anchor jump to #gate --}}
+                <p style="margin:4px 0 0"><a class="jump" href="#gate">Show me the one supplier that passed all four</a></p>
 
-                {{-- byline - all from CMS --}}
+                {{-- byline --}}
                 <div class="byline">
                     <div class="av"></div>
-                    <span>By <b>{{ $c('byline.author', 'Professor Peps') }}</b> · {{ $c('byline.role') }}</span>
+                    <span>By <b>Professor Peps</b> · founder &amp; operator</span>
                     <span class="dot">·</span>
-                    <span>{{ $c('byline.cred') }}</span>
+                    <span>a decade vetting vendors and supply chains for risk</span>
                     <span class="dot">·</span>
-                    <span class="mono">{{ $c('byline.read_time', '5 min read') }}</span>
+                    <span class="mono">3 min read</span>
                 </div>
 
-                {{-- lead + origin beat - from CMS (intro.lead + intro.body, same slots as control) --}}
+                {{-- lead + origin beat (B: hardcoded bold direct-response copy) --}}
                 <div class="copy">
-                    <p class="lead">{!! $c('intro.lead') !!}</p>
-                    {!! $c('intro.body') !!}
+                    <p class="lead">When I moved into the research peptide space, I did not change my process. I vetted suppliers the same way I had vetted vendors for years: four checks, run in the same order, every single time. Fail one, and I am out. I do not care how good the price looks.</p>
+                    <p>I learned to run them in that order the hard way. Early on I read a clean certificate of analysis, saw a tidy purity figure, and waved the vendor through. The paper looked perfect. The catch: it described a <strong>different batch than the one that actually showed up</strong>. Same supplier, same letterhead, a different lot number stamped on the vial. The certificate proved nothing about the thing in the box.</p>
+                    <p>I was evaluating, not consuming, so nothing came of it. But it rewired how I check everything. Most suppliers look identical on the surface. Run the four checks, and only a handful hold up. <mark>Here is the exact framework, and then the short list it produced.</mark></p>
                 </div>
 
                 @if($c('intro.image_url'))
@@ -300,81 +301,111 @@
                     </figure>
                 @endif
 
-                {{-- AT-A-GLANCE proof strip - B signature design component. The header label is
-                     fixed chrome (design, not lander copy); the list is built from the flag
-                     headings so it adapts to whatever flags each lander has (loops the array). --}}
-                @if(count($flags))
-                    <div class="glance">
-                        <div class="gh">At a glance</div>
-                        <ol class="glist">
-                            @foreach($flags as $flag)
-                                <li><b>{{ data_get($flag, 'heading') }}</b></li>
-                            @endforeach
-                        </ol>
-                    </div>
-                    <p style="margin:14px 0 0"><a class="jump" href="#gate">{{ $c('hero.skip_text', 'Take me to the recommended supplier →') }}</a></p>
-                @endif
+                {{-- AT-A-GLANCE proof strip (B: hardcoded bold 4-check copy) + CTA #2 --}}
+                <div class="glance">
+                    <div class="gh">The 4 checks // at a glance</div>
+                    <ol class="glist">
+                        <li><b>Who signed the COA?</b> An independent third-party lab, or the supplier grading its own homework.</li>
+                        <li><b>Is the purity number too clean?</b> Real chromatography lands on 98.4 percent, not a suspiciously tidy 99.</li>
+                        <li><b>Does the vial's batch number match the COA?</b> A certificate for a different batch proves nothing about your vial.</li>
+                        <li><b>Was this vendor here a year ago?</b> Track record is the one thing a brand-new name cannot fake.</li>
+                    </ol>
+                </div>
+                <p style="margin:14px 0 0"><a class="jump" href="#gate">Skip the breakdown, show me who passed</a></p>
 
-                {{-- FLAG CARDS - looped from the content array, exactly like the control.
-                     Each flag's label/heading/body/image come from its array item, so the
-                     dossier cards adapt to whatever flags each lander has. --}}
-                @foreach($flags as $flag)
-                    <div class="flag">
-                        <div class="flagk">{{ data_get($flag, 'label') }}</div>
-                        <h2>{{ data_get($flag, 'heading') }}</h2>
-                        <div class="copy">
-                            {!! data_get($flag, 'body') !!}
-                        </div>
-                        @if(data_get($flag, 'image_url'))
-                            <figure class="figframe" style="margin-bottom:6px">
-                                <img class="doc-img" src="{{ data_get($flag, 'image_url') }}" alt="{{ data_get($flag, 'image_alt') }}" loading="lazy">
-                            </figure>
-                        @endif
-                        <a class="jump" href="#gate">{{ $c('hero.skip_text', 'Take me to the recommended supplier →') }}</a>
+                {{-- FLAG CARDS (B: hardcoded bold copy; flag image accessors preserved by index) --}}
+                <div class="flag">
+                    <div class="flagk">Red Flag #1</div>
+                    <h2>Who actually signed the certificate of analysis?</h2>
+                    <div class="copy">
+                        <p>The first thing I check is who issued the COA. If it came from the supplier itself, their letterhead, their stamp, that is not verification. <strong>That is homework graded by the student.</strong></p>
+                        <p>A real COA comes from an independent third-party lab with a name, like Janoshik or Ascend. Anyone can print a document that says "99 percent pure." Only an outside lab makes that number mean a thing.</p>
                     </div>
-                @endforeach
+                    @if(data_get($flags[0] ?? [], 'image_url'))
+                        <figure class="figframe" style="margin-bottom:6px">
+                            <img class="doc-img" src="{{ data_get($flags[0] ?? [], 'image_url') }}" alt="{{ data_get($flags[0] ?? [], 'image_alt') }}" loading="lazy">
+                        </figure>
+                    @endif
+                    <a class="jump" href="#gate">Take me to the one that passed</a>
+                </div>
 
-                {{-- REFRAME panel - B signature design, fed by the control's closing slots
-                     (closing.heading + closing.body). The label is fixed design chrome. --}}
-                @if($c('closing.heading') || $c('closing.body'))
-                    <div class="reframe">
-                        <div class="rk">The real test</div>
-                        @if($c('closing.heading'))<h2>{{ $c('closing.heading') }}</h2>@endif
-                        <div class="copy">
-                            {!! $c('closing.body') !!}
-                        </div>
+                <div class="flag">
+                    <div class="flagk">Red Flag #2</div>
+                    <h2>Is the purity a suspiciously round number?</h2>
+                    <div class="copy">
+                        <p>Watch the number itself. If the COA says a flat 98 percent or 99 percent, I get suspicious. Real chromatography does not land on round numbers. It lands on 98.4, or 99.1, or 97.8.</p>
+                        <p><strong>A clean, round figure usually means someone typed it, not measured it.</strong> The messy decimal is the one I trust.</p>
                     </div>
-                @endif
+                    @if(data_get($flags[1] ?? [], 'image_url'))
+                        <figure class="figframe" style="margin-bottom:6px">
+                            <img class="doc-img" src="{{ data_get($flags[1] ?? [], 'image_url') }}" alt="{{ data_get($flags[1] ?? [], 'image_alt') }}" loading="lazy">
+                        </figure>
+                    @endif
+                    <a class="jump" href="#gate">Take me to the one that passed</a>
+                </div>
 
-                {{-- SURVIVOR checklist - heading from closing.checklist_intro, rows looped
-                     from the closing.checklist content array (same slots as control). --}}
-                @if($c('closing.checklist_intro'))
-                    <p class="surv-h">{{ $c('closing.checklist_intro') }}</p>
-                @endif
-                @if(count($checklist))
-                    <div class="check">
-                        @foreach($checklist as $row)
-                            @if(trim((string) $row) !== '')
-                                <div class="crow"><span class="ic">✓</span><span>{!! $row !!}</span></div>
-                            @endif
-                        @endforeach
+                <div class="flag">
+                    <div class="flagk">Red Flag #3</div>
+                    <h2>Does the batch number on the vial match the COA?</h2>
+                    <div class="copy">
+                        <p>This is the one that started everything for me. The COA is for batch #23-A488. The vial in the box reads #23-A491. Different batch. Which means the certificate you were handed proves nothing about the thing you actually received.</p>
+                        <p><strong>A COA for a different batch is not a COA. It is a prop.</strong> Now it is the first match I make, every time, before anything else.</p>
                     </div>
-                @endif
+                    @if(data_get($flags[2] ?? [], 'image_url'))
+                        <figure class="figframe" style="margin-bottom:6px">
+                            <img class="doc-img" src="{{ data_get($flags[2] ?? [], 'image_url') }}" alt="{{ data_get($flags[2] ?? [], 'image_alt') }}" loading="lazy">
+                        </figure>
+                    @endif
+                    <a class="jump" href="#gate">Take me to the one that passed</a>
+                </div>
 
-                {{-- THE GATE - single outbound CTA; target/markup/behavior held constant.
-                     All gate copy from CMS (same slots as control). --}}
+                <div class="flag">
+                    <div class="flagk">Red Flag #4</div>
+                    <h2>Was this vendor here a year ago, and will they be here next year?</h2>
+                    <div class="copy">
+                        <p>The last check is not on the product. It is on the company. A wave of well-known names went dark between 2024 and 2025. Operators who had built on them were left stranded mid-cycle, scrambling for a new source.</p>
+                        <p><strong>Track record is the one thing a new vendor cannot fake.</strong> If they were not around twelve months ago, I wait and watch.</p>
+                    </div>
+                    @if(data_get($flags[3] ?? [], 'image_url'))
+                        <figure class="figframe" style="margin-bottom:6px">
+                            <img class="doc-img" src="{{ data_get($flags[3] ?? [], 'image_url') }}" alt="{{ data_get($flags[3] ?? [], 'image_alt') }}" loading="lazy">
+                        </figure>
+                    @endif
+                    <a class="jump" href="#gate">Take me to the one that passed</a>
+                </div>
+
+                {{-- REFRAME: it was never about price (B: hardcoded bold copy) --}}
+                <div class="reframe">
+                    <div class="rk">The real test</div>
+                    <h2>Notice what is missing from that list: price.</h2>
+                    <div class="copy">
+                        <p>Not one of the four checks is about cost. The cheapest vendor fails most of them: no third-party lab, no batch lineage, gone within a year. So does the overpriced reseller three middlemen deep who never once touched the product either.</p>
+                        <p>What the four flags really test is a single thing: <strong>is anyone actually accountable for what is in the bottle?</strong> That is not a price question. It is a trust question. The suppliers this framework approves are not the cheapest. They are the ones who can answer it.</p>
+                    </div>
+                </div>
+
+                {{-- SURVIVOR checklist (B: hardcoded bold copy) --}}
+                <p class="surv-h">The few that survived all four share the same four traits.</p>
+                <div class="check">
+                    <div class="crow"><span class="ic">✓</span><span>A <b>named third-party lab</b> on the COA, never a certificate the supplier issued to itself.</span></div>
+                    <div class="crow"><span class="ic">✓</span><span><b>Specific purity numbers</b>, the messy decimal that gets measured, not the round one that gets typed.</span></div>
+                    <div class="crow"><span class="ic">✓</span><span><b>Batch lineage that matches</b>, vial to COA, on every single order, no exceptions.</span></div>
+                    <div class="crow"><span class="ic">✓</span><span><b>COAs issued recently and often</b>. The supplier I point people to refreshes theirs constantly.</span></div>
+                </div>
+
+                {{-- THE GATE — single outbound CTA, target/markup held constant --}}
                 <div class="gate" id="gate">
-                    <div class="vk">Verdict</div>
-                    <h2>{!! $c('gate.heading') !!}</h2>
-                    <p class="gp">{{ $c('gate.body') }}</p>
+                    <div class="vk">Verdict // the one that passed</div>
+                    <h2>Start with the one I vetted quietly. The one that cleared all four.</h2>
+                    <p class="gp">When people ask me where to actually start, I send them to a single supplier that passes every check: independent third-party lab, specific purity numbers, batch lineage that matches the vial, and a real track record. Confirm the context below and I will point you to it.</p>
                     {{-- Micro-commitment checkbox: same behavior as control. The CTA ticks
                          the box on the way out so no visitor is ever stuck on a dead button. --}}
                     <label class="chk">
                         <input type="checkbox" id="q">
-                        <span>{{ $c('gate.consent') }}</span>
+                        <span>I am 18 or older, I am evaluating in a research / operator context, and I understand nothing here is medical, legal, financial, or business advice.</span>
                     </label>
-                    <a href="{{ $go() }}" id="go" class="cta" rel="nofollow" onclick="document.getElementById('q').checked=true">{{ $c('gate.cta', 'Take me to the recommended supplier →') }}</a>
-                    <div class="sub">{{ $c('gate.sub') }}</div>
+                    <a href="{{ $go() }}" id="go" class="cta" rel="nofollow" onclick="document.getElementById('q').checked=true">Show me the supplier that passed →</a>
+                    <div class="sub">Opens the supplier I recommend · biolinxlabs.com</div>
                 </div>
 
                 {{-- SOURCES & METHODOLOGY drop-downs --}}
@@ -412,13 +443,11 @@
             </div>
         </footer>
 
-        {{-- STICKY VERDICT BAR - B signature; anchors to #gate (no new outbound target).
-             Headline label is driven by the control's hero.skip_text CTA copy so it tracks
-             each lander; the small mono prefix is fixed design chrome. --}}
+        {{-- STICKY VERDICT BAR — B signature; anchors to #gate (no new outbound target) --}}
         <div class="stickybar" id="stickybar">
             <div class="wrap">
-                <div class="lbl">The Operator Brief<b>{{ $c('hero.skip_text', 'Take me to the recommended supplier →') }}</b></div>
-                <a class="sbtn" href="#gate">{{ $c('hero.skip_text', 'Take me to the recommended supplier →') }}</a>
+                <div class="lbl">4 checks · 1 passed<b>See the supplier that cleared all four</b></div>
+                <a class="sbtn" href="#gate">Show me who passed</a>
             </div>
         </div>
         {{-- Hide the sticky bar once the gate itself is on screen (avoids a redundant double CTA). --}}

@@ -50,7 +50,10 @@ class LanderController extends Controller
 
             $template = "landers.templates.{$lander->template}";
             if ($variant === 'B') {
-                $template .= '-b';
+                // Prefer a per-lander B override ({template}-b-{slug}, e.g. its own bold copy),
+                // else fall back to the shared content-driven B design for that template.
+                $perLander = "{$template}-b-{$lander->slug}";
+                $template = view()->exists($perLander) ? $perLander : "{$template}-b";
             }
             return view($template, compact('lander'));
         }

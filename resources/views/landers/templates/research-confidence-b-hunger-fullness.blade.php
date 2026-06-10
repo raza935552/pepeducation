@@ -1,9 +1,8 @@
 @php
-    // CMS-driven render (B variant). ALL copy/links/images come from $lander->content via the
-    // SAME accessors the control uses ($lander->c('...')); this file only fixes the LAYOUT +
-    // visual identity so each lander on this template renders ITS OWN copy. Held constant via
-    // $lander (identical accessors to the control): images, outbound /go links, hero image,
-    // tracking pixels, giveaway popup, robots and footer links.
+    // CMS-driven render (B variant). Images, outbound /go links, hero image, tracking,
+    // giveaway popup, robots and footer links are ALL held constant via $lander (identical
+    // accessors to the control). Only the LAYOUT + COPY below is the changed test variable,
+    // and the B copy is hardcoded on purpose because this is a fixed A/B test variant.
     //
     // DESIGN: a deliberately DIFFERENT visual identity from the control's soft-pink Playfair
     // editorial. This B is a clinical-yet-warm "comparison-app" look: geometric grotesk type
@@ -33,6 +32,12 @@
     // outbound /go destinations + product images + hero image. We never hardcode these,
     // so the outbound target set and images are byte-for-byte identical to the control.
     $products = $lander->c('compounds.products', []);
+    // B copy overlay for each compound card, matched by index to the held-constant product set.
+    $cardCopy = [
+        ['focus' => 'A single GLP-1 receptor pathway',     'why' => 'Appetite signaling, satiety response, and metabolic regulation are active areas of study around this pathway.'],
+        ['focus' => 'Two receptor pathways (GLP-1 + GIP)',  'why' => 'Dual-pathway signaling involved in nutrient processing and appetite-related research.'],
+        ['focus' => 'An emerging multi-receptor pathway',   'why' => 'A newer area of laboratory research involving more than one receptor target.'],
+    ];
 @endphp
 <!doctype html>
 <html lang="en">
@@ -290,32 +295,37 @@ h1,h2,h3,h4,p{margin:0}
         <a href="#framework">Source Check</a>
         <a href="#source">Standards</a>
       </nav>
-      <a class="appbar-cta" href="#compare">{{ $lander->c('hero.primary_cta') }}</a>
+      <a class="appbar-cta" href="#compare">Compare 3 Compounds &rarr;</a>
     </div>
   </header>
 
   <a class="sticky-bar" href="#compare" aria-label="Jump to compound comparison">
-    <span class="lbl">{{ $lander->c('compounds.eyebrow') }}</span>
-    <span class="go">{{ $lander->c('hero.ghost_cta') }} &rarr;</span>
+    <span class="lbl">Compare research compounds</span>
+    <span class="go">Open &rarr;</span>
   </a>
 
   <main id="main">
 
-    {{-- 1. HERO (held-constant hero image; copy bound to $lander; primary CTA jumps to #compare) --}}
+    {{-- 1. HERO (held-constant hero image; B curiosity-led copy; primary CTA jumps to #compare) --}}
     <section id="top" class="hero">
       <div class="wrap hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow">{{ $lander->c('hero.eyebrow') }}</p>
-          <h1>{{ $lander->c('hero.headline') }} <span class="hl">{{ $lander->c('hero.headline_highlight') }}</span></h1>
-          <p class="sub">{{ $lander->c('hero.lede') }}</p>
+          <p class="eyebrow">Women's research education &middot; Research use only</p>
+          <h1>One signal says &ldquo;eat.&rdquo; Another says &ldquo;enough.&rdquo; Here are the three compounds researchers study in connection with that <span class="hl">conversation.</span></h1>
+          <p class="sub">Ghrelin and GLP-1 are the two chemical messengers behind hunger and fullness.</p>
 
-          <p class="hero-sub2">{{ $lander->c('hero.para1') }}</p>
+          <div class="hero-quotes" aria-hidden="false">
+            <div class="hero-quote"><span class="sig">Signal A</span><span class="said">&ldquo;Eat.&rdquo;</span></div>
+            <div class="hero-quote"><span class="sig">Signal B</span><span class="said">&ldquo;Enough.&rdquo;</span></div>
+          </div>
+
+          <p class="hero-sub2">Below, compare the three research compounds being studied in connection with those pathways, then review the documentation yourself before you decide. No essay required first.</p>
 
           <div class="hero-actions">
-            <a class="btn btn-lg btn-primary" href="#compare">{{ $lander->c('hero.primary_cta') }}</a>
-            <a class="btn btn-lg btn-ghost" href="#science">{{ $lander->c('hero.ghost_cta') }}</a>
+            <a class="btn btn-lg btn-primary" href="#compare">Compare the 3 compounds &rarr;</a>
+            <a class="btn btn-lg btn-ghost" href="#science">How the signaling works</a>
           </div>
-          <p class="micro">{{ $lander->c('hero.disclaimer') }}</p>
+          <p class="micro">Research use only. Not for human consumption. Educational information only.</p>
         </div>
 
         <div class="hero-visual">
@@ -323,7 +333,7 @@ h1,h2,h3,h4,p{margin:0}
             <img src="{{ $lander->c('hero.image_url') }}" alt="{{ $lander->c('hero.headline') }}" loading="eager" fetchpriority="high" decoding="async" />
             <div class="hero-tag">
               <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 24a10 10 0 0 1 20 0M24 6v8M24 34v8M6 24h8M34 24h8"/></svg>
-              <span><b>{{ $lander->c('hero.headline_highlight') }}</b><em>{{ $lander->c('hero.para2') }}</em></span>
+              <span><b>Ghrelin &harr; GLP-1</b><em>the hunger / fullness conversation</em></span>
             </div>
           </div>
         </div>
@@ -334,13 +344,13 @@ h1,h2,h3,h4,p{margin:0}
     <section id="compare" class="section tint">
       <div class="wrap">
         <div class="sec-head center">
-          <p class="eyebrow">{{ $lander->c('compounds.eyebrow') }}</p>
-          <h2>{{ $lander->c('compounds.heading') }}</h2>
+          <p class="eyebrow">Research categories currently being studied</p>
+          <h2>Three compounds. One question each: which pathway do researchers study it in connection with?</h2>
         </div>
 
         <div class="compare-note">
           <span aria-hidden="true">&#9888;</span>
-          <span>{{ $lander->c('compounds.sub') }}</span>
+          <span>For laboratory research use only. Not for human consumption. Not approved for human use. Open any card to review specifications and documentation on the research store.</span>
         </div>
 
         <div class="cards">
@@ -354,9 +364,10 @@ h1,h2,h3,h4,p{margin:0}
             <div class="card-body">
               <h3>{{ $p['name'] ?? '' }}</h3>
               <div class="card-label">Researched in connection with</div>
-              <p>{{ $p['body'] ?? '' }}</p>
+              <div class="card-focus">{{ $cardCopy[$i]['focus'] ?? '' }}</div>
+              <p>{{ $cardCopy[$i]['why'] ?? '' }}</p>
               <div class="card-go">
-                <span class="btn btn-md btn-ink">{{ $p['cta_text'] ?? 'View Research →' }}</span>
+                <span class="btn btn-md btn-ink">Review specs and COA &rarr;</span>
               </div>
             </div>
           </a>
@@ -365,78 +376,114 @@ h1,h2,h3,h4,p{margin:0}
       </div>
     </section>
 
-    {{-- 3. SOURCE-QUALITY checklist (buyer tool), looped from framework.items --}}
-    <section id="framework" class="section">
+    {{-- 3. HONESTY / PRINCIPLE trust block (borrowed lever, de-personalized) --}}
+    <section id="principle" class="section">
       <div class="wrap">
-        <div class="sec-head center">
-          <p class="eyebrow">{{ $lander->c('framework.heading') }}</p>
-          <h2>{{ $lander->c('framework.sub') }}</h2>
+        <div class="principle-lead">
+          <p class="eyebrow">How this page is written</p>
+          <h2>Plain language. Source-first. No health claims, on purpose.</h2>
+          <p>This page exists to help you compare, not to hype. We do not make health, weight, or medical claims about any compound, because these are research-use-only materials and that is the honest, lawful way to talk about them. What matters more than any marketing line is how a source is documented: testing, batch records, and transparency you can actually check. If a source is vague about what it sells or who it sells to, treat that as the answer.</p>
         </div>
-        <div class="steps">
-          @foreach($lander->c('framework.items', []) as $i => $item)
-          <article class="step"><span class="num" aria-hidden="true">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</span><h3>{{ $item['title'] ?? '' }}</h3><p>{{ $item['body'] ?? '' }}</p></article>
-          @endforeach
+        <div class="principle-rows">
+          <div class="prow">
+            <div class="pi"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h12M4 18h8"/></svg></div>
+            <b>Plain language, no hype</b>
+            <span>The science explained like a person talking to you, not a brochure.</span>
+          </div>
+          <div class="prow">
+            <div class="pi"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6l7-3Z"/><path d="M8.6 12l2.4 2.4L16 9"/></svg></div>
+            <b>Claims-free by principle</b>
+            <span>Research framing only, every time. No outcomes promised.</span>
+          </div>
+          <div class="prow">
+            <div class="pi"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg></div>
+            <b>Source-first thinking</b>
+            <span>Documentation matters more than slogans. Always.</span>
+          </div>
         </div>
-        <div class="steps-cta">
-          <a class="btn btn-lg btn-primary" href="#compare">{{ $lander->c('hero.primary_cta') }}</a>
-        </div>
+        <a class="inline-cta" href="#compare">Take me back to the compounds &rarr;</a>
       </div>
     </section>
 
-    {{-- 4. SCIENCE (intro + signals grid), copy bound to $lander --}}
+    {{-- 4. SCIENCE (messenger analogy, compressed) + 5. signals grid --}}
     <section id="science" class="section tint">
-      @php
-          $sciSub = (string) $lander->c('science.sub');
-          $sciParts = preg_split('/\r?\n/', $sciSub, 2);
-          $sciLead = trim($sciParts[0] ?? '');
-          $sciRest = trim($sciParts[1] ?? '');
-      @endphp
       <div class="wrap">
         <div class="sec-head">
-          <p class="eyebrow">{{ $lander->c('science.heading') }}</p>
+          <p class="eyebrow">The biology behind hunger and fullness</p>
+          <h2>Why hunger is biology, not willpower</h2>
         </div>
         <div class="sci-intro">
-          @if($sciRest !== '')
-            <p class="sci-lead">{{ $sciLead }}</p>
-            <p>{!! nl2br(e($sciRest)) !!}</p>
-          @else
-            <p>{!! nl2br(e($sciSub)) !!}</p>
-          @endif
+          <p class="sci-lead">Think of your stomach as a text messenger. When it runs low it pings the brain: time to send food down here. That message is a real chemical called ghrelin. You did not decide to feel hungry; the body sent the text on its own.</p>
+          <p>Once you have eaten, the gut sends a different message using a chemical called GLP-1. That one basically says, okay, we are good up here. It happens automatically too.</p>
+          <p>Here is the interesting part. These signals are not identical for everyone. They vary from person to person and even day to day, like two phones on the same network with slightly different timing on when the texts land. That is normal variation, not something gone wrong.</p>
+          <p>Ghrelin and GLP-1 are part of a real, measurable conversation inside the body, which is exactly why appetite signaling is such an active research area. The three compounds above are studied in connection with that conversation.</p>
         </div>
 
         <div class="sci-grid">
-          @foreach($lander->c('science.items', []) as $i => $item)
           <article class="sci-item">
-            <div class="ic"><svg viewBox="0 0 96 96" aria-hidden="true">{!! $icons['science'][$i] ?? '' !!}</svg></div>
-            <h3>{{ $item['title'] ?? '' }}</h3><p>{{ $item['body'] ?? '' }}</p>
+            <div class="ic"><svg viewBox="0 0 96 96" aria-hidden="true">{!! $icons['science'][0] !!}</svg></div>
+            <h3>Hunger signals</h3><p>How gut-to-brain communication relates to hunger cues.</p>
           </article>
-          @endforeach
+          <article class="sci-item">
+            <div class="ic"><svg viewBox="0 0 96 96" aria-hidden="true">{!! $icons['science'][1] !!}</svg></div>
+            <h3>Satiety response</h3><p>Signals connected to fullness and satisfaction after food intake.</p>
+          </article>
+          <article class="sci-item">
+            <div class="ic"><svg viewBox="0 0 96 96" aria-hidden="true">{!! $icons['science'][2] !!}</svg></div>
+            <h3>Metabolic function</h3><p>Pathways involved in nutrient processing and energy regulation.</p>
+          </article>
+          <article class="sci-item">
+            <div class="ic"><svg viewBox="0 0 96 96" aria-hidden="true">{!! $icons['science'][3] !!}</svg></div>
+            <h3>Why it varies</h3><p>Age, sleep, stress, and hormonal shifts may influence how these systems are studied.</p>
+          </article>
         </div>
       </div>
     </section>
 
-    {{-- 5. Source-quality trust strip (5 process icons), looped from trust.items --}}
+    {{-- 6. Source-quality checklist (5-step), reframed as a buyer tool, with a mid-page CTA --}}
+    <section id="framework" class="section">
+      <div class="wrap">
+        <div class="sec-head center">
+          <p class="eyebrow">Use this before you add anything to a cart</p>
+          <h2>Five checkpoints to separate a clear research source from a vague one</h2>
+        </div>
+        <div class="steps">
+          <article class="step"><span class="num" aria-hidden="true">01</span><h3>Understand the pathway</h3><p>Start with the mechanism being researched, not social-media hype.</p></article>
+          <article class="step"><span class="num" aria-hidden="true">02</span><h3>Compare the compounds</h3><p>Know what each one is studied in connection with, in a lab context (you just did this above).</p></article>
+          <article class="step"><span class="num" aria-hidden="true">03</span><h3>Evaluate source quality</h3><p>Look for transparency, testing practices, and consistency.</p></article>
+          <article class="step"><span class="num" aria-hidden="true">04</span><h3>Check documentation</h3><p>COAs and batch records should be current and easy to review.</p></article>
+          <article class="step"><span class="num" aria-hidden="true">05</span><h3>Decide with clarity</h3><p>Research use only means clarity matters before anything is purchased.</p></article>
+        </div>
+        <div class="steps-cta">
+          <a class="btn btn-lg btn-primary" href="#compare">Compare the 3 compounds &rarr;</a>
+        </div>
+      </div>
+    </section>
+
+    {{-- 7. Source-quality trust strip (5 process icons, kept as-is) --}}
     <section id="source" class="section tint">
       <div class="wrap">
         <div class="sec-head center">
-          <p class="eyebrow">{{ $lander->c('compounds.eyebrow') }}</p>
-          <h2>{{ $lander->c('framework.heading') }}</h2>
+          <p class="eyebrow">Source-quality standards</p>
+          <h2>What a clear research source looks like</h2>
         </div>
         <div class="trust">
-          @foreach($lander->c('trust.items', []) as $i => $item)
-          <div class="titem"><svg class="ts" viewBox="0 0 64 64" aria-hidden="true">{!! $icons['trust'][$i] ?? '' !!}</svg><h3>{{ $item['title'] ?? '' }}</h3><p>{{ $item['body'] ?? '' }}</p></div>
-          @endforeach
+          <div class="titem"><svg class="ts" viewBox="0 0 64 64" aria-hidden="true">{!! $icons['trust'][0] !!}</svg><h3>Research Use Only</h3><p>Clearly positioned for laboratory research purposes.</p></div>
+          <div class="titem"><svg class="ts" viewBox="0 0 64 64" aria-hidden="true">{!! $icons['trust'][1] !!}</svg><h3>Third-Party Tested</h3><p>Testing information and COAs are part of the evaluation process.</p></div>
+          <div class="titem"><svg class="ts" viewBox="0 0 64 64" aria-hidden="true">{!! $icons['trust'][2] !!}</svg><h3>Transparent Documentation</h3><p>Researchers can review product and batch documentation before deciding.</p></div>
+          <div class="titem"><svg class="ts" viewBox="0 0 64 64" aria-hidden="true">{!! $icons['trust'][3] !!}</svg><h3>Batch Consistency</h3><p>Consistency matters when comparing research sources.</p></div>
+          <div class="titem"><svg class="ts" viewBox="0 0 64 64" aria-hidden="true">{!! $icons['trust'][4] !!}</svg><h3>Secure and Discreet</h3><p>Clear ordering experience with responsible research-use framing.</p></div>
         </div>
       </div>
     </section>
 
-    {{-- 6. Final CTA band (dark) repeats the outbound /go links, held constant from $lander --}}
+    {{-- 9. Final CTA band (dark) repeats the 3 outbound /go links, held constant from $lander --}}
     <section class="section dark">
       <div class="wrap final-grid">
         <div class="lead">
-          <p class="eyebrow">{{ $lander->c('final.eyebrow') }}</p>
-          <h2>{{ $lander->c('final.heading') }}</h2>
-          <p>{{ $lander->c('final.body') }}</p>
+          <p class="eyebrow">Ready to compare research options?</p>
+          <h2>Pick the compound you came to review.</h2>
+          <p>Skip the overwhelming catalog. Open the research category you wanted to compare, then review its specifications, documentation, and batch testing.</p>
         </div>
         <div class="final-links">
           @foreach($lander->c('final.links', []) as $link)
@@ -449,7 +496,7 @@ h1,h2,h3,h4,p{margin:0}
       </div>
     </section>
 
-    {{-- 7. Legal note + footer (held constant from control) --}}
+    {{-- 10. Legal note + footer (held constant from control) --}}
     <div class="legal">
       <div class="wrap">
         <p><strong>Important:</strong> {{ $lander->c('legal') }}</p>
