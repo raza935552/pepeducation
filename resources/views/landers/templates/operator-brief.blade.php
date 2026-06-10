@@ -138,7 +138,7 @@
         </article>
         <footer>
             <p class="disc">{!! $c('footer.disclaimer') !!}</p>
-            <div class="flinks">{!! $c('footer.copyright', '© 2026 The Operator Brief') !!} · <a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#">Research-Use Policy</a> · 18+</div>
+            <div class="flinks">{!! $c('footer.copyright', '© 2026 The Operator Brief') !!} · <a href="{{ route('privacy') }}">Privacy</a> · <a href="{{ route('terms') }}">Terms</a> · <a href="{{ route('disclaimer') }}">Research-Use Policy</a> · 18+</div>
         </footer>
     </body>
 </html>
