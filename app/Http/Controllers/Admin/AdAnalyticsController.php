@@ -87,6 +87,28 @@ class AdAnalyticsController extends Controller
             $clicksByAd[$ad]           = ($clicksByAd[$ad] ?? 0) + 1;
         }
 
+        // ---------- ALL CLICKS (every CTA hand-off, not just ad/fbclid) ----------
+        // So the dashboard is not confusingly 0 during the learning phase. Same floor +
+        // test-marker exclusion as ad-clicks, just WITHOUT the fbclid requirement.
+        $allClickQ = DB::table('outbound_clicks as c')
+            ->join('outbound_links as l', 'l.id', '=', 'c.outbound_link_id')
+            ->where('c.created_at', '>=', $clickLowerBound);
+        foreach (self::TEST_MARKERS as $m) {
+            $allClickQ->where('c.final_url', 'not like', "%{$m}%");
+        }
+        $clicksAllByLander = $clicksAllByCampaign = $clicksAllByAd = [];
+        $totalClicksAll = 0;
+        foreach ($allClickQ->get(['l.slug as link_slug', 'c.final_url']) as $r) {
+            $totalClicksAll++;
+            $lander = preg_replace('/^lp-/', '', (string) $r->link_slug);
+            parse_str((string) parse_url($r->final_url, PHP_URL_QUERY), $q);
+            $camp = ($q['utm_campaign'] ?? '') !== '' ? $q['utm_campaign'] : '(no campaign)';
+            $ad   = ($q['utm_content'] ?? '') !== '' ? $q['utm_content'] : '(no ad name)';
+            $clicksAllByLander[$lander]   = ($clicksAllByLander[$lander] ?? 0) + 1;
+            $clicksAllByCampaign[$camp]   = ($clicksAllByCampaign[$camp] ?? 0) + 1;
+            $clicksAllByAd[$ad]           = ($clicksAllByAd[$ad] ?? 0) + 1;
+        }
+
         // ---------- CONVERSIONS (orders + revenue from Biolinx) ----------
         // Mirrored from Biolinx by the pp:push-conversions bridge. Filtered by the
         // SELECTED period (not the visit-tracking floor) so real revenue shows even
@@ -103,9 +125,9 @@ class AdAnalyticsController extends Controller
         $totalRevenue  = (float) (clone $convQ)->sum('revenue');
 
         // ---------- Merge into report rows (visits + clicks + orders + revenue) ----------
-        $perLander   = $this->mergeRows($visitsByLander, $clicksByLander, $ordersByLander);
-        $perCampaign = $this->mergeRows($visitsByCampaign, $clicksByCampaign, $ordersByCampaign);
-        $perAd       = $this->mergeRows($visitsByAd, $clicksByAd, $ordersByAd);
+        $perLander   = $this->mergeRows($visitsByLander, $clicksByLander, $ordersByLander, $clicksAllByLander);
+        $perCampaign = $this->mergeRows($visitsByCampaign, $clicksByCampaign, $ordersByCampaign, $clicksAllByCampaign);
+        $perAd       = $this->mergeRows($visitsByAd, $clicksByAd, $ordersByAd, $clicksAllByAd);
 
         // ---------- Recent ad activity ----------
         $recent = (clone $visitQ)->orderByDesc('id')->limit(25)
@@ -121,6 +143,7 @@ class AdAnalyticsController extends Controller
             'totalVisits'    => $totalVisits,
             'uniqueVisitors' => $uniqueVisitors,
             'totalClicks'    => $totalClicks,
+            'totalClicksAll' => $totalClicksAll,
             'overallCtr'     => $overallCtr,
             'totalOrders'    => $totalOrders,
             'totalRevenue'   => $totalRevenue,
@@ -138,20 +161,22 @@ class AdAnalyticsController extends Controller
      * Combine visit + click + conversion maps into sorted rows.
      * $orders is keyed map of objects with ->c (count) and ->r (revenue sum).
      */
-    private function mergeRows(array $visits, array $clicks, $orders = null): array
+    private function mergeRows(array $visits, array $clicks, $orders = null, array $clicksAll = []): array
     {
         $orderKeys = $orders ? array_keys($orders->toArray()) : [];
-        $keys = array_unique(array_merge(array_keys($visits), array_keys($clicks), $orderKeys));
+        $keys = array_unique(array_merge(array_keys($visits), array_keys($clicks), array_keys($clicksAll), $orderKeys));
         $rows = [];
         foreach ($keys as $k) {
             $v = $visits[$k] ?? 0;
             $c = $clicks[$k] ?? 0;
+            $ca = $clicksAll[$k] ?? 0;
             $o = ($orders && isset($orders[$k])) ? (int) $orders[$k]->c : 0;
             $rev = ($orders && isset($orders[$k])) ? (float) $orders[$k]->r : 0.0;
             $rows[] = [
-                'key'     => $k,
-                'visits'  => $v,
-                'clicks'  => $c,
+                'key'        => $k,
+                'visits'     => $v,
+                'clicks'     => $c,
+                'clicks_all' => $ca,
                 'ctr'     => $v > 0 ? round($c / $v * 100, 1) : ($c > 0 ? null : 0.0),
                 'orders'  => $o,
                 'revenue' => $rev,

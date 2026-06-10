@@ -20,7 +20,7 @@ class EventRecorder
             'event_type' => $type,
             'event_category' => $this->categorize($type),
             'event_data' => $data['extra'] ?? null,
-            'page_url' => $data['page_url'] ?? null,
+            'page_url' => isset($data['page_url']) ? (mb_substr((string) $data['page_url'], 0, 250) ?: null) : null,
             'page_title' => $data['page_title'] ?? null,
             'element_id' => $data['element_id'] ?? null,
             'element_class' => $data['element_class'] ?? null,

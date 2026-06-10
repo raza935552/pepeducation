@@ -32,8 +32,8 @@
             </div>
             <div class="bg-white rounded-xl border border-gray-200 p-4">
                 <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Clicks</div>
-                <div class="mt-1 text-2xl font-bold text-gray-900">{{ number_format($totalClicks) }}</div>
-                <div class="text-[11px] text-gray-400 mt-0.5">CTR {{ $overallCtr }}%</div>
+                <div class="mt-1 text-2xl font-bold text-gray-900">{{ number_format($totalClicksAll) }}</div>
+                <div class="text-[11px] text-gray-400 mt-0.5">{{ number_format($totalClicks) }} from ads · CTR {{ $overallCtr }}%</div>
             </div>
             <div class="bg-white rounded-xl border border-gray-200 p-4">
                 <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Orders</div>

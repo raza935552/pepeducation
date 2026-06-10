@@ -9,7 +9,8 @@
                 <tr>
                     <th class="px-5 py-2.5 text-left font-semibold">{{ $colLabel }}</th>
                     <th class="px-5 py-2.5 text-right font-semibold">Ad Visits</th>
-                    <th class="px-5 py-2.5 text-right font-semibold">Clicks</th>
+                    <th class="px-5 py-2.5 text-right font-semibold">Total Clicks</th>
+                    <th class="px-5 py-2.5 text-right font-semibold">Ad Clicks</th>
                     <th class="px-5 py-2.5 text-right font-semibold">CTR</th>
                     <th class="px-5 py-2.5 text-right font-semibold">Orders</th>
                     <th class="px-5 py-2.5 text-right font-semibold">Revenue</th>
