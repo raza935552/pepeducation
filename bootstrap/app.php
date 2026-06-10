@@ -31,6 +31,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'pp_session_id',
             'pp_segment',
             'pp_email',
+            // Meta pixel cookies are set by JS (unencrypted) — exclude them so PHP can
+            // read them in CaptureMetaClickIds and forward fbp/fbc to Biolinx via /go.
+            '_fbp',
+            '_fbc',
         ]);
 
         $middleware->validateCsrfTokens(except: [
