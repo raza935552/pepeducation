@@ -102,7 +102,7 @@ class GenerateBlogPostsCommand extends Command
         return self::SUCCESS;
     }
 
-    private function buildPrompt(array $post): string
+    protected function buildPrompt(array $post): string
     {
         $title = $post['title'];
         $keyword = $post['keyword'];
@@ -172,7 +172,7 @@ Output ONLY the JSON. No explanation before or after.
 PROMPT;
     }
 
-    private function getPeptideContext(array $slugs): string
+    protected function getPeptideContext(array $slugs): string
     {
         if (empty($slugs)) {
             return "No specific peptides. This is a general educational article.";
@@ -200,7 +200,7 @@ PROMPT;
         return implode("\n\n", $context) ?: "No specific peptide data available.";
     }
 
-    private function parseResponse(string $raw, array $post): ?array
+    protected function parseResponse(string $raw, array $post): ?array
     {
         $raw = trim($raw);
 
@@ -232,7 +232,7 @@ PROMPT;
         ];
     }
 
-    private function createPost(array $parsed, array $plan, Carbon $publishDate): BlogPost
+    protected function createPost(array $parsed, array $plan, Carbon $publishDate): BlogPost
     {
         // Find category
         $category = BlogCategory::where('name', $plan['category'])->first();
@@ -287,7 +287,7 @@ PROMPT;
         return $post;
     }
 
-    private function addInternalLinks(string $html, array $peptideSlugs): string
+    protected function addInternalLinks(string $html, array $peptideSlugs): string
     {
         // Add links to peptide pages where peptide names are mentioned
         foreach ($peptideSlugs as $slug) {
@@ -297,10 +297,12 @@ PROMPT;
             $name = preg_quote($peptide->name, '/');
             $url = route('peptides.show', $peptide->slug);
 
-            // Only link the first occurrence, and not inside existing links or headings
+            // Only link the first occurrence, and not inside existing links or headings.
+            // (No variable-length lookbehind — PCRE rejects it; the </a> lookahead
+            // already prevents linking inside an existing anchor.)
             $html = preg_replace(
-                '/(?<!<a[^>]*>)(?<!["\'>\/])(' . $name . ')(?![^<]*<\/a>)(?![^<]*<\/h[1-6]>)/i',
-                '<a href="' . $url . '">$1</a>',
+                '/(?<!["\'>\/])(' . $name . ')(?![^<]*<\/a>)(?![^<]*<\/h[1-6]>)/i',
+                '<a href="' . $url . '" class="text-primary-600 underline hover:text-primary-700">$1</a>',
                 $html,
                 1
             );
