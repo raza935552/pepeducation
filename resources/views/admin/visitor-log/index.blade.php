@@ -74,6 +74,7 @@
                             <th class="px-4 py-2.5 text-left font-semibold">Entry link</th>
                             <th class="px-4 py-2.5 text-left font-semibold">Came from</th>
                             <th class="px-4 py-2.5 text-left font-semibold">Source</th>
+                            <th class="px-4 py-2.5 text-left font-semibold">Location</th>
                             <th class="px-4 py-2.5 text-left font-semibold">Device</th>
                             <th class="px-4 py-2.5 text-left font-semibold">IP</th>
                         </tr>
@@ -102,11 +103,24 @@
                                         <span class="text-gray-400 text-xs">organic</span>
                                     @endif
                                 </td>
+                                <td class="px-4 py-2.5 text-gray-700">
+                                    @if ($e->city || $e->country)
+                                        <div class="flex items-center gap-1.5">
+                                            @if($e->country_code)<span class="text-base leading-none" title="{{ $e->country }}">{{ $e->country_code }}</span>@endif
+                                            <span>{{ collect([$e->city, $e->region])->filter()->implode(', ') ?: $e->country }}</span>
+                                        </div>
+                                        @if($e->country && ($e->city || $e->region))<div class="text-xs text-gray-400">{{ $e->country }}</div>@endif
+                                    @elseif ($e->geo_resolved)
+                                        <span class="text-gray-300 text-xs">unknown</span>
+                                    @else
+                                        <span class="text-gray-300 text-xs">—</span>
+                                    @endif
+                                </td>
                                 <td class="px-4 py-2.5 text-gray-600">{{ $e->device }}</td>
                                 <td class="px-4 py-2.5 text-gray-500 whitespace-nowrap">{{ $e->ip }}</td>
                             </tr>
                         @empty
-                            <tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">No visitors logged for this filter yet.</td></tr>
+                            <tr><td colspan="7" class="px-4 py-8 text-center text-gray-400">No visitors logged for this filter yet.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
