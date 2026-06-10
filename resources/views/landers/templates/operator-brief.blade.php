@@ -100,11 +100,15 @@
             <div class="gate" id="gate">
                 <h2>{!! $c('gate.heading') !!}</h2>
                 <p>{{ $c('gate.body') }}</p>
+                {{-- Micro-commitment checkbox: kept for the editorial "confirm the
+                     context" beat, but it never blocks the click — the CTA is always
+                     live and ticks the box on the way out, so no visitor is ever
+                     stuck on a dead button. --}}
                 <label class="chk">
-                    <input type="checkbox" id="q" onchange="var b=document.getElementById('go');b.classList.toggle('locked',!this.checked)">
+                    <input type="checkbox" id="q">
                     <span>{{ $c('gate.consent') }}</span>
                 </label>
-                <a href="{{ route('outbound.track', $lander->outbound_slug) }}" id="go" class="cta locked" rel="nofollow" onclick="return document.getElementById('q').checked">{{ $c('gate.cta', 'Take me to the recommended supplier →') }}</a>
+                <a href="{{ route('outbound.track', $lander->outbound_slug) }}" id="go" class="cta" rel="nofollow" onclick="document.getElementById('q').checked=true">{{ $c('gate.cta', 'Take me to the recommended supplier →') }}</a>
                 <div class="cta-sub" style="color:#9fb0a7;margin-top:10px">{{ $c('gate.sub') }}</div>
             </div>
 
