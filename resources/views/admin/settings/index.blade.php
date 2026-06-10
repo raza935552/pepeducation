@@ -228,58 +228,6 @@
             </div>
         </div>
 
-        <!-- PostHog (Landers only) -->
-        @php
-            $phEnabled = (($settings['integrations'] ?? collect())->firstWhere('key', 'posthog_enabled')?->value) == '1';
-            $phHost = ($settings['integrations'] ?? collect())->firstWhere('key', 'posthog_host')?->value ?: 'https://us.i.posthog.com';
-            $phKeySet = !empty((($settings['integrations'] ?? collect())->firstWhere('key', 'posthog_key')?->value));
-        @endphp
-        <div class="card p-6">
-            <h3 class="text-lg font-semibold mb-1 flex items-center gap-2">
-                <svg aria-hidden="true" class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/>
-                </svg>
-                PostHog <span class="text-sm font-normal text-gray-500">— Landers only</span>
-            </h3>
-            <p class="text-sm text-gray-500 mb-4">
-                Product analytics + <strong>session recording &amp; heatmaps</strong> on the paid-ad landers only (not the rest of the site). Loads automatically on every current and future lander. Paste your PostHog project key. <a href="https://posthog.com" target="_blank" rel="noopener" class="text-brand-gold hover:underline">posthog.com</a>
-            </p>
-
-            <div class="flex items-center gap-2 mb-4">
-                <input type="hidden" name="settings[810][value]" value="0">
-                <input type="checkbox" name="settings[810][value]" value="1" {{ $phEnabled ? 'checked' : '' }}
-                    class="rounded border-gray-300 text-orange-600 focus:ring-orange-500">
-                <input type="hidden" name="settings[810][group]" value="integrations">
-                <input type="hidden" name="settings[810][key]" value="posthog_enabled">
-                <label class="text-sm font-medium text-gray-700">Enable PostHog on landers</label>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Project API Key
-                        @if($phKeySet)<span class="ml-1 text-xs text-green-600 font-normal">● configured</span>@endif
-                    </label>
-                    <input type="password" name="settings[811][value]" value=""
-                        placeholder="{{ $phKeySet ? '•••••••• (leave blank to keep current)' : 'phc_…' }}"
-                        autocomplete="new-password"
-                        class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold font-mono text-sm">
-                    <input type="hidden" name="settings[811][group]" value="integrations">
-                    <input type="hidden" name="settings[811][key]" value="posthog_key">
-                    <p class="text-xs text-gray-400 mt-1">Stored encrypted. Leave blank to keep the existing key.</p>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">API Host</label>
-                    <input type="text" name="settings[812][value]" value="{{ $phHost }}"
-                        placeholder="https://us.i.posthog.com"
-                        class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold font-mono text-sm">
-                    <input type="hidden" name="settings[812][group]" value="integrations">
-                    <input type="hidden" name="settings[812][key]" value="posthog_host">
-                    <p class="text-xs text-gray-400 mt-1">US: <code>https://us.i.posthog.com</code> · EU: <code>https://eu.i.posthog.com</code></p>
-                </div>
-            </div>
-        </div>
-
         <!-- Tracking Pixels -->
         <div class="card p-6">
             <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -361,6 +309,65 @@
 
         <div class="flex justify-end">
             <button type="submit" class="btn btn-primary">Save Settings</button>
+        </div>
+    </form>
+
+    {{-- PostHog (Landers only) — its OWN form + save button (per-section save convention) --}}
+    @php
+        $phEnabled = (($settings['integrations'] ?? collect())->firstWhere('key', 'posthog_enabled')?->value) == '1';
+        $phHost = ($settings['integrations'] ?? collect())->firstWhere('key', 'posthog_host')?->value ?: 'https://us.i.posthog.com';
+        $phKeySet = !empty((($settings['integrations'] ?? collect())->firstWhere('key', 'posthog_key')?->value));
+    @endphp
+    <form action="{{ route('admin.settings.update') }}" method="POST" class="mt-6">
+        @csrf
+        <div class="card p-6">
+            <h3 class="text-lg font-semibold mb-1 flex items-center gap-2">
+                <svg aria-hidden="true" class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/>
+                </svg>
+                PostHog <span class="text-sm font-normal text-gray-500">— Landers only</span>
+            </h3>
+            <p class="text-sm text-gray-500 mb-4">
+                Product analytics + <strong>session recording &amp; heatmaps</strong> on the paid-ad landers only (not the rest of the site). Loads automatically on every current and future lander. Paste your PostHog project key. <a href="https://posthog.com" target="_blank" rel="noopener" class="text-brand-gold hover:underline">posthog.com</a>
+            </p>
+
+            <div class="flex items-center gap-2 mb-4">
+                <input type="hidden" name="settings[0][value]" value="0">
+                <input type="checkbox" name="settings[0][value]" value="1" {{ $phEnabled ? 'checked' : '' }}
+                    class="rounded border-gray-300 text-orange-600 focus:ring-orange-500">
+                <input type="hidden" name="settings[0][group]" value="integrations">
+                <input type="hidden" name="settings[0][key]" value="posthog_enabled">
+                <label class="text-sm font-medium text-gray-700">Enable PostHog on landers</label>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Project API Key
+                        @if($phKeySet)<span class="ml-1 text-xs text-green-600 font-normal">● configured</span>@endif
+                    </label>
+                    <input type="password" name="settings[1][value]" value=""
+                        placeholder="{{ $phKeySet ? '•••••••• (leave blank to keep current)' : 'phc_…' }}"
+                        autocomplete="new-password"
+                        class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold font-mono text-sm">
+                    <input type="hidden" name="settings[1][group]" value="integrations">
+                    <input type="hidden" name="settings[1][key]" value="posthog_key">
+                    <p class="text-xs text-gray-400 mt-1">Stored encrypted. Leave blank to keep the existing key.</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">API Host</label>
+                    <input type="text" name="settings[2][value]" value="{{ $phHost }}"
+                        placeholder="https://us.i.posthog.com"
+                        class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold font-mono text-sm">
+                    <input type="hidden" name="settings[2][group]" value="integrations">
+                    <input type="hidden" name="settings[2][key]" value="posthog_host">
+                    <p class="text-xs text-gray-400 mt-1">US: <code>https://us.i.posthog.com</code> · EU: <code>https://eu.i.posthog.com</code></p>
+                </div>
+            </div>
+
+            <div class="flex justify-end mt-4">
+                <button type="submit" class="btn btn-primary text-sm">Save PostHog</button>
+            </div>
         </div>
     </form>
 
