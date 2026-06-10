@@ -85,7 +85,7 @@ class LanderController extends Controller
                 'utm_content'  => $utm['content'],
                 'utm_term'     => $utm['term'],
                 'referer'      => mb_substr((string) $request->headers->get('referer'), 0, 500) ?: null,
-                'ip'           => $request->ip(),
+                'ip'           => \App\Support\IpAnon::mask($request->ip()),
                 'user_agent'   => mb_substr((string) $request->userAgent(), 0, 500) ?: null,
                 'created_at'   => now(),
             ];

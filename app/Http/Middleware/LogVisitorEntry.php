@@ -76,7 +76,7 @@ class LogVisitorEntry
                 'utm_term'        => $utm['term'],
                 'fbclid'          => $fbclid,
                 'device'          => $isBot ? 'bot' : ($isMobile ? 'mobile' : 'desktop'),
-                'ip'              => $request->ip(),
+                'ip'              => \App\Support\IpAnon::mask($request->ip()),
                 'user_agent'      => mb_substr($ua, 0, 500) ?: null,
                 'created_at'      => now(),
             ];
