@@ -103,3 +103,30 @@
     <h3 class="text-sm font-semibold text-gray-900 mb-2">Legal note</h3>
     <textarea name="content[legal]" rows="3" class="{{ $ta }}">{{ $v('legal') }}</textarea>
 </div>
+
+{{-- Giveaway email-capture popup (subscribes to Customer.io as source "giveaway:{slug}") --}}
+<div class="card p-5">
+    <h3 class="text-sm font-semibold text-gray-900 mb-1">Giveaway popup</h3>
+    <p class="text-xs text-gray-500 mb-4">Shows an email-capture popup on this lander. Submissions subscribe the visitor in Customer.io (source <code>giveaway:{{ $lander->slug }}</code>) and fire the <code>Subscribed</code> event. Leave any field blank to use its default.</p>
+
+    <label class="flex items-center gap-2 mb-4 cursor-pointer">
+        <input type="hidden" name="content[giveaway_popup][enabled]" value="0">
+        <input type="checkbox" name="content[giveaway_popup][enabled]" value="1" {{ $v('giveaway_popup.enabled') ? 'checked' : '' }}
+               class="rounded border-gray-300 text-pink-600 focus:ring-pink-500">
+        <span class="text-sm font-medium text-gray-700">Enable giveaway popup on this lander</span>
+    </label>
+
+    <div class="grid sm:grid-cols-2 gap-4">
+        <div><label class="{{ $lbl }}">Tag / eyebrow</label><input name="content[giveaway_popup][tag]" value="{{ $v('giveaway_popup.tag') }}" placeholder="Giveaway" class="{{ $inp }}"></div>
+        <div><label class="{{ $lbl }}">Button text</label><input name="content[giveaway_popup][button_text]" value="{{ $v('giveaway_popup.button_text') }}" placeholder="Enter Now" class="{{ $inp }}"></div>
+        <div class="sm:col-span-2"><label class="{{ $lbl }}">Headline</label><input name="content[giveaway_popup][headline]" value="{{ $v('giveaway_popup.headline') }}" placeholder="Win a free research-use-only peptide." class="{{ $inp }}"></div>
+        <div class="sm:col-span-2"><label class="{{ $lbl }}">Sub-headline</label><input name="content[giveaway_popup][subhead]" value="{{ $v('giveaway_popup.subhead') }}" placeholder="One winner picked each month." class="{{ $inp }}"></div>
+        <div><label class="{{ $lbl }}">Email placeholder</label><input name="content[giveaway_popup][placeholder]" value="{{ $v('giveaway_popup.placeholder') }}" placeholder="Email address" class="{{ $inp }}"></div>
+        <div><label class="{{ $lbl }}">Decline link text</label><input name="content[giveaway_popup][decline_text]" value="{{ $v('giveaway_popup.decline_text') }}" placeholder="No thanks" class="{{ $inp }}"></div>
+        <div class="sm:col-span-2"><label class="{{ $lbl }}">Fine print</label><input name="content[giveaway_popup][fine_print]" value="{{ $v('giveaway_popup.fine_print') }}" placeholder="Research use only · Not for human consumption · No purchase necessary" class="{{ $inp }}"></div>
+        <div><label class="{{ $lbl }}">Success title</label><input name="content[giveaway_popup][success_title]" value="{{ $v('giveaway_popup.success_title') }}" placeholder="You're in." class="{{ $inp }}"></div>
+        <div><label class="{{ $lbl }}">Success body</label><input name="content[giveaway_popup][success_body]" value="{{ $v('giveaway_popup.success_body') }}" placeholder="We'll reach out if you win…" class="{{ $inp }}"></div>
+        <div><label class="{{ $lbl }}">Accent colour (hex)</label><input name="content[giveaway_popup][accent]" value="{{ $v('giveaway_popup.accent') }}" placeholder="#da3f76" class="{{ $inp }}"></div>
+        <div><label class="{{ $lbl }}">Delay before showing (seconds)</label><input type="number" min="0" name="content[giveaway_popup][delay_seconds]" value="{{ $v('giveaway_popup.delay_seconds') }}" placeholder="6" class="{{ $inp }}"></div>
+    </div>
+</div>

@@ -62,6 +62,12 @@ Landers run **no PP analytics JS** — only the Meta pixel (which reports to Met
 
 **PostHog is LANDERS-ONLY** (`<x-posthog-lander/>`, config in Admin → Settings → "PostHog — Landers only": `integrations.posthog_enabled`/`posthog_key`(encrypted)/`posthog_host`). Loads autocapture + session recording + heatmaps on landers only, registers `pp_lander`/utm on every event. NEVER add PostHog to `layouts/app.blade.php` — it must stay off the rest of Professor Peptides.
 
+### Giveaway popup (per-lander email capture → Customer.io)
+Optional email-capture popup gated per-lander by the content flag `giveaway_popup.enabled`. Component: `resources/views/components/giveaway-popup.blade.php` (self-contained — own markup + scoped CSS + vanilla JS, no Alpine/Livewire). It's rendered at the end of `<body>` in the `research-confidence` template behind `@if($lander->c('giveaway_popup.enabled'))`, so it appears only on landers that turn it on (currently `hunger-fullness`) and any future `research-confidence` lander inherits the capability. Marketing edits/toggles it in **Admin → Marketing → Landers** (the "Giveaway popup" card; all copy/colour/delay are `content.giveaway_popup.*`, blank = default).
+- **Subscribe path:** submits to `POST /subscriber/sync` (route `subscriber.sync`, **CSRF-exempt**) with `source = "giveaway:{lander-slug}"` → `SubscriberService::subscribe()` identifies the person in Customer.io, sets `subscribed=true`, fires the `Subscribed` event. No backend changes — it reuses the existing subscribe endpoint; the `source` is how you segment giveaway entrants in Customer.io.
+- **Triggers:** shows after `delay_seconds` (default 6) + desktop exit-intent; suppressed 7 days after dismiss and permanently after a successful entry (localStorage). Append `?giveaway=force` to force-show for testing. Fires `posthog.capture('giveaway_entered')` + `fbq('track','Lead')` when available.
+- To add the popup to a NEW lander on this template: just set `content.giveaway_popup.enabled = 1` (admin toggle) — nothing else.
+
 ## Development Conventions
 
 - Use `Setting::getValue('group', 'key', default)` for admin-configurable values

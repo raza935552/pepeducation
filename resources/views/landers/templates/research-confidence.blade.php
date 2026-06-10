@@ -146,5 +146,9 @@
       </p>
     </main>
   </div>
+
+  @if($lander->c('giveaway_popup.enabled'))
+    <x-giveaway-popup :lander="$lander" />
+  @endif
 </body>
 </html>
