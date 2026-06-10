@@ -174,6 +174,112 @@
             </div>
         </div>
 
+        <!-- Meta Marketing API (Ad Spend / ROAS) -->
+        @php
+            $metaAdsAccount = ($settings['integrations'] ?? collect())->firstWhere('key', 'meta_ads_account_id')?->value ?? '';
+            $metaAdsTokenSet = !empty((($settings['integrations'] ?? collect())->firstWhere('key', 'meta_ads_token')?->value));
+            $metaAdsEnabled = (($settings['integrations'] ?? collect())->firstWhere('key', 'meta_ads_enabled')?->value) == '1';
+        @endphp
+        <div class="card p-6">
+            <h3 class="text-lg font-semibold mb-1 flex items-center gap-2">
+                <svg aria-hidden="true" class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/>
+                </svg>
+                Meta Marketing API (Ad Spend &amp; ROAS)
+            </h3>
+            <p class="text-sm text-gray-500 mb-4">
+                Pulls daily ad spend per campaign from Meta so the <strong>Ad Analytics</strong> dashboard can show true ROAS (revenue ÷ spend).
+                Use a <strong>System User token</strong> with the <code>ads_read</code> permission. <a href="https://developers.facebook.com/documentation/ads-commerce/marketing-api/insights" target="_blank" rel="noopener" class="text-brand-gold hover:underline">How to get one →</a>
+            </p>
+
+            {{-- Enabled toggle --}}
+            <div class="flex items-center gap-2 mb-4">
+                <input type="hidden" name="settings[800][value]" value="0">
+                <input type="checkbox" name="settings[800][value]" value="1" {{ $metaAdsEnabled ? 'checked' : '' }}
+                    class="rounded border-gray-300 text-green-600 focus:ring-green-500">
+                <input type="hidden" name="settings[800][group]" value="integrations">
+                <input type="hidden" name="settings[800][key]" value="meta_ads_enabled">
+                <label class="text-sm font-medium text-gray-700">Enable ad-spend sync</label>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Ad Account ID</label>
+                    <input type="text" name="settings[801][value]" value="{{ $metaAdsAccount }}"
+                        placeholder="act_123456789012345"
+                        class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold font-mono text-sm">
+                    <input type="hidden" name="settings[801][group]" value="integrations">
+                    <input type="hidden" name="settings[801][key]" value="meta_ads_account_id">
+                    <p class="text-xs text-gray-400 mt-1">From Business Settings → Accounts → Ad Accounts (the <code>act_…</code> id).</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        System User Token
+                        @if($metaAdsTokenSet)<span class="ml-1 text-xs text-green-600 font-normal">● configured</span>@endif
+                    </label>
+                    <input type="password" name="settings[802][value]" value=""
+                        placeholder="{{ $metaAdsTokenSet ? '•••••••• (leave blank to keep current)' : 'Paste the ads_read token' }}"
+                        autocomplete="new-password"
+                        class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold font-mono text-sm">
+                    <input type="hidden" name="settings[802][group]" value="integrations">
+                    <input type="hidden" name="settings[802][key]" value="meta_ads_token">
+                    <p class="text-xs text-gray-400 mt-1">Stored encrypted. Leave blank to keep the existing token.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PostHog (Landers only) -->
+        @php
+            $phEnabled = (($settings['integrations'] ?? collect())->firstWhere('key', 'posthog_enabled')?->value) == '1';
+            $phHost = ($settings['integrations'] ?? collect())->firstWhere('key', 'posthog_host')?->value ?: 'https://us.i.posthog.com';
+            $phKeySet = !empty((($settings['integrations'] ?? collect())->firstWhere('key', 'posthog_key')?->value));
+        @endphp
+        <div class="card p-6">
+            <h3 class="text-lg font-semibold mb-1 flex items-center gap-2">
+                <svg aria-hidden="true" class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/>
+                </svg>
+                PostHog <span class="text-sm font-normal text-gray-500">— Landers only</span>
+            </h3>
+            <p class="text-sm text-gray-500 mb-4">
+                Product analytics + <strong>session recording &amp; heatmaps</strong> on the paid-ad landers only (not the rest of the site). Loads automatically on every current and future lander. Paste your PostHog project key. <a href="https://posthog.com" target="_blank" rel="noopener" class="text-brand-gold hover:underline">posthog.com</a>
+            </p>
+
+            <div class="flex items-center gap-2 mb-4">
+                <input type="hidden" name="settings[810][value]" value="0">
+                <input type="checkbox" name="settings[810][value]" value="1" {{ $phEnabled ? 'checked' : '' }}
+                    class="rounded border-gray-300 text-orange-600 focus:ring-orange-500">
+                <input type="hidden" name="settings[810][group]" value="integrations">
+                <input type="hidden" name="settings[810][key]" value="posthog_enabled">
+                <label class="text-sm font-medium text-gray-700">Enable PostHog on landers</label>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Project API Key
+                        @if($phKeySet)<span class="ml-1 text-xs text-green-600 font-normal">● configured</span>@endif
+                    </label>
+                    <input type="password" name="settings[811][value]" value=""
+                        placeholder="{{ $phKeySet ? '•••••••• (leave blank to keep current)' : 'phc_…' }}"
+                        autocomplete="new-password"
+                        class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold font-mono text-sm">
+                    <input type="hidden" name="settings[811][group]" value="integrations">
+                    <input type="hidden" name="settings[811][key]" value="posthog_key">
+                    <p class="text-xs text-gray-400 mt-1">Stored encrypted. Leave blank to keep the existing key.</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">API Host</label>
+                    <input type="text" name="settings[812][value]" value="{{ $phHost }}"
+                        placeholder="https://us.i.posthog.com"
+                        class="w-full rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold font-mono text-sm">
+                    <input type="hidden" name="settings[812][group]" value="integrations">
+                    <input type="hidden" name="settings[812][key]" value="posthog_host">
+                    <p class="text-xs text-gray-400 mt-1">US: <code>https://us.i.posthog.com</code> · EU: <code>https://eu.i.posthog.com</code></p>
+                </div>
+            </div>
+        </div>
+
         <!-- Tracking Pixels -->
         <div class="card p-6">
             <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">

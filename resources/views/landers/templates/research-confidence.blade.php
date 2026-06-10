@@ -50,6 +50,7 @@
 @media(min-width:981px) and (max-width:1180px){.hero{grid-template-columns:1fr .9fr}.hero-copy{padding:60px 28px 48px 52px}h1{font-size:clamp(52px,6vw,78px)}.hero-media{min-height:650px}.molecule-badge{width:160px;height:160px}}
   </style>@endverbatim
   <x-meta-pixel />
+  <x-posthog-lander />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
