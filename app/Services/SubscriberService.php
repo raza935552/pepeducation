@@ -35,7 +35,53 @@ class SubscriberService
         // Sync to Customer.io synchronously
         $this->syncToCustomerIo($subscriber, $data['source'] ?? 'unknown');
 
+        // Forward the email + ad attribution to Biolinx so it can build a matchable
+        // marketing profile even if this visitor never clicks through (best-effort).
+        $this->forwardToBiolinx($email);
+
         return $subscriber;
+    }
+
+    /**
+     * Forward a captured email (+ session ad attribution) to Biolinx's marketing-profile
+     * ingest endpoint. Attribution is read from the session NOW; the HTTP call is deferred
+     * to after the response so it never adds latency or breaks the popup submit.
+     */
+    protected function forwardToBiolinx(string $email): void
+    {
+        $url = (string) config('services.biolinx_email_ingest.url');
+        $secret = (string) config('services.biolinx_email_ingest.secret');
+        if ($url === '' || $secret === '') {
+            return;
+        }
+
+        try {
+            $payload = array_filter([
+                'email'        => $email,
+                'pp_lander'    => session('pp_lander'),
+                'fbclid'       => session('meta_fbclid'),
+                'fbp'          => session('meta_fbp'),
+                'fbc'          => session('meta_fbc'),
+                'utm_source'   => session('ad_utm_source'),
+                'utm_medium'   => session('ad_utm_medium'),
+                'utm_campaign' => session('ad_utm_campaign'),
+                'utm_content'  => session('ad_utm_content'),
+                'utm_term'     => session('ad_utm_term'),
+                'variant'      => session('lander_variant'),
+            ], fn ($v) => $v !== null && $v !== '');
+
+            dispatch(function () use ($url, $secret, $payload) {
+                try {
+                    \Illuminate\Support\Facades\Http::timeout(5)
+                        ->withHeaders(['X-PP-Secret' => $secret])
+                        ->post($url, $payload);
+                } catch (\Throwable $e) {
+                    logger()->warning('Biolinx email forward failed', ['error' => $e->getMessage()]);
+                }
+            })->afterResponse();
+        } catch (\Throwable $e) {
+            // Never let cross-domain forwarding break the subscribe flow.
+        }
     }
 
     /**

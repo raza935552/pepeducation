@@ -44,4 +44,11 @@ return [
         'secret' => env('PP_CONVERSIONS_SECRET'),
     ],
 
+    // PP -> Biolinx: forward popup/newsletter emails so Biolinx can build a
+    // matchable marketing profile even if the visitor never clicks through.
+    'biolinx_email_ingest' => [
+        'url' => env('BIOLINX_EMAIL_INGEST_URL', 'https://biolinxlabs.com/api/pp/emails'),
+        'secret' => env('PP_CONVERSIONS_SECRET'),
+    ],
+
 ];
