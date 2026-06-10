@@ -24,6 +24,7 @@ posthog.init('{{ $phKey }}', {
 try {
     posthog.register({
         pp_lander: @json(isset($lander) ? $lander->slug : (request()->segment(2) ?? null)),
+        lander_variant: @json(session('lander_variant')),
         utm_source: @json(request()->query('utm_source')),
         utm_campaign: @json(request()->query('utm_campaign')),
         utm_content: @json(request()->query('utm_content')),

@@ -43,6 +43,17 @@
                     </a>
                 </li>
 
+                {{-- A/B Test (your page vs AI page — CTR scoreboard) --}}
+                <li>
+                    <a href="{{ route('admin.ab-test') }}"
+                       class="{{ request()->routeIs('admin.ab-test') ? 'bg-gray-100 text-admin-primary-600' : 'text-gray-700 hover:bg-gray-100' }} group flex gap-x-3 rounded-lg p-2 text-sm font-semibold leading-6 transition-colors">
+                        <svg aria-hidden="true" class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
+                        </svg>
+                        A/B Test
+                    </a>
+                </li>
+
                 {{-- Visitor Log (every visitor's entry link + referrer, for reference) --}}
                 <li>
                     <a href="{{ route('admin.visitor-log') }}"

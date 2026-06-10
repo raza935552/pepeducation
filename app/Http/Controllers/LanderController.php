@@ -42,16 +42,24 @@ class LanderController extends Controller
         // CMS-driven landers (editable in admin) take precedence.
         $lander = \App\Models\Lander::where('slug', $slug)->where('is_active', true)->first();
         if ($lander) {
-            session(['pp_lander' => $slug, 'pp_lander_title' => $lander->c('meta.title') ?: $lander->name]);
-            $this->recordVisit($request, $slug);
-            return view("landers.templates.{$lander->template}", compact('lander'));
+            // A/B test: 'A' = control (this template), 'B' = the AI-built {template}-b.
+            // null = no test running for this lander (everyone gets A).
+            $variant = $this->resolveVariant($request, $lander);
+            session(['pp_lander' => $slug, 'pp_lander_title' => $lander->c('meta.title') ?: $lander->name, 'lander_variant' => $variant]);
+            $this->recordVisit($request, $slug, $variant);
+
+            $template = "landers.templates.{$lander->template}";
+            if ($variant === 'B') {
+                $template .= '-b';
+            }
+            return view($template, compact('lander'));
         }
 
         // Legacy static landers (the original 5).
         abort_unless(array_key_exists($slug, self::LANDERS), 404);
 
-        session(['pp_lander' => $slug, 'pp_lander_title' => null]);
-        $this->recordVisit($request, $slug);
+        session(['pp_lander' => $slug, 'pp_lander_title' => null, 'lander_variant' => null]);
+        $this->recordVisit($request, $slug, null);
 
         return view("landers.{$slug}");
     }
@@ -61,7 +69,42 @@ class LanderController extends Controller
      * adds zero latency to the page and can never break the render. Values are
      * read NOW (request scope); the DB write is deferred via afterResponse.
      */
-    private function recordVisit(Request $request, string $slug): void
+    /**
+     * Resolve the A/B variant for a CMS lander.
+     *  - Returns null when there is no test (everyone gets the A control).
+     *  - `?v=a` / `?v=b` is always honored (lets us QA B before flipping the test live).
+     *  - When ab_test.enabled is set on the lander AND a {template}-b view exists,
+     *    visitors are split 50/50 and pinned to their variant by a 30-day cookie.
+     */
+    private function resolveVariant(Request $request, \App\Models\Lander $lander): ?string
+    {
+        if (! view()->exists("landers.templates.{$lander->template}-b")) {
+            return null; // no B template -> no test possible
+        }
+
+        // QA override (works even before the test is enabled, for previewing B).
+        $q = strtoupper((string) $request->query('v', ''));
+        if (in_array($q, ['A', 'B'], true)) {
+            return $q;
+        }
+
+        // Real 50/50 split only once the test is switched on for this lander.
+        if (! $lander->c('ab_test.enabled')) {
+            return null;
+        }
+
+        $cookieName = 'pp_ab_' . $lander->slug;
+        $cookie = $request->cookie($cookieName);
+        if (in_array($cookie, ['A', 'B'], true)) {
+            return $cookie;
+        }
+
+        $variant = random_int(0, 1) === 1 ? 'B' : 'A';
+        \Illuminate\Support\Facades\Cookie::queue($cookieName, $variant, 43200); // 30 days
+        return $variant;
+    }
+
+    private function recordVisit(Request $request, string $slug, ?string $variant = null): void
     {
         try {
             // Ad UTMs the visitor landed with — session (set by CaptureMetaClickIds)
@@ -76,6 +119,7 @@ class LanderController extends Controller
 
             $row = [
                 'lander_slug'  => $slug,
+                'variant'      => $variant,
                 'session_id'   => $request->hasSession() ? $request->session()->getId() : null,
                 'is_ad'        => (! empty($fbclid)) || (! empty($utm['source'])),
                 'fbclid'       => $fbclid,

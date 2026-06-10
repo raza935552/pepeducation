@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\StackBundleController;
 use App\Http\Controllers\Admin\StackStoreController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\AdAnalyticsController;
+use App\Http\Controllers\Admin\AbTestController;
 use App\Http\Controllers\Admin\VisitorLogController;
 use App\Http\Controllers\Admin\ResultsBankController;
 use App\Http\Controllers\Admin\BugReportController;
@@ -43,6 +44,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
     Route::get('/ad-analytics', [AdAnalyticsController::class, 'index'])->name('ad-analytics');
+    Route::get('/ab-test', [AbTestController::class, 'index'])->name('ab-test');
     Route::get('/visitor-log', [VisitorLogController::class, 'index'])->name('visitor-log');
     Route::get('/visitor-log/export', [VisitorLogController::class, 'export'])->name('visitor-log.export');
 

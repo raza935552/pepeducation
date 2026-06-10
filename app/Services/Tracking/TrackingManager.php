@@ -263,6 +263,7 @@ class TrackingManager
         $click = OutboundClick::create([
             'outbound_link_id' => $link->id,
             'session_id' => $session->session_id,
+            'variant' => session('lander_variant'),
             'subscriber_id' => $session->subscriber_id,
             'user_id' => $session->user_id,
             'source_page' => request()->header('referer'),

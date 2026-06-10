@@ -10,7 +10,7 @@ class OutboundClick extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'outbound_link_id', 'session_id', 'subscriber_id', 'user_id',
+        'outbound_link_id', 'session_id', 'variant', 'subscriber_id', 'user_id',
         'source_page', 'source_component', 'final_url', 'passed_data',
         // Attribution data sent to vendor
         'pp_session', 'pp_email_hash', 'pp_segment', 'pp_engagement_score',

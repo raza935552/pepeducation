@@ -145,5 +145,9 @@
             <p class="disc">{!! $c('footer.disclaimer') !!}</p>
             <div class="flinks">{!! $c('footer.copyright', '© 2026 The Operator Brief') !!} · <a href="{{ route('privacy') }}">Privacy</a> · <a href="{{ route('terms') }}">Terms</a> · <a href="{{ route('disclaimer') }}">Research-Use Policy</a> · 18+</div>
         </footer>
+
+        @if($lander->c('giveaway_popup.enabled'))
+            <x-giveaway-popup :lander="$lander" />
+        @endif
     </body>
 </html>

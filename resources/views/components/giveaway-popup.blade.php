@@ -32,7 +32,8 @@
     $accent      = $cfg('accent', '#da3f76');
     $delay       = (int) ($cfg('delay_seconds', '6') ?: 6);
 
-    $source   = 'giveaway:' . $slug;
+    $variant  = session('lander_variant');
+    $source   = 'giveaway:' . $slug . ($variant ? ':' . $variant : '');
     $endpoint = route('subscriber.sync');
     $skey     = 'ppgv_' . preg_replace('/[^a-z0-9]+/i', '_', $slug);
 @endphp
