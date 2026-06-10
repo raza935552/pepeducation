@@ -8,6 +8,7 @@ use App\Models\UserEvent;
 use App\Models\UserSession;
 use App\Models\TrackingError;
 use App\Models\LanderVisit;
+use App\Models\VisitorEntry;
 use Illuminate\Console\Command;
 
 class CleanupTrackingData extends Command
@@ -32,6 +33,9 @@ class CleanupTrackingData extends Command
 
         $visits = LanderVisit::where('created_at', '<', now()->subDays($days))->delete();
         $this->line("  Deleted {$visits} lander visits");
+
+        $entries = VisitorEntry::where('created_at', '<', now()->subDays($days))->delete();
+        $this->line("  Deleted {$entries} visitor entries");
 
         // Recalculate engagement tiers in batch
         $tiers = Subscriber::recalculateAllTiers();
