@@ -78,6 +78,15 @@ class OutboundLink extends Model
             $params['pp_email'] = $trackingData['email'];
         }
 
+        // Professor Peptides + lander details — always forwarded so Biolinx records
+        // which PP lander (and its page title) bridged the ad click to the sale.
+        if (!empty($trackingData['pp_lander'])) {
+            $params['pp_lander'] = $trackingData['pp_lander'];
+        }
+        if (!empty($trackingData['pp_lander_title'])) {
+            $params['pp_lander_title'] = $trackingData['pp_lander_title'];
+        }
+
         // Quiz data fields
         if ($this->append_quiz_data) {
             foreach (['pp_health_goal', 'pp_experience_level', 'pp_recommended_peptide', 'pp_quiz_completed'] as $key) {

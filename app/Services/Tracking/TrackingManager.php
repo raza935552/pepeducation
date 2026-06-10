@@ -337,6 +337,10 @@ class TrackingManager
             'pp_recommended_peptide' => $quizResponse?->outcome?->recommended_peptides[0] ?? null,
             'pp_utm_source' => $session->utm_source,
             'pp_utm_campaign' => $session->utm_campaign,
+            // Professor Peptides + lander details — which PP lander bridged the visit
+            // and its page title, forwarded so Biolinx attributes ad → PP lander → sale.
+            'pp_lander' => session('pp_lander'),
+            'pp_lander_title' => session('pp_lander_title'),
             // The REAL ad UTMs the visitor landed with (Ad → Lander), captured into
             // the session by CaptureMetaClickIds. Forwarded as standard utm_* to
             // Biolinx so the purchase attributes to the actual ad/campaign, not the
