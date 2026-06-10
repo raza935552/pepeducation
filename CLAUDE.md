@@ -50,6 +50,16 @@ How each hop works:
 
 **Landers are a CMS** (`landers` table + `Lander` model): `content` is structured JSON with **fixed slot counts** so marketing edits copy/links/images/UTM via **Admin → Marketing → Landers** without breaking layout. Render templates live in `resources/views/landers/templates/{template}.blade.php`. The original 5 are still static blades in `resources/views/landers/`. New lander = a `landers` row (+ new template only for a new design). **Biolinx and PP are SEPARATE repos — never cross-commit.**
 
+### Lander analytics (visits + Ad Analytics dashboard)
+Landers run **no PP analytics JS** — only the Meta pixel (which reports to Meta, not our DB). So `LanderController::recordVisit()` logs **every lander load** to the `lander_visits` table **after the response is sent** (`dispatch(...)->afterResponse()`, fully try/caught — never adds latency or breaks the render). It flags `is_ad` when the load carries `fbclid` or an ad `utm_*`, and stores the ad UTMs + fbclid + referer/ip/ua + laravel `session_id`.
+
+- **This is automatic for ANY lander** (CMS or static) because all of them route through `LanderController@show` — **no per-lander wiring needed**. A new lander gets visit tracking for free.
+- **Admin → Ad Analytics** (`admin.ad-analytics`, `AdAnalyticsController`): accurate paid-traffic reporting — **ad visits** (from `lander_visits`, ad-only), **CTA clicks → Biolinx** (from `outbound_clicks`, ad-filtered on `final_url LIKE %fbclid=%`, parsed for the real `utm_campaign`/`utm_content` since the dedicated columns hold only the link's static UTM), and **CTR** (clicks ÷ visits) broken down **by lander / campaign / ad**, with a period filter.
+- **Conversions/revenue live on Biolinx**, not PP (separate DB) — the order Attribution panel attributes the sale to a lander via `pp_lander`. The PP dashboard is intentionally **top-of-funnel only** (visits → clicks → CTR).
+- The dashboard excludes internal test/monitor traffic via `AdAnalyticsController::TEST_MARKERS` (fbclid prefixes like `MONCHK`, `TESTFBCLID`, …). Keep verification curls using one of those markers so they don't pollute reports.
+
+**The full per-lander standard (replicate for every new lander):** `<x-meta-pixel/>` in the template head · CTA → `route('outbound.track', $outbound_slug)` (an `outbound_links` row per lander) · the `LanderController@show` session-stamp (`pp_lander`/`pp_lander_title`) + auto `recordVisit()` · footer legal links to `/privacy`,`/terms`,`/disclaimer` · OG/Twitter meta from `meta.title`/`meta.description` · compressed WebP images on R2 (shared `biolinxlabs` bucket, `media/` prefix). Get these and the lander is fully tracked end-to-end.
+
 ## Development Conventions
 
 - Use `Setting::getValue('group', 'key', default)` for admin-configurable values

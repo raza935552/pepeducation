@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\StackProductController;
 use App\Http\Controllers\Admin\StackBundleController;
 use App\Http\Controllers\Admin\StackStoreController;
 use App\Http\Controllers\Admin\AnalyticsController;
+use App\Http\Controllers\Admin\AdAnalyticsController;
 use App\Http\Controllers\Admin\ResultsBankController;
 use App\Http\Controllers\Admin\BugReportController;
 use App\Http\Controllers\Admin\UnsplashController;
@@ -40,6 +41,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
+    Route::get('/ad-analytics', [AdAnalyticsController::class, 'index'])->name('ad-analytics');
 
     // Peptides
     Route::resource('peptides', PeptideController::class);
