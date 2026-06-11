@@ -53,10 +53,18 @@
                 <div class="mt-1 text-2xl font-bold text-gray-900">{{ number_format($uniqueVisitors) }}</div>
                 <div class="text-[11px] text-gray-400 mt-0.5">visitors</div>
             </div>
-            <div class="bg-white rounded-xl border border-gray-200 p-4">
-                <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Emails (from ads)</div>
-                <div class="mt-1 text-2xl font-bold text-indigo-600">{{ number_format($totalAdEmails) }}</div>
-                <div class="text-[11px] text-gray-400 mt-0.5">of {{ number_format($totalOptins) }} lander opt-ins</div>
+            <div class="bg-white rounded-xl border border-gray-200 p-4 col-span-2">
+                <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Emails Captured (from ads)</div>
+                <div class="mt-1 flex items-end gap-5">
+                    <div>
+                        <div class="text-2xl font-bold text-indigo-600">{{ number_format($totalOptins) }}</div>
+                        <div class="text-[11px] text-gray-400 mt-0.5">ad-lander opt-ins</div>
+                    </div>
+                    <div class="pl-5 border-l border-gray-100">
+                        <div class="text-2xl font-bold text-green-600">{{ number_format($totalAdEmails) }}</div>
+                        <div class="text-[11px] text-gray-400 mt-0.5">fbclid-verified</div>
+                    </div>
+                </div>
             </div>
         </div>
 
