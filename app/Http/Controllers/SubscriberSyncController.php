@@ -19,6 +19,12 @@ class SubscriberSyncController extends Controller
             'source' => 'nullable|string|max:100',
         ]);
 
+        // Reject disposable / throwaway / test-domain emails — never subscribe or
+        // forward them to Biolinx (keeps junk out of our lists + the customer DB).
+        if (\App\Support\DisposableEmail::isDisposable($request->email)) {
+            return response()->json(['success' => false, 'message' => 'Please use a permanent email address.'], 422);
+        }
+
         $subscriber = $service->subscribe($request->email, [
             'source' => $request->input('source', 'popup'),
             'segment' => $request->cookie('pp_segment') ?? 'tof',
