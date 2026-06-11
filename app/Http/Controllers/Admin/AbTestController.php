@@ -18,19 +18,20 @@ use Illuminate\Http\Request;
  */
 class AbTestController extends Controller
 {
-    /** lander slug => its outbound-link slug (for matching clicks to the lander). */
-    private const TESTS = [
-        '10-years'        => 'lp-10-years',
-        'hunger-fullness' => 'lp-hunger-fullness',
-    ];
-
     public function index(Request $request)
     {
         $days  = max(1, (int) $request->query('days', 7));
         $start = now()->subDays($days);
 
+        // Every active lander that has a B template (a test is possible) — not a
+        // hardcoded pair. The outbound-link slug follows the lp-{slug} convention;
+        // each row's `enabled` flag shows which are actually split 50/50 right now.
+        $tests = Lander::where('is_active', true)->orderBy('slug')->get()
+            ->filter(fn ($l) => view()->exists("landers.templates.{$l->template}-b"))
+            ->mapWithKeys(fn ($l) => [$l->slug => 'lp-' . $l->slug]);
+
         $rows = [];
-        foreach (self::TESTS as $slug => $outSlug) {
+        foreach ($tests as $slug => $outSlug) {
             $lander = Lander::where('slug', $slug)->first();
             $linkId = OutboundLink::where('slug', $outSlug)->value('id');
 
