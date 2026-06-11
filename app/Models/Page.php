@@ -16,6 +16,7 @@ class Page extends Model
         'content',
         'html',
         'css',
+        'jsonld',
         'meta_title',
         'meta_description',
         'featured_image',

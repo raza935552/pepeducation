@@ -1,8 +1,18 @@
 <x-public-layout :title="$page->meta_title ?? $page->title" :description="$page->meta_description">
 
+    {{-- Structured data (rich results) — operator-controlled JSON-LD, pushed to <head>.
+         The page HTML is sanitized (scripts stripped), so JSON-LD lives in its own column. --}}
+    @if($page->jsonld)
+        @push('head')
+            {!! $page->jsonld !!}
+        @endpush
+    @endif
+
     {{-- Hero Section --}}
-    <section class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-16 lg:py-24">
-        <div class="max-w-4xl mx-auto px-4 text-center">
+    <section class="relative overflow-hidden bg-gradient-to-br from-[#1a1714] via-[#241c14] to-[#0c0a08] text-white py-16 lg:py-24">
+        {{-- subtle gold glow for a premium, on-brand hero --}}
+        <div aria-hidden="true" class="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[40rem] h-[40rem] rounded-full bg-primary-500/10 blur-3xl"></div>
+        <div class="relative z-10 max-w-4xl mx-auto px-4 text-center">
             {{-- Badge --}}
             <div class="inline-flex items-center gap-2 bg-primary-500/20 text-primary-400 px-4 py-2 rounded-full text-sm font-medium mb-6">
                 <svg aria-hidden="true" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
