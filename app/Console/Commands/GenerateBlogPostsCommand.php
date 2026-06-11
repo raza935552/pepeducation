@@ -234,8 +234,8 @@ PROMPT;
 
     protected function createPost(array $parsed, array $plan, Carbon $publishDate): BlogPost
     {
-        // Find category
-        $category = BlogCategory::where('name', $plan['category'])->first();
+        // Find category (default when the brainstormed topic omitted one)
+        $category = BlogCategory::where('name', $plan['category'] ?? 'Specific Use Cases')->first();
 
         // Create or find tags
         $tagIds = [];

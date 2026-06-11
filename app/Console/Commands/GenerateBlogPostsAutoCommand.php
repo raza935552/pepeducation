@@ -157,7 +157,7 @@ PROMPT;
      */
     protected function createPost(array $parsed, array $plan, Carbon $publishDate): BlogPost
     {
-        $category = BlogCategory::where('name', $plan['category'])->first();
+        $category = BlogCategory::where('name', $plan['category'] ?? 'Specific Use Cases')->first();
 
         $tagIds = [];
         foreach (($plan['tags'] ?? []) as $tagName) {
