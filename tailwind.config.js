@@ -10,6 +10,17 @@ export default {
         './resources/views/**/*.blade.php',
         './resources/js/**/*.js',
     ],
+    // CMS / DB-stored page HTML (e.g. /peptide-tier-list, blog posts) uses Tailwind
+    // classes that the content scanner CANNOT see (they live in the database, not in
+    // source files). Safelist the color + gradient utilities so that content always
+    // renders with its intended colors instead of unstyled (white-on-white) elements.
+    safelist: [
+        { pattern: /^bg-gradient-to-(r|l|t|b|tr|tl|br|bl)$/ },
+        { pattern: /^(from|via|to)-(red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|gray|slate|stone|zinc|neutral)-(50|100|200|300|400|500|600|700|800|900)$/ },
+        { pattern: /^bg-(red|orange|amber|yellow|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|pink|rose|gray|slate|stone)-(50|100|200|500|600|700|800|900)$/ },
+        { pattern: /^text-(red|orange|amber|yellow|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|pink|rose|gray|slate|stone)-(400|500|600|700|800|900)$/ },
+        { pattern: /^border-(red|orange|amber|yellow|green|emerald|blue|indigo|purple|rose|gray|slate)-(200|300|400|500)$/ },
+    ],
     darkMode: 'class',
     theme: {
         extend: {
