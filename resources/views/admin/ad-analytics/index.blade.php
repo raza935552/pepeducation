@@ -25,7 +25,7 @@
         </div>
 
         {{-- Funnel summary cards --}}
-        <div class="grid grid-cols-2 lg:grid-cols-6 gap-3">
+        <div class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3">
             <div class="bg-white rounded-xl border border-gray-200 p-4">
                 <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Ad Visits</div>
                 <div class="mt-1 text-2xl font-bold text-gray-900">{{ number_format($totalVisits) }}</div>
@@ -53,6 +53,11 @@
                 <div class="mt-1 text-2xl font-bold text-gray-900">{{ number_format($uniqueVisitors) }}</div>
                 <div class="text-[11px] text-gray-400 mt-0.5">visitors</div>
             </div>
+            <div class="bg-white rounded-xl border border-gray-200 p-4">
+                <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Emails Captured</div>
+                <div class="mt-1 text-2xl font-bold text-indigo-600">{{ number_format($totalEmails) }}</div>
+                <div class="text-[11px] text-gray-400 mt-0.5">lander giveaway opt-ins</div>
+            </div>
         </div>
 
         @unless($hasRevenue)
@@ -61,12 +66,13 @@
             </div>
         @endunless
 
-        {{-- Per-lander --}}
+        {{-- Per-lander (with email captures) --}}
         @include('admin.ad-analytics._table', [
             'title' => 'By Lander',
             'colLabel' => 'Lander',
             'rows' => $perLander,
             'empty' => 'No ad visits recorded yet for this period.',
+            'showEmails' => true,
         ])
 
         {{-- Per-campaign --}}
@@ -84,6 +90,9 @@
             'rows' => $perAd,
             'empty' => 'No ad-level data yet.',
         ])
+
+        {{-- Campaign → Ad drilldown --}}
+        @include('admin.ad-analytics._drilldown', ['drilldown' => $drilldown])
 
         {{-- Recent ad activity --}}
         <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">

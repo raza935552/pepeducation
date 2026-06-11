@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\LanderConversion;
 use App\Models\LanderVisit;
+use App\Models\Subscriber;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -54,6 +55,11 @@ class AdAnalyticsController extends Controller
         $visitsByLander   = (clone $visitQ)->selectRaw('lander_slug, count(*) c')->groupBy('lander_slug')->pluck('c', 'lander_slug')->toArray();
         $visitsByCampaign = (clone $visitQ)->selectRaw("COALESCE(NULLIF(utm_campaign,''),'(no campaign)') k, count(*) c")->groupBy('k')->pluck('c', 'k')->toArray();
         $visitsByAd       = (clone $visitQ)->selectRaw("COALESCE(NULLIF(utm_content,''),'(no ad name)') k, count(*) c")->groupBy('k')->pluck('c', 'k')->toArray();
+        // Nested campaign → ad visits, for the drilldown.
+        $visitsByCampaignAd = [];
+        foreach ((clone $visitQ)->selectRaw("COALESCE(NULLIF(utm_campaign,''),'(no campaign)') camp, COALESCE(NULLIF(utm_content,''),'(no ad name)') ad, count(*) c")->groupBy('camp', 'ad')->get() as $row) {
+            $visitsByCampaignAd[$row->camp][$row->ad] = (int) $row->c;
+        }
         $totalVisits      = (clone $visitQ)->count();
         $uniqueVisitors   = (clone $visitQ)->distinct()->count('session_id');
 
@@ -74,7 +80,7 @@ class AdAnalyticsController extends Controller
         }
         $clickRows = $clickQ->get(['l.slug as link_slug', 'c.final_url']);
 
-        $clicksByLander = $clicksByCampaign = $clicksByAd = [];
+        $clicksByLander = $clicksByCampaign = $clicksByAd = $clicksByCampaignAd = [];
         $totalClicks = 0;
         foreach ($clickRows as $r) {
             $totalClicks++;
@@ -85,6 +91,7 @@ class AdAnalyticsController extends Controller
             $clicksByLander[$lander]   = ($clicksByLander[$lander] ?? 0) + 1;
             $clicksByCampaign[$camp]   = ($clicksByCampaign[$camp] ?? 0) + 1;
             $clicksByAd[$ad]           = ($clicksByAd[$ad] ?? 0) + 1;
+            $clicksByCampaignAd[$camp][$ad] = ($clicksByCampaignAd[$camp][$ad] ?? 0) + 1;
         }
 
         // ---------- ALL CLICKS (every CTA hand-off, not just ad/fbclid) ----------
@@ -96,7 +103,7 @@ class AdAnalyticsController extends Controller
         foreach (self::TEST_MARKERS as $m) {
             $allClickQ->where('c.final_url', 'not like', "%{$m}%");
         }
-        $clicksAllByLander = $clicksAllByCampaign = $clicksAllByAd = [];
+        $clicksAllByLander = $clicksAllByCampaign = $clicksAllByAd = $clicksAllByCampaignAd = [];
         $totalClicksAll = 0;
         foreach ($allClickQ->get(['l.slug as link_slug', 'c.final_url']) as $r) {
             $totalClicksAll++;
@@ -107,6 +114,7 @@ class AdAnalyticsController extends Controller
             $clicksAllByLander[$lander]   = ($clicksAllByLander[$lander] ?? 0) + 1;
             $clicksAllByCampaign[$camp]   = ($clicksAllByCampaign[$camp] ?? 0) + 1;
             $clicksAllByAd[$ad]           = ($clicksAllByAd[$ad] ?? 0) + 1;
+            $clicksAllByCampaignAd[$camp][$ad] = ($clicksAllByCampaignAd[$camp][$ad] ?? 0) + 1;
         }
 
         // ---------- CONVERSIONS (orders + revenue from Biolinx) ----------
@@ -121,13 +129,40 @@ class AdAnalyticsController extends Controller
         $ordersByLander  = (clone $convQ)->whereNotNull('pp_lander')->selectRaw('pp_lander k, count(*) c, sum(revenue) r')->groupBy('k')->get()->keyBy('k');
         $ordersByCampaign = (clone $convQ)->selectRaw("COALESCE(NULLIF(utm_campaign,''),'(no campaign)') k, count(*) c, sum(revenue) r")->groupBy('k')->get()->keyBy('k');
         $ordersByAd       = (clone $convQ)->selectRaw("COALESCE(NULLIF(utm_content,''),'(no ad name)') k, count(*) c, sum(revenue) r")->groupBy('k')->get()->keyBy('k');
+        // Nested campaign → ad orders/revenue, for the drilldown.
+        $ordersByCampaignAd = [];
+        foreach ((clone $convQ)->selectRaw("COALESCE(NULLIF(utm_campaign,''),'(no campaign)') camp, COALESCE(NULLIF(utm_content,''),'(no ad name)') ad, count(*) c, sum(revenue) r")->groupBy('camp', 'ad')->get() as $row) {
+            $ordersByCampaignAd[$row->camp][$row->ad] = ['c' => (int) $row->c, 'r' => (float) $row->r];
+        }
         $totalOrders   = (clone $convQ)->count();
         $totalRevenue  = (float) (clone $convQ)->sum('revenue');
 
+        // ---------- EMAIL CAPTURES (lander giveaways) ----------
+        // Emails captured ON the bridge landers via the giveaway opt-in — the same
+        // source the A/B test scoreboard reads (Subscriber.source = giveaway:{slug}:{variant}).
+        // These are the closest proxy for "emails from ads" until per-email ad attribution
+        // is wired on both sides; the source encodes the lander slug, so we can break it down.
+        $emailRows = Subscriber::query()
+            ->where('source', 'like', 'giveaway:%')
+            ->when($start, fn ($q) => $q->where('created_at', '>=', $start))
+            ->selectRaw('source, count(*) c')
+            ->groupBy('source')
+            ->get();
+        $emailsByLander = [];
+        $totalEmails = 0;
+        foreach ($emailRows as $r) {
+            $slug = explode(':', (string) $r->source)[1] ?? '(unknown)'; // giveaway:{slug}:{variant}
+            $emailsByLander[$slug] = ($emailsByLander[$slug] ?? 0) + (int) $r->c;
+            $totalEmails += (int) $r->c;
+        }
+
         // ---------- Merge into report rows (visits + clicks + orders + revenue) ----------
-        $perLander   = $this->mergeRows($visitsByLander, $clicksByLander, $ordersByLander, $clicksAllByLander);
+        $perLander   = $this->mergeRows($visitsByLander, $clicksByLander, $ordersByLander, $clicksAllByLander, $emailsByLander);
         $perCampaign = $this->mergeRows($visitsByCampaign, $clicksByCampaign, $ordersByCampaign, $clicksAllByCampaign);
         $perAd       = $this->mergeRows($visitsByAd, $clicksByAd, $ordersByAd, $clicksAllByAd);
+
+        // Campaign → Ad drilldown: specific ads (utm_content) nested under each campaign.
+        $drilldown   = $this->buildDrilldown($visitsByCampaignAd, $clicksByCampaignAd, $clicksAllByCampaignAd, $ordersByCampaignAd);
 
         // ---------- Recent ad activity ----------
         $recent = (clone $visitQ)->orderByDesc('id')->limit(25)
@@ -147,29 +182,91 @@ class AdAnalyticsController extends Controller
             'overallCtr'     => $overallCtr,
             'totalOrders'    => $totalOrders,
             'totalRevenue'   => $totalRevenue,
+            'totalEmails'    => $totalEmails,
             'overallCvr'     => $overallCvr,
             'aov'            => $aov,
             'hasRevenue'     => $hasRevenue,
             'perLander'      => $perLander,
             'perCampaign'    => $perCampaign,
             'perAd'          => $perAd,
+            'drilldown'      => $drilldown,
             'recent'         => $recent,
         ]);
+    }
+
+    /**
+     * Build the campaign → ad drilldown: each campaign with its total visits/clicks/
+     * orders/revenue, plus the specific ads (utm_content) inside it. Inputs are nested
+     * maps keyed [campaign][ad]. Sorted by revenue then visits, at both levels.
+     */
+    private function buildDrilldown(array $visitsCA, array $clicksCA, array $clicksAllCA, array $ordersCA): array
+    {
+        $campaigns = array_unique(array_merge(
+            array_keys($visitsCA), array_keys($clicksCA), array_keys($clicksAllCA), array_keys($ordersCA)
+        ));
+
+        $out = [];
+        foreach ($campaigns as $camp) {
+            $v  = $visitsCA[$camp] ?? [];
+            $c  = $clicksCA[$camp] ?? [];
+            $ca = $clicksAllCA[$camp] ?? [];
+            $o  = $ordersCA[$camp] ?? [];
+            $adKeys = array_unique(array_merge(array_keys($v), array_keys($c), array_keys($ca), array_keys($o)));
+
+            $ads = [];
+            $tv = $tc = $tca = $to = 0;
+            $tr = 0.0;
+            foreach ($adKeys as $ad) {
+                $vv  = $v[$ad] ?? 0;
+                $cc  = $c[$ad] ?? 0;
+                $caa = $ca[$ad] ?? 0;
+                $oo  = isset($o[$ad]) ? $o[$ad]['c'] : 0;
+                $rr  = isset($o[$ad]) ? $o[$ad]['r'] : 0.0;
+                $ads[] = [
+                    'key'        => $ad,
+                    'visits'     => $vv,
+                    'clicks'     => $cc,
+                    'clicks_all' => $caa,
+                    'ctr'        => $vv > 0 ? round($cc / $vv * 100, 1) : ($cc > 0 ? null : 0.0),
+                    'orders'     => $oo,
+                    'revenue'    => $rr,
+                    'cvr'        => $cc > 0 ? round($oo / $cc * 100, 1) : ($oo > 0 ? null : 0.0),
+                ];
+                $tv += $vv; $tc += $cc; $tca += $caa; $to += $oo; $tr += $rr;
+            }
+            usort($ads, fn ($a, $b) => ($b['revenue'] <=> $a['revenue']) ?: ($b['visits'] <=> $a['visits']));
+
+            $out[] = [
+                'campaign'   => $camp,
+                'visits'     => $tv,
+                'clicks'     => $tc,
+                'clicks_all' => $tca,
+                'ctr'        => $tv > 0 ? round($tc / $tv * 100, 1) : ($tc > 0 ? null : 0.0),
+                'orders'     => $to,
+                'revenue'    => $tr,
+                'cvr'        => $tc > 0 ? round($to / $tc * 100, 1) : ($to > 0 ? null : 0.0),
+                'ads'        => $ads,
+            ];
+        }
+
+        usort($out, fn ($a, $b) => ($b['revenue'] <=> $a['revenue']) ?: ($b['visits'] <=> $a['visits']));
+        return $out;
     }
 
     /**
      * Combine visit + click + conversion maps into sorted rows.
      * $orders is keyed map of objects with ->c (count) and ->r (revenue sum).
      */
-    private function mergeRows(array $visits, array $clicks, $orders = null, array $clicksAll = []): array
+    private function mergeRows(array $visits, array $clicks, $orders = null, array $clicksAll = [], array $emails = []): array
     {
         $orderKeys = $orders ? array_keys($orders->toArray()) : [];
-        $keys = array_unique(array_merge(array_keys($visits), array_keys($clicks), array_keys($clicksAll), $orderKeys));
+        $keys = array_unique(array_merge(array_keys($visits), array_keys($clicks), array_keys($clicksAll), $orderKeys, array_keys($emails)));
         $rows = [];
         foreach ($keys as $k) {
             $v = $visits[$k] ?? 0;
             $c = $clicks[$k] ?? 0;
             $ca = $clicksAll[$k] ?? 0;
+            $em = $emails[$k] ?? 0;
             $o = ($orders && isset($orders[$k])) ? (int) $orders[$k]->c : 0;
             $rev = ($orders && isset($orders[$k])) ? (float) $orders[$k]->r : 0.0;
             $rows[] = [
@@ -177,6 +274,7 @@ class AdAnalyticsController extends Controller
                 'visits'     => $v,
                 'clicks'     => $c,
                 'clicks_all' => $ca,
+                'emails'     => $em,
                 'ctr'     => $v > 0 ? round($c / $v * 100, 1) : ($c > 0 ? null : 0.0),
                 'orders'  => $o,
                 'revenue' => $rev,

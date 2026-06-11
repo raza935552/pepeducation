@@ -1,4 +1,6 @@
-{{-- Reusable visits/clicks/CTR breakdown table. Expects: $title, $colLabel, $rows, $empty --}}
+{{-- Reusable visits/clicks/CTR breakdown table. Expects: $title, $colLabel, $rows, $empty.
+     Optional: $showEmails (bool) — adds an Emails-captured column (lander giveaway opt-ins). --}}
+@php $showEmails = $showEmails ?? false; @endphp
 <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
     <div class="px-5 py-3 border-b border-gray-100">
         <h3 class="text-sm font-semibold text-gray-900">{{ $title }}</h3>
@@ -12,6 +14,9 @@
                     <th class="px-5 py-2.5 text-right font-semibold">Total Clicks</th>
                     <th class="px-5 py-2.5 text-right font-semibold">Ad Clicks</th>
                     <th class="px-5 py-2.5 text-right font-semibold">CTR</th>
+                    @if($showEmails)
+                        <th class="px-5 py-2.5 text-right font-semibold">Emails</th>
+                    @endif
                     <th class="px-5 py-2.5 text-right font-semibold">Orders</th>
                     <th class="px-5 py-2.5 text-right font-semibold">Revenue</th>
                     <th class="px-5 py-2.5 text-right font-semibold">CVR</th>
@@ -22,6 +27,7 @@
                     <tr class="hover:bg-gray-50">
                         <td class="px-5 py-2.5 font-medium text-gray-900">{{ $row['key'] }}</td>
                         <td class="px-5 py-2.5 text-right text-gray-700">{{ number_format($row['visits']) }}</td>
+                        <td class="px-5 py-2.5 text-right text-gray-500">{{ number_format($row['clicks_all'] ?? 0) }}</td>
                         <td class="px-5 py-2.5 text-right text-gray-700">{{ number_format($row['clicks']) }}</td>
                         <td class="px-5 py-2.5 text-right">
                             @if (is_null($row['ctr']))
@@ -30,6 +36,9 @@
                                 <span class="font-semibold {{ $row['ctr'] >= 40 ? 'text-green-600' : ($row['ctr'] >= 15 ? 'text-amber-600' : 'text-gray-700') }}">{{ $row['ctr'] }}%</span>
                             @endif
                         </td>
+                        @if($showEmails)
+                            <td class="px-5 py-2.5 text-right font-semibold {{ ($row['emails'] ?? 0) > 0 ? 'text-indigo-600' : 'text-gray-400' }}">{{ number_format($row['emails'] ?? 0) }}</td>
+                        @endif
                         <td class="px-5 py-2.5 text-right text-gray-700">{{ number_format($row['orders'] ?? 0) }}</td>
                         <td class="px-5 py-2.5 text-right font-semibold {{ ($row['revenue'] ?? 0) > 0 ? 'text-green-700' : 'text-gray-400' }}">${{ number_format($row['revenue'] ?? 0, 2) }}</td>
                         <td class="px-5 py-2.5 text-right">
@@ -41,7 +50,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="7" class="px-5 py-6 text-center text-gray-400">{{ $empty }}</td></tr>
+                    <tr><td colspan="{{ $showEmails ? 9 : 8 }}" class="px-5 py-6 text-center text-gray-400">{{ $empty }}</td></tr>
                 @endforelse
             </tbody>
         </table>
