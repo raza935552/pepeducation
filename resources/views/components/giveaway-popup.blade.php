@@ -141,13 +141,17 @@
 
     err.hidden = true; submitting = true; btn.disabled = true; btn.textContent = 'Entering…';
 
+    // One dedup key shared by the browser Lead (below) and the server-side CAPI Lead
+    // Biolinx fires from the forwarded email — so Meta deduplicates the two.
+    var leadEventId = 'lead_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 11);
+
     var headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' };
     var meta = document.querySelector('meta[name="csrf-token"]');
     if (meta) headers['X-CSRF-TOKEN'] = meta.content; // route is CSRF-exempt; sent only if a token exists
 
     fetch(endpoint, {
       method: 'POST', headers: headers, credentials: 'same-origin',
-      body: JSON.stringify({ email: email, source: source })
+      body: JSON.stringify({ email: email, source: source, lead_event_id: leadEventId })
     })
     .then(function (r){ return r.ok ? r.json().catch(function(){ return { ok: true }; }) : Promise.reject(r); })
     .then(function (){
@@ -155,7 +159,7 @@
       document.getElementById('ppgv-form').hidden = true;
       document.getElementById('ppgv-success').hidden = false;
       try { if (window.posthog) window.posthog.capture('giveaway_entered', { lander: landerSlug, email_domain: (email.split('@')[1] || '') }); } catch (e) {}
-      try { if (window.fbq) window.fbq('track', 'Lead', { content_name: 'giveaway', content_category: landerSlug }); } catch (e) {}
+      try { if (window.fbq) window.fbq('track', 'Lead', { content_name: 'giveaway', content_category: landerSlug }, { eventID: leadEventId }); } catch (e) {}
       setTimeout(function (){ close(false); }, 4000);
     })
     .catch(function (){

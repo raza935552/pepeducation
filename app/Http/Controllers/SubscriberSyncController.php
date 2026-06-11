@@ -17,6 +17,8 @@ class SubscriberSyncController extends Controller
         $request->validate([
             'email' => 'required|email:rfc',
             'source' => 'nullable|string|max:100',
+            // Browser Lead's event_id — forwarded to Biolinx so its CAPI Lead dedups.
+            'lead_event_id' => 'nullable|string|max:120',
         ]);
 
         // Reject disposable / throwaway / test-domain emails — never subscribe or
@@ -28,6 +30,7 @@ class SubscriberSyncController extends Controller
         $subscriber = $service->subscribe($request->email, [
             'source' => $request->input('source', 'popup'),
             'segment' => $request->cookie('pp_segment') ?? 'tof',
+            'lead_event_id' => $request->input('lead_event_id'),
         ]);
 
         $service->setEmailCookie($request->email);

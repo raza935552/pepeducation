@@ -37,7 +37,8 @@ class SubscriberService
 
         // Forward the email + ad attribution to Biolinx so it can build a matchable
         // marketing profile even if this visitor never clicks through (best-effort).
-        $this->forwardToBiolinx($email);
+        // Pass the browser Lead's event_id so Biolinx's CAPI Lead deduplicates with it.
+        $this->forwardToBiolinx($email, $data['lead_event_id'] ?? null);
 
         return $subscriber;
     }
@@ -47,7 +48,7 @@ class SubscriberService
      * ingest endpoint. Attribution is read from the session NOW; the HTTP call is deferred
      * to after the response so it never adds latency or breaks the popup submit.
      */
-    protected function forwardToBiolinx(string $email): void
+    protected function forwardToBiolinx(string $email, ?string $leadEventId = null): void
     {
         $url = (string) config('services.biolinx_email_ingest.url');
         $secret = (string) config('services.biolinx_email_ingest.secret');
@@ -57,7 +58,8 @@ class SubscriberService
 
         try {
             $payload = array_filter([
-                'email'        => $email,
+                'email'         => $email,
+                'lead_event_id' => $leadEventId,
                 'pp_lander'    => session('pp_lander'),
                 'fbclid'       => session('meta_fbclid'),
                 'fbp'          => session('meta_fbp'),
