@@ -40,6 +40,16 @@ class CaptureMetaClickIds
             }
         }
 
+        // Meta's STABLE ad identifiers ({{ad.id}}/{{adset.id}}/{{campaign.id}} URL
+        // params) — a backstop for per-ad attribution that does NOT depend on the
+        // utm_content tag being set. Forwarded to Biolinx so a purchase can be tied
+        // to the exact ad even when utm_content was missing or inconsistent.
+        foreach (['ad_id', 'adset_id', 'campaign_id'] as $k) {
+            if ($v = $request->query($k)) {
+                session(['meta_' . $k => substr((string) $v, 0, 64)]);
+            }
+        }
+
         return $next($request);
     }
 }

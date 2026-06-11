@@ -87,6 +87,13 @@ class OutboundLink extends Model
             $params['pp_lander_title'] = $trackingData['pp_lander_title'];
         }
 
+        // Meta's stable ad IDs — backstop ad identity, independent of utm_content.
+        foreach (['ad_id', 'adset_id', 'campaign_id'] as $k) {
+            if (!empty($trackingData[$k])) {
+                $params[$k] = $trackingData[$k];
+            }
+        }
+
         // Quiz data fields
         if ($this->append_quiz_data) {
             foreach (['pp_health_goal', 'pp_experience_level', 'pp_recommended_peptide', 'pp_quiz_completed'] as $key) {

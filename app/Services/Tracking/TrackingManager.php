@@ -353,6 +353,11 @@ class TrackingManager
                 'utm_content' => session('ad_utm_content'),
                 'utm_term' => session('ad_utm_term'),
             ]),
+            // Meta's STABLE numeric IDs ({{ad.id}}/{{adset.id}}/{{campaign.id}}) — a
+            // backstop ad identity that survives even when utm_content is missing.
+            'ad_id' => session('meta_ad_id'),
+            'adset_id' => session('meta_adset_id'),
+            'campaign_id' => session('meta_campaign_id'),
             // Meta click identity — forwarded to Biolinx so the Purchase CAPI there
             // matches back to the original ad click. Raw email goes via pp_email
             // (the OutboundLink append_raw_email flag) so Biolinx can hash + match it.

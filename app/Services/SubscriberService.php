@@ -69,6 +69,9 @@ class SubscriberService
                 'utm_campaign' => session('ad_utm_campaign'),
                 'utm_content'  => session('ad_utm_content'),
                 'utm_term'     => session('ad_utm_term'),
+                'ad_id'        => session('meta_ad_id'),
+                'adset_id'     => session('meta_adset_id'),
+                'campaign_id'  => session('meta_campaign_id'),
                 'variant'      => session('lander_variant'),
             ], fn ($v) => $v !== null && $v !== '');
 
