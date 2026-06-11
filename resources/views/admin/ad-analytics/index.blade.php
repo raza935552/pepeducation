@@ -54,9 +54,9 @@
                 <div class="text-[11px] text-gray-400 mt-0.5">visitors</div>
             </div>
             <div class="bg-white rounded-xl border border-gray-200 p-4">
-                <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Emails Captured</div>
-                <div class="mt-1 text-2xl font-bold text-indigo-600">{{ number_format($totalEmails) }}</div>
-                <div class="text-[11px] text-gray-400 mt-0.5">lander giveaway opt-ins</div>
+                <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Emails (from ads)</div>
+                <div class="mt-1 text-2xl font-bold text-indigo-600">{{ number_format($totalAdEmails) }}</div>
+                <div class="text-[11px] text-gray-400 mt-0.5">of {{ number_format($totalOptins) }} lander opt-ins</div>
             </div>
         </div>
 

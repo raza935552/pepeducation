@@ -137,11 +137,17 @@ class AdAnalyticsController extends Controller
         $totalOrders   = (clone $convQ)->count();
         $totalRevenue  = (float) (clone $convQ)->sum('revenue');
 
-        // ---------- EMAIL CAPTURES (lander giveaways) ----------
-        // Emails captured ON the bridge landers via the giveaway opt-in — the same
-        // source the A/B test scoreboard reads (Subscriber.source = giveaway:{slug}:{variant}).
-        // These are the closest proxy for "emails from ads" until per-email ad attribution
-        // is wired on both sides; the source encodes the lander slug, so we can break it down.
+        // ---------- EMAIL CAPTURES ----------
+        // Two figures:
+        //  - totalAdEmails : PRECISE — subscribers stamped is_ad at capture (the session
+        //    carried a Meta fbclid / paid utm). Accurate from the attribution deploy onward.
+        //  - totalOptins   : VOLUME — all lander giveaway opt-ins (giveaway:{slug}:{variant}),
+        //    ad or organic. Kept as context + the per-lander breakdown (source encodes slug).
+        $totalAdEmails = Subscriber::query()
+            ->where('is_ad', true)
+            ->when($start, fn ($q) => $q->where('created_at', '>=', $start))
+            ->count();
+
         $emailRows = Subscriber::query()
             ->where('source', 'like', 'giveaway:%')
             ->when($start, fn ($q) => $q->where('created_at', '>=', $start))
@@ -149,11 +155,11 @@ class AdAnalyticsController extends Controller
             ->groupBy('source')
             ->get();
         $emailsByLander = [];
-        $totalEmails = 0;
+        $totalOptins = 0;
         foreach ($emailRows as $r) {
             $slug = explode(':', (string) $r->source)[1] ?? '(unknown)'; // giveaway:{slug}:{variant}
             $emailsByLander[$slug] = ($emailsByLander[$slug] ?? 0) + (int) $r->c;
-            $totalEmails += (int) $r->c;
+            $totalOptins += (int) $r->c;
         }
 
         // ---------- Merge into report rows (visits + clicks + orders + revenue) ----------
@@ -182,7 +188,8 @@ class AdAnalyticsController extends Controller
             'overallCtr'     => $overallCtr,
             'totalOrders'    => $totalOrders,
             'totalRevenue'   => $totalRevenue,
-            'totalEmails'    => $totalEmails,
+            'totalAdEmails'  => $totalAdEmails,
+            'totalOptins'    => $totalOptins,
             'overallCvr'     => $overallCvr,
             'aov'            => $aov,
             'hasRevenue'     => $hasRevenue,

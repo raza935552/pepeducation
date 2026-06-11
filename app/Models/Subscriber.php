@@ -17,6 +17,7 @@ class Subscriber extends Model
         // First Touch Attribution
         'first_session_id', 'first_utm_source', 'first_utm_medium',
         'first_utm_campaign', 'first_utm_content', 'first_referrer', 'first_landing_page',
+        'first_fbclid', 'is_ad',
         // Engagement
         'total_sessions', 'total_page_views', 'engagement_score',
         'engagement_tier', 'last_activity_at',
@@ -45,6 +46,7 @@ class Subscriber extends Model
         'is_customer' => 'boolean',
         'first_purchase_at' => 'datetime',
         'lifetime_value' => 'decimal:2',
+        'is_ad' => 'boolean',
     ];
 
     // Relationships

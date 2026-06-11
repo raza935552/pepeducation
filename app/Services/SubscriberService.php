@@ -21,6 +21,11 @@ class SubscriberService
     {
         $email = strtolower(trim($email));
 
+        // Merge the capture session's ad attribution (fbclid / utm / session) so the
+        // local subscriber row is provably tied to its ad click — same signals we
+        // already forward to Biolinx. Explicit values in $data win over the session.
+        $data = $this->sessionAdAttribution() + $data;
+
         // Check if subscriber exists
         $subscriber = Subscriber::where('email', $email)->first();
 
@@ -41,6 +46,35 @@ class SubscriberService
         $this->forwardToBiolinx($email, $data['lead_event_id'] ?? null);
 
         return $subscriber;
+    }
+
+    /**
+     * Read the current session's ad attribution (set by CaptureMetaClickIds on the
+     * lander hit, the same keys recordVisit + forwardToBiolinx use). Returns first-touch
+     * subscriber columns + an is_ad flag. Empty values are dropped so they never clobber
+     * an existing first-touch on update. is_ad = the capture carried a Meta ad signal.
+     */
+    protected function sessionAdAttribution(): array
+    {
+        $fbclid = session('meta_fbclid');
+        $utmSource = session('ad_utm_source');
+
+        $attr = array_filter([
+            'first_session_id' => session()->getId(),
+            'first_fbclid'     => $fbclid,
+            'first_utm_source' => $utmSource,
+            'first_utm_medium' => session('ad_utm_medium'),
+            'first_utm_campaign' => session('ad_utm_campaign'),
+            'first_utm_content'  => session('ad_utm_content'),
+        ], fn ($v) => $v !== null && $v !== '');
+
+        // Only assert is_ad when there's a real ad signal — never write a false-y flag
+        // that would overwrite a previously-true one on a later non-ad touch.
+        if (! empty($fbclid) || ! empty($utmSource)) {
+            $attr['is_ad'] = true;
+        }
+
+        return $attr;
     }
 
     /**
@@ -116,6 +150,17 @@ class SubscriberService
             $updates['first_landing_page'] = $data['first_landing_page'];
         }
 
+        // First-touch ad attribution — fill each only if still empty (never overwrite).
+        foreach (['first_fbclid', 'first_utm_source', 'first_utm_medium', 'first_utm_campaign', 'first_utm_content'] as $f) {
+            if (empty($subscriber->{$f}) && !empty($data[$f])) {
+                $updates[$f] = $data[$f];
+            }
+        }
+        // Promote to ad-attributed if this touch carried an ad signal and it wasn't already.
+        if (!empty($data['is_ad']) && !$subscriber->is_ad) {
+            $updates['is_ad'] = true;
+        }
+
         // Track additional sources (append to source field)
         if (!empty($data['source']) && !str_contains($subscriber->source ?? '', $data['source'])) {
             // Don't overwrite original source, just log that they came from another place
@@ -140,6 +185,13 @@ class SubscriberService
             'segment' => strtolower($data['segment'] ?? 'tof'),
             'first_session_id' => $data['first_session_id'] ?? null,
             'first_landing_page' => $data['first_landing_page'] ?? null,
+            // Ad attribution (from sessionAdAttribution()) — provable ad tie for this email.
+            'first_fbclid' => $data['first_fbclid'] ?? null,
+            'first_utm_source' => $data['first_utm_source'] ?? null,
+            'first_utm_medium' => $data['first_utm_medium'] ?? null,
+            'first_utm_campaign' => $data['first_utm_campaign'] ?? null,
+            'first_utm_content' => $data['first_utm_content'] ?? null,
+            'is_ad' => $data['is_ad'] ?? false,
             'ip_address' => $data['ip_address'] ?? request()->ip(),
             'user_agent' => $data['user_agent'] ?? request()->userAgent(),
             'status' => 'active',
