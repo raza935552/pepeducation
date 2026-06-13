@@ -39,6 +39,15 @@
     {{-- Explore — internal-linking hub to tools & guide clusters --}}
     @include('home.partials.explore')
 
+    {{-- Free calculators — deep links to each tool --}}
+    @include('home.partials.calculators')
+
+    {{-- Find peptides by goal — deep links to each roundup --}}
+    @include('home.partials.goals')
+
+    {{-- Popular comparisons — deep links to each vs page --}}
+    @include('home.partials.comparisons')
+
     {{-- Go Deeper (action CTAs) --}}
     @include('home.partials.go-deeper')
 
