@@ -150,6 +150,12 @@ Route::get('/blog/{slug}', [BlogController::class, 'show'])->where('slug', '[a-z
 // Author bio pages
 Route::get('/author/{user}', [\App\Http\Controllers\AuthorController::class, 'show'])->name('author.show');
 
+// Best Peptides for {goal} — ranked roundup pages
+Route::get('/best-peptides', [\App\Http\Controllers\PeptideGoalController::class, 'index'])->name('peptide-goals.index');
+Route::get('/best-peptides-for-{goal}', [\App\Http\Controllers\PeptideGoalController::class, 'show'])
+    ->where('goal', '[a-z0-9-]+')
+    ->name('peptide-goals.show');
+
 // Where to buy page (BioLinx-focused)
 Route::get('/where-to-buy', function () {
     return view('public.where-to-buy', [

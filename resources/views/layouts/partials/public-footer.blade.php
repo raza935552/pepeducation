@@ -38,6 +38,11 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('peptide-goals.index') }}" class="text-sm text-footer-link hover:text-footer-link-hover transition-colors">
+                            Best Peptides by Goal
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('about') }}" class="text-sm text-footer-link hover:text-footer-link-hover transition-colors">
                             About Us
                         </a>

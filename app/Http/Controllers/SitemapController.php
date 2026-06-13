@@ -145,6 +145,20 @@ class SitemapController extends Controller
             ]);
         }
 
+        // Best Peptides for {goal} roundups
+        $urls->push([
+            'loc' => route('peptide-goals.index'),
+            'changefreq' => 'weekly',
+            'priority' => '0.8',
+        ]);
+        foreach (array_keys(config('peptide_goals', [])) as $goalSlug) {
+            $urls->push([
+                'loc' => route('peptide-goals.show', $goalSlug),
+                'changefreq' => 'weekly',
+                'priority' => '0.8',
+            ]);
+        }
+
         // Peptide comparison tool
         $urls->push([
             'loc' => route('peptides.compare'),
