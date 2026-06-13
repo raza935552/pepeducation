@@ -6,7 +6,12 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">Weekly testosterone target (mg)</label>
                 <input type="number" min="0" step="5" x-model.number="weekly" class="w-full rounded-lg border-gray-300 focus:border-primary-500 focus:ring-primary-500">
-                <p class="text-xs text-gray-400 mt-1">Typical clinical range is often 100–200 mg/week (reference only).</p>
+                <div class="flex flex-wrap gap-1.5 mt-2">
+                    <template x-for="v in [100, 120, 140, 160, 200]" :key="v">
+                        <button type="button" @click="weekly = v" class="px-2.5 py-1 rounded-full text-xs font-medium border transition-colors" :class="weekly === v ? 'text-white border-transparent' : 'text-gray-500 border-gray-200 hover:border-gray-300'" :style="weekly === v ? 'background-color: {{ $config['accent'] }}' : ''" x-text="v + ' mg'"></button>
+                    </template>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">Typical clinical range is often 100–200 mg/week (reference only).</p>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">Ester concentration (mg/mL)</label>
@@ -23,7 +28,10 @@
 
         {{-- Results --}}
         <div class="p-6 sm:p-8 bg-surface-50 border-t md:border-t-0 md:border-l border-gray-200">
-            <p class="text-sm font-medium text-gray-500 mb-4">Per-injection by cadence</p>
+            <div class="flex items-center justify-between mb-4">
+                <p class="text-sm font-medium text-gray-500">Per-injection by cadence</p>
+                @include('calculators.partials._result-actions')
+            </div>
             <div class="space-y-3">
                 <template x-for="(row, i) in cadences" :key="i">
                     <div class="bg-white rounded-xl border border-gray-200 p-4">
@@ -44,8 +52,11 @@
 
 <script>
     function trtCalc() {
+        const defaults = { weekly: 140, conc: 200 };
         return {
-            weekly: 140, conc: 200,
+            ...defaults, copied: false,
+            reset() { Object.assign(this, defaults); },
+            copy() { const r = this.cadences[1]; try { navigator.clipboard.writeText(`${this.weekly} mg/week — ${r.units} units (${r.ml} mL) twice weekly`); } catch (e) {} this.copied = true; setTimeout(() => this.copied = false, 1500); },
             row(name, freq, perWeek) {
                 const mg = perWeek > 0 ? this.weekly / perWeek : 0;
                 const ml = this.conc > 0 ? mg / this.conc : 0;

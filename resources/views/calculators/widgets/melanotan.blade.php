@@ -19,7 +19,10 @@
             </div>
             {{-- Results --}}
             <div class="p-6 sm:p-8 bg-surface-50 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col">
-                <p class="text-sm font-medium text-gray-500 mb-4">Your result</p>
+                <div class="flex items-center justify-between mb-4">
+                    <p class="text-sm font-medium text-gray-500">Your result</p>
+                    @include('calculators.partials._result-actions')
+                </div>
                 <div class="bg-white rounded-xl border border-gray-200 p-5 mb-4 text-center">
                     <p class="text-xs uppercase tracking-wide text-gray-400 mb-1">Draw this many units</p>
                     <p class="text-4xl font-bold" style="color: {{ $config['accent'] }};" x-text="units"></p>
@@ -53,8 +56,11 @@
 
 <script>
     function mtCalc() {
+        const defaults = { mg: 10, water: 2, dose: 250 };
         return {
-            mg: 10, water: 2, dose: 250,
+            ...defaults, copied: false,
+            reset() { Object.assign(this, defaults); },
+            copy() { try { navigator.clipboard.writeText(`Draw ${this.units} units (${this.drawMl} mL) — ${this.dose} mcg MT-II`); } catch (e) {} this.copied = true; setTimeout(() => this.copied = false, 1500); },
             get concRaw() { return this.water > 0 ? (this.mg * 1000) / this.water : 0; },
             get concentration() { return this.concRaw ? Math.round(this.concRaw).toLocaleString() : '0'; },
             get mcgPerUnit() { return (this.concRaw / 100).toFixed(1); },

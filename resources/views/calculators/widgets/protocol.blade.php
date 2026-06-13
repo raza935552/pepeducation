@@ -44,7 +44,13 @@
 
     {{-- Weekly grid --}}
     <div x-show="rows.length > 0" class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-        <h3 class="font-bold text-gray-900 px-6 pt-5">Weekly schedule</h3>
+        <div class="flex items-center justify-between px-6 pt-5">
+            <h3 class="font-bold text-gray-900">Weekly schedule</h3>
+            <div class="flex gap-1.5">
+                <button type="button" @click="clearAll()" class="text-xs inline-flex items-center gap-1 px-2 py-1 rounded-md border border-gray-200 text-gray-400 hover:bg-surface-50 transition-colors">Clear</button>
+                <button type="button" @click="copy()" class="text-xs inline-flex items-center gap-1 px-2 py-1 rounded-md border border-gray-200 text-gray-500 hover:bg-surface-50 transition-colors"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg><span x-text="copied ? 'Copied!' : 'Copy plan'"></span></button>
+            </div>
+        </div>
         <p class="text-sm text-gray-500 px-6 pb-3">Illustrative — fills the first N days of the week at each peptide's timing slot.</p>
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
@@ -76,8 +82,14 @@
 <script>
     function protocolCalc(peptides) {
         return {
-            peptides: peptides, picker: '', rows: [], nextUid: 1,
+            peptides: peptides, picker: '', rows: [], nextUid: 1, copied: false,
             dayLabels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            clearAll() { this.rows = []; },
+            copy() {
+                const txt = this.rows.map(r => `${r.name}: ${this.units(r)} units · ${r.days}×/week · ${r.timing}`).join('\n');
+                try { navigator.clipboard.writeText(txt); } catch (e) {}
+                this.copied = true; setTimeout(() => this.copied = false, 1500);
+            },
             get available() { return this.peptides; },
             addPeptide() {
                 if (!this.picker) return;

@@ -48,7 +48,13 @@
 
             {{-- Results --}}
             <div class="p-6 sm:p-8 bg-surface-50 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col">
-                <p class="text-sm font-medium text-gray-500 mb-4">Your result</p>
+                <div class="flex items-center justify-between mb-4">
+                    <p class="text-sm font-medium text-gray-500">Your result</p>
+                    <div class="flex gap-1.5">
+                        <button type="button" @click="reset()" class="text-xs inline-flex items-center gap-1 px-2 py-1 rounded-md border border-gray-200 text-gray-400 hover:bg-white transition-colors"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Reset</button>
+                        <button type="button" @click="copy()" class="text-xs inline-flex items-center gap-1 px-2 py-1 rounded-md border border-gray-200 text-gray-500 hover:bg-white transition-colors"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg><span x-text="copied ? 'Copied!' : 'Copy'"></span></button>
+                    </div>
+                </div>
                 <div class="bg-white rounded-xl border border-gray-200 p-5 mb-4 text-center">
                     <p class="text-xs uppercase tracking-wide text-gray-400 mb-1">Total Daily Energy Expenditure</p>
                     <p class="text-4xl font-bold" style="color: {{ $config['accent'] }};"><span x-text="tdee"></span> <span class="text-lg font-medium text-gray-400">kcal</span></p>
@@ -83,8 +89,11 @@
 
 <script>
     function tdeeCalc() {
+        const defaults = { age: 30, sex: 'male', units: 'metric', height: 175, weight: 75, activity: '1.55' };
         return {
-            age: 30, sex: 'male', units: 'metric', height: 175, weight: 75, activity: '1.55',
+            ...defaults, copied: false,
+            reset() { Object.assign(this, defaults); },
+            copy() { try { navigator.clipboard.writeText(`TDEE ${this.tdee} kcal (BMR ${this.bmr})`); } catch (e) {} this.copied = true; setTimeout(() => this.copied = false, 1500); },
             get cm() { return this.units === 'metric' ? (this.height || 0) : (this.height || 0) * 2.54; },
             get kg() { return this.units === 'metric' ? (this.weight || 0) : (this.weight || 0) * 0.453592; },
             get bmrRaw() { return (10 * this.kg) + (6.25 * this.cm) - (5 * (this.age || 0)) + (this.sex === 'male' ? 5 : -161); },

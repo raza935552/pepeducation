@@ -28,7 +28,10 @@
 
             {{-- Result --}}
             <div class="p-6 sm:p-8 bg-surface-50 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col">
-                <p class="text-sm font-medium text-gray-500 mb-4">Draw for your dose</p>
+                <div class="flex items-center justify-between mb-4">
+                    <p class="text-sm font-medium text-gray-500">Draw for your dose</p>
+                    @include('calculators.partials._result-actions')
+                </div>
                 <div class="bg-white rounded-xl border border-gray-200 p-5 mb-4 text-center">
                     <p class="text-xs uppercase tracking-wide text-gray-400 mb-1">Units on a U-100 syringe</p>
                     <p class="text-4xl font-bold" style="color: {{ $config['accent'] }};" x-text="units(dose)"></p>
@@ -61,8 +64,11 @@
 
 <script>
     function glpUnitsCalc() {
+        const defaults = { compound: 'semaglutide', mg: 5, water: 2, dose: 0.25 };
         return {
-            compound: 'semaglutide', mg: 5, water: 2, dose: 0.25,
+            ...defaults, copied: false,
+            reset() { Object.assign(this, defaults); },
+            copy() { try { navigator.clipboard.writeText(`${this.dose} mg = ${this.units(this.dose)} units (${this.ml(this.dose)} mL)`); } catch (e) {} this.copied = true; setTimeout(() => this.copied = false, 1500); },
             ladders: { semaglutide: [0.25, 0.5, 1.0, 1.7, 2.4], tirzepatide: [2.5, 5, 7.5, 10, 12.5, 15], custom: [] },
             get ladder() { return this.ladders[this.compound] || []; },
             get concMgMlRaw() { return this.water > 0 ? this.mg / this.water : 0; },

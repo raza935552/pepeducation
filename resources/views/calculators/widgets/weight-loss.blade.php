@@ -50,6 +50,20 @@
         </div>
     </div>
 
+    {{-- Trajectory chart --}}
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+        <div class="flex items-center justify-between mb-1">
+            <h3 class="font-bold text-gray-900">Weight trajectory</h3>
+            @include('calculators.partials._result-actions')
+        </div>
+        <p class="text-sm text-gray-500 mb-4">Average curve over 68 weeks on <span x-text="compound"></span>.</p>
+        <svg viewBox="0 0 300 80" class="w-full h-24" preserveAspectRatio="none">
+            <polyline :points="spark.area" fill="{{ $config['accent'] }}" opacity="0.08"/>
+            <polyline :points="spark.line" fill="none" stroke="{{ $config['accent'] }}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" style="transition: all .3s"/>
+        </svg>
+        <div class="flex justify-between text-[11px] text-gray-400 mt-1"><span>Start</span><span>Week 24</span><span>Week 68</span></div>
+    </div>
+
     {{-- Milestone timeline --}}
     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         <h3 class="font-bold text-gray-900 px-6 pt-5">Projected milestones</h3>
@@ -74,8 +88,18 @@
 
 <script>
     function weightLossCalc() {
+        const defaults = { compound: 'semaglutide', units: 'metric', height: 175, current: 95, goal: 80 };
         return {
-            compound: 'semaglutide', units: 'metric', height: 175, current: 95, goal: 80,
+            ...defaults, copied: false,
+            reset() { Object.assign(this, defaults); },
+            copy() { try { navigator.clipboard.writeText(`Lose ${this.toLose} on ${this.compound} — est. ${this.weeksToGoal} (goal BMI ${this.goalBmi})`); } catch (e) {} this.copied = true; setTimeout(() => this.copied = false, 1500); },
+            get spark() {
+                const c = this.curve, w0 = this.curKg;
+                const ws = c.map(p => w0 * (1 - p[1]));
+                const minW = Math.min(...ws), maxW = Math.max(...ws), range = (maxW - minW) || 1;
+                const pts = c.map((p, i) => `${((p[0] / 68) * 300).toFixed(1)},${(72 - ((ws[i] - minW) / range) * 60).toFixed(1)}`);
+                return { line: pts.join(' '), area: `0,80 ${pts.join(' ')} 300,80` };
+            },
             // cumulative average % loss at [week, fraction]
             curves: {
                 semaglutide: [[0,0],[4,0.02],[12,0.06],[24,0.10],[52,0.135],[68,0.15]],

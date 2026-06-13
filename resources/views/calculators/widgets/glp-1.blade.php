@@ -46,6 +46,20 @@
         </div>
     </div>
 
+    {{-- Projected trajectory chart --}}
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+        <div class="flex items-center justify-between mb-1">
+            <h3 class="font-bold text-gray-900">Projected trajectory</h3>
+            @include('calculators.partials._result-actions')
+        </div>
+        <p class="text-sm text-gray-500 mb-4">Average weight curve over 68 weeks of treatment.</p>
+        <svg viewBox="0 0 300 80" class="w-full h-24" preserveAspectRatio="none">
+            <polyline :points="spark.area" fill="{{ $config['accent'] }}" opacity="0.08"/>
+            <polyline :points="spark.line" fill="none" stroke="{{ $config['accent'] }}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" style="transition: all .3s"/>
+        </svg>
+        <div class="flex justify-between text-[11px] text-gray-400 mt-1"><span>Start</span><span>Week 24</span><span>Week 68</span></div>
+    </div>
+
     {{-- Titration schedule --}}
     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         <h3 class="font-bold text-gray-900 px-6 pt-5">Titration schedule</h3>
@@ -86,8 +100,20 @@
 
 <script>
     function glp1Calc() {
+        const defaults = { compound: 'semaglutide', units: 'metric', height: 175, weight: 90 };
         return {
-            compound: 'semaglutide', units: 'metric', height: 175, weight: 90,
+            ...defaults, copied: false,
+            reset() { Object.assign(this, defaults); },
+            copy() { try { navigator.clipboard.writeText(`${this.compound}: BMI ${this.startBmi} → ${this.endBmi} at 68w (−${this.totalLoss}), maintenance ${this.maintenanceDose}`); } catch (e) {} this.copied = true; setTimeout(() => this.copied = false, 1500); },
+            get spark() {
+                const weeks = [0, 4, 12, 24, 52, 68];
+                const fracs = [0, ...this.curve.map(c => c[1])];
+                const w0 = this.weightKg;
+                const ws = fracs.map(f => w0 * (1 - f));
+                const minW = Math.min(...ws), maxW = Math.max(...ws), range = (maxW - minW) || 1;
+                const pts = weeks.map((wk, i) => `${((wk / 68) * 300).toFixed(1)},${(72 - ((ws[i] - minW) / range) * 60).toFixed(1)}`);
+                return { line: pts.join(' '), area: `0,80 ${pts.join(' ')} 300,80` };
+            },
             ladders: {
                 semaglutide: [
                     { weeks: 'Weeks 1–4', dose: '0.25 mg' }, { weeks: 'Weeks 5–8', dose: '0.5 mg' },
