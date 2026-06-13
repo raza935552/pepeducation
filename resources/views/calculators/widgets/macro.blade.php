@@ -23,57 +23,63 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">Diet style</label>
-                <select x-model="diet" class="w-full rounded-lg border-gray-300 focus:border-primary-500 focus:ring-primary-500">
-                    <option value="balanced">Balanced (30P / 40C / 30F)</option>
-                    <option value="high-protein">High protein</option>
-                    <option value="low-carb">Low carb</option>
-                    <option value="keto">Ketogenic</option>
-                </select>
+                <div class="grid grid-cols-2 gap-2">
+                    <template x-for="d in diets" :key="d.id">
+                        <button type="button" @click="diet = d.id"
+                                class="px-3 py-2 rounded-lg text-sm font-medium border text-left transition-colors"
+                                :class="diet === d.id ? 'border-transparent text-white' : 'border-gray-200 text-gray-600 hover:border-gray-300'"
+                                :style="diet === d.id ? 'background-color: {{ $config['accent'] }}' : ''"
+                                x-text="d.label"></button>
+                    </template>
+                </div>
             </div>
         </div>
 
         {{-- Results --}}
         <div class="p-6 sm:p-8 bg-surface-50 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col">
-            <p class="text-sm font-medium text-gray-500 mb-4">Your daily macros</p>
-
-            {{-- Split bar --}}
-            <div class="h-4 rounded-full overflow-hidden flex mb-4">
-                <div class="bg-emerald-500" :style="`width: ${pct.protein}%`"></div>
-                <div class="bg-amber-400" :style="`width: ${pct.carbs}%`"></div>
-                <div class="bg-rose-400" :style="`width: ${pct.fat}%`"></div>
+            <div class="flex items-center justify-between mb-4">
+                <p class="text-sm font-medium text-gray-500">Your daily macros</p>
+                <button type="button" @click="copy()" class="text-xs inline-flex items-center gap-1 px-2 py-1 rounded-md border border-gray-200 text-gray-500 hover:bg-white transition-colors">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                    <span x-text="copied ? 'Copied!' : 'Copy'"></span>
+                </button>
             </div>
 
-            <div class="space-y-3">
-                <div class="bg-white rounded-xl border border-gray-200 p-4 flex items-center justify-between">
-                    <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-emerald-500"></span><span class="font-medium text-gray-700">Protein</span></span>
-                    <span><span class="text-xl font-bold text-gray-900" x-text="g.protein"></span><span class="text-sm text-gray-400"> g · <span x-text="pct.protein"></span>%</span></span>
+            {{-- Donut --}}
+            <div class="flex items-center gap-5 mb-5">
+                <div class="relative w-28 h-28 shrink-0 rounded-full" :style="`background: conic-gradient(#10b981 0 ${pct.protein}%, #f59e0b 0 ${pct.protein + pct.carbs}%, #fb7185 0 100%); transition: background .3s`">
+                    <div class="absolute inset-[14px] bg-surface-50 rounded-full flex flex-col items-center justify-center">
+                        <span class="text-lg font-bold text-gray-900" x-text="(calories||0).toLocaleString()"></span>
+                        <span class="text-[10px] text-gray-400 -mt-0.5">kcal</span>
+                    </div>
                 </div>
-                <div class="bg-white rounded-xl border border-gray-200 p-4 flex items-center justify-between">
-                    <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-amber-400"></span><span class="font-medium text-gray-700">Carbs</span></span>
-                    <span><span class="text-xl font-bold text-gray-900" x-text="g.carbs"></span><span class="text-sm text-gray-400"> g · <span x-text="pct.carbs"></span>%</span></span>
-                </div>
-                <div class="bg-white rounded-xl border border-gray-200 p-4 flex items-center justify-between">
-                    <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-rose-400"></span><span class="font-medium text-gray-700">Fat</span></span>
-                    <span><span class="text-xl font-bold text-gray-900" x-text="g.fat"></span><span class="text-sm text-gray-400"> g · <span x-text="pct.fat"></span>%</span></span>
-                </div>
+                <dl class="flex-1 space-y-2 text-sm">
+                    <div class="flex items-center justify-between"><dt class="flex items-center gap-2 text-gray-600"><span class="w-3 h-3 rounded-full bg-emerald-500"></span>Protein</dt><dd class="font-semibold text-gray-900"><span x-text="g.protein"></span> g <span class="text-gray-400 font-normal">· <span x-text="pct.protein"></span>%</span></dd></div>
+                    <div class="flex items-center justify-between"><dt class="flex items-center gap-2 text-gray-600"><span class="w-3 h-3 rounded-full bg-amber-400"></span>Carbs</dt><dd class="font-semibold text-gray-900"><span x-text="g.carbs"></span> g <span class="text-gray-400 font-normal">· <span x-text="pct.carbs"></span>%</span></dd></div>
+                    <div class="flex items-center justify-between"><dt class="flex items-center gap-2 text-gray-600"><span class="w-3 h-3 rounded-full bg-rose-400"></span>Fat</dt><dd class="font-semibold text-gray-900"><span x-text="g.fat"></span> g <span class="text-gray-400 font-normal">· <span x-text="pct.fat"></span>%</span></dd></div>
+                </dl>
             </div>
+            <p class="text-xs text-gray-400 mt-auto">Protein is set from your body weight first, then carbs and fat fill the remaining calories for your chosen diet style.</p>
         </div>
     </div>
 </div>
 
 <script>
     function macroCalc() {
+        const defaults = { calories: 2200, weight: 75, units: 'metric', diet: 'balanced' };
         return {
-            calories: 2200, weight: 75, units: 'metric', diet: 'balanced',
+            ...defaults, copied: false,
+            diets: [
+                { id: 'balanced', label: 'Balanced' },
+                { id: 'high-protein', label: 'High protein' },
+                { id: 'low-carb', label: 'Low carb' },
+                { id: 'keto', label: 'Keto' },
+            ],
+            reset() { Object.assign(this, defaults); },
+            copy() { const g = this.g; try { navigator.clipboard.writeText(`${this.calories} kcal — P ${g.protein}g / C ${g.carbs}g / F ${g.fat}g`); } catch (e) {} this.copied = true; setTimeout(() => this.copied = false, 1500); },
             get kg() { return this.units === 'metric' ? (this.weight || 0) : (this.weight || 0) * 0.453592; },
-            // [protein g/kg, fat % of calories]
             get profile() {
-                return ({
-                    'balanced':     [1.8, 0.30],
-                    'high-protein': [2.2, 0.25],
-                    'low-carb':     [2.0, 0.40],
-                    'keto':         [1.8, 0.70],
-                })[this.diet];
+                return ({ 'balanced': [1.8, 0.30], 'high-protein': [2.2, 0.25], 'low-carb': [2.0, 0.40], 'keto': [1.8, 0.70] })[this.diet];
             },
             get g() {
                 const cals = this.calories || 0;

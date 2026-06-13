@@ -44,16 +44,36 @@
                 <input type="number" min="0" step="0.1" x-model.number="hip" class="w-full rounded-lg border-gray-300 focus:border-primary-500 focus:ring-primary-500">
             </div>
             <p class="text-xs text-gray-400">Measure relaxed, on bare skin: neck below the larynx, waist at the navel<span x-show="sex==='female'">, hip at the widest point</span>.</p>
+            <button type="button" @click="reset()" class="text-xs text-gray-400 hover:text-gray-600 inline-flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                Reset
+            </button>
         </div>
 
         {{-- Results --}}
         <div class="p-6 sm:p-8 bg-surface-50 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col">
-            <p class="text-sm font-medium text-gray-500 mb-4">Your result</p>
+            <div class="flex items-center justify-between mb-4">
+                <p class="text-sm font-medium text-gray-500">Your result</p>
+                <button type="button" @click="copy()" class="text-xs inline-flex items-center gap-1 px-2 py-1 rounded-md border border-gray-200 text-gray-500 hover:bg-white transition-colors">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                    <span x-text="copied ? 'Copied!' : 'Copy'"></span>
+                </button>
+            </div>
             <div class="bg-white rounded-xl border border-gray-200 p-5 mb-4 text-center">
                 <p class="text-xs uppercase tracking-wide text-gray-400 mb-1">Estimated body fat</p>
                 <p class="text-5xl font-bold" :style="`color: ${categoryColor}`"><span x-text="bodyFat"></span><span class="text-2xl">%</span></p>
                 <p class="text-sm font-semibold mt-1" :style="`color: ${categoryColor}`" x-text="category"></p>
             </div>
+
+            {{-- Fat vs lean composition bar --}}
+            <div class="mb-4">
+                <div class="flex h-5 rounded-full overflow-hidden text-[10px] font-semibold text-white">
+                    <div class="flex items-center justify-center" :style="`width: ${bfRaw}%; background-color: ${categoryColor}; transition: width .3s`"><span x-show="bfRaw >= 12" x-text="bodyFat + '%'"></span></div>
+                    <div class="flex items-center justify-center bg-gray-300 text-gray-600" :style="`width: ${100 - bfRaw}%`"><span x-show="bfRaw <= 88">Lean</span></div>
+                </div>
+                <div class="flex justify-between text-[11px] text-gray-400 mt-1"><span>Fat</span><span>Lean mass</span></div>
+            </div>
+
             <dl class="text-sm space-y-2 mt-auto">
                 <div class="flex justify-between"><dt class="text-gray-500">Fat mass</dt><dd class="font-semibold text-gray-900" x-text="fatMass"></dd></div>
                 <div class="flex justify-between"><dt class="text-gray-500">Lean mass</dt><dd class="font-semibold text-gray-900" x-text="leanMass"></dd></div>
@@ -64,8 +84,11 @@
 
 <script>
     function bodyFatCalc() {
+        const defaults = { sex: 'male', units: 'metric', height: 178, weight: 80, neck: 38, waist: 86, hip: 95 };
         return {
-            sex: 'male', units: 'metric', height: 178, weight: 80, neck: 38, waist: 86, hip: 95,
+            ...defaults, copied: false,
+            reset() { Object.assign(this, defaults); },
+            copy() { try { navigator.clipboard.writeText(`Body fat ${this.bodyFat}% — ${this.category} (fat ${this.fatMass}, lean ${this.leanMass})`); } catch (e) {} this.copied = true; setTimeout(() => this.copied = false, 1500); },
             toIn(v) { return this.units === 'metric' ? (v || 0) / 2.54 : (v || 0); },
             get bfRaw() {
                 const h = this.toIn(this.height), n = this.toIn(this.neck), w = this.toIn(this.waist), hp = this.toIn(this.hip);
