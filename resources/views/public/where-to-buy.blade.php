@@ -38,14 +38,11 @@
             @else
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     @foreach($available as $peptide)
-                        <a href="{{ \App\Services\BioLinxService::urlForPeptide($peptide, 'where-to-buy-grid') }}"
-                           target="_blank"
-                           rel="nofollow sponsored noopener"
-                           data-buy-cta="where-to-buy-grid"
+                        <a href="{{ route('where-to-buy.show', $peptide->slug) }}"
                            class="group flex items-center justify-between p-4 rounded-xl border border-surface-200 hover:border-primary-300 hover:shadow-md transition">
                             <div>
-                                <p class="font-semibold text-gray-900 group-hover:text-primary-600">{{ $peptide->name }}</p>
-                                <p class="text-xs text-gray-500 mt-0.5">View product</p>
+                                <p class="font-semibold text-gray-900 group-hover:text-primary-600">Where to buy {{ $peptide->name }}</p>
+                                <p class="text-xs text-gray-500 mt-0.5">Buying guide &amp; source</p>
                             </div>
                             <svg aria-hidden="true" class="w-4 h-4 text-gray-400 group-hover:text-primary-600 shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>

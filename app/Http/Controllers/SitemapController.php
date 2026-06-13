@@ -159,6 +159,15 @@ class SitemapController extends Controller
             ]);
         }
 
+        // Per-peptide "where to buy" buying guides (peptides Biolinx carries)
+        foreach (\App\Http\Controllers\WhereToBuyController::eligible() as $wp) {
+            $urls->push([
+                'loc' => route('where-to-buy.show', $wp->slug),
+                'changefreq' => 'monthly',
+                'priority' => '0.8',
+            ]);
+        }
+
         // Peptide comparison tool
         $urls->push([
             'loc' => route('peptides.compare'),

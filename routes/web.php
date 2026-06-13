@@ -156,12 +156,11 @@ Route::get('/best-peptides-for-{goal}', [\App\Http\Controllers\PeptideGoalContro
     ->where('goal', '[a-z0-9-]+')
     ->name('peptide-goals.show');
 
-// Where to buy page (BioLinx-focused)
-Route::get('/where-to-buy', function () {
-    return view('public.where-to-buy', [
-        'peptides' => \App\Models\Peptide::published()->orderBy('name')->get(['name', 'slug']),
-    ]);
-})->name('where-to-buy');
+// Where to buy — hub + per-peptide buying guides (BioLinx-focused)
+Route::get('/where-to-buy', [\App\Http\Controllers\WhereToBuyController::class, 'index'])->name('where-to-buy');
+Route::get('/where-to-buy-{peptide}', [\App\Http\Controllers\WhereToBuyController::class, 'show'])
+    ->where('peptide', '[a-z0-9-]+')
+    ->name('where-to-buy.show');
 
 // Dynamic Pages (must be last to not conflict with other routes)
 Route::get('/{slug}', [PageController::class, 'show'])
