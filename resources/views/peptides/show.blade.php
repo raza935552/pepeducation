@@ -40,6 +40,16 @@
                 <div class="space-y-6">
                     <div class="lg:sticky lg:top-24 space-y-6">
                         <x-buy-cta :peptide="$peptide" context="peptide-sidebar" variant="card" />
+                        @if(stripos($peptide->route ?? '', 'inject') !== false)
+                            <a href="{{ route('calculators.show', $peptide->slug.'-dosage') }}"
+                               class="flex items-center gap-3 rounded-2xl border border-gray-200 p-4 hover:border-primary-300 hover:shadow-sm transition-all">
+                                <span class="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center text-xl shrink-0">💉</span>
+                                <span class="min-w-0">
+                                    <span class="block text-sm font-semibold text-gray-900">{{ $peptide->name }} Dosage Calculator</span>
+                                    <span class="block text-xs text-gray-500">Reconstitution &amp; syringe units</span>
+                                </span>
+                            </a>
+                        @endif
                         @include('peptides.partials.show-quick-stats')
                         @include('peptides.partials.show-molecular')
                     </div>

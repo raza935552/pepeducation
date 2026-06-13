@@ -136,6 +136,14 @@ class SitemapController extends Controller
                 'priority' => '0.6',
             ]);
         }
+        // Per-peptide dosage calculator pages
+        foreach (\App\Support\PeptideDosage::eligible() as $dp) {
+            $urls->push([
+                'loc' => route('calculators.show', $dp->slug.'-dosage'),
+                'changefreq' => 'monthly',
+                'priority' => '0.6',
+            ]);
+        }
 
         // Peptide comparison tool
         $urls->push([

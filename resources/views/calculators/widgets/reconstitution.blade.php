@@ -1,5 +1,6 @@
-{{-- Reconstitution calculator widget --}}
-<div x-data="reconCalc()" class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+{{-- Reconstitution calculator widget. Optional $seed = ['mg'=>,'water'=>,'dose'=>,'doseUnit'=>] pre-fills it. --}}
+@php $seed = $seed ?? []; $accent = $accent ?? ($config['accent'] ?? '#2563EB'); @endphp
+<div x-data="reconCalc(@js($seed))" class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
     <div class="grid md:grid-cols-2">
         {{-- Inputs --}}
         <div class="p-6 sm:p-8 space-y-5">
@@ -40,7 +41,7 @@
 
             <div class="bg-white rounded-xl border border-gray-200 p-5 mb-4 text-center">
                 <p class="text-xs uppercase tracking-wide text-gray-400 mb-1">Draw this many units</p>
-                <p class="text-4xl font-bold" style="color: {{ $config['accent'] }};" x-text="units"></p>
+                <p class="text-4xl font-bold" style="color: {{ $accent }};" x-text="units"></p>
                 <p class="text-sm text-gray-500 mt-1"><span x-text="drawMl"></span> mL on a U-100 syringe</p>
             </div>
 
@@ -48,7 +49,7 @@
             <div class="mb-4">
                 <div class="h-4 rounded-full bg-gray-200 overflow-hidden">
                     <div class="h-full rounded-full transition-all duration-300"
-                         style="background-color: {{ $config['accent'] }};"
+                         style="background-color: {{ $accent }};"
                          :style="`width: ${fillPct}%`"></div>
                 </div>
                 <div class="flex justify-between text-[11px] text-gray-400 mt-1">
@@ -66,9 +67,9 @@
 </div>
 
 <script>
-    function reconCalc() {
+    function reconCalc(seed = {}) {
         return {
-            mg: 5, water: 2, dose: 250, doseUnit: 'mcg', syringe: 100,
+            mg: seed.mg ?? 5, water: seed.water ?? 2, dose: seed.dose ?? 250, doseUnit: seed.doseUnit ?? 'mcg', syringe: 100,
             get doseMcg() { return (this.doseUnit === 'mg' ? this.dose * 1000 : this.dose) || 0; },
             get concRaw() { return this.water > 0 ? (this.mg * 1000) / this.water : 0; },
             get concentration() { return this.concRaw ? Math.round(this.concRaw).toLocaleString() : '0'; },

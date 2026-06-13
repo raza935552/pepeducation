@@ -63,8 +63,35 @@
                 @endforeach
             </div>
 
+            {{-- Per-peptide dosage calculators --}}
+            @if(!empty($dosagePeptides) && $dosagePeptides->count())
+                <div class="mt-14" x-data="{ q: '' }">
+                    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-5">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">Dosage calculator for every peptide</h2>
+                            <p class="text-gray-600">Pre-filled reconstitution &amp; syringe-unit math for {{ $dosagePeptides->count() }} injectable peptides.</p>
+                        </div>
+                        <input type="text" x-model="q" placeholder="Search peptides…"
+                               class="rounded-lg border-gray-300 focus:border-primary-500 focus:ring-primary-500 sm:w-64">
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
+                        @foreach($dosagePeptides as $pep)
+                            <a href="{{ route('calculators.show', $pep->slug.'-dosage') }}"
+                               x-show="q === '' || '{{ Str::lower($pep->name.' '.$pep->abbreviation) }}'.includes(q.toLowerCase())"
+                               class="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2.5 bg-white hover:border-primary-300 hover:shadow-sm transition-all">
+                                <span class="text-sm">💉</span>
+                                <span class="min-w-0">
+                                    <span class="block text-sm font-medium text-gray-900 truncate">{{ $pep->name }}</span>
+                                    <span class="block text-[11px] text-gray-400">Dosage calculator</span>
+                                </span>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
             {{-- Disclaimer --}}
-            <div class="mt-10 max-w-3xl mx-auto bg-amber-50 border border-amber-200 rounded-xl p-5 flex gap-3">
+            <div class="mt-12 max-w-3xl mx-auto bg-amber-50 border border-amber-200 rounded-xl p-5 flex gap-3">
                 <svg aria-hidden="true" class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
