@@ -285,4 +285,58 @@ return [
         'related'     => ['tesamorelin', 'ipamorelin', 'mots-c', 'semaglutide'],
     ],
 
+    // ----------------------------------------------------------------------
+    'weight-loss' => [
+        'slug'        => 'weight-loss',
+        'name'        => 'GLP-1 Weight Loss Calculator',
+        'short'       => 'Weight Loss',
+        'emoji'       => '⚖️',
+        'tagline'     => 'Estimate your timeline and time-to-goal on semaglutide or tirzepatide.',
+        'category'    => 'Peptide',
+        'accent'      => '#8B5CF6',
+        'seo_title'   => 'GLP-1 Weight Loss Calculator — Semaglutide & Tirzepatide Timeline',
+        'seo_description' => 'Free GLP-1 weight-loss calculator. Enter your current and goal weight to estimate how long it could take to reach it on semaglutide or tirzepatide, using average published response rates.',
+        'intro'       => 'GLP-1 receptor agonists like semaglutide and tirzepatide produce gradual, steady weight loss over many months. This calculator works backwards from a goal: enter your current weight and a target weight, pick a compound, and it estimates roughly how long reaching that goal could take based on average percentage-loss curves from the clinical trials — along with your projected weight and BMI at each milestone. It is an educational estimate; individual results vary widely.',
+        'how_to'      => [
+            ['title' => 'Select the compound', 'body' => 'Choose semaglutide or tirzepatide — each has a different average response curve in the published trials.'],
+            ['title' => 'Enter current and goal weight', 'body' => 'Provide your height, current weight and the weight you want to reach, in metric or imperial units.'],
+            ['title' => 'See your estimated timeline', 'body' => 'The calculator estimates the number of weeks to reach your goal at average response rates, plus your goal BMI.'],
+            ['title' => 'Review the milestones', 'body' => 'A milestone table shows projected weight and BMI at 4, 12, 24, 52 and 68 weeks so you can see the trajectory.'],
+        ],
+        'faqs'        => [
+            ['q' => 'How much weight can you lose on semaglutide or tirzepatide?', 'a' => 'In trials, average reduction at about 68 weeks was roughly 15% of body weight for semaglutide and 20%+ for tirzepatide at higher doses. These are study averages — some people lose more, some less.'],
+            ['q' => 'How long does it take to reach a weight-loss goal?', 'a' => 'Loss is gradual because the dose is titrated up over the first few months. This calculator estimates the week at which average response rates would reach your target percentage loss; very large goals may fall beyond the typical trial range.'],
+            ['q' => 'Is this weight-loss estimate guaranteed?', 'a' => 'No. It is an illustrative model built on average published outcomes and does not account for your diet, activity, genetics or medical history. Use it for planning, not as a promise of results.'],
+            ['q' => 'What is a realistic monthly weight loss on GLP-1s?', 'a' => 'After titration, many people lose roughly 1–2% of body weight per month on average, faster early and tapering over time. The milestone table reflects this curved, non-linear pattern.'],
+        ],
+        'related'     => ['semaglutide', 'tirzepatide', 'retatrutide', 'cagrilintide'],
+    ],
+
+    // ----------------------------------------------------------------------
+    'glp-1-units' => [
+        'slug'        => 'glp-1-units',
+        'name'        => 'GLP-1 Dose Converter',
+        'short'       => 'Dose Converter',
+        'emoji'       => '🧮',
+        'tagline'     => 'Convert a weekly GLP-1 mg dose into insulin-syringe units.',
+        'category'    => 'Peptide',
+        'accent'      => '#6366F1',
+        'seo_title'   => 'GLP-1 Dose Converter — Semaglutide & Tirzepatide mg to Units',
+        'seo_description' => 'Free GLP-1 dose converter. Reconstitute your semaglutide or tirzepatide vial and convert any weekly mg dose into the exact insulin-syringe units to draw, with a full dose-ladder reference table.',
+        'intro'       => 'GLP-1 peptides are dosed weekly in milligrams, but you draw them in units on an insulin syringe — and the conversion depends entirely on how you reconstituted the vial. This converter does both steps: enter your vial size and bacteriostatic water, pick a compound, and it shows the units to draw for any weekly dose, plus a reference table for the entire standard dose ladder so you can read off every titration step at a glance.',
+        'how_to'      => [
+            ['title' => 'Pick a compound', 'body' => 'Choose semaglutide or tirzepatide to load its standard weekly dose ladder, or enter a custom dose.'],
+            ['title' => 'Reconstitute the vial', 'body' => 'Enter the total mg of peptide in the vial and the bacteriostatic water you are adding.'],
+            ['title' => 'Enter your weekly dose', 'body' => 'Type the weekly dose in mg. The converter returns the exact units and mL to draw on a U-100 syringe.'],
+            ['title' => 'Use the reference table', 'body' => 'The table converts every step of the standard ladder into units for your exact reconstitution.'],
+        ],
+        'faqs'        => [
+            ['q' => 'How do I convert semaglutide mg to units?', 'a' => 'First find your concentration: vial mg ÷ water mL = mg/mL. Then units = (weekly mg ÷ mg/mL) × 100, because a U-100 syringe has 100 units per mL. This converter runs both steps for any dose.'],
+            ['q' => 'How many units is 0.25 mg of semaglutide?', 'a' => 'It depends on your concentration. For example, a 5 mg vial in 2 mL of water is 2.5 mg/mL, so 0.25 mg = 0.1 mL = 10 units. Change the vial and water inputs and the table updates for your setup.'],
+            ['q' => 'What syringe should I use for GLP-1 peptides?', 'a' => 'A standard U-100 insulin syringe, marked in 100 units per mL (1 unit = 0.01 mL). The converter gives your dose directly in those units.'],
+            ['q' => 'What is the standard semaglutide and tirzepatide dose ladder?', 'a' => 'Semaglutide commonly steps 0.25 → 0.5 → 1.0 → 1.7 → 2.4 mg; tirzepatide steps 2.5 → 5 → 7.5 → 10 → 12.5 → 15 mg, each held about 4 weeks. The reference table converts every step into units.'],
+        ],
+        'related'     => ['semaglutide', 'tirzepatide', 'retatrutide'],
+    ],
+
 ];
