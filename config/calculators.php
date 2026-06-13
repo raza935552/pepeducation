@@ -204,4 +204,85 @@ return [
         'related'     => ['bpc-157', 'tb-500', 'ipamorelin', 'cjc-1295-dac'],
     ],
 
+    // ----------------------------------------------------------------------
+    'tdee' => [
+        'slug'        => 'tdee',
+        'name'        => 'TDEE Calculator',
+        'short'       => 'TDEE',
+        'emoji'       => '🔥',
+        'tagline'     => 'Find your Total Daily Energy Expenditure and calorie targets.',
+        'category'    => 'Body',
+        'accent'      => '#F97316',
+        'seo_title'   => 'TDEE Calculator — Total Daily Energy Expenditure & Calories',
+        'seo_description' => 'Free TDEE calculator using the Mifflin–St Jeor equation. Find your Total Daily Energy Expenditure, BMR, and calorie targets for fat loss, maintenance and muscle gain.',
+        'intro'       => 'Total Daily Energy Expenditure (TDEE) is the number of calories you burn in a day — your Basal Metabolic Rate (the energy used at rest) scaled by how active you are. It is the single most useful number for any nutrition goal: eat below it to lose fat, at it to maintain, above it to gain. This calculator estimates your BMR with the Mifflin–St Jeor equation, applies an activity multiplier, and shows your TDEE plus calorie targets for each goal.',
+        'how_to'      => [
+            ['title' => 'Enter your stats', 'body' => 'Provide age, sex, height and weight in metric or imperial units.'],
+            ['title' => 'Select activity level', 'body' => 'Choose from sedentary to extremely active — this multiplier converts BMR into TDEE.'],
+            ['title' => 'Read your TDEE', 'body' => 'See your BMR and TDEE, plus a breakdown of TDEE at every activity level for comparison.'],
+            ['title' => 'Pick a calorie target', 'body' => 'Use the suggested fat-loss, maintenance and muscle-gain calorie numbers as your daily intake goal.'],
+        ],
+        'faqs'        => [
+            ['q' => 'What is TDEE?', 'a' => 'TDEE (Total Daily Energy Expenditure) is the total calories you burn per day, including your resting metabolism, daily movement, exercise and the energy used to digest food. It is your real daily calorie need.'],
+            ['q' => 'How is TDEE calculated?', 'a' => 'TDEE = BMR × an activity factor. BMR is estimated with the Mifflin–St Jeor equation, then multiplied by 1.2 (sedentary) up to about 1.9 (extremely active) depending on your weekly activity.'],
+            ['q' => 'How accurate is a TDEE calculator?', 'a' => 'TDEE estimates are usually within 10–15% for most people. Use the number as a starting point, then adjust based on how your weight actually changes over 2–3 weeks.'],
+            ['q' => 'How do I use TDEE to lose weight?', 'a' => 'Eat below your TDEE — a deficit of roughly 15–20% supports steady fat loss. To gain muscle, eat slightly above TDEE. The calculator shows both targets automatically.'],
+        ],
+        'related'     => ['tesamorelin', 'mots-c', 'ipamorelin', 'semaglutide'],
+    ],
+
+    // ----------------------------------------------------------------------
+    'body-fat' => [
+        'slug'        => 'body-fat',
+        'name'        => 'Body Fat Calculator',
+        'short'       => 'Body Fat',
+        'emoji'       => '📐',
+        'tagline'     => 'Estimate body fat percentage with the U.S. Navy method.',
+        'category'    => 'Body',
+        'accent'      => '#14B8A6',
+        'seo_title'   => 'Body Fat Calculator — U.S. Navy Method Body Fat Percentage',
+        'seo_description' => 'Free body fat percentage calculator using the U.S. Navy tape method. Enter neck, waist (and hip) measurements to estimate body fat %, fat mass, lean mass and category.',
+        'intro'       => 'The U.S. Navy method estimates body fat percentage from simple tape measurements — neck and waist for men, plus hips for women — alongside your height. It is one of the most accessible ways to track body composition at home without callipers or a scan. Enter your measurements and this calculator returns your estimated body fat percentage, the category it falls into, and your fat-mass and lean-mass split.',
+        'how_to'      => [
+            ['title' => 'Choose sex and units', 'body' => 'Body fat formulas differ by sex; women also include a hip measurement. Switch between metric (cm) and imperial (in).'],
+            ['title' => 'Measure neck and waist', 'body' => 'Measure your neck below the larynx and your waist at the navel, relaxed. Women also measure the hips at the widest point.'],
+            ['title' => 'Enter height and weight', 'body' => 'Add your height (used by the formula) and weight (used to split fat mass from lean mass).'],
+            ['title' => 'Read your body fat %', 'body' => 'See your estimated body fat percentage, category, and the kilograms (or pounds) of fat versus lean mass.'],
+        ],
+        'faqs'        => [
+            ['q' => 'How does the U.S. Navy body fat method work?', 'a' => 'It uses a logarithmic formula based on the circumference of your neck and waist (plus hips for women) relative to your height. The differences between these measurements correlate with body fat.'],
+            ['q' => 'How accurate is the Navy body fat calculator?', 'a' => 'The Navy method is typically accurate to within 3–4% of a DEXA scan for most people, which makes it a reliable, free way to track changes over time. Consistent measuring technique matters more than a single reading.'],
+            ['q' => 'What is a healthy body fat percentage?', 'a' => 'General ranges: men 10–20% and women 18–28% are commonly considered healthy. Athletes are often lower; essential fat is roughly 3–5% for men and 10–13% for women.'],
+            ['q' => 'How do I measure correctly?', 'a' => 'Use a flexible tape, keep it level and snug but not compressing the skin, measure on bare skin, and take each measurement two or three times to average out error.'],
+        ],
+        'related'     => ['tesamorelin', 'mots-c', 'semaglutide', 'tirzepatide'],
+    ],
+
+    // ----------------------------------------------------------------------
+    'macro' => [
+        'slug'        => 'macro',
+        'name'        => 'Macro Calculator',
+        'short'       => 'Macros',
+        'emoji'       => '🥗',
+        'tagline'     => 'Turn a calorie target into protein, carb and fat grams.',
+        'category'    => 'Body',
+        'accent'      => '#16A34A',
+        'seo_title'   => 'Macro Calculator — Protein, Carbs & Fat Grams by Goal',
+        'seo_description' => 'Free macro calculator. Enter your daily calories (or TDEE) and goal to get protein, carbohydrate and fat targets in grams for balanced, high-protein, low-carb or keto splits.',
+        'intro'       => 'Once you know how many calories to eat, macros decide what those calories are made of — protein, carbohydrate and fat. Getting enough protein protects muscle, while your carb-to-fat balance is mostly preference and performance. This calculator takes your daily calorie target (and body weight, for a protein floor) and splits it into gram targets for the diet style you choose: balanced, high-protein, low-carb or ketogenic.',
+        'how_to'      => [
+            ['title' => 'Enter your calories', 'body' => 'Type your daily calorie target. Not sure? Use the TDEE calculator first, then bring the number here.'],
+            ['title' => 'Add your weight', 'body' => 'Your body weight sets a sensible protein floor (grams of protein per kg or lb).'],
+            ['title' => 'Choose a diet style', 'body' => 'Pick balanced, high-protein, low-carb or keto — each shifts the carb-to-fat ratio while keeping protein adequate.'],
+            ['title' => 'Read your macros', 'body' => 'See your protein, carbohydrate and fat targets in grams, with the calorie split for each.'],
+        ],
+        'faqs'        => [
+            ['q' => 'What are macros?', 'a' => 'Macronutrients — protein, carbohydrate and fat — are the three nutrients that provide calories. Protein and carbs have about 4 calories per gram, fat has about 9. Your macro split is how your total calories are divided among them.'],
+            ['q' => 'How much protein should I eat?', 'a' => 'A common range is 1.6–2.2 g of protein per kg of body weight for active people aiming to build or retain muscle. This calculator sets protein from your weight first, then fills the rest with carbs and fat.'],
+            ['q' => 'What is a good macro split?', 'a' => 'A balanced split is roughly 30% protein / 40% carbs / 30% fat. Low-carb and keto shift calories from carbs to fat; high-protein raises protein. The best split is the one you can stick to while hitting your protein target.'],
+            ['q' => 'Do I need to count macros to lose weight?', 'a' => 'Total calories drive weight change, but hitting a protein target while in a calorie deficit helps preserve muscle and control hunger — which is why macros are worth tracking, not just calories.'],
+        ],
+        'related'     => ['tesamorelin', 'ipamorelin', 'mots-c', 'semaglutide'],
+    ],
+
 ];
