@@ -21,9 +21,9 @@
                    class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('peptides.compare*') ? 'text-nav-active bg-nav-active/10' : 'text-gray-600 hover:text-nav-active hover:bg-surface-200' }} transition-colors">
                     Compare
                 </a>
-                <a href="{{ route('calculator') }}"
-                   class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('calculator') ? 'text-nav-active bg-nav-active/10' : 'text-gray-600 hover:text-nav-active hover:bg-surface-200' }} transition-colors">
-                    Calculator
+                <a href="{{ route('calculators.index') }}"
+                   class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('calculators.*') || request()->routeIs('calculator') ? 'text-nav-active bg-nav-active/10' : 'text-gray-600 hover:text-nav-active hover:bg-surface-200' }} transition-colors">
+                    Calculators
                 </a>
                 <a href="{{ route('stack-builder') }}"
                    class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('stack-builder*') ? 'text-nav-active bg-nav-active/10' : 'text-gray-600 hover:text-nav-active hover:bg-surface-200' }} transition-colors">
@@ -158,9 +158,9 @@
                class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('peptides.compare*') ? 'text-nav-active bg-nav-active/10' : 'text-gray-700 hover:bg-surface-200' }} transition-colors">
                 Compare Peptides
             </a>
-            <a href="{{ route('calculator') }}"
-               class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('calculator') ? 'text-nav-active bg-nav-active/10' : 'text-gray-700 hover:bg-surface-200' }} transition-colors">
-                Calculator
+            <a href="{{ route('calculators.index') }}"
+               class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('calculators.*') || request()->routeIs('calculator') ? 'text-nav-active bg-nav-active/10' : 'text-gray-700 hover:bg-surface-200' }} transition-colors">
+                Calculators
             </a>
             <a href="{{ route('stack-builder') }}"
                class="block px-4 py-3 rounded-lg text-base font-medium {{ request()->routeIs('stack-builder*') ? 'text-nav-active bg-nav-active/10' : 'text-gray-700 hover:bg-surface-200' }} transition-colors">

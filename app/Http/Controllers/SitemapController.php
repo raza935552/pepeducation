@@ -123,12 +123,19 @@ class SitemapController extends Controller
                 ]);
             });
 
-        // Calculator
+        // Calculators hub + each tool
         $urls->push([
-            'loc' => route('calculator'),
+            'loc' => route('calculators.index'),
             'changefreq' => 'monthly',
-            'priority' => '0.6',
+            'priority' => '0.7',
         ]);
+        foreach (array_keys(config('calculators', [])) as $calcSlug) {
+            $urls->push([
+                'loc' => route('calculators.show', $calcSlug),
+                'changefreq' => 'monthly',
+                'priority' => '0.6',
+            ]);
+        }
 
         // Peptide comparison tool
         $urls->push([

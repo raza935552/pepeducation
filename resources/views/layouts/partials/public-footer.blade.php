@@ -33,8 +33,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('calculator') }}" class="text-sm text-footer-link hover:text-footer-link-hover transition-colors">
-                            Calculator
+                        <a href="{{ route('calculators.index') }}" class="text-sm text-footer-link hover:text-footer-link-hover transition-colors">
+                            Calculators
                         </a>
                     </li>
                     <li>

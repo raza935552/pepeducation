@@ -37,8 +37,13 @@ Route::get('/peptides/compare/{slugA}/vs/{slugB}', [\App\Http\Controllers\Peptid
     ->name('peptides.compare.pair');
 Route::get('/peptides/{peptide}', [PeptideController::class, 'show'])->name('peptides.show');
 
-// Calculator Route
-Route::get('/calculator', [CalculatorController::class, 'index'])->name('calculator');
+// Calculators — hub + individual tools
+Route::get('/calculators', [CalculatorController::class, 'index'])->name('calculators.index');
+Route::get('/calculators/{calculator}', [CalculatorController::class, 'show'])
+    ->where('calculator', '[a-z0-9-]+')
+    ->name('calculators.show');
+// Legacy single-calculator URL → 301 to the reconstitution tool
+Route::get('/calculator', [CalculatorController::class, 'legacyRedirect'])->name('calculator');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
