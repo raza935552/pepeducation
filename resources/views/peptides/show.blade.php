@@ -56,6 +56,9 @@
                 </div>
             </div>
 
+            <!-- Tools & guides (internal-link mesh) -->
+            @include('peptides.partials.show-related-tools')
+
             <!-- Related Peptides -->
             @if($relatedPeptides->isNotEmpty())
                 @include('peptides.partials.show-related')
