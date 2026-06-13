@@ -11,26 +11,52 @@ class BioLinxService
 
     public static function homeUrl(string $context = 'home'): string
     {
-        return self::withUtm(config('biolinx.home_url'), $context);
+        // Generic store link — route through /go so the click is logged and
+        // fbclid/fbp/fbc + session/email are forwarded to Biolinx (closed loop).
+        return self::goWrap(null, $context);
     }
 
     public static function urlForSlug(?string $slug, string $context = 'peptide'): string
     {
-        $base = self::resolveProductUrl($slug) ?? config('biolinx.home_url');
-
-        return self::withUtm($base, $context);
+        return self::goWrap(self::resolveProductUrl($slug), $context);
     }
 
     public static function urlForPeptide($peptide, string $context = 'peptide'): string
     {
         $direct = is_object($peptide) ? trim((string) ($peptide->biolinx_url ?? '')) : '';
         if ($direct !== '') {
-            return self::withUtm($direct, $context);
+            return self::goWrap($direct, $context);
         }
 
         $slug = is_object($peptide) ? ($peptide->slug ?? null) : $peptide;
 
         return self::urlForSlug($slug, $context);
+    }
+
+    /**
+     * Wrap a Biolinx destination in the PP /go redirect so the outbound click is
+     * tracked and the cross-domain match keys (fbclid/fbp/fbc), real ad UTMs,
+     * pp_session and email are forwarded — the same bridge the ad landers use.
+     *
+     * @param  string|null  $dest  Specific Biolinx product URL, or null for the store home.
+     */
+    private static function goWrap(?string $dest, string $context = 'peptide'): string
+    {
+        $slug = config('biolinx.go_slug', 'biolinxlabs');
+        $base = url('/go/'.$slug);
+
+        $home = rtrim((string) config('biolinx.home_url'), '/');
+        $dest = $dest !== null ? trim($dest) : null;
+
+        // No dest override for the bare store home — the outbound link already
+        // points there. Only deep-link via ?dest= for a specific product page.
+        // (/go ignores extra query params other than dest; per-CTA context is
+        // logged server-side in buy_clicks via ppTrackBuyClick.)
+        if (!$dest || rtrim($dest, '/') === $home) {
+            return $base;
+        }
+
+        return $base.'?dest='.rawurlencode($dest);
     }
 
     public static function hasProductFor(?string $slug): bool
