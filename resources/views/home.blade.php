@@ -48,11 +48,17 @@
     {{-- Popular comparisons — deep links to each vs page --}}
     @include('home.partials.comparisons')
 
+    {{-- Most researched peptides — deep links to top guides --}}
+    @include('home.partials.popular-peptides')
+
     {{-- Go Deeper (action CTAs) --}}
     @include('home.partials.go-deeper')
 
     {{-- Browse by Category --}}
     @include('home.partials.categories')
+
+    {{-- Latest research articles (blog) --}}
+    @include('home.partials.latest-articles')
 
     {{-- Newsletter CTA --}}
     @include('home.partials.cta')

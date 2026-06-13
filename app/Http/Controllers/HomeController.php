@@ -48,6 +48,17 @@ class HomeController extends Controller
             }
         });
 
-        return view('home', compact('featuredPeptides', 'categories', 'stats', 'trendingSearches'));
+        $recentPosts = Cache::remember('home_recent_posts', 1800, function () {
+            try {
+                return \App\Models\BlogPost::published()
+                    ->latest('published_at')
+                    ->take(3)
+                    ->get(['id', 'title', 'slug', 'excerpt', 'featured_image', 'reading_time', 'published_at']);
+            } catch (\Throwable $e) {
+                return collect();
+            }
+        });
+
+        return view('home', compact('featuredPeptides', 'categories', 'stats', 'trendingSearches', 'recentPosts'));
     }
 }
