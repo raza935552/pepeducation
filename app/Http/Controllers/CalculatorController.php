@@ -54,6 +54,22 @@ class CalculatorController extends Controller
     }
 
     /**
+     * Chrome-less embeddable version of a calculator (for iframes on other sites).
+     */
+    public function embed(string $calculator)
+    {
+        $config = config("calculators.$calculator");
+
+        abort_unless($config, 404);
+
+        $peptides = Peptide::where('is_published', true)
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug', 'abbreviation', 'typical_dose', 'dose_frequency', 'route', 'biolinx_url']);
+
+        return view('calculators.embed', compact('config', 'peptides'));
+    }
+
+    /**
      * Legacy /calculator → 301 to the reconstitution tool (preserves link equity).
      */
     public function legacyRedirect()

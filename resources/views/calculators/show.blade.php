@@ -30,6 +30,16 @@
                     ])->values()->all(),
                 ],
                 [
+                    '@type' => 'HowTo',
+                    'name' => 'How to use the '.$config['name'],
+                    'step' => collect($config['how_to'])->values()->map(fn ($s, $i) => [
+                        '@type' => 'HowToStep',
+                        'position' => $i + 1,
+                        'name' => $s['title'],
+                        'text' => $s['body'],
+                    ])->all(),
+                ],
+                [
                     '@type' => 'BreadcrumbList',
                     'itemListElement' => [
                         ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => url('/')],
@@ -126,6 +136,9 @@
             </div>
         </section>
     @endif
+
+    {{-- Embed this calculator --}}
+    @include('calculators.partials._embed-snippet')
 
     {{-- Email capture --}}
     @include('calculators.partials._email-capture', ['source' => 'calculator:'.$config['slug']])

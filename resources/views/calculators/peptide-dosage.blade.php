@@ -50,6 +50,16 @@
                     ])->values()->all(),
                 ],
                 [
+                    '@type' => 'HowTo',
+                    'name' => "How to calculate your $name dose",
+                    'step' => [
+                        ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Enter the vial amount', 'text' => "Type the milligrams of $name in your vial."],
+                        ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Add bacteriostatic water', 'text' => 'Enter the water volume you will add to reconstitute it.'],
+                        ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Set your target dose', 'text' => "Enter your $name dose in mcg or mg."],
+                        ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Draw the units', 'text' => 'Read the exact units to draw on a U-100 insulin syringe.'],
+                    ],
+                ],
+                [
                     '@type' => 'BreadcrumbList',
                     'itemListElement' => [
                         ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => url('/')],

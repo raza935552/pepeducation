@@ -39,6 +39,9 @@ Route::get('/peptides/{peptide}', [PeptideController::class, 'show'])->name('pep
 
 // Calculators — hub + individual tools
 Route::get('/calculators', [CalculatorController::class, 'index'])->name('calculators.index');
+Route::get('/calculators/{calculator}/embed', [CalculatorController::class, 'embed'])
+    ->where('calculator', '[a-z0-9-]+')
+    ->name('calculators.embed');
 Route::get('/calculators/{calculator}', [CalculatorController::class, 'show'])
     ->where('calculator', '[a-z0-9-]+')
     ->name('calculators.show');
