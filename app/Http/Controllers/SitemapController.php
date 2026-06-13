@@ -189,24 +189,17 @@ class SitemapController extends Controller
             // Continue without stack goals
         }
 
-        // Featured peptide comparisons (high-volume "X vs Y" queries)
-        $popularComparisons = [
-            ['tirzepatide', 'semaglutide'],
-            ['bpc-157', 'tb-500'],
-            ['cjc-1295', 'sermorelin'],
-            ['retatrutide', 'tirzepatide'],
-            ['mk-677', 'ipamorelin'],
-            ['semaglutide', 'cagrilintide'],
-            ['ipamorelin', 'sermorelin'],
-            ['ghk-cu', 'ahk-cu'],
-            ['selank', 'semax'],
-            ['bpc-157', 'thymosin-beta-4'],
-        ];
-        foreach ($popularComparisons as [$a, $b]) {
+        // Featured peptide comparisons (high-volume "X vs Y" queries) — the
+        // curated pairs that carry editorial intro/verdict/FAQ content.
+        foreach (array_keys(config('peptide_comparisons', [])) as $pairKey) {
+            [$a, $b] = array_pad(explode('__', $pairKey), 2, null);
+            if (!$a || !$b) {
+                continue;
+            }
             $urls->push([
                 'loc' => route('peptides.compare.pair', ['slugA' => $a, 'slugB' => $b]),
                 'changefreq' => 'monthly',
-                'priority' => '0.6',
+                'priority' => '0.7',
             ]);
         }
 

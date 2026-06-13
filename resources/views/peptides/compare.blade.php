@@ -52,6 +52,11 @@
     <script type="application/ld+json">
     {!! json_encode($compareSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}
     </script>
+    @if(($comparison ?? null) && !empty($comparison['faqs']))
+    <script type="application/ld+json">
+    {!! json_encode(['@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => collect($comparison['faqs'])->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => $f['a']]])->values()->all()], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+    </script>
+    @endif
     @endif
     @endpush
 
@@ -114,6 +119,14 @@
             </div>
         </div>
     </section>
+
+    @if($comparison ?? null)
+        <section class="py-8 bg-white border-b border-surface-200">
+            <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                <p class="text-gray-700 leading-relaxed">{{ $comparison['intro'] }}</p>
+            </div>
+        </section>
+    @endif
 
     @if(!$peptideA || !$peptideB)
         <section class="py-12 bg-surface-50">
@@ -361,6 +374,38 @@
                 </div>
             </div>
         </section>
+
+        @if($comparison ?? null)
+            {{-- Verdict --}}
+            <section class="py-10 bg-white border-t border-surface-200">
+                <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                    <div class="rounded-2xl border border-primary-200 bg-gradient-to-br from-primary-50 to-white p-6 sm:p-8">
+                        <h2 class="text-xl font-bold text-gray-900 mb-2">Which should you choose?</h2>
+                        <p class="text-gray-700 leading-relaxed">{{ $comparison['verdict'] }}</p>
+                    </div>
+                </div>
+            </section>
+
+            @if(!empty($comparison['faqs']))
+                {{-- FAQ --}}
+                <section class="py-10 bg-surface-50 border-t border-surface-200">
+                    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">{{ $peptideA->name }} vs {{ $peptideB->name }} — FAQ</h2>
+                        <div class="space-y-3" x-data="{ open: 0 }">
+                            @foreach($comparison['faqs'] as $i => $faq)
+                                <div class="bg-white rounded-xl border border-surface-200 overflow-hidden">
+                                    <button type="button" @click="open === {{ $i }} ? open = null : open = {{ $i }}" class="w-full flex items-center justify-between gap-4 text-left px-5 py-4 font-semibold text-gray-900">
+                                        <span>{{ $faq['q'] }}</span>
+                                        <svg class="w-5 h-5 text-gray-400 shrink-0 transition-transform" :class="open === {{ $i }} && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                    </button>
+                                    <div x-show="open === {{ $i }}" x-transition.opacity class="px-5 pb-4 -mt-1 text-gray-600 leading-relaxed">{{ $faq['a'] }}</div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </section>
+            @endif
+        @endif
 
         {{-- Other comparisons --}}
         <section class="py-8 bg-white border-t border-surface-200">
