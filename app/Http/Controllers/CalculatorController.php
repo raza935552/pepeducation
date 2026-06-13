@@ -37,7 +37,7 @@ class CalculatorController extends Controller
             // Peptide list (used by reconstitution + protocol widgets for presets).
             $peptides = Peptide::where('is_published', true)
                 ->orderBy('name')
-                ->get(['id', 'name', 'abbreviation', 'typical_dose', 'dose_frequency', 'route']);
+                ->get(['id', 'name', 'slug', 'abbreviation', 'typical_dose', 'dose_frequency', 'route', 'biolinx_url']);
 
             return view('calculators.show', compact('config', 'related', 'peptides'));
         }

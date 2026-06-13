@@ -160,6 +160,9 @@
         </div>
     </section>
 
+    {{-- Email capture --}}
+    @include('calculators.partials._email-capture', ['source' => 'calculator:'.$peptide->slug.'-dosage'])
+
     {{-- Disclaimer --}}
     <section class="pb-14 bg-white">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

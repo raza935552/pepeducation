@@ -1,5 +1,5 @@
 {{-- Protocol tool widget — multi-peptide planner --}}
-<div x-data="protocolCalc(@js($peptides->map(fn($p) => ['id' => $p->id, 'name' => $p->name])->values()))" class="space-y-6">
+<div x-data="protocolCalc(@js($peptides->map(fn($p) => ['id' => $p->id, 'name' => $p->name, 'buy' => \App\Services\BioLinxService::urlForPeptide($p, 'protocol-tool')])->values()))" class="space-y-6">
 
     {{-- Add peptide --}}
     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-8">
@@ -23,7 +23,12 @@
         <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="font-bold text-gray-900" x-text="row.name"></h3>
-                <button type="button" @click="removeRow(idx)" class="text-sm text-red-500 hover:text-red-700">Remove</button>
+                <div class="flex items-center gap-3">
+                    <a :href="row.buy" target="_blank" rel="nofollow sponsored noopener" class="text-sm font-medium text-primary-600 hover:underline inline-flex items-center gap-1">Shop
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
+                    <button type="button" @click="removeRow(idx)" class="text-sm text-red-500 hover:text-red-700">Remove</button>
+                </div>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                 <div><label class="block text-xs text-gray-500 mb-1">Vial (mg)</label><input type="number" min="0" step="0.5" x-model.number="row.mg" class="w-full rounded-lg border-gray-300 text-sm focus:border-primary-500 focus:ring-primary-500"></div>
@@ -41,6 +46,19 @@
             <p class="text-xs text-gray-400 mt-2"><span x-text="conc(row).toLocaleString()"></span> mcg/mL · <span x-text="dosesPerVial(row)"></span> doses per vial</p>
         </div>
     </template>
+
+    {{-- Shop this stack --}}
+    <div x-show="rows.length > 0" class="rounded-2xl border border-primary-200 bg-gradient-to-br from-primary-50 to-white p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-primary-600 mb-0.5">Ready to run this protocol?</p>
+            <p class="text-sm text-gray-700">Source the peptides in your stack from BioLinx Labs — third-party tested, with a COA per batch.</p>
+        </div>
+        <a href="{{ \App\Services\BioLinxService::homeUrl('protocol-tool') }}" target="_blank" rel="nofollow sponsored noopener"
+           class="shrink-0 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-white font-semibold text-sm hover:opacity-90 transition-opacity" style="background-color: {{ $config['accent'] }};">
+            Shop this stack at BioLinx
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+    </div>
 
     {{-- Weekly grid --}}
     <div x-show="rows.length > 0" class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
@@ -95,7 +113,7 @@
                 if (!this.picker) return;
                 const p = this.peptides.find(x => x.id == this.picker);
                 if (!p) return;
-                this.rows.push({ uid: this.nextUid++, name: p.name, mg: 5, water: 2, dose: 250, days: 3, timing: 'AM' });
+                this.rows.push({ uid: this.nextUid++, name: p.name, buy: p.buy, mg: 5, water: 2, dose: 250, days: 3, timing: 'AM' });
                 this.picker = '';
             },
             removeRow(i) { this.rows.splice(i, 1); },
