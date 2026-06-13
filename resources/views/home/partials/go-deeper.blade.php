@@ -60,7 +60,7 @@
                     <p class="text-body/70 mb-8 leading-relaxed flex-1">
                         Precise dosing calculations and reconstitution guides for your peptide research protocols.
                     </p>
-                    <a href="{{ route('calculator') }}"
+                    <a href="{{ route('calculators.index') }}"
                        class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-primary-500 text-white font-semibold text-sm hover:bg-primary-600 transition-colors shadow-md shadow-primary-500/20">
                         Open Calculator
                         <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -77,7 +77,7 @@
             </a>
 
             {{-- Card 3: Tools --}}
-            <a href="{{ route('calculator') }}"
+            <a href="{{ route('calculators.index') }}"
                class="group relative bg-white rounded-2xl border border-surface-200 p-7 hover:shadow-xl hover:border-primary-200 transition-all duration-300 overflow-hidden">
                 <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary-500/10 via-transparent to-secondary-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div class="relative">

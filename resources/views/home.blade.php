@@ -36,6 +36,9 @@
         </section>
     @endif
 
+    {{-- Explore — internal-linking hub to tools & guide clusters --}}
+    @include('home.partials.explore')
+
     {{-- Go Deeper (action CTAs) --}}
     @include('home.partials.go-deeper')
 
@@ -44,6 +47,9 @@
 
     {{-- Newsletter CTA --}}
     @include('home.partials.cta')
+
+    {{-- FAQ (head-query targeting + FAQPage schema) --}}
+    @include('home.partials.faq')
 
     {{-- Quick Links --}}
     @include('home.partials.quick-links')
