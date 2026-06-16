@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\StackGoal;
+use App\Models\StackProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -31,7 +32,9 @@ class StackGoalController extends Controller
 
     public function create()
     {
-        return view('admin.stack-goals.create');
+        $products = StackProduct::orderBy('name')->get(['id', 'name', 'is_active']);
+
+        return view('admin.stack-goals.create', compact('products'));
     }
 
     public function store(Request $request)
@@ -43,7 +46,8 @@ class StackGoalController extends Controller
             $validated['image'] = $request->file('image')->store('stack-goals', 'public');
         }
 
-        StackGoal::create($validated);
+        $goal = StackGoal::create($validated);
+        $this->syncProducts($goal, $request);
 
         return redirect()->route('admin.stack-goals.index')
             ->with('success', 'Stack goal created successfully.');
@@ -51,7 +55,10 @@ class StackGoalController extends Controller
 
     public function edit(StackGoal $stackGoal)
     {
-        return view('admin.stack-goals.edit', compact('stackGoal'));
+        $stackGoal->load('products:id');
+        $products = StackProduct::orderBy('name')->get(['id', 'name', 'is_active']);
+
+        return view('admin.stack-goals.edit', compact('stackGoal', 'products'));
     }
 
     public function update(Request $request, StackGoal $stackGoal)
@@ -65,9 +72,32 @@ class StackGoalController extends Controller
 
         $validated['is_active'] = $request->boolean('is_active');
         $stackGoal->update($validated);
+        $this->syncProducts($stackGoal, $request);
 
         return redirect()->route('admin.stack-goals.index')
             ->with('success', 'Stack goal updated successfully.');
+    }
+
+    /**
+     * Sync the goal's products from the submitted products[] checkboxes, preserving
+     * the existing per-goal order for products that stay and appending new ones.
+     */
+    protected function syncProducts(StackGoal $goal, Request $request): void
+    {
+        if (!$request->has('products')) {
+            return; // form section absent — leave assignments untouched
+        }
+
+        $ids = array_values(array_unique(array_map('intval', (array) $request->input('products', []))));
+        $existing = $goal->products()->pluck('goal_stack_product.order', 'stack_products.id');
+        $next = (int) ($existing->max() ?? 0);
+
+        $sync = [];
+        foreach ($ids as $id) {
+            $sync[$id] = ['order' => $existing[$id] ?? ++$next];
+        }
+
+        $goal->products()->sync($sync);
     }
 
     public function destroy(StackGoal $stackGoal)

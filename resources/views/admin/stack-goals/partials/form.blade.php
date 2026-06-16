@@ -80,6 +80,35 @@
                 </div>
             </div>
 
+            @isset($products)
+                @php $selectedProductIds = old('products', $goal?->products->pluck('id')->all() ?? []); @endphp
+                <div class="card p-6" x-data="{ q: '' }">
+                    <div class="flex items-center justify-between mb-1">
+                        <h3 class="text-lg font-semibold">Products in this Goal</h3>
+                        <span class="text-sm text-gray-500" x-text="$root.querySelectorAll('input[name=\'products[]\']:checked').length + ' selected'"></span>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-4">Tick the peptides that should appear under this goal in the Stack Builder. New picks are added after existing ones; reorder from each product if needed.</p>
+
+                    <input type="text" x-model="q" placeholder="Filter products…"
+                        class="w-full mb-3 rounded-lg border-gray-300 focus:border-brand-gold focus:ring-brand-gold">
+
+                    <div class="max-h-80 overflow-y-auto border border-gray-100 rounded-lg p-2 grid grid-cols-1 sm:grid-cols-2 gap-1">
+                        @foreach($products as $product)
+                            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-50 cursor-pointer"
+                                x-show="q === '' || '{{ Str::lower($product->name) }}'.includes(q.toLowerCase())">
+                                <input type="checkbox" name="products[]" value="{{ $product->id }}"
+                                    {{ in_array($product->id, $selectedProductIds) ? 'checked' : '' }}
+                                    class="rounded border-gray-300 text-brand-gold focus:ring-brand-gold">
+                                <span class="text-sm">{{ $product->name }}</span>
+                                @unless($product->is_active)
+                                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-500">inactive</span>
+                                @endunless
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+            @endisset
+
             <button type="submit" class="w-full btn btn-primary">{{ $goal ? 'Update Goal' : 'Create Goal' }}</button>
         </div>
     </div>
