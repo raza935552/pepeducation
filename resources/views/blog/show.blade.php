@@ -104,6 +104,9 @@
                     {!! $post->sanitizedHtml() !!}
                 </div>
 
+                {{-- Related calculators/tools — topically matched to this post --}}
+                <x-blog.related-calculators :post="$post" />
+
                 {{-- Author Bio Block --}}
                 @if($post->author && $post->author->is_public_author && $post->author->bio)
                     <section class="mt-12 pt-8 border-t border-gray-200">
