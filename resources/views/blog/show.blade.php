@@ -104,6 +104,9 @@
                     {!! $post->sanitizedHtml() !!}
                 </div>
 
+                {{-- Community CTA — convert warm readers into members --}}
+                <x-community.cta />
+
                 {{-- Related calculators/tools — topically matched to this post --}}
                 <x-blog.related-calculators :post="$post" />
 
