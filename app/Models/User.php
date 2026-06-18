@@ -27,6 +27,9 @@ class User extends Authenticatable
         'is_public_author',
         'is_suspended',
         'suspended_at',
+        'is_seed',
+        'last_seen_at',
+        'forum_posts_count',
     ];
 
     protected $hidden = [
@@ -42,6 +45,8 @@ class User extends Authenticatable
             'is_suspended' => 'boolean',
             'suspended_at' => 'datetime',
             'is_public_author' => 'boolean',
+            'is_seed' => 'boolean',
+            'last_seen_at' => 'datetime',
         ];
     }
 
@@ -144,5 +149,48 @@ class User extends Authenticatable
     public function leadMagnetDownloads(): HasMany
     {
         return $this->hasMany(LeadMagnetDownload::class);
+    }
+
+    // ---- Community (forum) ----
+    public function forumThreads(): HasMany
+    {
+        return $this->hasMany(ForumThread::class);
+    }
+
+    public function forumPosts(): HasMany
+    {
+        return $this->hasMany(ForumPost::class);
+    }
+
+    public function forumSubscriptions(): HasMany
+    {
+        return $this->hasMany(ForumSubscription::class);
+    }
+
+    /**
+     * Whether this user may participate in the community (verified, not suspended).
+     */
+    public function canParticipateInCommunity(): bool
+    {
+        return $this->hasVerifiedEmail() && ! $this->is_suspended;
+    }
+
+    public function initials(): string
+    {
+        $parts = preg_split('/\s+/', trim((string) $this->name)) ?: [];
+        $letters = array_map(fn ($p) => mb_substr($p, 0, 1), array_slice($parts, 0, 2));
+
+        return strtoupper(implode('', $letters)) ?: 'U';
+    }
+
+    public function getAvatarUrlAttribute(): ?string
+    {
+        if (empty($this->avatar)) {
+            return null;
+        }
+
+        return str_starts_with($this->avatar, 'http') || str_starts_with($this->avatar, '/')
+            ? $this->avatar
+            : '/storage/' . ltrim($this->avatar, '/');
     }
 }

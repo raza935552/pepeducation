@@ -236,4 +236,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('settings/customerio', [\App\Http\Controllers\Admin\CustomerIoSettingController::class, 'edit'])->name('settings.customerio');
     Route::put('settings/customerio', [\App\Http\Controllers\Admin\CustomerIoSettingController::class, 'update'])->name('settings.customerio.update');
     Route::post('settings/customerio/test', [\App\Http\Controllers\Admin\CustomerIoSettingController::class, 'test'])->name('settings.customerio.test');
+
+    // Community (forum) moderation
+    Route::get('community', [\App\Http\Controllers\Admin\ForumController::class, 'dashboard'])->name('community.dashboard');
+    Route::put('community/settings', [\App\Http\Controllers\Admin\ForumController::class, 'updateSettings'])->name('community.settings');
+    Route::post('community/threads/{thread}/action', [\App\Http\Controllers\Admin\ForumController::class, 'threadAction'])->name('community.threads.action');
+    Route::post('community/posts/{post}/action', [\App\Http\Controllers\Admin\ForumController::class, 'postAction'])->name('community.posts.action');
+    Route::post('community/reports/{report}/resolve', [\App\Http\Controllers\Admin\ForumController::class, 'resolveReport'])->name('community.reports.resolve');
+    Route::post('community/users/{user}/suspend', [\App\Http\Controllers\Admin\ForumController::class, 'suspendUser'])->name('community.users.suspend');
+
+    Route::get('community/categories', [\App\Http\Controllers\Admin\ForumCategoryController::class, 'index'])->name('community.categories.index');
+    Route::post('community/categories', [\App\Http\Controllers\Admin\ForumCategoryController::class, 'store'])->name('community.categories.store');
+    Route::put('community/categories/{forumCategory}', [\App\Http\Controllers\Admin\ForumCategoryController::class, 'update'])->name('community.categories.update');
+    Route::delete('community/categories/{forumCategory}', [\App\Http\Controllers\Admin\ForumCategoryController::class, 'destroy'])->name('community.categories.destroy');
 });

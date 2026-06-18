@@ -16,6 +16,8 @@
 
         {{-- Meta Pixel (shared with Biolinx) — seasons PP traffic + forwards click IDs --}}
         <x-meta-pixel />
+
+        @stack('head')
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
@@ -35,5 +37,7 @@
                 {{ $slot }}
             </main>
         </div>
+
+        @stack('scripts')
     </body>
 </html>

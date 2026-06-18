@@ -16,6 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'throttle' => \App\Http\Middleware\ThrottleRequestsTest::class,
+            'community' => \App\Http\Middleware\EnsureCommunityEnabled::class,
+            'community.scrape' => \App\Http\Middleware\BlockForumScrapers::class,
         ]);
 
         // Maintenance mode — check on every web request

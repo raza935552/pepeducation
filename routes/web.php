@@ -71,6 +71,40 @@ Route::middleware('auth')->group(function () {
     Route::post('/bookmarks/{peptide}', [BookmarkController::class, 'toggle'])->name('bookmarks.toggle');
 });
 
+/*
+|--------------------------------------------------------------------------
+| Community (members-only forum) — private, never indexed, never scraped
+|--------------------------------------------------------------------------
+| auth + verified gate participation; `community` enforces the feature flag
+| (dark launch) + noindex header; `community.scrape` blocks bots/AI scrapers.
+*/
+Route::middleware(['auth', 'verified', 'community', 'community.scrape'])
+    ->prefix('community')
+    ->name('community.')
+    ->group(function () {
+        Route::get('/', [\App\Http\Controllers\Community\CommunityController::class, 'index'])->name('index');
+        Route::get('/search', [\App\Http\Controllers\Community\CommunityController::class, 'search'])->name('search');
+        Route::get('/members/{user:slug}', [\App\Http\Controllers\Community\CommunityController::class, 'member'])->name('members.show');
+        Route::get('/c/{category:slug}', [\App\Http\Controllers\Community\CommunityController::class, 'category'])->name('category');
+
+        Route::get('/threads/create', [\App\Http\Controllers\Community\ThreadController::class, 'create'])->name('threads.create');
+        Route::post('/threads', [\App\Http\Controllers\Community\ThreadController::class, 'store'])->name('threads.store');
+        Route::get('/t/{thread:slug}', [\App\Http\Controllers\Community\ThreadController::class, 'show'])->name('threads.show');
+        Route::get('/t/{thread:slug}/edit', [\App\Http\Controllers\Community\ThreadController::class, 'edit'])->name('threads.edit');
+        Route::patch('/t/{thread:slug}', [\App\Http\Controllers\Community\ThreadController::class, 'update'])->name('threads.update');
+        Route::delete('/t/{thread:slug}', [\App\Http\Controllers\Community\ThreadController::class, 'destroy'])->name('threads.destroy');
+
+        Route::post('/t/{thread:slug}/replies', [\App\Http\Controllers\Community\ReplyController::class, 'store'])->name('replies.store');
+        Route::patch('/replies/{post}', [\App\Http\Controllers\Community\ReplyController::class, 'update'])->name('replies.update');
+        Route::delete('/replies/{post}', [\App\Http\Controllers\Community\ReplyController::class, 'destroy'])->name('replies.destroy');
+        Route::post('/replies/{post}/solution', [\App\Http\Controllers\Community\ReplyController::class, 'toggleSolution'])->name('replies.solution');
+
+        // Engagement (AJAX)
+        Route::post('/react', [\App\Http\Controllers\Community\ReactionController::class, 'toggle'])->name('react');
+        Route::post('/report', [\App\Http\Controllers\Community\ReportController::class, 'store'])->name('report');
+        Route::post('/t/{thread:slug}/subscribe', [\App\Http\Controllers\Community\SubscriptionController::class, 'toggle'])->name('subscribe');
+    });
+
 // Outbound Link Tracking
 Route::get('/go/{slug}', [OutboundController::class, 'track'])->name('outbound.track');
 

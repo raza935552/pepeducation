@@ -12,5 +12,7 @@ Disallow: /subscriber/
 Disallow: /form-submit
 Disallow: /quiz/*/embed
 Disallow: /go/
+Disallow: /community
+Disallow: /community/
 
 Sitemap: https://professorpeptides.co/sitemap.xml
