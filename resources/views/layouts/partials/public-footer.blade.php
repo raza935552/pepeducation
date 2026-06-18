@@ -32,6 +32,13 @@
                             Blog
                         </a>
                     </li>
+                    @if(\App\Models\Setting::getValue('community', 'enabled', false))
+                    <li>
+                        <a href="{{ route('community.index') }}" class="text-sm text-footer-link hover:text-footer-link-hover transition-colors">
+                            Community
+                        </a>
+                    </li>
+                    @endif
                     <li>
                         <a href="{{ route('calculators.index') }}" class="text-sm text-footer-link hover:text-footer-link-hover transition-colors">
                             Calculators
