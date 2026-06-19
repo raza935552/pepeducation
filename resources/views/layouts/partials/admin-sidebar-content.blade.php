@@ -65,6 +65,17 @@
                     </a>
                 </li>
 
+                {{-- Full Funnel (PP → Biolinx, cross-site) --}}
+                <li>
+                    <a href="{{ route('admin.funnel') }}"
+                       class="{{ request()->routeIs('admin.funnel') ? 'bg-gray-100 text-admin-primary-600' : 'text-gray-700 hover:bg-gray-100' }} group flex gap-x-3 rounded-lg p-2 text-sm font-semibold leading-6 transition-colors">
+                        <svg aria-hidden="true" class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75h16.5v3.879a1.5 1.5 0 0 1-.44 1.06l-5.56 5.561v6L9.75 21.75v-7.5L4.19 8.69a1.5 1.5 0 0 1-.44-1.061V3.75Z" />
+                        </svg>
+                        Full Funnel
+                    </a>
+                </li>
+
                 {{-- A/B Test (your page vs AI page — CTR scoreboard) --}}
                 <li>
                     <a href="{{ route('admin.ab-test') }}"
