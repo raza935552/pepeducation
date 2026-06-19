@@ -44,6 +44,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
     Route::get('/ad-analytics', [AdAnalyticsController::class, 'index'])->name('ad-analytics');
+    Route::get('/content-revenue', [\App\Http\Controllers\Admin\ContentRevenueController::class, 'index'])->name('content-revenue');
     Route::get('/ab-test', [AbTestController::class, 'index'])->name('ab-test');
     Route::get('/visitor-log', [VisitorLogController::class, 'index'])->name('visitor-log');
     Route::get('/visitor-log/export', [VisitorLogController::class, 'export'])->name('visitor-log.export');

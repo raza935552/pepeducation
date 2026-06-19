@@ -54,6 +54,17 @@
                     </a>
                 </li>
 
+                {{-- Content → Revenue (which landers drive downstream Biolinx sales) --}}
+                <li>
+                    <a href="{{ route('admin.content-revenue') }}"
+                       class="{{ request()->routeIs('admin.content-revenue') ? 'bg-gray-100 text-admin-primary-600' : 'text-gray-700 hover:bg-gray-100' }} group flex gap-x-3 rounded-lg p-2 text-sm font-semibold leading-6 transition-colors">
+                        <svg aria-hidden="true" class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
+                        </svg>
+                        Content → Revenue
+                    </a>
+                </li>
+
                 {{-- A/B Test (your page vs AI page — CTR scoreboard) --}}
                 <li>
                     <a href="{{ route('admin.ab-test') }}"
