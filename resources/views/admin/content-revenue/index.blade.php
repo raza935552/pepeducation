@@ -53,7 +53,7 @@
                         <tr class="{{ $r['revenue'] > 0 ? 'bg-green-50/40' : '' }}">
                             <td class="px-4 py-2">
                                 <div class="font-medium text-gray-900">{{ $r['title'] }}</div>
-                                <div class="text-[11px] text-gray-400">/lp/{{ $r['slug'] }}@if($r['ad_views']) · {{ number_format($r['ad_views']) }} from ads@endif</div>
+                                <div class="text-[11px] text-gray-400">/lp/{{ $r['slug'] }}@if($r['ad_views']) · {{ number_format($r['ad_views']) }} from ads @endif</div>
                             </td>
                             <td class="px-3 text-right">{{ number_format($r['views']) }}</td>
                             <td class="px-3 text-right">{{ number_format($r['clicks']) }}</td>
