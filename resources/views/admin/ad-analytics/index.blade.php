@@ -38,24 +38,35 @@
         </div>
 
         {{-- Funnel summary cards --}}
+        @php
+            $deltaBadge = function ($key) use ($compare, $compareLabel) {
+                if (! $compare || ! isset($compare[$key])) return '';
+                $d = $compare[$key];
+                $color = $d['dir'] === 'up' ? 'text-green-600' : ($d['dir'] === 'down' ? 'text-red-600' : 'text-gray-400');
+                $arrow = $d['dir'] === 'up' ? '▲' : ($d['dir'] === 'down' ? '▼' : '•');
+                return '<span class="ml-1 font-semibold '.$color.'" title="'.e($compareLabel).' ('.$d['prev'].')">'.$arrow.' '.abs($d['pct']).'%</span>';
+            };
+        @endphp
         <div class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3">
             <div class="bg-white rounded-xl border border-gray-200 p-4">
                 <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Ad Visits</div>
                 <div class="mt-1 text-2xl font-bold text-gray-900">{{ number_format($totalVisits) }}</div>
+                <div class="text-[11px] text-gray-400 mt-0.5">{!! $deltaBadge('visits') ?: '&nbsp;' !!}</div>
             </div>
             <div class="bg-white rounded-xl border border-gray-200 p-4">
                 <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Clicks</div>
                 <div class="mt-1 text-2xl font-bold text-gray-900">{{ number_format($totalClicksAll) }}</div>
-                <div class="text-[11px] text-gray-400 mt-0.5">{{ number_format($totalClicks) }} from ads · CTR {{ $overallCtr }}%</div>
+                <div class="text-[11px] text-gray-400 mt-0.5">{{ number_format($totalClicks) }} from ads · CTR {{ $overallCtr }}% {!! $deltaBadge('clicks') !!}</div>
             </div>
             <div class="bg-white rounded-xl border border-gray-200 p-4">
                 <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Orders</div>
                 <div class="mt-1 text-2xl font-bold text-gray-900">{{ number_format($totalOrders) }}</div>
-                <div class="text-[11px] text-gray-400 mt-0.5">CVR {{ $overallCvr }}%</div>
+                <div class="text-[11px] text-gray-400 mt-0.5">CVR {{ $overallCvr }}% {!! $deltaBadge('orders') !!}</div>
             </div>
             <div class="bg-white rounded-xl border border-gray-200 p-4">
                 <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Revenue</div>
                 <div class="mt-1 text-2xl font-bold text-green-700">${{ number_format($totalRevenue, 2) }}</div>
+                <div class="text-[11px] text-gray-400 mt-0.5">{!! $deltaBadge('revenue') ?: '&nbsp;' !!}</div>
             </div>
             <div class="bg-white rounded-xl border border-gray-200 p-4">
                 <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">AOV</div>
@@ -75,7 +86,7 @@
                     </div>
                     <div class="pl-5 border-l border-gray-100">
                         <div class="text-2xl font-bold text-green-600">{{ number_format($totalAdEmails) }}</div>
-                        <div class="text-[11px] text-gray-400 mt-0.5">fbclid-verified</div>
+                        <div class="text-[11px] text-gray-400 mt-0.5">fbclid-verified {!! $deltaBadge('ad_emails') !!}</div>
                     </div>
                 </div>
             </div>

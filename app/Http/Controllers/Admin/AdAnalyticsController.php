@@ -183,8 +183,40 @@ class AdAnalyticsController extends Controller
         $aov        = $totalOrders > 0 ? round($totalRevenue / $totalOrders, 2) : 0.0;
         $hasRevenue = LanderConversion::exists();
 
+        // ---------- Comparison vs the previous equivalent window (deltas) ----------
+        // 'today' compares to yesterday at the same elapsed time; other ranges to the
+        // immediately-preceding equal-length window. ('all' = no comparison.)
+        $compare = null;
+        $compareLabel = null;
+        if ($start) {
+            if ($period === 'today') {
+                $prevStart = $start->copy()->subDay();
+                $prevEnd = now()->subDay();
+                $compareLabel = 'vs yesterday';
+            } else {
+                $len = max(1, now()->diffInSeconds($start));
+                $prevEnd = $start->copy();
+                $prevStart = $start->copy()->subSeconds($len);
+                $compareLabel = 'vs prev. ' . $period;
+            }
+            $prev = $this->windowTotals($prevStart, $prevEnd);
+            $cur = [
+                'visits' => $totalVisits, 'clicks' => $totalClicks,
+                'orders' => $totalOrders, 'revenue' => $totalRevenue, 'ad_emails' => $totalAdEmails,
+            ];
+            $compare = [];
+            foreach ($cur as $m => $v) {
+                $was = (float) $prev[$m];
+                $now = (float) $v;
+                $pct = $was > 0 ? round(($now - $was) / $was * 100) : ($now > 0 ? 100 : 0);
+                $compare[$m] = ['prev' => $prev[$m], 'pct' => $pct, 'dir' => $pct > 0 ? 'up' : ($pct < 0 ? 'down' : 'flat')];
+            }
+        }
+
         return view('admin.ad-analytics.index', [
             'period'         => $period,
+            'compare'        => $compare,
+            'compareLabel'   => $compareLabel,
             'totalVisits'    => $totalVisits,
             'uniqueVisitors' => $uniqueVisitors,
             'totalClicks'    => $totalClicks,
@@ -203,6 +235,45 @@ class AdAnalyticsController extends Controller
             'drilldown'      => $drilldown,
             'recent'         => $recent,
         ]);
+    }
+
+    /** Headline totals (ad visits/clicks/orders/revenue/emails) for a window — used
+     *  to compute the period-over-period deltas. Mirrors index()'s filters. */
+    private function windowTotals($start, $end): array
+    {
+        $vq = LanderVisit::query()->where('is_ad', true);
+        if ($start) $vq->where('created_at', '>=', $start);
+        if ($end) $vq->where('created_at', '<', $end);
+        foreach (self::TEST_MARKERS as $m) {
+            $vq->where(fn ($q) => $q->whereNull('fbclid')->orWhere('fbclid', 'not like', "%{$m}%"));
+        }
+        $visits = $vq->count();
+
+        $cq = DB::table('outbound_clicks as c')->where('c.final_url', 'like', '%fbclid=%');
+        if ($start) $cq->where('c.created_at', '>=', $start);
+        if ($end) $cq->where('c.created_at', '<', $end);
+        foreach (self::TEST_MARKERS as $m) {
+            $cq->where('c.final_url', 'not like', "%{$m}%");
+        }
+        $clicks = $cq->count();
+
+        $oq = LanderConversion::query();
+        if ($start) $oq->where('ordered_at', '>=', $start);
+        if ($end) $oq->where('ordered_at', '<', $end);
+        $orders = (clone $oq)->count();
+        $revenue = (float) (clone $oq)->sum('revenue');
+
+        $emails = Subscriber::query()->where('is_ad', true);
+        if ($start) $emails->where('created_at', '>=', $start);
+        if ($end) $emails->where('created_at', '<', $end);
+
+        return [
+            'visits' => $visits,
+            'clicks' => $clicks,
+            'orders' => $orders,
+            'revenue' => $revenue,
+            'ad_emails' => $emails->count(),
+        ];
     }
 
     /**
