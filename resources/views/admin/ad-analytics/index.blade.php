@@ -7,7 +7,7 @@
             </div>
             {{-- Period filter --}}
             <div class="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-                @foreach (['1h' => '1h', '24h' => '24h', '7d' => '7d', '30d' => '30d', 'all' => 'All'] as $val => $label)
+                @foreach (['today' => 'Today', '1h' => '1h', '24h' => '24h', '7d' => '7d', '30d' => '30d', 'all' => 'All'] as $val => $label)
                     <a href="{{ route('admin.ad-analytics', ['period' => $val]) }}"
                        class="px-3 py-1.5 text-sm font-medium rounded-md transition-colors {{ $period === $val ? 'bg-white text-admin-primary-600 shadow-sm' : 'text-gray-600 hover:text-gray-900' }}">
                         {{ $label }}
@@ -18,6 +18,19 @@
     </x-slot>
 
     <div class="space-y-6">
+        {{-- Times + live auto-refresh --}}
+        <div class="flex items-center justify-between text-[11px] text-gray-400">
+            <span>🕒 All times Eastern (ET)</span>
+            @if(in_array($period, ['today','24h','1h']))
+                <span class="inline-flex items-center gap-1">
+                    <span class="inline-block h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                    Live — auto-refreshing every 60s
+                </span>
+            @endif
+        </div>
+        @if(in_array($period, ['today','24h','1h']))
+            <script>(function () { setInterval(function () { if (!document.hidden) location.reload(); }, 60000); })();</script>
+        @endif
 
         {{-- Context banner --}}
         <div class="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">

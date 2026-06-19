@@ -31,14 +31,18 @@ class AdAnalyticsController extends Controller
 
     public function index(Request $request)
     {
-        $period = $request->get('period', '24h');
+        $period = $request->get('period', 'today');
         $start = match ($period) {
             '1h'  => now()->subHour(),
+            // "Today" = calendar day in the business timezone (ET), midnight→now —
+            // only grows through the day. '24h' is a rolling window that drops older
+            // traffic off the back as the clock advances.
+            'today' => now('America/New_York')->startOfDay()->utc(),
             '24h' => now()->subDay(),
             '7d'  => now()->subDays(7),
             '30d' => now()->subDays(30),
             'all' => null,
-            default => now()->subDay(),
+            default => now('America/New_York')->startOfDay()->utc(),
         };
 
         // ---------- VISITS (lander_visits, ad only) ----------
