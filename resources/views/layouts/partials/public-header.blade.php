@@ -36,7 +36,7 @@
                          x-transition:enter-start="opacity-0 translate-y-1"
                          x-transition:enter-end="opacity-100 translate-y-0"
                          class="absolute left-0 mt-1 w-72 rounded-xl border border-gray-200 bg-white shadow-xl p-2 z-50">
-                        @foreach(config('calculators') as $calc)
+                        @foreach(collect(config('calculators'))->only(['reconstitution','glp-1','semaglutide-titration','tirzepatide-titration','peptide-cost-per-dose','peptide-half-life','bmi','goal-weight-timeline']) as $calc)
                             <a href="{{ route('calculators.show', $calc['slug']) }}"
                                class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-100 transition-colors">
                                 <span class="w-9 h-9 rounded-lg flex items-center justify-center text-lg shrink-0" style="background-color: {{ $calc['accent'] }}1a;">{{ $calc['emoji'] }}</span>
@@ -200,7 +200,7 @@
                     <svg class="w-4 h-4 transition-transform" :class="calcOpen && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
                 <div x-show="calcOpen" style="display:none;" class="pl-3 mt-0.5 space-y-0.5">
-                    @foreach(config('calculators') as $calc)
+                    @foreach(collect(config('calculators'))->only(['reconstitution','glp-1','semaglutide-titration','tirzepatide-titration','peptide-cost-per-dose','peptide-half-life','bmi','goal-weight-timeline']) as $calc)
                         <a href="{{ route('calculators.show', $calc['slug']) }}"
                            class="flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-sm {{ request()->routeIs('calculators.show') && request()->route('calculator') === $calc['slug'] ? 'text-nav-active bg-nav-active/10' : 'text-gray-600 hover:bg-surface-200' }} transition-colors">
                             <span>{{ $calc['emoji'] }}</span> {{ $calc['name'] }}
