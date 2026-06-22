@@ -3,10 +3,6 @@
     :description="\App\Models\Setting::getValue('seo_pages', 'home_description', 'Explore ' . ($stats['peptides'] ?? '68') . '+ peptides with research-backed guides on benefits, dosing protocols, side effects, and safety.')"
 >
 
-    @push('head')
-        @include('partials.schema-website')
-    @endpush
-
     {{-- Hero Section (search-first) --}}
     @include('home.partials.hero')
 

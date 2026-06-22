@@ -102,6 +102,7 @@ class PeptideController extends Controller
     {
         return $request->validate([
             'name' => 'required|string|max:255',
+            'popularity' => 'nullable|integer|min:0',
             'full_name' => 'nullable|string|max:255',
             'abbreviation' => 'nullable|string|max:100',
             'type' => 'nullable|string|max:255',

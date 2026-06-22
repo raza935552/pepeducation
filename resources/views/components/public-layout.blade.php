@@ -129,6 +129,11 @@
     @endunless
 
     @livewireStyles
+
+    {{-- Brand entity schema (WebSite + Organization) on every page — strengthens
+         the canonical "Professor Peptides" signal sitewide (vs the .org). --}}
+    @include('partials.schema-website')
+
     @stack('head')
 
     {{-- Buy CTA click tracking helper (fire-and-forget) --}}

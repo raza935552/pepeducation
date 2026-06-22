@@ -17,6 +17,16 @@
     <p class="mt-2 text-sm text-gray-500">
         Unpublished peptides will not appear on the public site.
     </p>
+
+    <div class="mt-4 pt-4 border-t border-gray-100">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Popularity / best-seller rank</label>
+        <input type="number" name="popularity" min="0" step="1"
+               value="{{ old('popularity', $peptide?->popularity ?? 0) }}"
+               class="input w-full" placeholder="0">
+        <p class="mt-1 text-xs text-gray-500">
+            Higher = shown first on the homepage &amp; /peptides (best-sellers lead). 0 = alphabetical tail.
+        </p>
+    </div>
 </div>
 
 <!-- BioLinx Product URL -->
