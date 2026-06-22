@@ -13,7 +13,7 @@ class HomeController extends Controller
         $featuredPeptides = Cache::remember('home_featured', 1800, function () {
             return Peptide::with('categories')
                 ->where('is_published', true)
-                ->orderBy('name')
+                ->orderByPopularity()
                 ->take(6)
                 ->get();
         });

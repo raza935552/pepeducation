@@ -35,7 +35,7 @@ class PeptideController extends Controller
             $query->where('research_status', $research);
         }
 
-        $peptides = $query->orderBy('name')->paginate(12);
+        $peptides = $query->orderByPopularity()->paginate(12);
         $categories = Category::withCount(['peptides' => fn($q) => $q->published()])
             ->having('peptides_count', '>', 0)
             ->orderBy('name')

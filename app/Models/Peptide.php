@@ -22,6 +22,7 @@ class Peptide extends Model
         'storage',
         'research_status',
         'is_published',
+        'popularity',
         'overview',
         'key_benefits',
         'mechanism_of_action',
@@ -98,6 +99,16 @@ class Peptide extends Model
     public function scopePublished($query)
     {
         return $query->where('is_published', true);
+    }
+
+    /**
+     * Order best-selling / most-popular peptides first (admin-curated `popularity`,
+     * higher = first), then alphabetical for the long tail (popularity 0). Single
+     * source of truth for "most popular" ordering across the site (home + /peptides).
+     */
+    public function scopeOrderByPopularity($query)
+    {
+        return $query->orderByDesc('popularity')->orderBy('name');
     }
 
     public function getResearchStatusBadgeAttribute(): array
