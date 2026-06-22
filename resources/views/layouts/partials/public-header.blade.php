@@ -35,7 +35,8 @@
                          x-transition:enter="transition ease-out duration-150"
                          x-transition:enter-start="opacity-0 translate-y-1"
                          x-transition:enter-end="opacity-100 translate-y-0"
-                         class="absolute left-0 mt-1 w-72 rounded-xl border border-gray-200 bg-white shadow-xl p-2 z-50">
+                         class="absolute left-0 top-full pt-2 w-72 z-50">
+                      <div class="rounded-xl border border-gray-200 bg-white shadow-xl p-2">
                         @foreach(collect(config('calculators'))->only(['reconstitution','glp-1','semaglutide-titration','tirzepatide-titration','peptide-cost-per-dose','peptide-half-life','bmi','goal-weight-timeline']) as $calc)
                             <a href="{{ route('calculators.show', $calc['slug']) }}"
                                class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-100 transition-colors">
@@ -51,6 +52,7 @@
                             View all calculators
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                         </a>
+                      </div>
                     </div>
                 </div>
                 <a href="{{ route('stack-builder') }}"
