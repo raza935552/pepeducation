@@ -25,6 +25,14 @@
             <p class="text-lg md:text-xl text-surface-300 mb-4 lg:mb-6">{{ $peptide->full_name }}</p>
         @endif
 
+        <!-- Freshness: visible reviewed/updated date (trust + freshness signal) -->
+        <p class="flex items-center gap-1.5 text-xs text-surface-400 mb-4">
+            <svg aria-hidden="true" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Last updated {{ ($peptide->updated_at ?? $peptide->created_at)->format('F Y') }}
+        </p>
+
         <!-- Categories -->
         <div class="flex flex-wrap gap-2">
             @foreach($peptide->categories as $category)
