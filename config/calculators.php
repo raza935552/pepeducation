@@ -342,6 +342,7 @@ return [
     // ---- Batch 1: peptide dosing & research tools ----
 
     'peptide-cost-per-dose' => [
+        'slug'        => 'peptide-cost-per-dose',
         'name'        => 'Peptide Cost Per Dose Calculator',
         'short'       => 'Cost Per Dose',
         'emoji'       => '💲',
@@ -367,6 +368,7 @@ return [
     ],
 
     'peptide-half-life' => [
+        'slug'        => 'peptide-half-life',
         'name'        => 'Peptide Half-Life & Clearance Calculator',
         'short'       => 'Half-Life',
         'emoji'       => '⏳',
@@ -392,6 +394,7 @@ return [
     ],
 
     'peptide-cycle-planner' => [
+        'slug'        => 'peptide-cycle-planner',
         'name'        => 'Peptide Cycle Planner',
         'short'       => 'Cycle Planner',
         'emoji'       => '🗓️',
@@ -417,6 +420,7 @@ return [
     ],
 
     'peptide-blend' => [
+        'slug'        => 'peptide-blend',
         'name'        => 'Peptide Blend Reconstitution Calculator',
         'short'       => 'Blend',
         'emoji'       => '⚗️',
@@ -442,6 +446,7 @@ return [
     ],
 
     'semaglutide-titration' => [
+        'slug'        => 'semaglutide-titration',
         'name'        => 'Semaglutide Titration Schedule',
         'short'       => 'Sema Titration',
         'emoji'       => '📈',
@@ -467,6 +472,7 @@ return [
     ],
 
     'tirzepatide-titration' => [
+        'slug'        => 'tirzepatide-titration',
         'name'        => 'Tirzepatide Titration Schedule',
         'short'       => 'Tirz Titration',
         'emoji'       => '📈',
@@ -492,6 +498,7 @@ return [
     ],
 
     'retatrutide-dosage' => [
+        'slug'        => 'retatrutide-dosage',
         'name'        => 'Retatrutide Dosage Calculator',
         'short'       => 'Retatrutide',
         'emoji'       => '🧪',
