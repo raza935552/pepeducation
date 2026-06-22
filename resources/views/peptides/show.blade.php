@@ -52,6 +52,7 @@
                         @endif
                         @include('peptides.partials.show-quick-stats')
                         @include('peptides.partials.show-molecular')
+                        @include('peptides.partials.show-compare-links')
                     </div>
                 </div>
             </div>

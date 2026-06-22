@@ -11,7 +11,8 @@
 
     @if($peptide->overview)
         <p class="text-gray-600 leading-relaxed text-lg mb-6">
-            {{ $peptide->overview }}
+            {{-- escape first (overview is plain text), then auto-link other peptides --}}
+            {!! app(\App\Services\PeptideAutoLinker::class)->link(e($peptide->overview), $peptide->id) !!}
         </p>
     @endif
 

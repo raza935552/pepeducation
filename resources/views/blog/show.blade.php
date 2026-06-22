@@ -101,7 +101,7 @@
             <article class="lg:col-span-3">
                 {{-- GrapeJS Rendered Content --}}
                 <div class="prose prose-lg max-w-none prose-headings:text-gray-900 prose-headings:font-bold prose-p:text-gray-600 prose-a:text-dark-600 prose-a:underline hover:prose-a:text-dark-800 prose-img:rounded-xl prose-img:shadow-sm">
-                    {!! $post->sanitizedHtml() !!}
+                    {!! app(\App\Services\PeptideAutoLinker::class)->link($post->sanitizedHtml()) !!}
                 </div>
 
                 {{-- Community CTA — convert warm readers into members --}}
