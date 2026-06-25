@@ -9,28 +9,28 @@ class BioLinxService
         return config('biolinx.name', 'BioLinx Labs');
     }
 
-    public static function homeUrl(string $context = 'home'): string
+    public static function homeUrl(string $context = 'home', ?string $discount = null): string
     {
         // Generic store link — route through /go so the click is logged and
         // fbclid/fbp/fbc + session/email are forwarded to Biolinx (closed loop).
-        return self::goWrap(null, $context);
+        return self::goWrap(null, $context, $discount);
     }
 
-    public static function urlForSlug(?string $slug, string $context = 'peptide'): string
+    public static function urlForSlug(?string $slug, string $context = 'peptide', ?string $discount = null): string
     {
-        return self::goWrap(self::resolveProductUrl($slug), $context);
+        return self::goWrap(self::resolveProductUrl($slug), $context, $discount);
     }
 
-    public static function urlForPeptide($peptide, string $context = 'peptide'): string
+    public static function urlForPeptide($peptide, string $context = 'peptide', ?string $discount = null): string
     {
         $direct = is_object($peptide) ? trim((string) ($peptide->biolinx_url ?? '')) : '';
         if ($direct !== '') {
-            return self::goWrap($direct, $context);
+            return self::goWrap($direct, $context, $discount);
         }
 
         $slug = is_object($peptide) ? ($peptide->slug ?? null) : $peptide;
 
-        return self::urlForSlug($slug, $context);
+        return self::urlForSlug($slug, $context, $discount);
     }
 
     /**
@@ -40,7 +40,7 @@ class BioLinxService
      *
      * @param  string|null  $dest  Specific Biolinx product URL, or null for the store home.
      */
-    private static function goWrap(?string $dest, string $context = 'peptide'): string
+    private static function goWrap(?string $dest, string $context = 'peptide', ?string $discount = null): string
     {
         $slug = config('biolinx.go_slug', 'biolinxlabs');
         $base = url('/go/'.$slug);
@@ -53,7 +53,16 @@ class BioLinxService
         // (/go ignores extra query params other than dest; per-CTA context is
         // logged server-side in buy_clicks via ppTrackBuyClick.)
         if (!$dest || rtrim($dest, '/') === $home) {
-            return $base;
+            // Discount still applies on the store home (Biolinx reads ?discount=).
+            return $discount ? $base.'?dest='.rawurlencode(rtrim($home, '/').'/?discount='.rawurlencode($discount)) : $base;
+        }
+
+        // Bake an auto-applying discount into the destination so Biolinx's
+        // DiscountCodeMiddleware (?discount=) applies it at checkout. The /go
+        // builder preserves the dest's own query string.
+        if ($discount) {
+            $sep = str_contains($dest, '?') ? '&' : '?';
+            $dest .= $sep.'discount='.rawurlencode($discount);
         }
 
         return $base.'?dest='.rawurlencode($dest);

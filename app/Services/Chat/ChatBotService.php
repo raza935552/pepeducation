@@ -18,6 +18,10 @@ use Illuminate\Support\Str;
  */
 class ChatBotService
 {
+    /** Exclusive PP→Biolinx discount, auto-applied via the bridge link (?discount=). */
+    private const BIOLINX_DISCOUNT = 'PROF10';
+    private const BIOLINX_DISCOUNT_PCT = 10;
+
     public function greeting(ChatConversation $conv): string
     {
         $name = $conv->displayName();
@@ -90,7 +94,11 @@ class ChatBotService
         }
         $out .= "\n📚 Full profile: " . route('peptides.show', $p->slug);
         if (BioLinxService::hasProductForPeptide($p)) {
-            $out .= "\n🛒 Buy at " . BioLinxService::name() . ": " . BioLinxService::urlForPeptide($p, 'chat');
+            $url = BioLinxService::urlForPeptide($p, 'chat', self::BIOLINX_DISCOUNT);
+            $out .= "\n\n🛒 Get " . $p->name . " at " . BioLinxService::name() . " — "
+                . self::BIOLINX_DISCOUNT_PCT . "% OFF auto-applied for Professor Peptides readers (code " . self::BIOLINX_DISCOUNT . "):"
+                . "\n👉 " . $url
+                . "\n✓ Discount applies automatically · free shipping over \$200 · fast discreet delivery";
         }
         return $out . "\n\n(Educational — for research use only.)";
     }
@@ -170,12 +178,16 @@ class ChatBotService
         foreach ($this->catalog() as $p) {
             $n = strtolower($p->name);
             if ($n !== '' && str_contains($lc, $n) && BioLinxService::hasProductForPeptide($p)) {
-                return "🛒 You can buy " . $p->name . " at our partner store " . BioLinxService::name() . ":\n👉 " . BioLinxService::urlForPeptide($p, 'chat')
-                    . "\n\n(We're the education side — orders & shipping are handled on the store.)";
+                return "🛒 Buy " . $p->name . " at " . BioLinxService::name() . " — and as a Professor Peptides reader you get "
+                    . self::BIOLINX_DISCOUNT_PCT . "% OFF, auto-applied at checkout (code " . self::BIOLINX_DISCOUNT . "):"
+                    . "\n👉 " . BioLinxService::urlForPeptide($p, 'chat', self::BIOLINX_DISCOUNT)
+                    . "\n✓ Free shipping over \$200. (We're the education side — orders ship from the store.)";
             }
         }
-        return "🛒 Peptides are available at our partner store, " . BioLinxService::name() . ":\n👉 " . BioLinxService::homeUrl('chat')
-            . "\n\nTell me which peptide you're after and I'll link it directly.";
+        return "🛒 Peptides ship from our partner store, " . BioLinxService::name() . " — and Professor Peptides readers get "
+            . self::BIOLINX_DISCOUNT_PCT . "% OFF with code " . self::BIOLINX_DISCOUNT . " (auto-applied at checkout):"
+            . "\n👉 " . BioLinxService::homeUrl('chat', self::BIOLINX_DISCOUNT)
+            . "\nTell me which peptide you want and I'll link it directly with the discount.";
     }
 
     /* ---------------- Policy / about / orders ---------------- */
