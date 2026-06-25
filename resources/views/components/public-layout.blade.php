@@ -201,5 +201,7 @@
     @if(\App\Models\Setting::getValue('tracking', 'cookie_consent_enabled', false))
         @include('partials.cookie-consent')
     @endif
+
+    <x-chat-widget />
 </body>
 </html>

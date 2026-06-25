@@ -129,6 +129,16 @@ Route::get('/lead-magnet/{slug}/download', [LeadMagnetController::class, 'downlo
 Route::post('/form-submit', [\App\Http\Controllers\FormSubmitController::class, 'store'])
     ->name('form.submit');
 
+// Live chat widget (public, visitor-facing). Polling-based.
+Route::prefix('chat')->name('chat.')->group(function () {
+    Route::post('/init', [\App\Http\Controllers\ChatWidgetController::class, 'init'])->name('init')->middleware('throttle:60,1');
+    Route::post('/start', [\App\Http\Controllers\ChatWidgetController::class, 'start'])->name('start')->middleware('throttle:8,1');
+    Route::post('/send', [\App\Http\Controllers\ChatWidgetController::class, 'send'])->name('send')->middleware('throttle:30,1');
+    Route::post('/handoff', [\App\Http\Controllers\ChatWidgetController::class, 'handoff'])->name('handoff')->middleware('throttle:6,1');
+    Route::post('/rate', [\App\Http\Controllers\ChatWidgetController::class, 'rate'])->name('rate')->middleware('throttle:10,1');
+    Route::get('/poll', [\App\Http\Controllers\ChatWidgetController::class, 'poll'])->name('poll')->middleware('throttle:120,1');
+});
+
 // Auth routes (must come before catch-all)
 require __DIR__.'/auth.php';
 

@@ -38,6 +38,8 @@
             </main>
         </div>
 
+        <x-chat-widget />
+
         @stack('scripts')
     </body>
 </html>

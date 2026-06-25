@@ -1,0 +1,259 @@
+{{-- Professor Peptides live chat widget (polling-based, no websockets). --}}
+<div x-data="ppChatWidget()" x-init="boot()" class="pp-cw" x-cloak>
+
+    {{-- Attention teaser --}}
+    <div x-show="showTeaser && !open" x-transition.scale.origin.bottom.right class="cw-teaser" @click="toggle()">
+        <button type="button" @click.stop="dismissTeaser()" class="cw-teaser-x" aria-label="Dismiss">&times;</button>
+        <span>👋 Questions about peptides? <b>Ask me</b></span>
+    </div>
+
+    {{-- Launcher bubble --}}
+    <button type="button" @click="toggle()" x-show="!open" x-transition.scale.origin.bottom.right
+            class="cw-bubble" :class="attn ? 'cw-attn' : ''" aria-label="Chat with us">
+        <svg x-show="!unread" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 01-4-.8L3 20l1.3-3.9A7.96 7.96 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+        </svg>
+        <span x-show="unread" x-text="unread" class="cw-bubble-badge"></span>
+        <span x-show="attn && !unread" class="cw-attn-dot"></span>
+    </button>
+
+    {{-- Panel --}}
+    <div x-show="open" x-transition.scale.origin.bottom.right class="cw-panel">
+        <div class="cw-header">
+            <div class="flex items-center gap-3">
+                <div class="cw-avatar">
+                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 4a3 3 0 110 6 3 3 0 010-6zm0 14a8 8 0 01-6.3-3.1c.03-2 4.2-3.1 6.3-3.1s6.27 1.1 6.3 3.1A8 8 0 0112 20z"/></svg>
+                </div>
+                <div class="leading-tight">
+                    <p class="font-semibold text-white text-[15px]">Professor Peptides</p>
+                    <p class="flex items-center gap-1.5 text-[12px] text-white/80">
+                        <span class="cw-dot" :class="online ? 'cw-dot-on' : 'cw-dot-off'"></span>
+                        <span x-text="online ? 'Online — usually replies in minutes' : 'Ask me anything — research & education'"></span>
+                    </p>
+                </div>
+            </div>
+            <button type="button" @click="toggle()" class="text-white/80 hover:text-white" aria-label="Close">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+        </div>
+
+        {{-- Pre-chat --}}
+        <div x-show="!started" class="cw-prechat">
+            <div class="text-center mb-5">
+                <div class="cw-prechat-icon">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 01-4-.8L3 20l1.3-3.9A7.96 7.96 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                </div>
+                <h3 class="font-bold text-lg mt-3" style="color:rgb(var(--dark,15 23 42));">Hi there 👋</h3>
+                <p class="text-sm text-gray-500 mt-1">Ask about any peptide, our calculators &amp; guides, or where to buy.</p>
+            </div>
+            <div class="space-y-3">
+                <input type="text" x-model="name" placeholder="Your name (optional)" class="cw-input">
+                <input type="email" x-model="email" placeholder="Email *" class="cw-input" @keydown.enter="begin()">
+                <p x-show="error" x-text="error" class="text-xs text-red-500"></p>
+                <button type="button" @click="begin()" :disabled="busy" class="cw-btn-primary w-full">
+                    <span x-show="!busy">Start chat</span><span x-show="busy">…</span>
+                </button>
+                <p class="text-[11px] text-gray-400 text-center">We'll only use your email to reply to you.</p>
+            </div>
+        </div>
+
+        {{-- Conversation --}}
+        <div x-show="started" x-ref="scroll" class="cw-body">
+            <template x-for="m in messages" :key="m.id">
+                <div class="cw-row" :class="m.sender === 'visitor' ? 'cw-row-out' : 'cw-row-in'">
+                    <div class="cw-msg" :class="m.sender === 'visitor' ? 'cw-out' : 'cw-in'">
+                        <p class="break-words" x-html="format(m.body)"></p>
+                        <span class="cw-time" x-text="(m.sender !== 'visitor' && m.author_name ? m.author_name + ' · ' : '') + m.time"></span>
+                    </div>
+                </div>
+            </template>
+
+            <div x-show="started && messages.length <= 1" x-transition class="cw-chips">
+                <button type="button" class="cw-chip" @click="suggest('What are the most popular peptides?')">🧪 Popular peptides</button>
+                <button type="button" class="cw-chip" @click="suggest('Show me your calculators')">🧮 Calculators</button>
+                <button type="button" class="cw-chip" @click="suggest('Where can I buy peptides?')">🛒 Where to buy</button>
+            </div>
+
+            <div x-show="botTyping" class="cw-row cw-row-in">
+                <div class="cw-msg cw-in cw-typing"><span>Assistant is typing</span><span class="cw-dots"><i></i><i></i><i></i></span></div>
+            </div>
+        </div>
+
+        {{-- CSAT --}}
+        <div x-show="started && rating === null && messages.length >= 3" class="cw-csat">
+            <span>Was this helpful?</span>
+            <button type="button" @click="rate(1)" class="cw-csat-btn" aria-label="Helpful">👍</button>
+            <button type="button" @click="rate(0)" class="cw-csat-btn" aria-label="Not helpful">👎</button>
+        </div>
+        <div x-show="rated" x-transition class="cw-csat cw-csat-thanks">Thanks for your feedback! 🙏</div>
+
+        {{-- Talk to a human --}}
+        <div x-show="started && !humanRequested" class="cw-human-bar">
+            <button type="button" @click="requestHuman()" class="cw-human-btn">🙋 Talk to a human</button>
+        </div>
+
+        {{-- Input --}}
+        <div x-show="started" class="cw-footer">
+            <input type="text" x-model="input" @keydown.enter="sendMsg()" placeholder="Type a message…" class="cw-msg-input">
+            <button type="button" @click="sendMsg()" :disabled="!input.trim()" class="cw-send" aria-label="Send">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            </button>
+        </div>
+        <div class="cw-brand">Professor Peptides · educational, research use only</div>
+    </div>
+</div>
+
+@once
+<style>
+.pp-cw [x-cloak], .pp-cw[x-cloak]{display:none !important;}
+.cw-bubble{position:fixed;bottom:24px;right:24px;width:60px;height:60px;border-radius:9999px;display:flex;align-items:center;justify-content:center;color:#fff;background:rgb(var(--btn-primary-bg,37 99 235));box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:9998;transition:transform .2s,box-shadow .2s;}
+.cw-bubble:hover{transform:scale(1.06);}
+.cw-attn{animation:cw-wiggle 2.6s ease-in-out infinite;}
+.cw-attn::before{content:'';position:absolute;inset:0;border-radius:9999px;background:rgb(var(--primary,37 99 235));z-index:-1;animation:cw-pulse 2s ease-out infinite;}
+@keyframes cw-pulse{0%{transform:scale(1);opacity:.5;}100%{transform:scale(1.9);opacity:0;}}
+@keyframes cw-wiggle{0%,88%,100%{transform:rotate(0);}90%{transform:rotate(-12deg);}93%{transform:rotate(10deg);}96%{transform:rotate(-6deg);}}
+.cw-attn:hover{animation:none;}
+.cw-attn-dot{position:absolute;top:-2px;right:-2px;width:14px;height:14px;border-radius:9999px;background:#22c55e;border:2px solid #fff;}
+.cw-bubble-badge{position:absolute;top:-2px;right:-2px;min-width:20px;height:20px;padding:0 5px;border-radius:9999px;background:#ef4444;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff;}
+.cw-teaser{position:fixed;bottom:96px;right:24px;max-width:235px;background:#fff;color:#1f2937;font-size:13.5px;line-height:1.4;padding:12px 30px 12px 14px;border-radius:16px;border-bottom-right-radius:4px;box-shadow:0 12px 30px rgba(0,0,0,.18);cursor:pointer;z-index:9998;}
+.cw-teaser b{color:rgb(var(--primary,37 99 235));}
+.cw-teaser-x{position:absolute;top:6px;right:8px;font-size:16px;line-height:1;color:#9ca3af;}
+.cw-panel{position:fixed;bottom:24px;right:24px;width:380px;max-width:calc(100vw - 32px);height:600px;max-height:calc(100vh - 48px);background:#fff;border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,.28);display:flex;flex-direction:column;overflow:hidden;z-index:9999;}
+.cw-header{display:flex;align-items:center;justify-content:space-between;padding:16px;background:rgb(var(--btn-primary-bg,37 99 235));color:#fff;}
+.cw-header p{color:#fff;}
+.cw-avatar{width:40px;height:40px;border-radius:9999px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;}
+.cw-dot{width:8px;height:8px;border-radius:9999px;display:inline-block;}
+.cw-dot-on{background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.3);}
+.cw-dot-off{background:#fbbf24;}
+.cw-prechat{flex:1;padding:24px;overflow-y:auto;display:flex;flex-direction:column;justify-content:center;}
+.cw-prechat-icon{width:56px;height:56px;border-radius:9999px;margin:0 auto;display:flex;align-items:center;justify-content:center;background:rgb(var(--primary,37 99 235));}
+.cw-input{width:100%;padding:11px 14px;border:1px solid #e5e7eb;border-radius:12px;font-size:14px;outline:none;}
+.cw-input:focus{border-color:rgb(var(--primary,37 99 235));box-shadow:0 0 0 3px rgba(37,99,235,.12);}
+.cw-btn-primary{padding:12px;border-radius:12px;font-weight:600;font-size:14px;color:rgb(var(--btn-primary-text,255 255 255));background:rgb(var(--btn-primary-bg,37 99 235));}
+.cw-btn-primary:disabled{opacity:.6;}
+.cw-body{flex:1;padding:16px;overflow-y:auto;background:rgb(var(--bg-50,245 245 245));display:flex;flex-direction:column;gap:8px;}
+.cw-row{display:flex;}
+.cw-row-out{justify-content:flex-end;}
+.cw-row-in{justify-content:flex-start;}
+.cw-msg{max-width:80%;padding:9px 13px;border-radius:16px;font-size:14px;line-height:1.45;box-shadow:0 1px 2px rgba(0,0,0,.06);}
+.cw-out{background:rgb(var(--primary,37 99 235));color:#fff;border-bottom-right-radius:4px;}
+.cw-in{background:#fff;color:#1f2937;border:1px solid #eef0f2;border-bottom-left-radius:4px;}
+.cw-time{display:block;font-size:10px;opacity:.6;margin-top:3px;text-align:right;}
+.cw-typing{display:inline-flex;align-items:center;gap:8px;color:#6b7280;font-size:12.5px;}
+.cw-dots{display:inline-flex;gap:3px;}
+.cw-dots i{width:6px;height:6px;border-radius:9999px;background:#9ca3af;display:inline-block;animation:cw-blink 1.2s infinite both;}
+.cw-dots i:nth-child(2){animation-delay:.2s;}
+.cw-dots i:nth-child(3){animation-delay:.4s;}
+@keyframes cw-blink{0%,80%,100%{opacity:.25;}40%{opacity:1;}}
+.cw-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:8px;}
+.cw-chip{font-size:12.5px;padding:7px 12px;border-radius:9999px;background:#fff;border:1px solid rgb(var(--primary,37 99 235));color:rgb(var(--primary,37 99 235));font-weight:600;}
+.cw-chip:hover{background:rgb(var(--primary,37 99 235));color:#fff;}
+.cw-csat{display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 12px;background:#fff;border-top:1px solid #f1f3f5;font-size:13px;color:#6b7280;}
+.cw-csat-btn{font-size:18px;line-height:1;}
+.cw-csat-btn:hover{transform:scale(1.25);}
+.cw-csat-thanks{color:rgb(var(--primary,37 99 235));font-weight:600;}
+.cw-human-bar{padding:6px 12px;background:#fff;border-top:1px solid #f1f3f5;text-align:center;}
+.cw-human-btn{font-size:12.5px;color:rgb(var(--primary,37 99 235));font-weight:600;}
+.cw-human-btn:hover{text-decoration:underline;}
+.cw-footer{display:flex;align-items:center;gap:8px;padding:12px;border-top:1px solid #eef0f2;background:#fff;}
+.cw-msg-input{flex:1;padding:11px 14px;border:1px solid #e5e7eb;border-radius:9999px;font-size:14px;outline:none;}
+.cw-msg-input:focus{border-color:rgb(var(--primary,37 99 235));box-shadow:0 0 0 3px rgba(37,99,235,.12);}
+.cw-send{width:42px;height:42px;border-radius:9999px;display:flex;align-items:center;justify-content:center;color:#fff;background:rgb(var(--btn-primary-bg,37 99 235));flex-shrink:0;}
+.cw-send:disabled{opacity:.4;}
+.cw-brand{text-align:center;font-size:10px;color:#9ca3af;padding:6px 0 8px;background:#fff;}
+@media(max-width:480px){.cw-panel{width:calc(100vw - 16px);height:calc(100vh - 24px);bottom:8px;right:8px;}.cw-bubble{bottom:16px;right:16px;}.cw-teaser{bottom:84px;right:16px;}}
+</style>
+<script>
+window.ppChatWidget = function () {
+    return {
+        open:false, started:false, online:false, unread:0, busy:false, error:'',
+        token:null, name:'', email:'', input:'', messages:[], attn:false, showTeaser:false,
+        humanRequested:false, botTyping:false, rating:null, rated:false, _botTimer:null,
+        csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+
+        async boot(){
+            this.token = localStorage.getItem('ppcw_token');
+            try {
+                const r = await this.api('{{ route('chat.init') }}', {token:this.token});
+                this.online = r.online;
+                if (r.started){ this.started=true; this.token=r.token; this.name=r.name||''; this.messages=r.messages||[]; this.humanRequested=!!r.human_requested; this.rating=(r.rating===0||r.rating===1)?r.rating:null; }
+            } catch(e){}
+            setInterval(()=>this.refreshOnline(), 60000);
+            setInterval(()=>this.poll(), 7000);
+            this.attn = !localStorage.getItem('ppcw_opened') && !this.started;
+            if (this.attn){
+                setTimeout(()=>{ if(!this.open && !this.started) this.showTeaser=true; }, 4000);
+                document.addEventListener('mouseout', (e)=>{ if(e.clientY<=0 && !e.relatedTarget && this.attn && !this.open && !this.started) this.showTeaser=true; });
+            }
+        },
+        toggle(){ this.open=!this.open; if(this.open){ this.unread=0; this.attn=false; this.showTeaser=false; localStorage.setItem('ppcw_opened','1'); this.$nextTick(()=>this.scrollDown()); } },
+        dismissTeaser(){ this.showTeaser=false; this.attn=false; localStorage.setItem('ppcw_opened','1'); },
+
+        async begin(){
+            this.error='';
+            if(!this.email.trim() || !this.email.includes('@')){ this.error='Please enter a valid email.'; return; }
+            this.busy=true;
+            try {
+                const r = await this.api('{{ route('chat.start') }}', {name:this.name, email:this.email, message:''});
+                this.token=r.token; localStorage.setItem('ppcw_token', this.token);
+                this.online=r.online; this.messages=r.messages||[]; this.started=true;
+                this.humanRequested=!!r.human_requested; this.rating=(r.rating===0||r.rating===1)?r.rating:null;
+                this.$nextTick(()=>this.scrollDown());
+            } catch(e){ this.error='Something went wrong. Please try again.'; }
+            this.busy=false;
+        },
+
+        async sendMsg(forced){
+            const body = (typeof forced==='string'?forced:this.input).trim(); if(!body) return;
+            if(typeof forced!=='string') this.input='';
+            try {
+                this.botTyping = !this.humanRequested;
+                const r = await this.api('{{ route('chat.send') }}', {token:this.token, body});
+                this.addMsg(r.message); this.scrollDown();
+                const replies = r.replies||[];
+                if (replies.length){
+                    clearTimeout(this._botTimer);
+                    this._botTimer = setTimeout(()=>{ replies.forEach(m=>this.addMsg(m)); this.botTyping=false; this.scrollDown(); }, 500);
+                } else { this.botTyping=false; }
+            } catch(e){ this.botTyping=false; if(typeof forced!=='string') this.input=body; }
+        },
+        suggest(t){ this.sendMsg(t); },
+
+        async requestHuman(){
+            if(this.humanRequested) return;
+            this.humanRequested=true; this.botTyping=false;
+            try { const r = await this.api('{{ route('chat.handoff') }}', {token:this.token}); if(r&&r.message){ this.addMsg(r.message); this.scrollDown(); } } catch(e){}
+        },
+        async rate(v){
+            if(this.rating!==null) return;
+            this.rating=v; this.rated=true;
+            try { await this.api('{{ route('chat.rate') }}', {token:this.token, rating:v}); } catch(e){}
+            setTimeout(()=>{ this.rated=false; }, 4000);
+        },
+
+        async poll(){
+            if(!this.started || !this.token) return;
+            const after = this.messages.length ? this.messages[this.messages.length-1].id : 0;
+            try {
+                const r = await fetch('{{ route('chat.poll') }}?token='+encodeURIComponent(this.token)+'&after='+after);
+                const d = await r.json();
+                (d.messages||[]).forEach(m=>{ if(m.sender!=='visitor'){ this.addMsg(m); if(!this.open) this.unread++; } });
+                if((d.messages||[]).length) this.scrollDown();
+            } catch(e){}
+        },
+        async refreshOnline(){ try { const r = await this.api('{{ route('chat.init') }}', {token:this.token}); this.online=r.online; } catch(e){} },
+
+        format(text){
+            const esc = String(text==null?'':text).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+            return esc.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener" style="text-decoration:underline;">$1</a>').replace(/\n/g,'<br>');
+        },
+        addMsg(m){ if(!m || this.messages.some(x=>x.id===m.id)) return; if(m.sender && m.sender!=='visitor') this.botTyping=false; this.messages.push(m); },
+        scrollDown(){ this.$nextTick(()=>{ const s=this.$refs.scroll; if(s) s.scrollTop=s.scrollHeight; }); },
+        async api(url, payload){
+            const r = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json','X-CSRF-TOKEN':this.csrf,'Accept':'application/json'}, body:JSON.stringify(payload)});
+            if(!r.ok) throw new Error('http'); return r.json();
+        },
+    };
+};
+</script>
+@endonce

@@ -50,6 +50,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/visitor-log', [VisitorLogController::class, 'index'])->name('visitor-log');
     Route::get('/visitor-log/export', [VisitorLogController::class, 'export'])->name('visitor-log.export');
 
+    // Live Chat
+    Route::get('live-chat', [\App\Http\Controllers\Admin\LiveChatController::class, 'index'])->name('live-chat.index');
+    Route::post('live-chat/heartbeat', [\App\Http\Controllers\Admin\LiveChatController::class, 'heartbeat'])->name('live-chat.heartbeat');
+    Route::get('live-chat/list', [\App\Http\Controllers\Admin\LiveChatController::class, 'list'])->name('live-chat.list');
+    Route::get('live-chat/{conversation}', [\App\Http\Controllers\Admin\LiveChatController::class, 'show'])->name('live-chat.show');
+    Route::post('live-chat/{conversation}/reply', [\App\Http\Controllers\Admin\LiveChatController::class, 'reply'])->name('live-chat.reply');
+    Route::post('live-chat/{conversation}/close', [\App\Http\Controllers\Admin\LiveChatController::class, 'close'])->name('live-chat.close');
+
     // Peptides
     Route::resource('peptides', PeptideController::class);
     Route::patch('peptides/{peptide}/toggle-publish', [PeptideController::class, 'togglePublish'])
