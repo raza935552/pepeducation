@@ -1,85 +1,75 @@
-{{-- Professor Peptides live chat widget (polling-based, no websockets). --}}
+{{-- Professor Peptides live chat widget — self-contained (no Tailwind/app.css
+     or csrf-meta dependency) so it works on the main site AND standalone
+     landers. Needs Alpine; the main layout already loads it, landers include
+     it via partials.chat-embed. Polling-based, no websockets. --}}
 <div x-data="ppChatWidget()" x-init="boot()" class="pp-cw" x-cloak>
 
-    {{-- Attention teaser --}}
     <div x-show="showTeaser && !open" x-transition.scale.origin.bottom.right class="cw-teaser" @click="toggle()">
         <button type="button" @click.stop="dismissTeaser()" class="cw-teaser-x" aria-label="Dismiss">&times;</button>
         <span>👋 Questions about peptides? <b>Ask me</b></span>
     </div>
 
-    {{-- Launcher bubble --}}
     <button type="button" @click="toggle()" x-show="!open" x-transition.scale.origin.bottom.right
             class="cw-bubble" :class="attn ? 'cw-attn' : ''" aria-label="Chat with us">
-        <svg x-show="!unread" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg x-show="!unread" width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 01-4-.8L3 20l1.3-3.9A7.96 7.96 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
         </svg>
         <span x-show="unread" x-text="unread" class="cw-bubble-badge"></span>
         <span x-show="attn && !unread" class="cw-attn-dot"></span>
     </button>
 
-    {{-- Panel --}}
     <div x-show="open" x-transition.scale.origin.bottom.right class="cw-panel">
         <div class="cw-header">
-            <div class="flex items-center gap-3">
+            <div class="cw-h-left">
                 <div class="cw-avatar">
-                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 4a3 3 0 110 6 3 3 0 010-6zm0 14a8 8 0 01-6.3-3.1c.03-2 4.2-3.1 6.3-3.1s6.27 1.1 6.3 3.1A8 8 0 0112 20z"/></svg>
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 4a3 3 0 110 6 3 3 0 010-6zm0 14a8 8 0 01-6.3-3.1c.03-2 4.2-3.1 6.3-3.1s6.27 1.1 6.3 3.1A8 8 0 0112 20z"/></svg>
                 </div>
-                <div class="leading-tight">
-                    <p class="font-semibold text-white text-[15px]">Professor Peptides</p>
-                    <p class="flex items-center gap-1.5 text-[12px] text-white/80">
-                        <span class="cw-dot" :class="online ? 'cw-dot-on' : 'cw-dot-off'"></span>
-                        <span x-text="online ? 'Online — usually replies in minutes' : 'Ask me anything — research & education'"></span>
-                    </p>
+                <div>
+                    <p class="cw-title">Professor Peptides</p>
+                    <p class="cw-sub"><span class="cw-dot" :class="online ? 'cw-dot-on' : 'cw-dot-off'"></span><span x-text="online ? 'Online — usually replies in minutes' : 'Ask me anything — research & education'"></span></p>
                 </div>
             </div>
-            <button type="button" @click="toggle()" class="text-white/80 hover:text-white" aria-label="Close">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            <button type="button" @click="toggle()" class="cw-close" aria-label="Close">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </button>
         </div>
 
-        {{-- Pre-chat --}}
         <div x-show="!started" class="cw-prechat">
-            <div class="text-center mb-5">
+            <div class="cw-pc-head">
                 <div class="cw-prechat-icon">
-                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 01-4-.8L3 20l1.3-3.9A7.96 7.96 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                    <svg width="28" height="28" fill="none" stroke="#fff" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 01-4-.8L3 20l1.3-3.9A7.96 7.96 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
                 </div>
-                <h3 class="font-bold text-lg mt-3" style="color:rgb(var(--dark,15 23 42));">Hi there 👋</h3>
-                <p class="text-sm text-gray-500 mt-1">Ask about any peptide, our calculators &amp; guides, or where to buy.</p>
+                <h3 class="cw-pc-title">Hi there 👋</h3>
+                <p class="cw-pc-sub">Ask about any peptide, our calculators &amp; guides, or where to buy.</p>
             </div>
-            <div class="space-y-3">
+            <div class="cw-pc-form">
                 <input type="text" x-model="name" placeholder="Your name (optional)" class="cw-input">
                 <input type="email" x-model="email" placeholder="Email *" class="cw-input" @keydown.enter="begin()">
-                <p x-show="error" x-text="error" class="text-xs text-red-500"></p>
-                <button type="button" @click="begin()" :disabled="busy" class="cw-btn-primary w-full">
-                    <span x-show="!busy">Start chat</span><span x-show="busy">…</span>
-                </button>
-                <p class="text-[11px] text-gray-400 text-center">We'll only use your email to reply to you.</p>
+                <p x-show="error" x-text="error" class="cw-err"></p>
+                <button type="button" @click="begin()" :disabled="busy" class="cw-btn-primary"><span x-show="!busy">Start chat</span><span x-show="busy">…</span></button>
+                <p class="cw-note">We'll only use your email to reply to you.</p>
             </div>
         </div>
 
-        {{-- Conversation --}}
         <div x-show="started" x-ref="scroll" class="cw-body">
             <template x-for="m in messages" :key="m.id">
                 <div class="cw-row" :class="m.sender === 'visitor' ? 'cw-row-out' : 'cw-row-in'">
                     <div class="cw-msg" :class="m.sender === 'visitor' ? 'cw-out' : 'cw-in'">
-                        <p class="break-words" x-html="format(m.body)"></p>
+                        <p class="cw-msg-body" x-html="format(m.body)"></p>
                         <span class="cw-time" x-text="(m.sender !== 'visitor' && m.author_name ? m.author_name + ' · ' : '') + m.time"></span>
                     </div>
                 </div>
             </template>
-
             <div x-show="started && messages.length <= 1" x-transition class="cw-chips">
                 <button type="button" class="cw-chip" @click="suggest('What are the most popular peptides?')">🧪 Popular peptides</button>
                 <button type="button" class="cw-chip" @click="suggest('Show me your calculators')">🧮 Calculators</button>
                 <button type="button" class="cw-chip" @click="suggest('Where can I buy peptides?')">🛒 Where to buy</button>
             </div>
-
             <div x-show="botTyping" class="cw-row cw-row-in">
                 <div class="cw-msg cw-in cw-typing"><span>Assistant is typing</span><span class="cw-dots"><i></i><i></i><i></i></span></div>
             </div>
         </div>
 
-        {{-- CSAT --}}
         <div x-show="started && rating === null && messages.length >= 3" class="cw-csat">
             <span>Was this helpful?</span>
             <button type="button" @click="rate(1)" class="cw-csat-btn" aria-label="Helpful">👍</button>
@@ -87,16 +77,14 @@
         </div>
         <div x-show="rated" x-transition class="cw-csat cw-csat-thanks">Thanks for your feedback! 🙏</div>
 
-        {{-- Talk to a human --}}
         <div x-show="started && !humanRequested" class="cw-human-bar">
             <button type="button" @click="requestHuman()" class="cw-human-btn">🙋 Talk to a human</button>
         </div>
 
-        {{-- Input --}}
         <div x-show="started" class="cw-footer">
             <input type="text" x-model="input" @keydown.enter="sendMsg()" placeholder="Type a message…" class="cw-msg-input">
             <button type="button" @click="sendMsg()" :disabled="!input.trim()" class="cw-send" aria-label="Send">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
             </button>
         </div>
         <div class="cw-brand">Professor Peptides · educational, research use only</div>
@@ -106,7 +94,9 @@
 @once
 <style>
 .pp-cw [x-cloak], .pp-cw[x-cloak]{display:none !important;}
-.cw-bubble{position:fixed;bottom:24px;right:24px;width:60px;height:60px;border-radius:9999px;display:flex;align-items:center;justify-content:center;color:#fff;background:rgb(var(--btn-primary-bg,37 99 235));box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:9998;transition:transform .2s,box-shadow .2s;}
+.pp-cw{font-family:Figtree,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;}
+.pp-cw button{cursor:pointer;border:0;background:none;font-family:inherit;}
+.cw-bubble{position:fixed;bottom:24px;right:24px;width:60px;height:60px;border-radius:9999px;display:flex;align-items:center;justify-content:center;color:#fff;background:rgb(var(--btn-primary-bg,37 99 235));box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:2147483000;transition:transform .2s,box-shadow .2s;}
 .cw-bubble:hover{transform:scale(1.06);}
 .cw-attn{animation:cw-wiggle 2.6s ease-in-out infinite;}
 .cw-attn::before{content:'';position:absolute;inset:0;border-radius:9999px;background:rgb(var(--primary,37 99 235));z-index:-1;animation:cw-pulse 2s ease-out infinite;}
@@ -115,27 +105,38 @@
 .cw-attn:hover{animation:none;}
 .cw-attn-dot{position:absolute;top:-2px;right:-2px;width:14px;height:14px;border-radius:9999px;background:#22c55e;border:2px solid #fff;}
 .cw-bubble-badge{position:absolute;top:-2px;right:-2px;min-width:20px;height:20px;padding:0 5px;border-radius:9999px;background:#ef4444;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff;}
-.cw-teaser{position:fixed;bottom:96px;right:24px;max-width:235px;background:#fff;color:#1f2937;font-size:13.5px;line-height:1.4;padding:12px 30px 12px 14px;border-radius:16px;border-bottom-right-radius:4px;box-shadow:0 12px 30px rgba(0,0,0,.18);cursor:pointer;z-index:9998;}
+.cw-teaser{position:fixed;bottom:96px;right:24px;max-width:235px;background:#fff;color:#1f2937;font-size:13.5px;line-height:1.4;padding:12px 30px 12px 14px;border-radius:16px;border-bottom-right-radius:4px;box-shadow:0 12px 30px rgba(0,0,0,.18);cursor:pointer;z-index:2147483000;}
 .cw-teaser b{color:rgb(var(--primary,37 99 235));}
 .cw-teaser-x{position:absolute;top:6px;right:8px;font-size:16px;line-height:1;color:#9ca3af;}
-.cw-panel{position:fixed;bottom:24px;right:24px;width:380px;max-width:calc(100vw - 32px);height:600px;max-height:calc(100vh - 48px);background:#fff;border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,.28);display:flex;flex-direction:column;overflow:hidden;z-index:9999;}
+.cw-panel{position:fixed;bottom:24px;right:24px;width:380px;max-width:calc(100vw - 32px);height:600px;max-height:calc(100vh - 48px);background:#fff;border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,.28);display:flex;flex-direction:column;overflow:hidden;z-index:2147483000;}
 .cw-header{display:flex;align-items:center;justify-content:space-between;padding:16px;background:rgb(var(--btn-primary-bg,37 99 235));color:#fff;}
-.cw-header p{color:#fff;}
-.cw-avatar{width:40px;height:40px;border-radius:9999px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;}
+.cw-h-left{display:flex;align-items:center;gap:12px;}
+.cw-title{margin:0;font-weight:600;color:#fff;font-size:15px;line-height:1.2;}
+.cw-sub{margin:2px 0 0;display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.85);line-height:1.2;}
+.cw-close{color:rgba(255,255,255,.8);}
+.cw-close:hover{color:#fff;}
+.cw-avatar{width:40px;height:40px;border-radius:9999px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;color:#fff;}
 .cw-dot{width:8px;height:8px;border-radius:9999px;display:inline-block;}
 .cw-dot-on{background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.3);}
 .cw-dot-off{background:#fbbf24;}
 .cw-prechat{flex:1;padding:24px;overflow-y:auto;display:flex;flex-direction:column;justify-content:center;}
-.cw-prechat-icon{width:56px;height:56px;border-radius:9999px;margin:0 auto;display:flex;align-items:center;justify-content:center;background:rgb(var(--primary,37 99 235));}
-.cw-input{width:100%;padding:11px 14px;border:1px solid #e5e7eb;border-radius:12px;font-size:14px;outline:none;}
+.cw-pc-head{text-align:center;margin-bottom:20px;}
+.cw-prechat-icon{width:56px;height:56px;border-radius:9999px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;background:rgb(var(--primary,37 99 235));}
+.cw-pc-title{margin:0;font-weight:700;font-size:18px;color:rgb(var(--dark,15 23 42));}
+.cw-pc-sub{margin:4px 0 0;font-size:14px;color:#6b7280;}
+.cw-pc-form > * + *{margin-top:12px;}
+.cw-input{width:100%;box-sizing:border-box;padding:11px 14px;border:1px solid #e5e7eb;border-radius:12px;font-size:14px;outline:none;}
 .cw-input:focus{border-color:rgb(var(--primary,37 99 235));box-shadow:0 0 0 3px rgba(37,99,235,.12);}
-.cw-btn-primary{padding:12px;border-radius:12px;font-weight:600;font-size:14px;color:rgb(var(--btn-primary-text,255 255 255));background:rgb(var(--btn-primary-bg,37 99 235));}
+.cw-err{margin:0;font-size:12px;color:#ef4444;}
+.cw-note{margin:0;font-size:11px;color:#9ca3af;text-align:center;}
+.cw-btn-primary{width:100%;padding:12px;border-radius:12px;font-weight:600;font-size:14px;color:rgb(var(--btn-primary-text,255 255 255));background:rgb(var(--btn-primary-bg,37 99 235));}
 .cw-btn-primary:disabled{opacity:.6;}
 .cw-body{flex:1;padding:16px;overflow-y:auto;background:rgb(var(--bg-50,245 245 245));display:flex;flex-direction:column;gap:8px;}
 .cw-row{display:flex;}
 .cw-row-out{justify-content:flex-end;}
 .cw-row-in{justify-content:flex-start;}
 .cw-msg{max-width:80%;padding:9px 13px;border-radius:16px;font-size:14px;line-height:1.45;box-shadow:0 1px 2px rgba(0,0,0,.06);}
+.cw-msg-body{margin:0;word-break:break-word;}
 .cw-out{background:rgb(var(--primary,37 99 235));color:#fff;border-bottom-right-radius:4px;}
 .cw-in{background:#fff;color:#1f2937;border:1px solid #eef0f2;border-bottom-left-radius:4px;}
 .cw-time{display:block;font-size:10px;opacity:.6;margin-top:3px;text-align:right;}
@@ -156,11 +157,12 @@
 .cw-human-btn{font-size:12.5px;color:rgb(var(--primary,37 99 235));font-weight:600;}
 .cw-human-btn:hover{text-decoration:underline;}
 .cw-footer{display:flex;align-items:center;gap:8px;padding:12px;border-top:1px solid #eef0f2;background:#fff;}
-.cw-msg-input{flex:1;padding:11px 14px;border:1px solid #e5e7eb;border-radius:9999px;font-size:14px;outline:none;}
+.cw-msg-input{flex:1;box-sizing:border-box;padding:11px 14px;border:1px solid #e5e7eb;border-radius:9999px;font-size:14px;outline:none;}
 .cw-msg-input:focus{border-color:rgb(var(--primary,37 99 235));box-shadow:0 0 0 3px rgba(37,99,235,.12);}
 .cw-send{width:42px;height:42px;border-radius:9999px;display:flex;align-items:center;justify-content:center;color:#fff;background:rgb(var(--btn-primary-bg,37 99 235));flex-shrink:0;}
 .cw-send:disabled{opacity:.4;}
 .cw-brand{text-align:center;font-size:10px;color:#9ca3af;padding:6px 0 8px;background:#fff;}
+.cw-msg-body a{text-decoration:underline;}
 @media(max-width:480px){.cw-panel{width:calc(100vw - 16px);height:calc(100vh - 24px);bottom:8px;right:8px;}.cw-bubble{bottom:16px;right:16px;}.cw-teaser{bottom:84px;right:16px;}}
 </style>
 <script>
@@ -169,7 +171,7 @@ window.ppChatWidget = function () {
         open:false, started:false, online:false, unread:0, busy:false, error:'',
         token:null, name:'', email:'', input:'', messages:[], attn:false, showTeaser:false,
         humanRequested:false, botTyping:false, rating:null, rated:false, _botTimer:null,
-        csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        csrf: @json(csrf_token()),
 
         async boot(){
             this.token = localStorage.getItem('ppcw_token');
@@ -202,7 +204,6 @@ window.ppChatWidget = function () {
             } catch(e){ this.error='Something went wrong. Please try again.'; }
             this.busy=false;
         },
-
         async sendMsg(forced){
             const body = (typeof forced==='string'?forced:this.input).trim(); if(!body) return;
             if(typeof forced!=='string') this.input='';
@@ -211,14 +212,11 @@ window.ppChatWidget = function () {
                 const r = await this.api('{{ route('chat.send') }}', {token:this.token, body});
                 this.addMsg(r.message); this.scrollDown();
                 const replies = r.replies||[];
-                if (replies.length){
-                    clearTimeout(this._botTimer);
-                    this._botTimer = setTimeout(()=>{ replies.forEach(m=>this.addMsg(m)); this.botTyping=false; this.scrollDown(); }, 500);
-                } else { this.botTyping=false; }
+                if (replies.length){ clearTimeout(this._botTimer); this._botTimer = setTimeout(()=>{ replies.forEach(m=>this.addMsg(m)); this.botTyping=false; this.scrollDown(); }, 500); }
+                else { this.botTyping=false; }
             } catch(e){ this.botTyping=false; if(typeof forced!=='string') this.input=body; }
         },
         suggest(t){ this.sendMsg(t); },
-
         async requestHuman(){
             if(this.humanRequested) return;
             this.humanRequested=true; this.botTyping=false;
@@ -230,7 +228,6 @@ window.ppChatWidget = function () {
             try { await this.api('{{ route('chat.rate') }}', {token:this.token, rating:v}); } catch(e){}
             setTimeout(()=>{ this.rated=false; }, 4000);
         },
-
         async poll(){
             if(!this.started || !this.token) return;
             const after = this.messages.length ? this.messages[this.messages.length-1].id : 0;
@@ -242,10 +239,9 @@ window.ppChatWidget = function () {
             } catch(e){}
         },
         async refreshOnline(){ try { const r = await this.api('{{ route('chat.init') }}', {token:this.token}); this.online=r.online; } catch(e){} },
-
         format(text){
             const esc = String(text==null?'':text).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-            return esc.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener" style="text-decoration:underline;">$1</a>').replace(/\n/g,'<br>');
+            return esc.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>').replace(/\n/g,'<br>');
         },
         addMsg(m){ if(!m || this.messages.some(x=>x.id===m.id)) return; if(m.sender && m.sender!=='visitor') this.botTyping=false; this.messages.push(m); },
         scrollDown(){ this.$nextTick(()=>{ const s=this.$refs.scroll; if(s) s.scrollTop=s.scrollHeight; }); },

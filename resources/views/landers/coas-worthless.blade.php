@@ -194,5 +194,6 @@
             </div>
         </footer>
         <!-- Meta Pixel + GA4 + CAPI (Stape.io) fire on this bridge only (SOP p.27). Store uses server-side CAPI. Wiring = Raza — placeholder. -->
-    </body>
+        @include('partials.chat-embed')
+</body>
 </html>

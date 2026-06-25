@@ -149,5 +149,6 @@
         @if($lander->c('giveaway_popup.enabled'))
             <x-giveaway-popup :lander="$lander" />
         @endif
-    </body>
+        @include('partials.chat-embed')
+</body>
 </html>

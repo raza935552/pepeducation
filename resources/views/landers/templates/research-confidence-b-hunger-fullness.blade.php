@@ -513,5 +513,6 @@ h1,h2,h3,h4,p{margin:0}
   @if($lander->c('giveaway_popup.enabled'))
     <x-giveaway-popup :lander="$lander" />
   @endif
+    @include('partials.chat-embed')
 </body>
 </html>
