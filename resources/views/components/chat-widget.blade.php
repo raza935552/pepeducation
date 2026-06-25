@@ -96,7 +96,8 @@
 <style>
 .pp-cw [x-cloak], .pp-cw[x-cloak]{display:none !important;}
 .pp-cw{font-family:Figtree,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;}
-.pp-cw button{cursor:pointer;border:0;background:none;font-family:inherit;}
+.pp-cw button{cursor:pointer;border:0;font-family:inherit;}
+.pp-cw .cw-close,.pp-cw .cw-teaser-x,.pp-cw .cw-csat-btn,.pp-cw .cw-human-btn{background:transparent;}
 .cw-bubble{position:fixed;bottom:24px;right:24px;width:60px;height:60px;border-radius:9999px;display:flex;align-items:center;justify-content:center;color:#fff;background:#2563eb;box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:2147483000;transition:transform .2s,box-shadow .2s;animation:cw-bob 3.2s ease-in-out infinite;}
 .cw-bubble:hover{transform:scale(1.06);animation:none;}
 /* Always-on pulse ring so the launcher keeps "popping" */
