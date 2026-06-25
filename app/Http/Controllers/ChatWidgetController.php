@@ -48,22 +48,48 @@ class ChatWidgetController extends Controller
 
         $online = ChatPresence::anyOnline();
 
-        // Returning visitor within 24h → resume (cross-device, by email).
+        // ONE conversation per email — reuse the visitor's existing thread
+        // instead of piling up rows. Quiet >24h → fresh session for the visitor
+        // (re-greet, hide old transcript) on the same row the team sees.
         $existing = ChatConversation::where('email', $data['email'])
-            ->where('last_message_at', '>=', now()->subDay())
             ->latest('last_message_at')->first();
 
         if ($existing) {
+            $stale = !$existing->last_message_at || $existing->last_message_at->lt(now()->subDay());
+            $sinceId = (int) $existing->messages()->max('id');
+
+            if ($stale) {
+                $existing->forceFill([
+                    'human_requested' => false, 'status' => 'open',
+                    'mode' => $online ? 'live' : 'offline',
+                    'rating' => null, 'rated_at' => null, 'last_message_at' => now(),
+                ])->save();
+            }
+
             if (!empty($data['message'])) {
                 $this->chat->post($existing, 'visitor', $data['message'], $existing->name);
-                if ($this->botShouldRespond($existing)) {
-                    $this->chat->post($existing, 'bot', app(ChatBotService::class)->respond($existing, $data['message']), 'Assistant');
+            }
+            if ($this->botShouldRespond($existing)) {
+                $bot = app(ChatBotService::class);
+                if ($stale) {
+                    $this->chat->post($existing, 'bot', $bot->greeting($existing), 'Assistant');
+                }
+                if (!empty($data['message'])) {
+                    $reply = $bot->respond($existing, $data['message']);
+                    if ($reply) {
+                        $this->chat->post($existing, 'bot', $reply, 'Assistant');
+                    }
                 }
             }
+
+            $messages = $stale
+                ? $existing->messages()->where('id', '>', $sinceId)->get()->map(fn ($m) => $this->chat->row($m))->values()->all()
+                : $this->serialize($existing);
+
             return response()->json([
                 'token' => $existing->token, 'online' => $online,
                 'human_requested' => (bool) $existing->human_requested, 'rating' => $existing->rating,
-                'messages' => $this->serialize($existing), 'resumed' => true,
+                'messages' => $messages, 'resumed' => true,
             ]);
         }
 
