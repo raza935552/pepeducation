@@ -80,10 +80,16 @@ class ChatBotService
             if ($score > $bestScore) { $bestScore = $score; $best = $p; }
         }
 
-        return ($best && $bestScore >= 3) ? $this->peptideCard($best) : null;
+        return ($best && $bestScore >= 3) ? $this->peptideCard($best, $this->isBuyIntent($lc)) : null;
     }
 
-    private function peptideCard(Peptide $p): string
+    /** True when the message is an explicit purchase intent (not just curiosity). */
+    private function isBuyIntent(string $lc): bool
+    {
+        return Str::contains($lc, ['buy', 'purchase', 'order', 'where can i get', 'where to buy', 'add to cart', 'checkout', 'for sale', 'price', 'cost', 'how much', 'shop', 'get some', 'get it']);
+    }
+
+    private function peptideCard(Peptide $p, bool $buy = false): string
     {
         $out = $p->name . ($p->abbreviation && strtolower($p->abbreviation) !== strtolower($p->name) ? " ({$p->abbreviation})" : '');
         if ($p->research_status) {
@@ -94,11 +100,16 @@ class ChatBotService
         }
         $out .= "\n📚 Full profile: " . route('peptides.show', $p->slug);
         if (BioLinxService::hasProductForPeptide($p)) {
-            $url = BioLinxService::urlForPeptide($p, 'chat', self::BIOLINX_DISCOUNT);
-            $out .= "\n\n🛒 Get " . $p->name . " at " . BioLinxService::name() . " — "
-                . self::BIOLINX_DISCOUNT_PCT . "% OFF auto-applied for Professor Peptides readers (code " . self::BIOLINX_DISCOUNT . "):"
-                . "\n👉 " . $url
-                . "\n✓ Discount applies automatically · free shipping over \$200 · fast discreet delivery";
+            if ($buy) {
+                // Explicit buy intent → exclusive auto-applied discount.
+                $out .= "\n\n🛒 Get " . $p->name . " at " . BioLinxService::name() . " — "
+                    . self::BIOLINX_DISCOUNT_PCT . "% OFF auto-applied for Professor Peptides readers (code " . self::BIOLINX_DISCOUNT . "):"
+                    . "\n👉 " . BioLinxService::urlForPeptide($p, 'chat', self::BIOLINX_DISCOUNT)
+                    . "\n✓ Discount applies automatically · free shipping over \$200 · fast discreet delivery";
+            } else {
+                // Just browsing → plain store link, no discount (protect margin).
+                $out .= "\n🛒 Available at " . BioLinxService::name() . ": " . BioLinxService::urlForPeptide($p, 'chat');
+            }
         }
         return $out . "\n\n(Educational — for research use only.)";
     }
@@ -262,7 +273,7 @@ class ChatBotService
                 }
             }
         }
-        return $best ? ("Did you mean this?\n" . $this->peptideCard($best)) : null;
+        return $best ? ("Did you mean this?\n" . $this->peptideCard($best, $this->isBuyIntent($lc))) : null;
     }
 
     private function fallback(): string
