@@ -43,6 +43,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'quiz/abandon',
             'subscriber/sync',
             'track/buy-click',
+            'chat/*',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
