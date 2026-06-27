@@ -323,6 +323,8 @@ class PPTracker {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
             },
             body,
+            // Tracking is fire-and-forget — never let a slow endpoint linger.
+            signal: AbortSignal.timeout ? AbortSignal.timeout(5000) : undefined,
         }).catch(() => {});
     }
 

@@ -47,7 +47,9 @@ class QuizController extends Controller
             ->first();
 
         if (!$response) {
-            return response()->json(['ok' => false], 404);
+            // Beacon for a stale/finished/empty response — nothing to do. Return
+            // 204 (not 404) so it never shows as a broken request in the client.
+            return response()->noContent();
         }
 
         // Link subscriber from pp_email cookie if not already linked
