@@ -78,9 +78,6 @@
         </div>
         <div x-show="rated" x-transition class="cw-csat cw-csat-thanks">Thanks for your feedback! 🙏</div>
 
-        <div x-show="started && !humanRequested" class="cw-human-bar">
-            <button type="button" @click="requestHuman()" class="cw-human-btn">🙋 Talk to a human</button>
-        </div>
 
         <div x-show="started" class="cw-footer">
             <input type="text" x-model="input" @keydown.enter="sendMsg()" placeholder="Type a message…" class="cw-msg-input">
