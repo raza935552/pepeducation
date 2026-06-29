@@ -31,7 +31,7 @@
                     <p class="text-body/70 mb-8 leading-relaxed flex-1">
                         Answer a few questions and get matched with the peptides best suited to your research goals.
                     </p>
-                    <a href="{{ url('/quiz/find-your-peptide') }}"
+                    <a href="{{ url('/quiz/pepquiz-20') }}"
                        class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-primary-500 text-white font-semibold text-sm hover:bg-primary-600 transition-colors shadow-md shadow-primary-500/20">
                         Take the Quiz
                         <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
