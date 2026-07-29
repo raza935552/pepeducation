@@ -116,6 +116,16 @@ class OutboundLink extends Model
             }
         }
 
+        // Affiliate identity — forwarded so the sale credits the affiliate on Biolinx
+        // (aff_id + click_id on the offer/prospect, afid/sid/c1-c5 on Sticky). If a
+        // param is already baked into the destination URL (a fixed default affiliate),
+        // that one wins and we don't append a duplicate.
+        foreach (['aff_id', 'click_id', 'afid', 'sid', 'c1', 'c2', 'c3', 'c4', 'c5'] as $affKey) {
+            if (!empty($trackingData[$affKey]) && !preg_match('/[?&]' . $affKey . '=/', $url)) {
+                $params[$affKey] = $trackingData[$affKey];
+            }
+        }
+
         if (empty($params)) {
             return $url;
         }

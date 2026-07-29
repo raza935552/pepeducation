@@ -364,6 +364,17 @@ class TrackingManager
             'fbclid' => session('meta_fbclid'),
             'fbp' => session('meta_fbp'),
             'fbc' => session('meta_fbc'),
+            // Affiliate identity (from an affiliate-tagged lander URL) — forwarded to
+            // Biolinx so the affiliate offer + Sticky prospect credit the sale.
+            'aff_id' => session('aff_aff_id'),
+            'click_id' => session('aff_click_id'),
+            'afid' => session('aff_afid'),
+            'sid' => session('aff_sid'),
+            'c1' => session('aff_c1'),
+            'c2' => session('aff_c2'),
+            'c3' => session('aff_c3'),
+            'c4' => session('aff_c4'),
+            'c5' => session('aff_c5'),
         ]);
     }
 

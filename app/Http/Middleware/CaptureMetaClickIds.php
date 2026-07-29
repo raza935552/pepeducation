@@ -50,6 +50,16 @@ class CaptureMetaClickIds
             }
         }
 
+        // Affiliate identity from the landing URL (e.g. /lp/retatrutide?aff_id=…&click_id=…).
+        // Captured durably like fbclid so the cross-domain hand-off forwards it to
+        // Biolinx, where the affiliate offer + Sticky prospect credit the sale to the
+        // affiliate. First affiliate click in the session wins (never overwritten).
+        foreach (['aff_id', 'click_id', 'afid', 'sid', 'c1', 'c2', 'c3', 'c4', 'c5'] as $k) {
+            if (($v = $request->query($k)) && ! session('aff_' . $k)) {
+                session(['aff_' . $k => substr((string) $v, 0, 200)]);
+            }
+        }
+
         return $next($request);
     }
 }

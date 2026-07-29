@@ -30,6 +30,7 @@ class LanderController extends Controller
         'coas-worthless'      => 'lp-coas-worthless',
         'suppliers-identical' => 'lp-suppliers-identical',
         'vetted-47'           => 'lp-vetted-47',
+        'retatrutide'         => 'lp-retatrutide',
     ];
 
     public function show(Request $request, string $slug): View
