@@ -699,7 +699,7 @@
         <div class="hero-visual-desktop">
           <div class="hero-media">
             <div class="art">
-              <img src="/landers/retatrutide/hero.png" alt="Close-up of a woman measuring her waist with a tape measure, tracking weight-loss progress" loading="lazy">
+              <img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/139f72df-ef79-43d1-b185-6b88a211ac46.jpg" alt="Close-up of a woman measuring her waist with a tape measure, tracking weight-loss progress" loading="lazy">
             </div>
             <div class="vial-card">
               <svg class="vial" viewBox="0 0 120 220" fill="none">
@@ -802,7 +802,7 @@
     <div class="wrap">
       <div class="feature">
         <div class="art art--sage">
-          <img src="/landers/retatrutide/interview.jpg" alt="Prof. Dr. Ania M. Jastreboff, Yale Medicine professor and obesity expert" loading="lazy">
+          <img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/4e311dbd-6105-4b7b-9acd-90d900469bca.jpg" alt="Prof. Dr. Ania M. Jastreboff, Yale Medicine professor and obesity expert" loading="lazy">
         </div>
         <div>
           <h2>A Quarter of Body Weight Lost in Under a Year</h2>
@@ -838,7 +838,7 @@
 
       <div class="banner">
         <div class="art art--sage">
-          <img src="/landers/retatrutide/banner.jpg" alt="A group of four women posing together in a studio, celebrating body confidence" loading="lazy">
+          <img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/308bee21-b572-4689-889f-a507a1cf296d.jpg" alt="A group of four women posing together in a studio, celebrating body confidence" loading="lazy">
         </div>
         <div class="banner__card">
           <h3>Achieve Your <em>Best Body</em> with Retatrutide</h3>
