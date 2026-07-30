@@ -60,6 +60,15 @@ class CaptureMetaClickIds
             }
         }
 
+        // Verde (and similar CPA networks) pass the click/transaction id as ?s1=…
+        // (alongside AFID/AFFID). Treat s1 as the click id so it forwards to Biolinx
+        // and comes back on the conversion postback as transaction_id. First wins.
+        foreach (['s1', 'transaction_id'] as $k) {
+            if (($v = $request->query($k)) && ! session('aff_click_id')) {
+                session(['aff_click_id' => substr((string) $v, 0, 200)]);
+            }
+        }
+
         return $next($request);
     }
 }
