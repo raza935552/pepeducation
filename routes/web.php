@@ -210,3 +210,7 @@ Route::get('/where-to-buy-{peptide}', [\App\Http\Controllers\WhereToBuyControlle
 Route::get('/{slug}', [PageController::class, 'show'])
     ->where('slug', '[a-z0-9][a-z0-9\-]*')
     ->name('page.show');
+
+// Dev-request intake for the PP Telegram pipeline (@ppsystemai_bot), secret-verified.
+Route::post('webhooks/telegram-intake', [\App\Http\Controllers\Webhooks\TelegramIntakeController::class, 'handle'])
+    ->name('webhooks.telegram-intake');

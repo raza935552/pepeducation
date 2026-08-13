@@ -51,4 +51,10 @@ return [
         'secret' => env('PP_CONVERSIONS_SECRET'),
     ],
 
+    'telegram_intake' => [
+        'secret' => env('TELEGRAM_INTAKE_SECRET'),
+        'bot_token' => env('TELEGRAM_INTAKE_BOT_TOKEN'),
+        'bot_username' => env('TELEGRAM_INTAKE_BOT_USERNAME', 'ppsystemai_bot'),
+    ],
+
 ];
