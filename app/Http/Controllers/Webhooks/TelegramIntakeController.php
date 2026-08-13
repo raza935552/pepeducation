@@ -57,7 +57,7 @@ class TelegramIntakeController extends Controller
             }
         } else {
             if ($allowed === '') {
-                Log::info('PP intake discovery: unlocked chat', ['chat_id' => $chatId, 'title' => $msg['chat']['title'] ?? null]);
+                Log::warning('PP intake discovery: unlocked chat', ['chat_id' => $chatId, 'title' => $msg['chat']['title'] ?? null]);
             }
             if (! $hadTrigger) {
                 return response()->json(['ok' => true]);
