@@ -44,6 +44,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'subscriber/sync',
             'track/buy-click',
             'chat/*',
+            'webhooks/telegram-intake',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
