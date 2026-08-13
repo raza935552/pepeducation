@@ -31,6 +31,7 @@ class LanderController extends Controller
         'suppliers-identical' => 'lp-suppliers-identical',
         'vetted-47'           => 'lp-vetted-47',
         'retatrutide'         => 'lp-retatrutide',
+        'pt141'               => 'lp-pt141',
     ];
 
     public function show(Request $request, string $slug): View
