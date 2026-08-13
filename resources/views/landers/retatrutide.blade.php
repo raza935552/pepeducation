@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Retasearch — Retatrutide: The Future of Weight Loss Medication</title>
 <meta name="description" content="Retatrutide: 28.7% weight loss, nearly double Ozempic, surpassing Zepbound. Learn how the triple hormone mechanism works and register your interest.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Retasearch — Retatrutide: The Future of Weight Loss Medication">
+<meta property="og:description" content="Retatrutide: 28.7% weight loss, nearly double Ozempic, surpassing Zepbound. Learn how the triple hormone mechanism works and register your interest.">
+<meta property="og:url" content="{{ url()->current() }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Retasearch — Retatrutide: The Future of Weight Loss Medication">
+<meta name="twitter:description" content="Retatrutide: 28.7% weight loss, nearly double Ozempic, surpassing Zepbound. Learn how the triple hormone mechanism works and register your interest.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -647,6 +654,7 @@
     <meta name="robots" content="noindex,nofollow">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <x-meta-pixel />
+    <x-posthog-lander />
 </head>
 <body>
 
@@ -968,6 +976,7 @@
   <div class="wrap">
     <span>© 2026 Retasearch. For educational purposes only — not medical advice.</span>
     <span>Retatrutide is investigational and not FDA-approved.</span>
+    <span><a href="/privacy" style="color:inherit;">Privacy</a> · <a href="/terms" style="color:inherit;">Terms</a> · <a href="/disclaimer" style="color:inherit;">Disclaimer</a></span>
   </div>
 </footer>
 
@@ -1062,7 +1071,7 @@
         </button>
         <p class="modal__legal">
           By submitting, you agree to receive your personalized plan and occasional updates from Retasearch. Unsubscribe anytime.<br>
-          <a href="#">Terms of Use</a> · <a href="#">Privacy Policy</a> · <a href="#">Manage Cookies</a>
+          <a href="/terms" target="_blank" rel="noopener">Terms of Use</a> · <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a> · <a href="/disclaimer" target="_blank" rel="noopener">Disclaimer</a>
         </p>
       </form>
     </div>
@@ -1072,7 +1081,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>
         <p>You're all set! Check your email for your personalized Over 45 Metabolism Action Plan — plus early-access updates for Retatrutide.</p>
       </div>
-      <a class="btn modal__success-cta" href="/go/lp-retatrutide">
+      <a class="btn modal__success-cta" href="{{ route('outbound.track', 'lp-retatrutide') }}">
         Get Exclusive Access Now
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
@@ -1139,6 +1148,7 @@
       overlay.classList.remove('is-open');
       document.body.classList.remove('modal-open');
       if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+      try { localStorage.setItem('reta_quiz_dismissed_at', String(Date.now())); } catch (err) {}
     }
 
     Array.prototype.forEach.call(document.querySelectorAll('a.btn, button.btn'), function(btn){
@@ -1195,6 +1205,7 @@
       }
       var submitBtn = form.querySelector('.modal__submit');
       if (submitBtn) submitBtn.disabled = true;
+      try { localStorage.setItem('reta_quiz_entered', '1'); } catch (err) {}
 
       var email = (form.querySelector('#waitlistEmail') || {}).value || '';
       // Stable event id so the browser Lead pixel + Biolinx server Lead dedup.
@@ -1218,6 +1229,26 @@
           body: JSON.stringify({ email: email, source: 'lp-retatrutide', lead_event_id: leadEventId })
         }).then(done).catch(done);
       } catch (err) { done(); }
+    });
+
+    // Auto-show the quiz popup like the giveaway popup on the other landers:
+    // after a delay + on desktop exit-intent. Suppressed for 7 days after a
+    // dismiss and permanently once entered. ?quiz=force always shows it.
+    function autoSuppressed(){
+      try {
+        if (/[?&]quiz=force/.test(location.search)) return false;
+        if (localStorage.getItem('reta_quiz_entered')) return true;
+        var d = parseInt(localStorage.getItem('reta_quiz_dismissed_at') || '0', 10);
+        return !!d && (Date.now() - d) < 7 * 24 * 60 * 60 * 1000;
+      } catch (err) { return false; }
+    }
+    function autoOpen(){
+      if (overlay.classList.contains('is-open') || autoSuppressed()) return;
+      openModal();
+    }
+    setTimeout(autoOpen, 12000);
+    document.addEventListener('mouseout', function(e){
+      if (!e.relatedTarget && e.clientY <= 0 && window.matchMedia('(pointer:fine)').matches) autoOpen();
     });
   })();
 </script>
@@ -1444,5 +1475,6 @@
 </style>
 @endverbatim
 
+@include('partials.chat-embed')
 </body>
 </html>
