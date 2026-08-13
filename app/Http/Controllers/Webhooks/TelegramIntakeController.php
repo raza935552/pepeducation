@@ -27,26 +27,44 @@ class TelegramIntakeController extends Controller
             return response()->json(['ok' => true]);
         }
 
-        // Only explicit requests: leading "!" / "/do" or an @mention of the bot.
-        $botUser = trim((string) config('services.telegram_intake.bot_username', 'ppsystemai_bot'));
-        $t = ltrim($text);
-        $isRequest = false;
-        if (str_starts_with($t, '!')) {
-            $text = ltrim(substr($t, 1)); $isRequest = true;
-        } elseif (preg_match('/^\/do\b/i', $t)) {
-            $text = trim(preg_replace('/^\/do\b/i', '', $t)); $isRequest = true;
-        } elseif ($botUser !== '' && stripos($t, '@' . $botUser) !== false) {
-            $text = trim(str_ireplace('@' . $botUser, '', $t)); $isRequest = true;
-        }
-        if (! $isRequest || $text === '') {
+        // Never treat a bot's own messages as requests (avoids reply loops).
+        if (! empty($msg['from']['is_bot'])) {
             return response()->json(['ok' => true]);
         }
 
-        // Lock to the dev group; discovery mode until it's set.
+        // Resolve the locked dev group first — behaviour differs inside vs. outside it.
         $allowed = trim((string) \App\Models\Setting::get('devpipeline.group_chat_id', ''));
-        if ($allowed === '') {
-            Log::info('PP intake discovery: unlocked chat', ['chat_id' => $chatId, 'title' => $msg['chat']['title'] ?? null]);
-        } elseif ($chatId !== $allowed) {
+        $inDevGroup = ($allowed !== '' && $chatId === $allowed);
+
+        // Strip an optional trigger ("!" / "/do" / @mention); remember if one was present.
+        $botUser = trim((string) config('services.telegram_intake.bot_username', 'ppsystemai_bot'));
+        $t = ltrim($text);
+        $hadTrigger = false;
+        if (str_starts_with($t, '!')) {
+            $text = ltrim(substr($t, 1)); $hadTrigger = true;
+        } elseif (preg_match('/^\/do\b/i', $t)) {
+            $text = trim(preg_replace('/^\/do\b/i', '', $t)); $hadTrigger = true;
+        } elseif ($botUser !== '' && stripos($t, '@' . $botUser) !== false) {
+            $text = trim(str_ireplace('@' . $botUser, '', $t)); $hadTrigger = true;
+        }
+
+        // Inside the dedicated dev group every human message is a request (no trigger
+        // needed); we only skip slash commands other than "/do". Outside it, a trigger
+        // is required, and while unlocked we log each chat id for discovery.
+        if ($inDevGroup) {
+            if (! $hadTrigger && str_starts_with($t, '/')) {
+                return response()->json(['ok' => true]);
+            }
+        } else {
+            if ($allowed === '') {
+                Log::info('PP intake discovery: unlocked chat', ['chat_id' => $chatId, 'title' => $msg['chat']['title'] ?? null]);
+            }
+            if (! $hadTrigger) {
+                return response()->json(['ok' => true]);
+            }
+        }
+
+        if ($text === '') {
             return response()->json(['ok' => true]);
         }
 
