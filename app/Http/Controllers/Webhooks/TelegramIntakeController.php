@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\DevRequest;
 use App\Services\Telegram\DevBotSender;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 /** PP Telegram intake for the dev-request pipeline (mirror of Biolinx). */
 class TelegramIntakeController extends Controller
@@ -20,10 +22,12 @@ class TelegramIntakeController extends Controller
         }
 
         $msg = $request->input('message') ?? $request->input('edited_message');
-        $text = trim((string) ($msg['text'] ?? ''));
+        // Documents (file attachments) carry their text in 'caption', not 'text'.
+        $text = trim((string) ($msg['text'] ?? $msg['caption'] ?? ''));
+        $doc = is_array($msg['document'] ?? null) ? $msg['document'] : null;
         $chatId = (string) ($msg['chat']['id'] ?? '');
         $messageId = (string) ($msg['message_id'] ?? '');
-        if ($text === '' || $chatId === '' || $messageId === '') {
+        if ($chatId === '' || $messageId === '' || ($text === '' && $doc === null)) {
             return response()->json(['ok' => true]);
         }
 
@@ -64,8 +68,19 @@ class TelegramIntakeController extends Controller
             }
         }
 
-        if ($text === '') {
+        if ($text === '' && $doc === null) {
             return response()->json(['ok' => true]);
+        }
+
+        // Save a text-type attachment to disk so the processor can read it later.
+        if ($doc !== null) {
+            $note = $this->storeAttachment($doc, $chatId, $messageId);
+            if ($note === null && $text === '') {
+                return response()->json(['ok' => true]);
+            }
+            if ($note !== null) {
+                $text = trim($text . "\n\n" . $note);
+            }
         }
 
         try {
@@ -87,5 +102,50 @@ class TelegramIntakeController extends Controller
         }
 
         return response()->json(['ok' => true]);
+    }
+
+    /**
+     * Download a Telegram document and save it under storage/app/devrequests.
+     * Returns a note (with the saved path) to append to the request message,
+     * or null when the update should be ignored entirely.
+     */
+    private function storeAttachment(array $doc, string $chatId, string $messageId): ?string
+    {
+        $name = trim((string) ($doc['file_name'] ?? '')) ?: 'file.txt';
+        $size = (int) ($doc['file_size'] ?? 0);
+        $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+        $allowed = ['html', 'htm', 'txt', 'md', 'css', 'js', 'json', 'csv', 'svg', 'xml', 'php'];
+        if (! in_array($ext, $allowed, true)) {
+            return "[Attachment '{$name}' was NOT saved - only text files (.html, .txt, .css, .js, ...) are supported]";
+        }
+        if ($size <= 0 || $size > 5 * 1024 * 1024) {
+            return "[Attachment '{$name}' was NOT saved - files must be under 5 MB]";
+        }
+
+        $token = (string) config('services.telegram_intake.bot_token');
+        if ($token === '') {
+            return null;
+        }
+
+        try {
+            $info = Http::timeout(15)
+                ->get("https://api.telegram.org/bot{$token}/getFile", ['file_id' => (string) ($doc['file_id'] ?? '')])
+                ->json();
+            $filePath = (string) ($info['result']['file_path'] ?? '');
+            if ($filePath === '') {
+                return "[Attachment '{$name}' could not be fetched from Telegram]";
+            }
+            $content = Http::timeout(30)->get("https://api.telegram.org/file/bot{$token}/{$filePath}")->body();
+
+            $safeName = preg_replace('/[^A-Za-z0-9._-]/', '_', $name);
+            $rel = 'devrequests/' . preg_replace('/[^0-9-]/', '', $chatId) . '_' . $messageId . '_' . $safeName;
+            Storage::disk('local')->put($rel, $content);
+
+            return "[Attached file '{$name}' saved to: " . Storage::disk('local')->path($rel) . ']';
+        } catch (\Throwable $e) {
+            Log::warning('PP intake attachment fetch failed', ['error' => $e->getMessage()]);
+
+            return "[Attachment '{$name}' could not be downloaded]";
+        }
     }
 }
