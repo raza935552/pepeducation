@@ -33,7 +33,7 @@ class TelegramIntakeController extends Controller
         }
 
         // Resolve the locked dev group first — behaviour differs inside vs. outside it.
-        $allowed = trim((string) \App\Models\Setting::get('devpipeline.group_chat_id', ''));
+        $allowed = trim((string) \App\Models\Setting::getValue('devpipeline', 'group_chat_id', ''));
         $inDevGroup = ($allowed !== '' && $chatId === $allowed);
 
         // Strip an optional trigger ("!" / "/do" / @mention); remember if one was present.
