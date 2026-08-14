@@ -10,6 +10,7 @@ class DevRequest extends Model
     protected $fillable = [
         'source', 'external_id', 'chat_id', 'from_name', 'from_username',
         'message', 'risk', 'status', 'result', 'commit_sha', 'processed_at',
+        'last_bot_message_id', 'attachment_path',
     ];
 
     protected $casts = ['processed_at' => 'datetime'];
