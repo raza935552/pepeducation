@@ -443,10 +443,13 @@ body.pp-modal-open{overflow:hidden}
 .stack-quiz{margin:2.5em 0;padding:1.75em;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
 .stack-quiz-title{font-weight:700;font-size:19px;color:var(--ink);letter-spacing:-.01em;line-height:1.3}
 .stack-quiz-sub{font-size:12.5px;color:var(--muted);margin:6px 0 20px;line-height:1.5}
-.stack-quiz-options{display:flex;flex-direction:column;align-items:stretch;gap:12px;max-width:340px}
-.goal-pill{padding:13px 22px;border-radius:999px;border:1.5px solid #E4B100;background:#FFD21A;color:#3A2E00;font-weight:700;font-size:14px;text-align:center;cursor:pointer;transition:transform .08s,box-shadow .1s;box-shadow:0 3px 0 #C99A00}
-.goal-pill:hover{transform:translateY(1px);box-shadow:0 2px 0 #C99A00}
-.goal-pill.active{background:var(--cta);border-color:var(--cta);color:#fff;box-shadow:0 3px 0 var(--cta-dark)}
+.stack-quiz-options{display:flex;flex-direction:column;align-items:stretch;gap:10px;max-width:380px}
+.goal-pill{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:14px 20px;border-radius:8px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);font-family:inherit;font-weight:700;font-size:15px;text-align:left;cursor:pointer;transition:border-color .15s,background .15s,color .15s,transform .08s,box-shadow .12s}
+.goal-pill::after{content:'→';font-weight:800;color:var(--faint);transition:transform .15s,color .15s}
+.goal-pill:hover{border-color:var(--cta);background:var(--lsoft)}
+.goal-pill:hover::after{color:var(--cta);transform:translateX(3px)}
+.goal-pill.active{background:var(--cta);border-color:var(--cta);color:#fff;box-shadow:0 4px 0 var(--cta-dark)}
+.goal-pill.active::after{content:'✓';color:#fff;transform:none}
 .stack-result{margin-top:24px;padding-top:24px;border-top:1px solid var(--line)}
 .stack-result-card{display:none;gap:18px;align-items:center;padding:16px;border:1.5px solid var(--cta);border-radius:8px;background:var(--cta-soft)}
 .stack-result-card.is-active{display:flex}
