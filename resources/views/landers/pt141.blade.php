@@ -475,7 +475,7 @@ body.pp-modal-open{overflow:hidden}
 
 <div class="stack-quiz ui" id="stackQuiz">
     <div class="stack-quiz-title" style="font-family:'Source Serif 4',serif">Want to stack PT-141 with another goal?</div>
-    <div class="stack-quiz-sub">We'll curate the stack for you, so you don't need to worry. Pick a goal and we'll show the exact kit.</div>
+    <div class="stack-quiz-sub">Want to Stack your Product with another health goal? (We'll curate your stack for you, so you don't need to worry)</div>
     <div class="stack-quiz-body">
     <div class="stack-quiz-options" id="stackQuizOptions">
         @foreach($quiz as $q)
