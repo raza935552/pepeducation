@@ -423,12 +423,12 @@ body.pp-modal-open{overflow:hidden}
     $go = fn ($dest) => route('outbound.track', ['slug' => 'lp-pt141', 'dest' => $dest]);
     $shelf = [
         ['img' => '59121a51-a297-43a0-84b7-c2527028a790', 'name' => 'PT-141 · 10 mg', 'price' => '$59.93', 'cta' => 'View Product →', 'dest' => $bx.'/products/pt-141-10-mg', 'featured' => true],
-        ['img' => 'fe038a3c-6d2d-4e82-bc47-c2988715c3b3', 'name' => 'PT-141 Starter Kit', 'price' => '$79.86', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-starter-kit'],
-        ['img' => '514e631c-baeb-47b0-81ac-2b71c001b05b', 'name' => 'Starter Kit + Recovery & Repair', 'price' => '$219.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-recovery-repair'],
-        ['img' => 'eca3fb7c-750a-4612-8d98-79ae408913fb', 'name' => 'Starter Kit + Performance Energy', 'price' => '$179.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-performance-energy'],
-        ['img' => 'ee1654bf-ac09-4ee2-b48f-0b449098522c', 'name' => 'Starter Kit + Muscle Growth', 'price' => '$179.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-muscle-growth'],
-        ['img' => 'ec590410-f58b-4200-8e53-9b6206396baf', 'name' => 'Starter Kit + Glow Boost', 'price' => '$149.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-glow-boost'],
-        ['img' => '22c7ab55-5fdd-45f2-955b-20aca724c86b', 'name' => 'Starter Kit + Extreme Fat Burn', 'price' => '$279.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-extreme-fat-burn'],
+        ['img' => 'fe038a3c-6d2d-4e82-bc47-c2988715c3b3', 'name' => 'PT-141 Starter Kit', 'price' => '$79.86', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-starter-kit?add=1'],
+        ['img' => '514e631c-baeb-47b0-81ac-2b71c001b05b', 'name' => 'Starter Kit + Recovery & Repair', 'price' => '$219.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-recovery-repair?add=1'],
+        ['img' => 'eca3fb7c-750a-4612-8d98-79ae408913fb', 'name' => 'Starter Kit + Performance Energy', 'price' => '$179.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-performance-energy?add=1'],
+        ['img' => 'ee1654bf-ac09-4ee2-b48f-0b449098522c', 'name' => 'Starter Kit + Muscle Growth', 'price' => '$179.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-muscle-growth?add=1'],
+        ['img' => 'ec590410-f58b-4200-8e53-9b6206396baf', 'name' => 'Starter Kit + Glow Boost', 'price' => '$149.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-glow-boost?add=1'],
+        ['img' => '22c7ab55-5fdd-45f2-955b-20aca724c86b', 'name' => 'Starter Kit + Extreme Fat Burn', 'price' => '$279.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-extreme-fat-burn?add=1'],
     ];
     // Quiz goal -> index into $shelf (Better Skin=Glow, Fat Burn=Fat Burn, Repair=Recovery, None=base PT-141)
     $quiz = [
