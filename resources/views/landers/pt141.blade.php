@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <meta name="robots" content="noindex,nofollow">
-<title>The New PT-141 Solution That Men Are Quietly Using — The Male Health Journal</title>
+<title>The New PT-141 Solution That Men Are Quietly Using | The Male Health Journal</title>
 <meta name="description" content="Doctors recommend it privately. Men are getting results. Here's what PT-141 actually is, why it works, and how to get started." />
 <meta property="og:type" content="website">
-<meta property="og:title" content="The New PT-141 Solution That Men Are Quietly Using — The Male Health Journal">
+<meta property="og:title" content="The New PT-141 Solution That Men Are Quietly Using | The Male Health Journal">
 <meta property="og:description" content="Doctors recommend it privately. Men are getting results. Here's what PT-141 actually is, why it works, and how to get started.">
 <meta property="og:url" content="{{ url()->current() }}">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="The New PT-141 Solution That Men Are Quietly Using — The Male Health Journal">
+<meta name="twitter:title" content="The New PT-141 Solution That Men Are Quietly Using | The Male Health Journal">
 <meta name="twitter:description" content="Doctors recommend it privately. Men are getting results. Here's what PT-141 actually is, why it works, and how to get started.">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -296,9 +296,9 @@ body.pp-modal-open{overflow:hidden}
 <div><div class="ui" style="font-size:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--cta);margin-bottom:3px">Independent Reporting</div><a href="/" class="masthead-title">The Male Health Journal</a></div>
 </div></div>
 
-<div class="section-nav ui"><div class="max-w-7xl mx-auto px-5 md:px-8 flex items-center gap-7 overflow-x-auto whitespace-nowrap"><a href="#">Performance</a><a href="#">Solutions</a><a href="#" class="active">PT-141</a><a href="#">How-To</a><a href="#">Results</a></div></div>
+<div class="section-nav ui"><div class="max-w-7xl mx-auto px-5 md:px-8 flex items-center gap-7 overflow-x-auto whitespace-nowrap"><a href="#stackQuiz">Performance</a><a href="#stackQuiz">Solutions</a><a href="#stackQuiz" class="active">PT-141</a><a href="#order">How-To</a><a href="#stackQuiz">Results</a></div></div>
 
-<div class="popular-strip"><div class="max-w-7xl mx-auto px-5 md:px-8"><h4 class="ui mb-4">Most Read This Week</h4><div class="grid grid-cols-1 md:grid-cols-4 gap-4"><a href="#" class="flex gap-3 items-start"><span class="popular-num">1</span><div><div class="popular-title ui">The New PT-141 Solution That Men Are Quietly Using</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Solutions · 10 min</div></div></a><a href="#" class="flex gap-3 items-start"><span class="popular-num">2</span><div><div class="popular-title ui">Why Doctors Won't Talk About This Publicly</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Analysis · 7 min</div></div></a><a href="#" class="flex gap-3 items-start"><span class="popular-num">3</span><div><div class="popular-title ui">How to Get Started: Step-by-Step Guide</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Guide · 8 min</div></div></a><a href="#" class="flex gap-3 items-start"><span class="popular-num">4</span><div><div class="popular-title ui">Real Results From Men Who Are Using It</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Stories · 6 min</div></div></a></div></div></div>
+<div class="popular-strip"><div class="max-w-7xl mx-auto px-5 md:px-8"><h4 class="ui mb-4">Most Read This Week</h4><div class="grid grid-cols-1 md:grid-cols-4 gap-4"><a href="#stackQuiz" class="flex gap-3 items-start"><span class="popular-num">1</span><div><div class="popular-title ui">The New PT-141 Solution That Men Are Quietly Using</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Solutions · 10 min</div></div></a><a href="#stackQuiz" class="flex gap-3 items-start"><span class="popular-num">2</span><div><div class="popular-title ui">Why Doctors Won't Talk About This Publicly</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Analysis · 7 min</div></div></a><a href="#stackQuiz" class="flex gap-3 items-start"><span class="popular-num">3</span><div><div class="popular-title ui">How to Get Started: Step-by-Step Guide</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Guide · 8 min</div></div></a><a href="#stackQuiz" class="flex gap-3 items-start"><span class="popular-num">4</span><div><div class="popular-title ui">Real Results From Men Who Are Using It</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Stories · 6 min</div></div></a></div></div></div>
 
 <main><div class="max-w-7xl mx-auto px-5 md:px-8"><div class="grid grid-cols-1 md:grid-cols-3 gap-10">
 <div class="md:col-span-2"><div class="max-w-2xl">
@@ -321,7 +321,7 @@ body.pp-modal-open{overflow:hidden}
 <hr class="section-rule">
 <h2>The Problem Everyone Knows About</h2>
 <p>Sexual dysfunction affects 30 million American men. It's treatable. It's common. But existing solutions don't work for everyone.</p>
-<p>Viagra came out in 1998. It helped millions. But 30–40% of men don't respond to it. Some have side effects. Some can't use it because of heart medication.</p>
+<p>Viagra came out in 1998. It helped millions. But 30 to 40% of men don't respond to it. Some have side effects. Some can't use it because of heart medication.</p>
 <p>For those men, nothing worked. <strong>Until now.</strong></p>
 
 <div class="figure"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/06d39b77-e88a-4612-9adb-0e6fa980165d.jpg" alt="Solution"><p class="figure-caption ui">A better solution exists. Men are finding it quietly.</p></div>
@@ -334,7 +334,7 @@ body.pp-modal-open{overflow:hidden}
 
 <div class="stat-strip ui">
 <div class="stat-block"><div class="stat-num">30M+</div><div class="stat-label">Men affected in the US</div></div>
-<div class="stat-block"><div class="stat-num">30–40%</div><div class="stat-label">Don't respond to Viagra</div></div>
+<div class="stat-block"><div class="stat-num">30 to 40%</div><div class="stat-label">Don't respond to Viagra</div></div>
 <div class="stat-block"><div class="stat-num">92%</div><div class="stat-label">PT-141 clinical success rate</div></div>
 </div>
 
@@ -349,7 +349,7 @@ body.pp-modal-open{overflow:hidden}
 <div class="compare-section ui">
 <div class="compare-header"><div class="compare-header-title" style="font-family:'Source Serif 4',serif">How It Compares</div><div class="compare-header-sub">Side-by-side breakdown</div></div>
 <div class="compare-body">
-<div class="compare-col old"><div class="compare-col-label">Traditional Options 💊</div><ul><li><span class="compare-icon">—</span>Focuses on blood flow</li><li><span class="compare-icon">—</span>Works on the body</li><li><span class="compare-icon">—</span>Standard approach</li></ul></div>
+<div class="compare-col old"><div class="compare-col-label">Traditional Options 💊</div><ul><li><span class="compare-icon">✕</span>Focuses on blood flow</li><li><span class="compare-icon">✕</span>Works on the body</li><li><span class="compare-icon">✕</span>Standard approach</li></ul></div>
 <div class="compare-col new"><div class="compare-col-label">PT-141 🧬</div><ul><li><span class="compare-icon">✓</span>Focuses on arousal signals</li><li><span class="compare-icon">✓</span>Works through the brain</li><li><span class="compare-icon">✓</span>Completely different mechanism</li></ul></div>
 </div></div>
 
@@ -409,7 +409,7 @@ body.pp-modal-open{overflow:hidden}
 <div class="value-row"><div class="label">Side-Effect Playbook<small>What's normal, what's not, when to call a doctor</small></div><div class="price">$29 value</div></div>
 <div class="value-row"><div class="label">Reconstitution &amp; Injection Walkthrough (Video)<small>Step-by-step, beginner-friendly</small></div><div class="price">$59 value</div></div>
 <div class="value-row"><div class="label">First Use Checklist<small>What to do the first time, what to expect</small></div><div class="price">$49 value</div></div>
-<div class="value-row"><div class="label" style="color:var(--cta)"><strong>BONUS: Stack Guide — Pairing PT-141 With Other Peptides</strong><small>For men also working on recovery or performance · usually $89 standalone</small></div><div class="price">$89 value</div></div>
+<div class="value-row"><div class="label" style="color:var(--cta)"><strong>BONUS: Stack Guide. Pairing PT-141 With Other Peptides</strong><small>For men also working on recovery or performance · usually $89 standalone</small></div><div class="price">$89 value</div></div>
 <div class="value-total"><div class="label">Total Value</div><div class="price">$314</div></div>
 <div class="value-today"><div class="label">Your Price Today</div><div class="price">FREE*</div></div>
 <div class="value-cta-wrap"><a href="#order" class="cta-button ui">Send Me The Complete Protocol →</a><div class="cta-trust ui" style="color:var(--muted);opacity:1"><span>Instant email delivery</span><span>No credit card required</span><span>Unsubscribe anytime</span></div><p class="ui" style="font-size:11px;color:var(--muted);margin-top:12px">*Free with newsletter signup. Discount code SOCIAL10 for 10% off your first BioLinx Labs order included.</p></div>
@@ -549,7 +549,7 @@ window.addEventListener('resize', function(){ positionResult(document.querySelec
 <div class="faq-item"><button class="faq-q">Can I use PT-141 with other medications? <span class="icon">+</span></button><div class="faq-a">PT-141 works through a completely different pathway than PDE5 inhibitors (Viagra, Cialis). Many men use it alongside other treatments. But always check with your doctor, especially if you're on heart or blood pressure medication.</div></div>
 </div>
 
-<div id="order" class="inline-cta" style="background:var(--cta);border:none"><h3 style="font-size:28px">Get The Complete PT-141 Protocol — Free</h3><p style="opacity:.92">Sourcing, dosing, side-effect management, stacking, maintenance. Everything. Direct to your inbox.</p>
+<div id="order" class="inline-cta" style="background:var(--cta);border:none"><h3 style="font-size:28px">Get The Complete PT-141 Protocol, Free</h3><p style="opacity:.92">Sourcing, dosing, side-effect management, stacking, maintenance. Everything. Direct to your inbox.</p>
 <form class="ui pp-capture" data-form="order" onsubmit="return false;" style="display:flex;gap:8px;max-width:460px;margin:14px auto 0;flex-wrap:wrap">
 <input type="email" name="email" placeholder="you@email.com" required style="flex:1;min-width:200px;padding:16px 18px;border:none;border-radius:6px;font-size:15px;font-weight:500">
 <button type="submit" style="padding:16px 26px;background:var(--ink);color:#fff;border:none;border-radius:6px;font-size:15px;font-weight:800;letter-spacing:.02em;text-transform:uppercase;cursor:pointer;box-shadow:0 4px 0 #000">Send It Now →</button>
@@ -557,9 +557,9 @@ window.addEventListener('resize', function(){ positionResult(document.querySelec
 <div class="pp-capture-success ui" hidden style="max-width:460px;margin:14px auto 0"><p style="color:#fff;opacity:.95">✓ Check your inbox. Your protocol is on the way.</p><a href="{{ route('outbound.track', 'lp-pt141') }}" class="cta-button ui" style="background:var(--ink);box-shadow:0 4px 0 #000">View PT-141 At BioLinx →</a></div>
 <div class="cta-trust ui" style="opacity:.92"><span>Use code SOCIAL10 for 10% off</span><span>Limited launch pricing</span><span>No spam, ever</span></div></div>
 
-<div class="ps-block"><strong>P.S.</strong> — If traditional options haven't worked for you, or if you can't take them because of other medications, this is exactly what PT-141 was built for. The clinical data is real. The mechanism is completely different. And the guide walks you through everything step by step.</div>
+<div class="ps-block"><strong>P.S.</strong> If traditional options haven't worked for you, or if you can't take them because of other medications, this is exactly what PT-141 was built for. The clinical data is real. The mechanism is completely different. And the guide walks you through everything step by step.</div>
 
-<div class="ps-block"><strong>P.P.S.</strong> — The reconstitution walkthrough alone is worth getting the guide. 90% of first-timers mix their first vial wrong and lose half the dose. The 4-minute video shows you exactly how to do it right.</div>
+<div class="ps-block"><strong>P.P.S.</strong> The reconstitution walkthrough alone is worth getting the guide. 90% of first-timers mix their first vial wrong and lose half the dose. The 4-minute video shows you exactly how to do it right.</div>
 
 <p style="font-size:13px;color:var(--muted);margin-top:32px"><strong>Disclaimer:</strong> PT-141 is not FDA-approved for human use in the United States. This article is educational and for research purposes only. It is not medical advice. Consult your doctor before using any new treatment.</p>
 </div></div></div>
@@ -572,12 +572,12 @@ window.addEventListener('resize', function(){ positionResult(document.querySelec
 
 <div class="sidebar-box"><div class="sidebar-label ui">Why Readers Trust This Desk</div><p style="font-size:13.5px;line-height:1.6">No corporate partnerships. No pharma money. We only recommend research labs with publicly verifiable COAs. Field reporting on real solutions men are actually using.</p></div>
 
-<div class="sidebar-box"><div class="sidebar-label ui">Related Reading</div><div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px"><a href="#" style="color:inherit">Why Doctors Won't Talk About This Publicly</a></div><p style="font-size:12px;color:var(--muted);margin-bottom:14px">Analysis · 7 min</p><div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px"><a href="#" style="color:inherit">PT-141 vs Viagra: Complete Comparison</a></div><p style="font-size:12px;color:var(--muted);margin-bottom:14px">Comparison · 6 min</p><div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px"><a href="#" style="color:inherit">Real Results From Men Using It</a></div><p style="font-size:12px;color:var(--muted);margin-bottom:0">Stories · 5 min</p></div>
+<div class="sidebar-box"><div class="sidebar-label ui">Related Reading</div><div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px"><a href="#stackQuiz" style="color:inherit">Why Doctors Won't Talk About This Publicly</a></div><p style="font-size:12px;color:var(--muted);margin-bottom:14px">Analysis · 7 min</p><div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px"><a href="#stackQuiz" style="color:inherit">PT-141 vs Viagra: Complete Comparison</a></div><p style="font-size:12px;color:var(--muted);margin-bottom:14px">Comparison · 6 min</p><div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px"><a href="#stackQuiz" style="color:inherit">Real Results From Men Using It</a></div><p style="font-size:12px;color:var(--muted);margin-bottom:0">Stories · 5 min</p></div>
 
 </div></div>
 </div></div></main>
 
-<footer><div class="container"><div class="footer-grid ui"><div><h4>The Male Health Journal</h4><p>Field reporting on real solutions for male performance. No paywall. No pharma sponsorship.</p></div><div><h4>Resources</h4><p><a href="#">PT-141 Getting Started</a></p><p><a href="#">Sourcing &amp; COA Audit</a></p><p><a href="#">Clinical Data</a></p></div><div><h4>Legal</h4><p><a href="/disclaimer">Disclaimer</a></p><p><a href="/privacy">Privacy</a></p><p><a href="/terms">Terms</a></p></div></div><div class="footer-bottom ui">The Male Health Journal · © 2026 · Independent Field Reporting · Not medical advice</div></div></footer>
+<footer><div class="container"><div class="footer-grid ui"><div><h4>The Male Health Journal</h4><p>Field reporting on real solutions for male performance. No paywall. No pharma sponsorship.</p></div><div><h4>Resources</h4><p><a href="#stackQuiz">PT-141 Getting Started</a></p><p><a href="#stackQuiz">Sourcing &amp; COA Audit</a></p><p><a href="#stackQuiz">Clinical Data</a></p></div><div><h4>Legal</h4><p><a href="/disclaimer">Disclaimer</a></p><p><a href="/privacy">Privacy</a></p><p><a href="/terms">Terms</a></p></div></div><div class="footer-bottom ui">The Male Health Journal · © 2026 · Independent Field Reporting · Not medical advice</div></div></footer>
 
 <a href="#order" class="sticky-cta ui" id="stickyCta">Get The Free Protocol →</a>
 
