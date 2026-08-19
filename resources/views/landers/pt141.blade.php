@@ -455,7 +455,14 @@ body.pp-modal-open{overflow:hidden}
 .stack-result-card .product-card-price{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:12px}
 .stack-result-card .product-card-cta{display:inline-block}
 @media(max-width:520px){.stack-quiz-options{max-width:none}.stack-result-card{flex-direction:column;text-align:center}}
+.mobile-avail{display:none}
+@media(max-width:767px){.mobile-avail{display:block;margin:2em 0 0}}
 </style>
+
+{{-- Mobile-only "Available At" purchase box — the desktop sidebar is hidden on mobile. --}}
+<div class="mobile-avail">
+<div class="sidebar-box" style="background:linear-gradient(180deg,var(--cta-soft) 0%,#FFF 100%);border:1.5px solid var(--cta)"><div class="sidebar-label ui" style="color:var(--cta);border-color:var(--cta)">Available At</div><h3>PT-141 at BioLinx Labs</h3><p style="font-size:13.5px;line-height:1.55">Third-party HPLC tested · 99%+ purity · COA on every batch · Ships in 24 hrs.</p><a href="{{ route('outbound.track', 'lp-pt141') }}" class="sidebar-cta ui">View Product →</a><p style="font-size:11.5px;color:var(--muted);margin-bottom:0">Use code <strong>SOCIAL10</strong> for 10% off your first order.</p></div>
+</div>
 
 <div class="stack-quiz ui" id="stackQuiz">
     <div class="stack-quiz-title" style="font-family:'Source Serif 4',serif">Want to stack PT-141 with another goal?</div>
