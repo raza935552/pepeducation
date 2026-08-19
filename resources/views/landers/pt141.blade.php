@@ -296,7 +296,7 @@ body.pp-modal-open{overflow:hidden}
 <div><div class="ui" style="font-size:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--cta);margin-bottom:3px">Independent Reporting</div><a href="/" class="masthead-title">The Male Health Journal</a></div>
 </div></div>
 
-<div class="section-nav ui"><div class="max-w-7xl mx-auto px-5 md:px-8 flex items-center gap-7 overflow-x-auto whitespace-nowrap"><a href="#stackQuiz">Performance</a><a href="#stackQuiz">Solutions</a><a href="#stackQuiz" class="active">PT-141</a><a href="#order">How-To</a><a href="#stackQuiz">Results</a></div></div>
+<div class="section-nav ui"><div class="max-w-7xl mx-auto px-5 md:px-8 flex items-center gap-7 overflow-x-auto whitespace-nowrap"><a href="#stackQuiz">Performance</a><a href="#stackQuiz">Solutions</a><a href="#stackQuiz" class="active">PT-141</a><a href="#protocol">How-To</a><a href="#stackQuiz">Results</a></div></div>
 
 <div class="popular-strip"><div class="max-w-7xl mx-auto px-5 md:px-8"><h4 class="ui mb-4">Most Read This Week</h4><div class="grid grid-cols-1 md:grid-cols-4 gap-4"><a href="#stackQuiz" class="flex gap-3 items-start"><span class="popular-num">1</span><div><div class="popular-title ui">The New PT-141 Solution That Men Are Quietly Using</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Solutions · 10 min</div></div></a><a href="#stackQuiz" class="flex gap-3 items-start"><span class="popular-num">2</span><div><div class="popular-title ui">Why Doctors Won't Talk About This Publicly</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Analysis · 7 min</div></div></a><a href="#stackQuiz" class="flex gap-3 items-start"><span class="popular-num">3</span><div><div class="popular-title ui">How to Get Started: Step-by-Step Guide</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Guide · 8 min</div></div></a><a href="#stackQuiz" class="flex gap-3 items-start"><span class="popular-num">4</span><div><div class="popular-title ui">Real Results From Men Who Are Using It</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Stories · 6 min</div></div></a></div></div></div>
 
@@ -390,7 +390,7 @@ body.pp-modal-open{overflow:hidden}
 </div></div>
 
 <div class="article-body">
-<div class="inline-cta"><h3>Ready to see exactly how to start?</h3><p>Get the full sourcing guide, dosing schedule and side-effect protocol. Direct to your inbox in 60 seconds.</p><a href="#order" class="cta-button ui">Get The Full Protocol Free →</a><div class="cta-trust ui"><span>No spam, ever</span><span>Read in 6 minutes</span><span>9,100+ readers</span></div></div>
+<div class="inline-cta"><h3>Ready to see exactly how to start?</h3><p>Get the full sourcing guide, dosing schedule and side-effect protocol. Direct to your inbox in 60 seconds.</p><a href="#protocol" class="cta-button ui">Get The Full Protocol Free →</a><div class="cta-trust ui"><span>No spam, ever</span><span>Read in 6 minutes</span><span>9,100+ readers</span></div></div>
 
 <hr class="section-rule">
 <h2>How To Start (The Right Way)</h2>
@@ -401,6 +401,7 @@ body.pp-modal-open{overflow:hidden}
 <strong>You don't need a prescription.</strong> You don't need a clinic visit. The full guide below walks you through everything. What to buy. How to mix it. How much to take. What's normal and what's not.
 </div>
 
+<h2 id="protocol" style="scroll-margin-top:64px;text-align:center;font-family:'Source Serif 4',serif;font-weight:700;font-size:clamp(28px,5.5vw,40px);line-height:1.08;letter-spacing:-.015em;color:var(--ink);margin:2.4em 0 .6em">Get the Protocol - <span style="color:var(--green)">FREE</span></h2>
 <div class="value-stack ui">
 <div class="value-stack-title">The Complete PT-141 Starter System</div>
 <div class="value-stack-h">Everything you need to start safely, in one bundle</div>
@@ -579,7 +580,7 @@ window.addEventListener('resize', function(){ positionResult(document.querySelec
 
 <footer><div class="container"><div class="footer-grid ui"><div><h4>The Male Health Journal</h4><p>Field reporting on real solutions for male performance. No paywall. No pharma sponsorship.</p></div><div><h4>Resources</h4><p><a href="#stackQuiz">PT-141 Getting Started</a></p><p><a href="#stackQuiz">Sourcing &amp; COA Audit</a></p><p><a href="#stackQuiz">Clinical Data</a></p></div><div><h4>Legal</h4><p><a href="/disclaimer">Disclaimer</a></p><p><a href="/privacy">Privacy</a></p><p><a href="/terms">Terms</a></p></div></div><div class="footer-bottom ui">The Male Health Journal · © 2026 · Independent Field Reporting · Not medical advice</div></div></footer>
 
-<a href="#order" class="sticky-cta ui" id="stickyCta">Get The Free Protocol →</a>
+<a href="#protocol" class="sticky-cta ui" id="stickyCta">Get The Free Protocol →</a>
 
 <!-- Protocol popup: email capture, auto-shows after delay + on exit intent -->
 <div class="pp-modal-overlay" id="ppModal" aria-hidden="true">
