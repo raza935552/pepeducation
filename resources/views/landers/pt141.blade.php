@@ -444,7 +444,7 @@ body.pp-modal-open{overflow:hidden}
 .stack-quiz-title{font-weight:700;font-size:19px;color:var(--ink);letter-spacing:-.01em;line-height:1.3}
 .stack-quiz-sub{font-size:12.5px;color:var(--muted);margin:6px 0 20px;line-height:1.5}
 .stack-quiz-body{display:flex;flex-direction:column;gap:18px}
-.stack-quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stack-quiz-options{display:flex;flex-direction:column;gap:10px}
 .goal-pill{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:14px 18px;border-radius:8px;border:1.5px solid var(--cta);background:var(--cta-soft);color:var(--cta);font-family:inherit;font-weight:800;font-size:14.5px;text-align:left;cursor:pointer;transition:background .15s,color .15s,transform .1s,box-shadow .15s}
 .goal-pill::after{content:'→';font-weight:800;color:var(--cta);transition:transform .15s,color .15s}
 .goal-pill:hover{background:#FBD5D5;transform:translateY(-1px);box-shadow:0 5px 14px rgba(196,30,30,.16)}
@@ -459,8 +459,11 @@ body.pp-modal-open{overflow:hidden}
 .stack-result-card .product-card-name{font-size:15px;line-height:1.35;margin-bottom:6px}
 .stack-result-card .product-card-price{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:12px}
 .stack-result-card .product-card-cta{display:inline-block}
-@media(max-width:420px){.stack-quiz-options{grid-template-columns:1fr}.stack-result-card{flex-direction:column;text-align:center}}
-@media(min-width:768px){.stack-quiz-body{flex-direction:row;align-items:flex-start;gap:26px}.stack-quiz-options{display:flex;flex-direction:column;flex:0 0 280px}.stack-result{flex:1;margin-top:0;padding-top:0;border-top:none}.stack-result-empty{min-height:132px;display:flex;align-items:center;justify-content:center}}
+@media(max-width:520px){.stack-result-card{flex-direction:column;text-align:center}}
+/* Mobile: the result opens directly under the tapped button (JS relocates it). */
+@media(max-width:767px){#stackQuizOptions > .stack-result{margin:2px 0 6px;padding-top:14px}}
+/* Desktop: buttons on the left, the kit beside them on the right. */
+@media(min-width:768px){.stack-quiz-body{flex-direction:row;align-items:flex-start;gap:26px}.stack-quiz-options{flex:0 0 280px}.stack-result{flex:1;margin-top:0;padding-top:0;border-top:none}.stack-result-empty{min-height:132px;display:flex;align-items:center;justify-content:center}}
 .mobile-avail{display:none}
 @media(max-width:767px){.mobile-avail{display:block;margin:2em 0 0}}
 </style>
@@ -474,7 +477,7 @@ body.pp-modal-open{overflow:hidden}
     <div class="stack-quiz-title" style="font-family:'Source Serif 4',serif">Want to stack PT-141 with another goal?</div>
     <div class="stack-quiz-sub">We'll curate the stack for you, so you don't need to worry. Pick a goal and we'll show the exact kit.</div>
     <div class="stack-quiz-body">
-    <div class="stack-quiz-options">
+    <div class="stack-quiz-options" id="stackQuizOptions">
         @foreach($quiz as $q)
         <button type="button" class="goal-pill" data-goal="{{ $q['key'] }}" onclick="pickGoal('{{ $q['key'] }}')">{{ $q['label'] }}</button>
         @endforeach
@@ -499,7 +502,20 @@ body.pp-modal-open{overflow:hidden}
 {{-- Product shelf hidden per request — the "curate your stack" quiz above surfaces the specific bundle. --}}
 
 <script>
+function positionResult(btn){
+    var res=document.getElementById('stackResult');
+    var body=document.querySelector('.stack-quiz-body');
+    if(!res||!body) return;
+    if(window.innerWidth < 768 && btn){
+        // Mobile: open the kit directly under the tapped button (accordion).
+        if(btn.nextElementSibling !== res){ btn.insertAdjacentElement('afterend', res); }
+    } else {
+        // Desktop: the kit is the right-hand column.
+        if(body.lastElementChild !== res){ body.appendChild(res); }
+    }
+}
 function pickGoal(key){
+    var btn=document.querySelector('#stackQuiz .goal-pill[data-goal="'+key+'"]');
     document.querySelectorAll('#stackQuiz .goal-pill').forEach(function(b){ b.classList.toggle('active', b.dataset.goal===key); });
     var res=document.getElementById('stackResult');
     if(!res) return;
@@ -510,13 +526,13 @@ function pickGoal(key){
         c.classList.toggle('is-active', on);
         if(on) active=c;
     });
-    // On mobile the result sits below the buttons — bring it into view. On desktop
-    // it's already side-by-side, so no scroll needed.
+    positionResult(btn);
     if(active && window.innerWidth < 768){
         var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        active.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'center'});
+        active.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'nearest'});
     }
 }
+window.addEventListener('resize', function(){ positionResult(document.querySelector('#stackQuiz .goal-pill.active')); });
 </script>
 
 <div class="guarantee ui"><div class="guarantee-badge"><div><div class="num">100%</div><div class="lbl">Money<br>Back</div></div></div><div><h3>BioLinx Labs 60-Day Quality Guarantee</h3><p>Every batch is third-party tested. If your COA doesn't match the label, or if anything is off, you get a full refund. No questions asked. Sourcing peptides shouldn't be a leap of faith.</p></div></div>
