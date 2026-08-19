@@ -294,7 +294,7 @@ body.pp-modal-open{overflow:hidden}
 <div style="background:var(--cta);height:3px"></div>
 <div class="max-w-7xl mx-auto px-5 md:px-8 flex items-center justify-between" style="padding-top:16px">
 <div><div class="ui" style="font-size:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--cta);margin-bottom:3px">Independent Reporting</div><a href="/" class="masthead-title">The Male Health Journal</a></div>
-<div class="hidden md:flex items-center gap-3 text-sm text-[var(--muted)] ui"><span>Vol. 1 · Issue 2</span></div></div></div>
+</div></div>
 
 <div class="section-nav ui"><div class="max-w-7xl mx-auto px-5 md:px-8 flex items-center gap-7 overflow-x-auto whitespace-nowrap"><a href="#">Performance</a><a href="#">Solutions</a><a href="#" class="active">PT-141</a><a href="#">How-To</a><a href="#">Results</a></div></div>
 
