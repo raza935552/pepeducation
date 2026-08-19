@@ -415,23 +415,82 @@ body.pp-modal-open{overflow:hidden}
 <div class="value-cta-wrap"><a href="#order" class="cta-button ui">Send Me The Complete Protocol →</a><div class="cta-trust ui" style="color:var(--muted);opacity:1"><span>Instant email delivery</span><span>No credit card required</span><span>Unsubscribe anytime</span></div><p class="ui" style="font-size:11px;color:var(--muted);margin-top:12px">*Free with newsletter signup. Discount code SOCIAL10 for 10% off your first BioLinx Labs order included.</p></div>
 </div>
 
+@php
+    $r2 = 'https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/';
+    $bx = 'https://biolinxlabs.com';
+    // Each card deep-links through /go (keeps fbclid + UTM attribution) to its
+    // specific BioLinx bundle page via the ?dest= override (same-domain validated).
+    $go = fn ($dest) => route('outbound.track', ['slug' => 'lp-pt141', 'dest' => $dest]);
+    $shelf = [
+        ['img' => '59121a51-a297-43a0-84b7-c2527028a790', 'name' => 'PT-141 · 10 mg', 'price' => '$59.93', 'cta' => 'View Product →', 'dest' => $bx.'/products/pt-141-10-mg', 'featured' => true],
+        ['img' => 'fe038a3c-6d2d-4e82-bc47-c2988715c3b3', 'name' => 'PT-141 Starter Kit', 'price' => '$79.86', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-starter-kit'],
+        ['img' => '514e631c-baeb-47b0-81ac-2b71c001b05b', 'name' => 'Starter Kit + Recovery & Repair', 'price' => '$219.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-recovery-repair'],
+        ['img' => 'eca3fb7c-750a-4612-8d98-79ae408913fb', 'name' => 'Starter Kit + Performance Energy', 'price' => '$179.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-performance-energy'],
+        ['img' => 'ee1654bf-ac09-4ee2-b48f-0b449098522c', 'name' => 'Starter Kit + Muscle Growth', 'price' => '$179.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-muscle-growth'],
+        ['img' => 'ec590410-f58b-4200-8e53-9b6206396baf', 'name' => 'Starter Kit + Glow Boost', 'price' => '$149.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-glow-boost'],
+        ['img' => '22c7ab55-5fdd-45f2-955b-20aca724c86b', 'name' => 'Starter Kit + Extreme Fat Burn', 'price' => '$279.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-extreme-fat-burn'],
+    ];
+    // Quiz goal -> index into $shelf (Better Skin=Glow, Fat Burn=Fat Burn, Repair=Recovery, None=base PT-141)
+    $quiz = [
+        ['key' => 'skin',   'label' => 'Better Skin',       'idx' => 5],
+        ['key' => 'fat',    'label' => 'Fat Burn',          'idx' => 6],
+        ['key' => 'repair', 'label' => 'Repair Injuries',   'idx' => 2],
+        ['key' => 'none',   'label' => 'None, just PT-141',  'idx' => 0],
+    ];
+@endphp
+
+<style>
+.stack-quiz{margin:2.5em 0;padding:1.5em;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
+.stack-quiz-title{font-weight:700;font-size:19px;color:var(--ink);letter-spacing:-.01em}
+.stack-quiz-sub{font-size:12.5px;color:var(--muted);margin:4px 0 16px}
+.stack-quiz-options{display:flex;flex-wrap:wrap;gap:10px}
+.goal-pill{padding:11px 18px;border-radius:999px;border:1.5px solid #E4B100;background:#FFD21A;color:#3A2E00;font-weight:700;font-size:13.5px;cursor:pointer;transition:transform .08s,box-shadow .1s;box-shadow:0 3px 0 #C99A00}
+.goal-pill:hover{transform:translateY(1px);box-shadow:0 2px 0 #C99A00}
+.goal-pill.active{background:var(--cta);border-color:var(--cta);color:#fff;box-shadow:0 3px 0 var(--cta-dark)}
+.stack-result{margin-top:18px}
+.stack-result-card{display:flex;gap:16px;align-items:center;padding:14px;border:1.5px solid var(--cta);border-radius:8px;background:var(--cta-soft)}
+.stack-result-card img{width:92px;height:92px;object-fit:contain;border-radius:6px;background:var(--bg);flex:0 0 92px}
+.stack-result-card .product-card-name{font-size:15px;margin-bottom:4px}
+.stack-result-card .product-card-price{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:10px}
+.stack-result-card .product-card-cta{display:inline-block}
+@media(max-width:520px){.stack-result-card{flex-direction:column;text-align:center}}
+</style>
+
+<div class="stack-quiz ui" id="stackQuiz">
+    <div class="stack-quiz-title" style="font-family:'Source Serif 4',serif">Want to stack PT-141 with another goal?</div>
+    <div class="stack-quiz-sub">We'll curate the stack for you, so you don't need to worry. Pick a goal and we'll show the exact kit.</div>
+    <div class="stack-quiz-options">
+        @foreach($quiz as $q)
+        <button type="button" class="goal-pill" data-goal="{{ $q['key'] }}" onclick="pickGoal('{{ $q['key'] }}')">{{ $q['label'] }}</button>
+        @endforeach
+    </div>
+    <div class="stack-result" id="stackResult" hidden>
+        @foreach($quiz as $q)
+        @php $it = $shelf[$q['idx']]; @endphp
+        <div class="stack-result-card" data-goal="{{ $q['key'] }}" hidden>
+            <img src="{{ $r2 . $it['img'] }}.png" alt="{{ $it['name'] }}" loading="lazy">
+            <div>
+                <div class="product-card-name">{{ $it['name'] }}</div>
+                <div class="product-card-price">{{ $it['price'] }}</div>
+                <a href="{{ $go($it['dest']) }}" class="product-card-cta">{{ $it['cta'] }}</a>
+            </div>
+        </div>
+        @endforeach
+    </div>
+</div>
+
 <div class="product-shelf ui" id="productShelf"><div class="product-shelf-header"><div><div class="product-shelf-title" style="font-family:'Source Serif 4',serif">Shop PT-141 at BioLinx Labs</div><div class="product-shelf-sub">Base peptide + starter kit bundles. Third-party tested, COA on every batch.</div></div></div><div class="product-shelf-track-wrap"><div class="product-shelf-track" id="shelfTrack">
-<div class="product-card featured"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/59121a51-a297-43a0-84b7-c2527028a790.png" alt="PT-141"><div class="product-card-name">PT-141 · 10 mg</div><div class="product-card-price">$59.93</div><a href="{{ route('outbound.track', 'lp-pt141') }}" class="product-card-cta">View Product →</a></div>
-<div class="product-card"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/fe038a3c-6d2d-4e82-bc47-c2988715c3b3.png" alt="Starter Kit"><div class="product-card-name">PT-141 Starter Kit</div><div class="product-card-price">$79.86</div><a href="{{ route('outbound.track', 'lp-pt141') }}" class="product-card-cta">View Bundle →</a></div>
-<div class="product-card"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/514e631c-baeb-47b0-81ac-2b71c001b05b.png" alt="Recovery"><div class="product-card-name">Starter Kit + Recovery &amp; Repair</div><div class="product-card-price">$219.72</div><a href="{{ route('outbound.track', 'lp-pt141') }}" class="product-card-cta">View Bundle →</a></div>
-<div class="product-card"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/eca3fb7c-750a-4612-8d98-79ae408913fb.png" alt="Energy"><div class="product-card-name">Starter Kit + Performance Energy</div><div class="product-card-price">$179.72</div><a href="{{ route('outbound.track', 'lp-pt141') }}" class="product-card-cta">View Bundle →</a></div>
-<div class="product-card"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/ee1654bf-ac09-4ee2-b48f-0b449098522c.png" alt="Muscle"><div class="product-card-name">Starter Kit + Muscle Growth</div><div class="product-card-price">$179.72</div><a href="{{ route('outbound.track', 'lp-pt141') }}" class="product-card-cta">View Bundle →</a></div>
-<div class="product-card"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/ec590410-f58b-4200-8e53-9b6206396baf.png" alt="Glow"><div class="product-card-name">Starter Kit + Glow Boost</div><div class="product-card-price">$149.72</div><a href="{{ route('outbound.track', 'lp-pt141') }}" class="product-card-cta">View Bundle →</a></div>
-<div class="product-card"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/22c7ab55-5fdd-45f2-955b-20aca724c86b.png" alt="Fat Burn"><div class="product-card-name">Starter Kit + Extreme Fat Burn</div><div class="product-card-price">$279.72</div><a href="{{ route('outbound.track', 'lp-pt141') }}" class="product-card-cta">View Bundle →</a></div>
-<!-- Duplicate set for seamless loop -->
-<div class="product-card featured"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/59121a51-a297-43a0-84b7-c2527028a790.png" alt="PT-141"><div class="product-card-name">PT-141 · 10 mg</div><div class="product-card-price">$59.93</div><a href="{{ route('outbound.track', 'lp-pt141') }}" class="product-card-cta">View Product →</a></div>
-<div class="product-card"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/fe038a3c-6d2d-4e82-bc47-c2988715c3b3.png" alt="Starter Kit"><div class="product-card-name">PT-141 Starter Kit</div><div class="product-card-price">$79.86</div><a href="{{ route('outbound.track', 'lp-pt141') }}" class="product-card-cta">View Bundle →</a></div>
-<div class="product-card"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/514e631c-baeb-47b0-81ac-2b71c001b05b.png" alt="Recovery"><div class="product-card-name">Starter Kit + Recovery &amp; Repair</div><div class="product-card-price">$219.72</div><a href="{{ route('outbound.track', 'lp-pt141') }}" class="product-card-cta">View Bundle →</a></div>
-<div class="product-card"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/eca3fb7c-750a-4612-8d98-79ae408913fb.png" alt="Energy"><div class="product-card-name">Starter Kit + Performance Energy</div><div class="product-card-price">$179.72</div><a href="{{ route('outbound.track', 'lp-pt141') }}" class="product-card-cta">View Bundle →</a></div>
-<div class="product-card"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/ee1654bf-ac09-4ee2-b48f-0b449098522c.png" alt="Muscle"><div class="product-card-name">Starter Kit + Muscle Growth</div><div class="product-card-price">$179.72</div><a href="{{ route('outbound.track', 'lp-pt141') }}" class="product-card-cta">View Bundle →</a></div>
-<div class="product-card"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/ec590410-f58b-4200-8e53-9b6206396baf.png" alt="Glow"><div class="product-card-name">Starter Kit + Glow Boost</div><div class="product-card-price">$149.72</div><a href="{{ route('outbound.track', 'lp-pt141') }}" class="product-card-cta">View Bundle →</a></div>
-<div class="product-card"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/22c7ab55-5fdd-45f2-955b-20aca724c86b.png" alt="Fat Burn"><div class="product-card-name">Starter Kit + Extreme Fat Burn</div><div class="product-card-price">$279.72</div><a href="{{ route('outbound.track', 'lp-pt141') }}" class="product-card-cta">View Bundle →</a></div>
+@foreach(array_merge($shelf, $shelf) as $it)
+<div class="product-card{{ !empty($it['featured']) ? ' featured' : '' }}"><img src="{{ $r2 . $it['img'] }}.png" alt="{{ $it['name'] }}" loading="lazy"><div class="product-card-name">{{ $it['name'] }}</div><div class="product-card-price">{{ $it['price'] }}</div><a href="{{ $go($it['dest']) }}" class="product-card-cta">{{ $it['cta'] }}</a></div>
+@endforeach
 </div></div></div>
+
+<script>
+function pickGoal(key){
+    document.querySelectorAll('#stackQuiz .goal-pill').forEach(function(b){ b.classList.toggle('active', b.dataset.goal===key); });
+    var res=document.getElementById('stackResult'); if(res){ res.hidden=false; res.querySelectorAll('.stack-result-card').forEach(function(c){ c.hidden = c.dataset.goal!==key; }); }
+}
+</script>
 
 <div class="guarantee ui"><div class="guarantee-badge"><div><div class="num">100%</div><div class="lbl">Money<br>Back</div></div></div><div><h3>BioLinx Labs 60-Day Quality Guarantee</h3><p>Every batch is third-party tested. If your COA doesn't match the label, or if anything is off, you get a full refund. No questions asked. Sourcing peptides shouldn't be a leap of faith.</p></div></div>
 
