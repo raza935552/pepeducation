@@ -440,20 +440,20 @@ body.pp-modal-open{overflow:hidden}
 @endphp
 
 <style>
-.stack-quiz{margin:2.5em 0;padding:1.5em;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
-.stack-quiz-title{font-weight:700;font-size:19px;color:var(--ink);letter-spacing:-.01em}
-.stack-quiz-sub{font-size:12.5px;color:var(--muted);margin:4px 0 16px}
-.stack-quiz-options{display:flex;flex-wrap:wrap;gap:10px}
-.goal-pill{padding:11px 18px;border-radius:999px;border:1.5px solid #E4B100;background:#FFD21A;color:#3A2E00;font-weight:700;font-size:13.5px;cursor:pointer;transition:transform .08s,box-shadow .1s;box-shadow:0 3px 0 #C99A00}
+.stack-quiz{margin:2.5em 0;padding:1.75em;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
+.stack-quiz-title{font-weight:700;font-size:19px;color:var(--ink);letter-spacing:-.01em;line-height:1.3}
+.stack-quiz-sub{font-size:12.5px;color:var(--muted);margin:6px 0 20px;line-height:1.5}
+.stack-quiz-options{display:flex;flex-direction:column;align-items:stretch;gap:12px;max-width:340px}
+.goal-pill{padding:13px 22px;border-radius:999px;border:1.5px solid #E4B100;background:#FFD21A;color:#3A2E00;font-weight:700;font-size:14px;text-align:center;cursor:pointer;transition:transform .08s,box-shadow .1s;box-shadow:0 3px 0 #C99A00}
 .goal-pill:hover{transform:translateY(1px);box-shadow:0 2px 0 #C99A00}
 .goal-pill.active{background:var(--cta);border-color:var(--cta);color:#fff;box-shadow:0 3px 0 var(--cta-dark)}
-.stack-result{margin-top:18px}
-.stack-result-card{display:flex;gap:16px;align-items:center;padding:14px;border:1.5px solid var(--cta);border-radius:8px;background:var(--cta-soft)}
+.stack-result{margin-top:24px;padding-top:24px;border-top:1px solid var(--line)}
+.stack-result-card{display:flex;gap:18px;align-items:center;padding:16px;border:1.5px solid var(--cta);border-radius:8px;background:var(--cta-soft)}
 .stack-result-card img{width:92px;height:92px;object-fit:contain;border-radius:6px;background:var(--bg);flex:0 0 92px}
-.stack-result-card .product-card-name{font-size:15px;margin-bottom:4px}
-.stack-result-card .product-card-price{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:10px}
+.stack-result-card .product-card-name{font-size:15px;line-height:1.35;margin-bottom:6px}
+.stack-result-card .product-card-price{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:12px}
 .stack-result-card .product-card-cta{display:inline-block}
-@media(max-width:520px){.stack-result-card{flex-direction:column;text-align:center}}
+@media(max-width:520px){.stack-quiz-options{max-width:none}.stack-result-card{flex-direction:column;text-align:center}}
 </style>
 
 <div class="stack-quiz ui" id="stackQuiz">
@@ -479,11 +479,7 @@ body.pp-modal-open{overflow:hidden}
     </div>
 </div>
 
-<div class="product-shelf ui" id="productShelf"><div class="product-shelf-header"><div><div class="product-shelf-title" style="font-family:'Source Serif 4',serif">Shop PT-141 at BioLinx Labs</div><div class="product-shelf-sub">Base peptide + starter kit bundles. Third-party tested, COA on every batch.</div></div></div><div class="product-shelf-track-wrap"><div class="product-shelf-track" id="shelfTrack">
-@foreach(array_merge($shelf, $shelf) as $it)
-<div class="product-card{{ !empty($it['featured']) ? ' featured' : '' }}"><img src="{{ $r2 . $it['img'] }}.png" alt="{{ $it['name'] }}" loading="lazy"><div class="product-card-name">{{ $it['name'] }}</div><div class="product-card-price">{{ $it['price'] }}</div><a href="{{ $go($it['dest']) }}" class="product-card-cta">{{ $it['cta'] }}</a></div>
-@endforeach
-</div></div></div>
+{{-- Product shelf hidden per request — the "curate your stack" quiz above surfaces the specific bundle. --}}
 
 <script>
 function pickGoal(key){
