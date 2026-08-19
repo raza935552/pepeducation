@@ -495,7 +495,20 @@ body.pp-modal-open{overflow:hidden}
 <script>
 function pickGoal(key){
     document.querySelectorAll('#stackQuiz .goal-pill').forEach(function(b){ b.classList.toggle('active', b.dataset.goal===key); });
-    var res=document.getElementById('stackResult'); if(res){ res.hidden=false; res.querySelectorAll('.stack-result-card').forEach(function(c){ c.classList.toggle('is-active', c.dataset.goal===key); }); }
+    var res=document.getElementById('stackResult');
+    if(!res) return;
+    res.hidden=false;
+    var active=null;
+    res.querySelectorAll('.stack-result-card').forEach(function(c){
+        var on = c.dataset.goal===key;
+        c.classList.toggle('is-active', on);
+        if(on) active=c;
+    });
+    // Bring the revealed bundle (and its CTA) into view — matters on mobile.
+    if(active){
+        var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        active.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'center'});
+    }
 }
 </script>
 
