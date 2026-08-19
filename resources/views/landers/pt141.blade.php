@@ -465,6 +465,21 @@ body.pp-modal-open{overflow:hidden}
 @media(max-width:767px){#stackQuizOptions > .stack-result{margin:2px 0 6px;padding-top:14px}}
 /* Desktop: buttons on the left, the kit beside them on the right. */
 @media(min-width:768px){.stack-quiz-body{flex-direction:row;align-items:flex-start;gap:26px}.stack-quiz-options{flex:0 0 280px}.stack-result{flex:1;margin-top:0;padding-top:0;border-top:none}.stack-result-empty{min-height:132px;display:flex;align-items:center;justify-content:center}}
+/* Multi-step protocol form (Goal -> curated kit -> email) */
+.ms-form{margin:2.5em 0;padding:1.9em 1.6em;border:1px solid var(--line);border-radius:10px;background:var(--paper);scroll-margin-top:64px}
+.ms-progress{display:flex;gap:8px;justify-content:center;margin-bottom:22px}
+.ms-dot{width:40px;height:5px;border-radius:99px;background:var(--line);transition:background .2s}
+.ms-dot.is-active{background:var(--cta)}
+.ms-h{font-weight:700;font-size:21px;color:var(--ink);letter-spacing:-.01em;text-align:center;line-height:1.2}
+.ms-sub{font-size:13px;color:var(--muted);text-align:center;margin:7px auto 22px;line-height:1.5;max-width:46ch}
+.ms-options{display:flex;flex-direction:column;gap:10px;max-width:420px;margin:0 auto}
+#msKits{max-width:480px;margin:0 auto}
+.ms-form .stack-result-card{margin:0 auto}
+.ms-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:20px auto 0;max-width:480px}
+.ms-back{background:none;border:none;color:var(--muted);font-weight:600;cursor:pointer;font-size:14px;padding:8px}
+.ms-back:hover{color:var(--ink)}
+.ms-next{background:var(--cta);color:#fff;border:none;border-radius:6px;padding:13px 26px;font-weight:800;text-transform:uppercase;font-size:13px;letter-spacing:.03em;cursor:pointer;box-shadow:0 4px 0 var(--cta-dark);transition:transform .08s}
+.ms-next:hover{transform:translateY(1px);box-shadow:0 3px 0 var(--cta-dark)}
 .mobile-avail{display:none}
 @media(max-width:767px){.mobile-avail{display:block;margin:2em 0 0}}
 </style>
@@ -474,66 +489,79 @@ body.pp-modal-open{overflow:hidden}
 <div class="sidebar-box" style="background:linear-gradient(180deg,var(--cta-soft) 0%,#FFF 100%);border:1.5px solid var(--cta)"><div class="sidebar-label ui" style="color:var(--cta);border-color:var(--cta)">Available At</div><h3>PT-141 at BioLinx Labs</h3><p style="font-size:13.5px;line-height:1.55">Third-party HPLC tested · 99%+ purity · COA on every batch · Ships in 24 hrs.</p><a href="{{ route('outbound.track', 'lp-pt141') }}" class="sidebar-cta ui">View Product →</a><p style="font-size:11.5px;color:var(--muted);margin-bottom:0">Use code <strong>SOCIAL10</strong> for 10% off your first order.</p><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/59121a51-a297-43a0-84b7-c2527028a790.png" alt="PT-141" style="width:100%;border-radius:6px;aspect-ratio:1/1;object-fit:cover;margin-top:14px" loading="lazy"></div>
 </div>
 
-<div class="stack-quiz ui" id="stackQuiz">
-    <div class="stack-quiz-title" style="font-family:'Source Serif 4',serif">Want to stack PT-141 with another goal?</div>
-    <div class="stack-quiz-sub">Want to Stack your Product with another health goal? (We'll curate your stack for you, so you don't need to worry)</div>
-    <div class="stack-quiz-body">
-    <div class="stack-quiz-options" id="stackQuizOptions">
-        @foreach($quiz as $q)
-        <button type="button" class="goal-pill" data-goal="{{ $q['key'] }}" onclick="pickGoal('{{ $q['key'] }}')">{{ $q['label'] }}</button>
-        @endforeach
+<div class="ms-form ui" id="stackQuiz">
+    <div class="ms-progress"><span class="ms-dot is-active" data-dot="1"></span><span class="ms-dot" data-dot="2"></span><span class="ms-dot" data-dot="3"></span></div>
+
+    {{-- Step 1: goal --}}
+    <div class="ms-step" data-step="1">
+        <div class="ms-h" style="font-family:'Source Serif 4',serif">Want to stack PT-141 with another goal?</div>
+        <div class="ms-sub">We'll curate your kit for you, so you don't need to worry. Pick a goal to start.</div>
+        <div class="ms-options">
+            @foreach($quiz as $q)
+            <button type="button" class="goal-pill" data-goal="{{ $q['key'] }}" onclick="msPick('{{ $q['key'] }}')">{{ $q['label'] }}</button>
+            @endforeach
+        </div>
     </div>
-    <div class="stack-result" id="stackResult">
-        <div class="stack-result-empty" id="stackResultEmpty">Pick a goal and your curated kit appears here.</div>
-        @foreach($quiz as $q)
-        @php $it = $shelf[$q['idx']]; @endphp
-        <div class="stack-result-card" data-goal="{{ $q['key'] }}">
-            <img src="{{ $r2 . $it['img'] }}.png" alt="{{ $it['name'] }}" loading="lazy">
-            <div>
-                <div class="product-card-name">{{ $it['name'] }}</div>
-                <div class="product-card-price">{{ $it['price'] }}</div>
-                <a href="{{ $go($it['dest']) }}" class="product-card-cta">{{ $it['cta'] }}</a>
+
+    {{-- Step 2: curated kit (the upsell) --}}
+    <div class="ms-step" data-step="2" hidden>
+        <div class="ms-h" style="font-family:'Source Serif 4',serif">Your curated PT-141 kit</div>
+        <div class="ms-sub">Hand-picked for your goal. Third-party HPLC tested, COA on every batch, ships from the US.</div>
+        <div id="msKits">
+            @foreach($quiz as $q)
+            @php $it = $shelf[$q['idx']]; @endphp
+            <div class="stack-result-card" data-goal="{{ $q['key'] }}" data-url="{{ $go($it['dest']) }}">
+                <img src="{{ $r2 . $it['img'] }}.png" alt="{{ $it['name'] }}" loading="lazy">
+                <div>
+                    <div class="product-card-name">{{ $it['name'] }}</div>
+                    <div class="product-card-price">{{ $it['price'] }}</div>
+                    <a href="{{ $go($it['dest']) }}" class="product-card-cta">{{ $it['cta'] }}</a>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        <div class="ms-nav">
+            <button type="button" class="ms-back" onclick="msGo(1)">&larr; Back</button>
+            <button type="button" class="ms-next" onclick="msGo(3)">Continue &rarr;</button>
+        </div>
+    </div>
+
+    {{-- Step 3: get the protocol (email capture) --}}
+    <div class="ms-step" data-step="3" hidden>
+        <div class="ms-h" style="font-family:'Source Serif 4',serif">Get your free PT-141 protocol</div>
+        <div class="ms-sub">Sourcing, dosing, reconstitution, and your SOCIAL10 discount code. Straight to your inbox.</div>
+        <div style="max-width:440px;margin:0 auto">
+            <form class="pp-capture" data-form="msform" onsubmit="return false;" style="display:flex;gap:8px;flex-wrap:wrap">
+                <input type="email" name="email" required placeholder="you@email.com" style="flex:1;min-width:200px;padding:12px 14px;border:1px solid var(--line);border-radius:6px;font-size:14px">
+                <button type="submit" class="ms-next">Get My Protocol &rarr;</button>
+            </form>
+            <div class="pp-capture-success ui" hidden style="margin-top:14px;text-align:center">
+                <p style="color:var(--green);font-weight:600;margin-bottom:10px">&#10003; Check your inbox. Your protocol is on the way.</p>
+                <a id="msFinalCta" href="{{ route('outbound.track', 'lp-pt141') }}" class="cta-button ui">View your kit at BioLinx &rarr;</a>
             </div>
         </div>
-        @endforeach
-    </div>
+        <div class="ms-nav"><button type="button" class="ms-back" onclick="msGo(2)">&larr; Back</button></div>
     </div>
 </div>
 
 {{-- Product shelf hidden per request — the "curate your stack" quiz above surfaces the specific bundle. --}}
 
 <script>
-function positionResult(btn){
-    var res=document.getElementById('stackResult');
-    var body=document.querySelector('.stack-quiz-body');
-    if(!res||!body) return;
-    if(window.innerWidth < 768 && btn){
-        // Mobile: open the kit directly under the tapped button (accordion).
-        if(btn.nextElementSibling !== res){ btn.insertAdjacentElement('afterend', res); }
-    } else {
-        // Desktop: the kit is the right-hand column.
-        if(body.lastElementChild !== res){ body.appendChild(res); }
-    }
+// Multi-step protocol form: Goal -> curated kit (upsell) -> email capture.
+function msGo(step){
+    var f=document.getElementById('stackQuiz'); if(!f) return;
+    f.querySelectorAll('.ms-step').forEach(function(s){ s.hidden = String(s.dataset.step)!==String(step); });
+    f.querySelectorAll('.ms-dot').forEach(function(d){ d.classList.toggle('is-active', Number(d.dataset.dot)<=Number(step)); });
+    if(Number(step)>1){ try{ f.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} }
 }
-function pickGoal(key){
-    var btn=document.querySelector('#stackQuiz .goal-pill[data-goal="'+key+'"]');
-    document.querySelectorAll('#stackQuiz .goal-pill').forEach(function(b){ b.classList.toggle('active', b.dataset.goal===key); });
-    var res=document.getElementById('stackResult');
-    if(!res) return;
-    var empty=document.getElementById('stackResultEmpty'); if(empty) empty.style.display='none';
-    var active=null;
-    res.querySelectorAll('.stack-result-card').forEach(function(c){
-        var on = c.dataset.goal===key;
-        c.classList.toggle('is-active', on);
-        if(on) active=c;
-    });
-    positionResult(btn);
-    if(active && window.innerWidth < 768){
-        var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        active.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'nearest'});
-    }
+function msPick(goal){
+    var f=document.getElementById('stackQuiz'); if(!f) return;
+    f.querySelectorAll('.goal-pill').forEach(function(b){ b.classList.toggle('active', b.dataset.goal===goal); });
+    var url=null;
+    f.querySelectorAll('#msKits .stack-result-card').forEach(function(k){ var on=k.dataset.goal===goal; k.classList.toggle('is-active',on); if(on)url=k.dataset.url; });
+    var fc=document.getElementById('msFinalCta'); if(fc&&url)fc.setAttribute('href',url);
+    msGo(2);
 }
-window.addEventListener('resize', function(){ positionResult(document.querySelector('#stackQuiz .goal-pill.active')); });
 </script>
 
 <div class="guarantee ui"><div class="guarantee-badge"><div><div class="num">100%</div><div class="lbl">Money<br>Back</div></div></div><div><h3>BioLinx Labs 60-Day Quality Guarantee</h3><p>Every batch is third-party tested. If your COA doesn't match the label, or if anything is off, you get a full refund. No questions asked. Sourcing peptides shouldn't be a leap of faith.</p></div></div>
