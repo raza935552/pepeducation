@@ -443,21 +443,24 @@ body.pp-modal-open{overflow:hidden}
 .stack-quiz{margin:2.5em 0;padding:1.75em;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
 .stack-quiz-title{font-weight:700;font-size:19px;color:var(--ink);letter-spacing:-.01em;line-height:1.3}
 .stack-quiz-sub{font-size:12.5px;color:var(--muted);margin:6px 0 20px;line-height:1.5}
-.stack-quiz-options{display:flex;flex-direction:column;align-items:stretch;gap:10px;max-width:380px}
-.goal-pill{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:14px 20px;border-radius:8px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);font-family:inherit;font-weight:700;font-size:15px;text-align:left;cursor:pointer;transition:border-color .15s,background .15s,color .15s,transform .08s,box-shadow .12s}
-.goal-pill::after{content:'→';font-weight:800;color:var(--faint);transition:transform .15s,color .15s}
-.goal-pill:hover{border-color:var(--cta);background:var(--lsoft)}
-.goal-pill:hover::after{color:var(--cta);transform:translateX(3px)}
-.goal-pill.active{background:var(--cta);border-color:var(--cta);color:#fff;box-shadow:0 4px 0 var(--cta-dark)}
+.stack-quiz-body{display:flex;flex-direction:column;gap:18px}
+.stack-quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.goal-pill{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:14px 18px;border-radius:8px;border:1.5px solid var(--cta);background:var(--cta-soft);color:var(--cta);font-family:inherit;font-weight:800;font-size:14.5px;text-align:left;cursor:pointer;transition:background .15s,color .15s,transform .1s,box-shadow .15s}
+.goal-pill::after{content:'→';font-weight:800;color:var(--cta);transition:transform .15s,color .15s}
+.goal-pill:hover{background:#FBD5D5;transform:translateY(-1px);box-shadow:0 5px 14px rgba(196,30,30,.16)}
+.goal-pill:hover::after{transform:translateX(3px)}
+.goal-pill.active{background:var(--cta);border-color:var(--cta);color:#fff;box-shadow:0 4px 0 var(--cta-dark),0 8px 18px rgba(196,30,30,.28);transform:none}
 .goal-pill.active::after{content:'✓';color:#fff;transform:none}
-.stack-result{margin-top:24px;padding-top:24px;border-top:1px solid var(--line)}
+.stack-result{margin-top:2px;padding-top:18px;border-top:1px solid var(--line)}
+.stack-result-empty{color:var(--muted);font-size:13.5px;font-style:italic;padding:22px;text-align:center;border:1.5px dashed var(--line);border-radius:8px}
 .stack-result-card{display:none;gap:18px;align-items:center;padding:16px;border:1.5px solid var(--cta);border-radius:8px;background:var(--cta-soft)}
 .stack-result-card.is-active{display:flex}
 .stack-result-card img{width:92px;height:92px;object-fit:contain;border-radius:6px;background:var(--bg);flex:0 0 92px}
 .stack-result-card .product-card-name{font-size:15px;line-height:1.35;margin-bottom:6px}
 .stack-result-card .product-card-price{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:12px}
 .stack-result-card .product-card-cta{display:inline-block}
-@media(max-width:520px){.stack-quiz-options{max-width:none}.stack-result-card{flex-direction:column;text-align:center}}
+@media(max-width:420px){.stack-quiz-options{grid-template-columns:1fr}.stack-result-card{flex-direction:column;text-align:center}}
+@media(min-width:768px){.stack-quiz-body{flex-direction:row;align-items:flex-start;gap:26px}.stack-quiz-options{display:flex;flex-direction:column;flex:0 0 280px}.stack-result{flex:1;margin-top:0;padding-top:0;border-top:none}.stack-result-empty{min-height:132px;display:flex;align-items:center;justify-content:center}}
 .mobile-avail{display:none}
 @media(max-width:767px){.mobile-avail{display:block;margin:2em 0 0}}
 </style>
@@ -470,12 +473,14 @@ body.pp-modal-open{overflow:hidden}
 <div class="stack-quiz ui" id="stackQuiz">
     <div class="stack-quiz-title" style="font-family:'Source Serif 4',serif">Want to stack PT-141 with another goal?</div>
     <div class="stack-quiz-sub">We'll curate the stack for you, so you don't need to worry. Pick a goal and we'll show the exact kit.</div>
+    <div class="stack-quiz-body">
     <div class="stack-quiz-options">
         @foreach($quiz as $q)
         <button type="button" class="goal-pill" data-goal="{{ $q['key'] }}" onclick="pickGoal('{{ $q['key'] }}')">{{ $q['label'] }}</button>
         @endforeach
     </div>
-    <div class="stack-result" id="stackResult" hidden>
+    <div class="stack-result" id="stackResult">
+        <div class="stack-result-empty" id="stackResultEmpty">Pick a goal and your curated kit appears here.</div>
         @foreach($quiz as $q)
         @php $it = $shelf[$q['idx']]; @endphp
         <div class="stack-result-card" data-goal="{{ $q['key'] }}">
@@ -488,6 +493,7 @@ body.pp-modal-open{overflow:hidden}
         </div>
         @endforeach
     </div>
+    </div>
 </div>
 
 {{-- Product shelf hidden per request — the "curate your stack" quiz above surfaces the specific bundle. --}}
@@ -497,15 +503,16 @@ function pickGoal(key){
     document.querySelectorAll('#stackQuiz .goal-pill').forEach(function(b){ b.classList.toggle('active', b.dataset.goal===key); });
     var res=document.getElementById('stackResult');
     if(!res) return;
-    res.hidden=false;
+    var empty=document.getElementById('stackResultEmpty'); if(empty) empty.style.display='none';
     var active=null;
     res.querySelectorAll('.stack-result-card').forEach(function(c){
         var on = c.dataset.goal===key;
         c.classList.toggle('is-active', on);
         if(on) active=c;
     });
-    // Bring the revealed bundle (and its CTA) into view — matters on mobile.
-    if(active){
+    // On mobile the result sits below the buttons — bring it into view. On desktop
+    // it's already side-by-side, so no scroll needed.
+    if(active && window.innerWidth < 768){
         var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         active.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'center'});
     }
