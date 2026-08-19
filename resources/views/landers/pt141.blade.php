@@ -470,7 +470,7 @@ body.pp-modal-open{overflow:hidden}
 
 {{-- Mobile-only "Available At" purchase box — the desktop sidebar is hidden on mobile. --}}
 <div class="mobile-avail">
-<div class="sidebar-box" style="background:linear-gradient(180deg,var(--cta-soft) 0%,#FFF 100%);border:1.5px solid var(--cta)"><div class="sidebar-label ui" style="color:var(--cta);border-color:var(--cta)">Available At</div><h3>PT-141 at BioLinx Labs</h3><p style="font-size:13.5px;line-height:1.55">Third-party HPLC tested · 99%+ purity · COA on every batch · Ships in 24 hrs.</p><a href="{{ route('outbound.track', 'lp-pt141') }}" class="sidebar-cta ui">View Product →</a><p style="font-size:11.5px;color:var(--muted);margin-bottom:0">Use code <strong>SOCIAL10</strong> for 10% off your first order.</p></div>
+<div class="sidebar-box" style="background:linear-gradient(180deg,var(--cta-soft) 0%,#FFF 100%);border:1.5px solid var(--cta)"><div class="sidebar-label ui" style="color:var(--cta);border-color:var(--cta)">Available At</div><h3>PT-141 at BioLinx Labs</h3><p style="font-size:13.5px;line-height:1.55">Third-party HPLC tested · 99%+ purity · COA on every batch · Ships in 24 hrs.</p><a href="{{ route('outbound.track', 'lp-pt141') }}" class="sidebar-cta ui">View Product →</a><p style="font-size:11.5px;color:var(--muted);margin-bottom:0">Use code <strong>SOCIAL10</strong> for 10% off your first order.</p><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/59121a51-a297-43a0-84b7-c2527028a790.png" alt="PT-141" style="width:100%;border-radius:6px;aspect-ratio:1/1;object-fit:cover;margin-top:14px" loading="lazy"></div>
 </div>
 
 <div class="stack-quiz ui" id="stackQuiz">
