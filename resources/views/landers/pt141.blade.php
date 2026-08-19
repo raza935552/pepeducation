@@ -448,7 +448,8 @@ body.pp-modal-open{overflow:hidden}
 .goal-pill:hover{transform:translateY(1px);box-shadow:0 2px 0 #C99A00}
 .goal-pill.active{background:var(--cta);border-color:var(--cta);color:#fff;box-shadow:0 3px 0 var(--cta-dark)}
 .stack-result{margin-top:24px;padding-top:24px;border-top:1px solid var(--line)}
-.stack-result-card{display:flex;gap:18px;align-items:center;padding:16px;border:1.5px solid var(--cta);border-radius:8px;background:var(--cta-soft)}
+.stack-result-card{display:none;gap:18px;align-items:center;padding:16px;border:1.5px solid var(--cta);border-radius:8px;background:var(--cta-soft)}
+.stack-result-card.is-active{display:flex}
 .stack-result-card img{width:92px;height:92px;object-fit:contain;border-radius:6px;background:var(--bg);flex:0 0 92px}
 .stack-result-card .product-card-name{font-size:15px;line-height:1.35;margin-bottom:6px}
 .stack-result-card .product-card-price{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:12px}
@@ -467,7 +468,7 @@ body.pp-modal-open{overflow:hidden}
     <div class="stack-result" id="stackResult" hidden>
         @foreach($quiz as $q)
         @php $it = $shelf[$q['idx']]; @endphp
-        <div class="stack-result-card" data-goal="{{ $q['key'] }}" hidden>
+        <div class="stack-result-card" data-goal="{{ $q['key'] }}">
             <img src="{{ $r2 . $it['img'] }}.png" alt="{{ $it['name'] }}" loading="lazy">
             <div>
                 <div class="product-card-name">{{ $it['name'] }}</div>
@@ -484,7 +485,7 @@ body.pp-modal-open{overflow:hidden}
 <script>
 function pickGoal(key){
     document.querySelectorAll('#stackQuiz .goal-pill').forEach(function(b){ b.classList.toggle('active', b.dataset.goal===key); });
-    var res=document.getElementById('stackResult'); if(res){ res.hidden=false; res.querySelectorAll('.stack-result-card').forEach(function(c){ c.hidden = c.dataset.goal!==key; }); }
+    var res=document.getElementById('stackResult'); if(res){ res.hidden=false; res.querySelectorAll('.stack-result-card').forEach(function(c){ c.classList.toggle('is-active', c.dataset.goal===key); }); }
 }
 </script>
 
