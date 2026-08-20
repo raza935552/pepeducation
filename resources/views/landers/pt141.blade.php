@@ -490,7 +490,7 @@ body.pp-modal-open{overflow:hidden}
 </div>
 
 <div class="ms-form ui" id="stackQuiz">
-    <div class="ms-progress"><span class="ms-dot is-active" data-dot="1"></span><span class="ms-dot" data-dot="2"></span><span class="ms-dot" data-dot="3"></span></div>
+    <div class="ms-progress"><span class="ms-dot is-active" data-dot="1"></span><span class="ms-dot" data-dot="2"></span></div>
 
     {{-- Step 1: goal --}}
     <div class="ms-step" data-step="1">
@@ -515,32 +515,14 @@ body.pp-modal-open{overflow:hidden}
                 <div>
                     <div class="product-card-name">{{ $it['name'] }}</div>
                     <div class="product-card-price">{{ $it['price'] }}</div>
-                    <a href="{{ $go($it['dest']) }}" class="product-card-cta">{{ $it['cta'] }}</a>
                 </div>
             </div>
             @endforeach
         </div>
         <div class="ms-nav">
             <button type="button" class="ms-back" onclick="msGo(1)">&larr; Back</button>
-            <button type="button" class="ms-next" onclick="msGo(3)">Continue &rarr;</button>
+            <a id="msViewBundle" href="{{ route('outbound.track', 'lp-pt141') }}" class="ms-next" style="text-decoration:none;display:inline-block">View Bundle &rarr;</a>
         </div>
-    </div>
-
-    {{-- Step 3: get the protocol (email capture) --}}
-    <div class="ms-step" data-step="3" hidden>
-        <div class="ms-h" style="font-family:'Source Serif 4',serif">Get your free PT-141 protocol</div>
-        <div class="ms-sub">Sourcing, dosing, reconstitution, and your SOCIAL10 discount code. Straight to your inbox.</div>
-        <div style="max-width:440px;margin:0 auto">
-            <form class="pp-capture" data-form="msform" onsubmit="return false;" style="display:flex;gap:8px;flex-wrap:wrap">
-                <input type="email" name="email" required placeholder="you@email.com" style="flex:1;min-width:200px;padding:12px 14px;border:1px solid var(--line);border-radius:6px;font-size:14px">
-                <button type="submit" class="ms-next">Get My Protocol &rarr;</button>
-            </form>
-            <div class="pp-capture-success ui" hidden style="margin-top:14px;text-align:center">
-                <p style="color:var(--green);font-weight:600;margin-bottom:10px">&#10003; Check your inbox. Your protocol is on the way.</p>
-                <a id="msFinalCta" href="{{ route('outbound.track', 'lp-pt141') }}" class="cta-button ui">View your kit at BioLinx &rarr;</a>
-            </div>
-        </div>
-        <div class="ms-nav"><button type="button" class="ms-back" onclick="msGo(2)">&larr; Back</button></div>
     </div>
 </div>
 
@@ -559,7 +541,7 @@ function msPick(goal){
     f.querySelectorAll('.goal-pill').forEach(function(b){ b.classList.toggle('active', b.dataset.goal===goal); });
     var url=null;
     f.querySelectorAll('#msKits .stack-result-card').forEach(function(k){ var on=k.dataset.goal===goal; k.classList.toggle('is-active',on); if(on)url=k.dataset.url; });
-    var fc=document.getElementById('msFinalCta'); if(fc&&url)fc.setAttribute('href',url);
+    var vb=document.getElementById('msViewBundle'); if(vb&&url)vb.setAttribute('href',url);
     msGo(2);
 }
 </script>
