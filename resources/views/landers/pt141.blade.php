@@ -413,7 +413,7 @@ body.pp-modal-open{overflow:hidden}
 <div class="value-row"><div class="label" style="color:var(--cta)"><strong>BONUS: Stack Guide. Pairing PT-141 With Other Peptides</strong><small>For men also working on recovery or performance · usually $89 standalone</small></div><div class="price">$89 value</div></div>
 <div class="value-total"><div class="label">Total Value</div><div class="price">$314</div></div>
 <div class="value-today"><div class="label">Your Price Today</div><div class="price">FREE*</div></div>
-<div class="value-cta-wrap"><a href="#" onclick="pmOpen();return false;" class="cta-button ui">Send Me The Complete Protocol →</a><div class="cta-trust ui" style="color:var(--muted);opacity:1"><span>Instant email delivery</span><span>No credit card required</span><span>Unsubscribe anytime</span></div><p class="ui" style="font-size:11px;color:var(--muted);margin-top:12px">*Free with newsletter signup. Discount code SOCIAL10 for 10% off your first BioLinx Labs order included.</p></div>
+<div class="value-cta-wrap"><a href="#" onclick="pmOpen();return false;" class="cta-button ui">Send Me The Complete Protocol →</a><div class="cta-trust ui" style="color:var(--muted);opacity:1"><span>Instant email delivery</span><span>No credit card required</span><span>Unsubscribe anytime</span></div><p class="ui" style="font-size:11px;color:var(--muted);margin-top:12px">*Free with newsletter signup.</p></div>
 </div>
 
 @php
@@ -486,7 +486,7 @@ body.pp-modal-open{overflow:hidden}
 
 {{-- Mobile-only "Available At" purchase box — the desktop sidebar is hidden on mobile. --}}
 <div class="mobile-avail">
-<div class="sidebar-box" style="background:linear-gradient(180deg,var(--cta-soft) 0%,#FFF 100%);border:1.5px solid var(--cta)"><div class="sidebar-label ui" style="color:var(--cta);border-color:var(--cta)">Available At</div><h3>PT-141 at BioLinx Labs</h3><p style="font-size:13.5px;line-height:1.55">Third-party HPLC tested · 99%+ purity · COA on every batch · Ships in 24 hrs.</p><a href="{{ route('outbound.track', 'lp-pt141') }}" class="sidebar-cta ui">View Product →</a><p style="font-size:11.5px;color:var(--muted);margin-bottom:0">Use code <strong>SOCIAL10</strong> for 10% off your first order.</p><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/59121a51-a297-43a0-84b7-c2527028a790.png" alt="PT-141" style="width:100%;border-radius:6px;aspect-ratio:1/1;object-fit:cover;margin-top:14px" loading="lazy"></div>
+<div class="sidebar-box" style="background:linear-gradient(180deg,var(--cta-soft) 0%,#FFF 100%);border:1.5px solid var(--cta)"><div class="sidebar-label ui" style="color:var(--cta);border-color:var(--cta)">Available At</div><h3>PT-141 at BioLinx Labs</h3><p style="font-size:13.5px;line-height:1.55">Third-party HPLC tested · 99%+ purity · COA on every batch · Ships in 24 hrs.</p><a href="#" onclick="pmOpen();return false;" class="sidebar-cta ui">View Product →</a><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/59121a51-a297-43a0-84b7-c2527028a790.png" alt="PT-141" style="width:100%;border-radius:6px;aspect-ratio:1/1;object-fit:cover;margin-top:14px" loading="lazy"></div>
 </div>
 
 <div class="ms-form ui" id="stackQuiz">
@@ -594,7 +594,7 @@ document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ pmClose()
 <button type="submit" style="padding:16px 26px;background:var(--ink);color:#fff;border:none;border-radius:6px;font-size:15px;font-weight:800;letter-spacing:.02em;text-transform:uppercase;cursor:pointer;box-shadow:0 4px 0 #000">Send It Now →</button>
 </form>
 <div class="pp-capture-success ui" hidden style="max-width:460px;margin:14px auto 0"><p style="color:#fff;opacity:.95">✓ Check your inbox. Your protocol is on the way.</p><a href="{{ route('outbound.track', 'lp-pt141') }}" class="cta-button ui" style="background:var(--ink);box-shadow:0 4px 0 #000">View PT-141 At BioLinx →</a></div>
-<div class="cta-trust ui" style="opacity:.92"><span>Use code SOCIAL10 for 10% off</span><span>Limited launch pricing</span><span>No spam, ever</span></div></div>
+<div class="cta-trust ui" style="opacity:.92"><span>Limited launch pricing</span><span>No spam, ever</span></div></div>
 
 <div class="ps-block"><strong>P.S.</strong> If traditional options haven't worked for you, or if you can't take them because of other medications, this is exactly what PT-141 was built for. The clinical data is real. The mechanism is completely different. And the guide walks you through everything step by step.</div>
 
@@ -605,7 +605,7 @@ document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ pmClose()
 
 <!-- Sidebar -->
 <div class="hidden md:block md:col-span-1"><div class="sticky top-14">
-<div class="sidebar-box" style="background:linear-gradient(180deg,var(--cta-soft) 0%,#FFF 100%);border:1.5px solid var(--cta)"><div class="sidebar-label ui" style="color:var(--cta);border-color:var(--cta)">Available At</div><h3>PT-141 at BioLinx Labs</h3><p style="font-size:13.5px;line-height:1.55">Third-party HPLC tested · 99%+ purity · COA on every batch · Ships in 24 hrs.</p><a href="{{ route('outbound.track', 'lp-pt141') }}" class="sidebar-cta ui">View Product →</a><p style="font-size:11.5px;color:var(--muted);margin-bottom:0">Use code <strong>SOCIAL10</strong> for 10% off your first order.</p><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/59121a51-a297-43a0-84b7-c2527028a790.png" alt="Product" style="width:100%;border-radius:6px;aspect-ratio:1/1;object-fit:cover;margin-top:14px"></div>
+<div class="sidebar-box" style="background:linear-gradient(180deg,var(--cta-soft) 0%,#FFF 100%);border:1.5px solid var(--cta)"><div class="sidebar-label ui" style="color:var(--cta);border-color:var(--cta)">Available At</div><h3>PT-141 at BioLinx Labs</h3><p style="font-size:13.5px;line-height:1.55">Third-party HPLC tested · 99%+ purity · COA on every batch · Ships in 24 hrs.</p><a href="#" onclick="pmOpen();return false;" class="sidebar-cta ui">View Product →</a><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/59121a51-a297-43a0-84b7-c2527028a790.png" alt="Product" style="width:100%;border-radius:6px;aspect-ratio:1/1;object-fit:cover;margin-top:14px"></div>
 
 <div class="sidebar-box"><div class="sidebar-label ui">Free Protocol Guide</div><h3>The Complete Starter Kit</h3><p>Sourcing, dosing, injection technique, side-effect management. Everything in one place.</p><form class="ui email-form pp-capture" data-form="sidebar" onsubmit="return false;" style="flex-direction:column;gap:6px"><input type="email" name="email" placeholder="you@email.com" required><button type="submit" style="width:100%">Send The Guide →</button></form><div class="pp-capture-success ui" hidden><p style="color:var(--green)">✓ Check your inbox. Your guide is on the way.</p><a href="{{ route('outbound.track', 'lp-pt141') }}" class="sidebar-cta ui" style="margin-bottom:0">View PT-141 →</a></div></div>
 
@@ -681,7 +681,7 @@ document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ pmClose()
 <button type="submit">Send It Now →</button>
 </form>
 <div class="pp-capture-success" hidden><p style="color:var(--green)">✓ Check your inbox. Your protocol is on the way.</p><a href="{{ route('outbound.track', 'lp-pt141') }}" class="cta-button ui" style="width:100%">View PT-141 At BioLinx →</a></div>
-<div class="pp-modal-trust">No spam, ever · Unsubscribe anytime · Code SOCIAL10 included for 10% off</div>
+<div class="pp-modal-trust">No spam, ever · Unsubscribe anytime</div>
 </div>
 </div>
 
