@@ -37,6 +37,14 @@ class SubscriberService
             $subscriber = $this->createNew($email, $data);
         }
 
+        // Store the (optional) phone number captured with the lead.
+        if (!empty($data['phone'])) {
+            $phone = trim((string) $data['phone']);
+            if ($phone !== '' && $subscriber->phone !== $phone) {
+                $subscriber->forceFill(['phone' => $phone])->save();
+            }
+        }
+
         // Sync to Customer.io synchronously
         $this->syncToCustomerIo($subscriber, $data['source'] ?? 'unknown');
 

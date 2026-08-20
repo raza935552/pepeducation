@@ -413,7 +413,7 @@ body.pp-modal-open{overflow:hidden}
 <div class="value-row"><div class="label" style="color:var(--cta)"><strong>BONUS: Stack Guide. Pairing PT-141 With Other Peptides</strong><small>For men also working on recovery or performance · usually $89 standalone</small></div><div class="price">$89 value</div></div>
 <div class="value-total"><div class="label">Total Value</div><div class="price">$314</div></div>
 <div class="value-today"><div class="label">Your Price Today</div><div class="price">FREE*</div></div>
-<div class="value-cta-wrap"><a href="#order" class="cta-button ui">Send Me The Complete Protocol →</a><div class="cta-trust ui" style="color:var(--muted);opacity:1"><span>Instant email delivery</span><span>No credit card required</span><span>Unsubscribe anytime</span></div><p class="ui" style="font-size:11px;color:var(--muted);margin-top:12px">*Free with newsletter signup. Discount code SOCIAL10 for 10% off your first BioLinx Labs order included.</p></div>
+<div class="value-cta-wrap"><a href="#" onclick="pmOpen();return false;" class="cta-button ui">Send Me The Complete Protocol →</a><div class="cta-trust ui" style="color:var(--muted);opacity:1"><span>Instant email delivery</span><span>No credit card required</span><span>Unsubscribe anytime</span></div><p class="ui" style="font-size:11px;color:var(--muted);margin-top:12px">*Free with newsletter signup. Discount code SOCIAL10 for 10% off your first BioLinx Labs order included.</p></div>
 </div>
 
 @php
@@ -423,13 +423,13 @@ body.pp-modal-open{overflow:hidden}
     // specific BioLinx bundle page via the ?dest= override (same-domain validated).
     $go = fn ($dest) => route('outbound.track', ['slug' => 'lp-pt141', 'dest' => $dest]);
     $shelf = [
-        ['img' => '59121a51-a297-43a0-84b7-c2527028a790', 'name' => 'PT-141 · 10 mg', 'price' => '$59.93', 'cta' => 'View Product →', 'dest' => $bx.'/products/pt-141-10-mg', 'featured' => true],
-        ['img' => 'fe038a3c-6d2d-4e82-bc47-c2988715c3b3', 'name' => 'PT-141 Starter Kit', 'price' => '$79.86', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-starter-kit?add=1'],
-        ['img' => '514e631c-baeb-47b0-81ac-2b71c001b05b', 'name' => 'Starter Kit + Recovery & Repair', 'price' => '$219.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-recovery-repair?add=1'],
-        ['img' => 'eca3fb7c-750a-4612-8d98-79ae408913fb', 'name' => 'Starter Kit + Performance Energy', 'price' => '$179.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-performance-energy?add=1'],
-        ['img' => 'ee1654bf-ac09-4ee2-b48f-0b449098522c', 'name' => 'Starter Kit + Muscle Growth', 'price' => '$179.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-muscle-growth?add=1'],
-        ['img' => 'ec590410-f58b-4200-8e53-9b6206396baf', 'name' => 'Starter Kit + Glow Boost', 'price' => '$149.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-glow-boost?add=1'],
-        ['img' => '22c7ab55-5fdd-45f2-955b-20aca724c86b', 'name' => 'Starter Kit + Extreme Fat Burn', 'price' => '$279.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-extreme-fat-burn?add=1'],
+        ['img' => '59121a51-a297-43a0-84b7-c2527028a790', 'name' => 'PT-141 · 10 mg', 'price' => '$59.93', 'cta' => 'View Product →', 'dest' => $bx.'/products/pt-141-10-mg', 'featured' => true, 'contents' => 'PT-141 10mg'],
+        ['img' => 'fe038a3c-6d2d-4e82-bc47-c2988715c3b3', 'name' => 'PT-141 Starter Kit', 'price' => '$79.86', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-starter-kit?add=1', 'contents' => 'PT-141 10mg · Bacteriostatic Water 10ml'],
+        ['img' => '514e631c-baeb-47b0-81ac-2b71c001b05b', 'name' => 'Starter Kit + Recovery & Repair', 'price' => '$219.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-recovery-repair?add=1', 'contents' => 'PT-141 10mg · BPC-157 / TB-500 Blend 20mg · 2x Bacteriostatic Water 10ml'],
+        ['img' => 'eca3fb7c-750a-4612-8d98-79ae408913fb', 'name' => 'Starter Kit + Performance Energy', 'price' => '$179.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-performance-energy?add=1', 'contents' => 'PT-141 10mg · NAD+ 500mg · 2x Bacteriostatic Water 10ml'],
+        ['img' => 'ee1654bf-ac09-4ee2-b48f-0b449098522c', 'name' => 'Starter Kit + Muscle Growth', 'price' => '$179.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-muscle-growth?add=1', 'contents' => 'PT-141 10mg · CJC-1295 + Ipamorelin 10mg · 2x Bacteriostatic Water 10ml'],
+        ['img' => 'ec590410-f58b-4200-8e53-9b6206396baf', 'name' => 'Starter Kit + Glow Boost', 'price' => '$149.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-glow-boost?add=1', 'contents' => 'PT-141 10mg · GHK-Cu 50mg · 2x Bacteriostatic Water 10ml'],
+        ['img' => '22c7ab55-5fdd-45f2-955b-20aca724c86b', 'name' => 'Starter Kit + Extreme Fat Burn', 'price' => '$279.72', 'cta' => 'View Bundle →', 'dest' => $bx.'/bundles/pt-141-extreme-fat-burn?add=1', 'contents' => 'PT-141 10mg · G3-R 30mg · 2x Bacteriostatic Water 10ml'],
     ];
     // Quiz goal -> index into $shelf (Better Skin=Glow, Fat Burn=Fat Burn, Repair=Recovery, None=base PT-141)
     $quiz = [
@@ -544,6 +544,34 @@ function msPick(goal){
     var vb=document.getElementById('msViewBundle'); if(vb&&url)vb.setAttribute('href',url);
     msGo(2);
 }
+
+// Complete-protocol modal: step 1 (email + phone) -> step 2 (offer + quiz + kit).
+function pmOpen(){ var o=document.getElementById('protocolModal'); if(!o)return; o.classList.add('is-open'); document.body.classList.add('pp-modal-open'); var e=document.getElementById('pmEmail'); if(e)setTimeout(function(){e.focus();},50); }
+function pmClose(){ var o=document.getElementById('protocolModal'); if(!o)return; o.classList.remove('is-open'); document.body.classList.remove('pp-modal-open'); }
+function pmShow(n){ document.querySelectorAll('#protocolModal [data-pm]').forEach(function(s){ s.hidden = String(s.dataset.pm)!==String(n); }); }
+function pmPick(goal){
+    var m=document.getElementById('protocolModal'); if(!m)return;
+    m.querySelectorAll('.goal-pill').forEach(function(b){ b.classList.toggle('active', b.dataset.goal===goal); });
+    m.querySelectorAll('#pmKits .pm-kit').forEach(function(k){ k.hidden = k.dataset.goal!==goal; });
+}
+function pmSubmit(e){
+    e.preventDefault();
+    var email=document.getElementById('pmEmail'), phone=document.getElementById('pmPhone');
+    if(!email || !email.value || !email.checkValidity()){ if(email)email.reportValidity(); return false; }
+    var btn=document.getElementById('pmSubmitBtn'); if(btn){btn.disabled=true;btn.textContent='Sending...';}
+    var leadId='lead_'+Date.now()+'_'+Math.random().toString(36).slice(2,10);
+    var meta=document.querySelector('meta[name="csrf-token"]'), csrf=meta?meta.getAttribute('content'):'';
+    try{localStorage.setItem('pt141_entered','1');}catch(err){}
+    if(window.fbq){try{fbq('track','Lead',{},{eventID:leadId});}catch(err){}}
+    if(window.posthog){try{posthog.capture('lead_submitted',{lander:'pt141',placement:'protocol-modal'});}catch(err){}}
+    var done=function(){ pmShow(2); if(btn){btn.disabled=false;btn.textContent='Send Me The Complete Protocol →';} };
+    try{
+        fetch('/subscriber/sync',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-TOKEN':csrf,'Accept':'application/json'},credentials:'same-origin',body:JSON.stringify({email:email.value,phone:(phone&&phone.value)||'',source:'lp-pt141-protocol-modal',lead_event_id:leadId})}).then(done).catch(done);
+    }catch(err){done();}
+    return false;
+}
+document.addEventListener('click',function(e){ var o=document.getElementById('protocolModal'); if(o&&o.classList.contains('is-open')&&e.target===o){ pmClose(); } });
+document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ pmClose(); } });
 </script>
 
 <div class="guarantee ui"><div class="guarantee-badge"><div><div class="num">100%</div><div class="lbl">Money<br>Back</div></div></div><div><h3>BioLinx Labs 60-Day Quality Guarantee</h3><p>Every batch is third-party tested. If your COA doesn't match the label, or if anything is off, you get a full refund. No questions asked. Sourcing peptides shouldn't be a leap of faith.</p></div></div>
@@ -591,6 +619,55 @@ function msPick(goal){
 <footer><div class="container"><div class="footer-grid ui"><div><h4>The Male Health Journal</h4><p>Field reporting on real solutions for male performance. No paywall. No pharma sponsorship.</p></div><div><h4>Resources</h4><p><a href="#stackQuiz">PT-141 Getting Started</a></p><p><a href="#stackQuiz">Sourcing &amp; COA Audit</a></p><p><a href="#stackQuiz">Clinical Data</a></p></div><div><h4>Legal</h4><p><a href="/disclaimer">Disclaimer</a></p><p><a href="/privacy">Privacy</a></p><p><a href="/terms">Terms</a></p></div></div><div class="footer-bottom ui">The Male Health Journal · © 2026 · Independent Field Reporting · Not medical advice</div></div></footer>
 
 <a href="#protocol" class="sticky-cta ui" id="stickyCta">Get The Free Protocol →</a>
+
+<!-- Complete-protocol modal: Step 1 email+phone capture -> Step 2 offer + goal quiz + curated kit (20% off) -->
+<div class="pp-modal-overlay" id="protocolModal" aria-hidden="true">
+  <div class="pp-modal" style="max-width:520px;text-align:left">
+    <button class="pp-modal-close" onclick="pmClose()" aria-label="Close">&times;</button>
+
+    {{-- Step 1: email (required) + phone (optional) --}}
+    <div data-pm="1">
+      <div class="pp-modal-kicker" style="text-align:center">Free Protocol</div>
+      <h3 style="text-align:center">Get the Complete PT-141 Protocol, Free</h3>
+      <p style="text-align:center;font-size:14px;color:var(--muted);margin-bottom:18px">Sourcing, dosing, reconstitution, and your discount code. Straight to your inbox.</p>
+      <form id="pmForm" onsubmit="return pmSubmit(event)" style="display:flex;flex-direction:column;gap:10px">
+        <input type="email" id="pmEmail" required placeholder="Email address (required)" autocomplete="email" style="padding:12px 14px;border:1px solid var(--line);border-radius:6px;font-size:14px">
+        <input type="tel" id="pmPhone" placeholder="Phone number (optional, for text updates)" autocomplete="tel" style="padding:12px 14px;border:1px solid var(--line);border-radius:6px;font-size:14px">
+        <button type="submit" id="pmSubmitBtn" class="cta-button ui" style="width:100%">Send Me The Complete Protocol &rarr;</button>
+        <p style="font-size:11px;color:var(--muted);text-align:center;margin:2px 0 0">No spam. Unsubscribe anytime.</p>
+      </form>
+    </div>
+
+    {{-- Step 2: offer + goal quiz + curated kit reveal --}}
+    <div data-pm="2" hidden>
+      <div class="pp-modal-kicker" style="text-align:center;color:var(--green)">&#10003; Protocol on its way</div>
+      <h3 style="text-align:center;font-size:20px;line-height:1.25">Want to view the products on BioLinx with a LIMITED TIME 20% OFF coupon?</h3>
+      <p style="text-align:center;font-size:13px;color:var(--muted);margin-bottom:16px">Pick your goal and we'll show the exact kit, 20% off applied.</p>
+      <div class="ms-options" style="max-width:none">
+        @foreach($quiz as $q)
+        <button type="button" class="goal-pill" data-goal="{{ $q['key'] }}" onclick="pmPick('{{ $q['key'] }}')">{{ $q['label'] }}</button>
+        @endforeach
+      </div>
+      <div id="pmKits" style="margin-top:16px">
+        @foreach($quiz as $q)
+        @php $it = $shelf[$q['idx']]; $sep = str_contains($it['dest'], '?') ? '&' : '?'; @endphp
+        <div class="pm-kit" data-goal="{{ $q['key'] }}" hidden style="border:1.5px solid var(--cta);border-radius:8px;padding:14px;background:var(--cta-soft)">
+          <div style="display:flex;gap:14px;align-items:center">
+            <img src="{{ $r2 . $it['img'] }}.png" alt="{{ $it['name'] }}" loading="lazy" style="width:80px;height:80px;object-fit:contain;border-radius:6px;background:var(--bg);flex:0 0 80px">
+            <div>
+              <div class="product-card-name" style="font-size:15px;line-height:1.3">{{ $it['name'] }}</div>
+              <div style="font-size:15px;font-weight:700;color:var(--ink);margin-top:3px">{{ $it['price'] }} <span style="color:var(--green);font-size:11.5px;font-weight:700">20% OFF applied</span></div>
+            </div>
+          </div>
+          <div style="font-size:12.5px;color:var(--body);margin-top:11px;line-height:1.5"><strong>Includes:</strong> {{ $it['contents'] }}</div>
+          <a href="{{ $go($it['dest'] . $sep . 'discount=PROTOCOL20') }}" class="cta-button ui" style="display:block;text-align:center;margin-top:12px;width:100%">View at BioLinx · 20% Off &rarr;</a>
+        </div>
+        @endforeach
+      </div>
+      <button type="button" onclick="pmClose()" style="display:block;margin:14px auto 0;background:none;border:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer">No thanks, I just want the protocol</button>
+    </div>
+  </div>
+</div>
 
 <!-- Protocol popup: email capture, auto-shows after delay + on exit intent -->
 <div class="pp-modal-overlay" id="ppModal" aria-hidden="true">
