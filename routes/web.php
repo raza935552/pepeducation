@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PeptideController;
 use App\Http\Controllers\CalculatorController;
+use App\Http\Controllers\GuideController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BookmarkController;
@@ -47,6 +48,9 @@ Route::get('/calculators/{calculator}', [CalculatorController::class, 'show'])
     ->name('calculators.show');
 // Legacy single-calculator URL → 301 to the reconstitution tool
 Route::get('/calculator', [CalculatorController::class, 'legacyRedirect'])->name('calculator');
+
+// Peptide guide PDF — private (signed link for customer emails; admin route is separate)
+Route::get('/guide/{peptide:slug}/pdf', [GuideController::class, 'download'])->name('guide.download')->middleware('signed');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

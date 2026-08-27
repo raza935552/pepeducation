@@ -62,6 +62,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('peptides', PeptideController::class);
     Route::patch('peptides/{peptide}/toggle-publish', [PeptideController::class, 'togglePublish'])
         ->name('peptides.toggle-publish');
+    Route::get('peptides/{peptide}/guide', [\App\Http\Controllers\GuideController::class, 'adminDownload'])
+        ->name('peptides.guide');
 
     // Categories
     Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
