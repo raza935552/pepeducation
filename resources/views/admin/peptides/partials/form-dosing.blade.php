@@ -60,4 +60,41 @@
                     class="btn btn-secondary">Add</button>
         </div>
     </div>
+
+    {{-- Reconstitution calculator (curated). These drive /calculators/{slug}-dosage and the on-page calculator preset. --}}
+    <div class="md:col-span-2 mt-6 pt-6 border-t border-gray-200" x-data="{ elig: {{ old('calc_eligible', $peptide?->calc_eligible) ? 'true' : 'false' }} }">
+        <div class="flex items-center justify-between mb-1">
+            <h3 class="text-base font-semibold text-gray-900">Reconstitution calculator</h3>
+            <label class="inline-flex items-center gap-2 text-sm font-medium">
+                <input type="hidden" name="calc_eligible" value="0">
+                <input type="checkbox" name="calc_eligible" value="1" x-model="elig" class="rounded border-gray-300 text-primary-600">
+                Show dosage calculator for this peptide
+            </label>
+        </div>
+        <p class="text-xs text-gray-500 mb-4">Off for stacks, topical/oral compounds, and IU-dosed peptides (HCG, Oxytocin). The values below pre-fill the calculator; edit them if the auto-filled numbers are off.</p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" :class="elig ? '' : 'opacity-50 pointer-events-none'">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Default dose</label>
+                <input type="number" step="any" min="0" name="calc_default_dose" value="{{ old('calc_default_dose', $peptide?->calc_default_dose) }}" class="input">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Dose unit</label>
+                <select name="calc_dose_unit" class="input">
+                    <option value="mcg" {{ old('calc_dose_unit', $peptide?->calc_dose_unit) === 'mcg' ? 'selected' : '' }}>mcg</option>
+                    <option value="mg" {{ old('calc_dose_unit', $peptide?->calc_dose_unit) === 'mg' ? 'selected' : '' }}>mg</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Vial size (mg)</label>
+                <input type="number" step="any" min="0" name="calc_vial_mg" value="{{ old('calc_vial_mg', $peptide?->calc_vial_mg) }}" class="input">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Bac. water (mL)</label>
+                <input type="number" step="any" min="0" name="calc_water_ml" value="{{ old('calc_water_ml', $peptide?->calc_water_ml ?? 2) }}" class="input">
+            </div>
+        </div>
+        @if($peptide?->calc_note)
+            <p class="text-xs text-amber-600 mt-2">Note: {{ $peptide->calc_note }}</p>
+        @endif
+    </div>
 </div>

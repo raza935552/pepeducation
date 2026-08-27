@@ -178,3 +178,24 @@ function seoFields() {
 }
 </script>
 @endpush
+
+<!-- Peptide guide (PDF) -->
+<div class="card">
+    <h3 class="text-lg font-semibold text-gray-900 mb-2">Peptide guide (PDF)</h3>
+    <p class="text-xs text-gray-500 mb-3">The 10-page reconstitution + dosing guide attached to this peptide.</p>
+    @if($peptide?->guide_pdf && file_exists(public_path($peptide->guide_pdf)))
+        <div class="flex items-center gap-2 mb-3 p-2.5 rounded-lg bg-green-50 border border-green-200">
+            <svg class="w-5 h-5 text-green-600 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 4H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V18a2 2 0 01-2 2z"/></svg>
+            <div class="min-w-0 flex-1">
+                <a href="{{ asset($peptide->guide_pdf) }}" target="_blank" class="text-sm font-medium text-green-800 hover:underline">View guide PDF</a>
+                <p class="text-[11px] text-green-700">Updated {{ optional($peptide->guide_updated_at)->diffForHumans() ?? 'recently' }} · {{ round(filesize(public_path($peptide->guide_pdf))/1024) }} KB</p>
+            </div>
+        </div>
+    @else
+        <p class="text-xs text-gray-400 mb-3">No guide attached yet.</p>
+    @endif
+    <label class="block text-sm font-medium text-gray-700 mb-1">Replace / upload PDF</label>
+    <input type="file" name="guide_pdf_file" accept="application/pdf" class="block w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">
+    <p class="mt-1 text-[11px] text-gray-400">PDF only, max 20 MB. Regenerate the whole set with <code>node guides/build.js</code>.</p>
+</div>
+

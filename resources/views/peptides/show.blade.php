@@ -27,7 +27,9 @@
                     @include('peptides.partials.show-benefits')
                     @include('peptides.partials.show-protocols')
                     @include('peptides.partials.show-compatible-peptides')
-                    @include('peptides.partials.show-reconstitution')
+                    @if($peptide->calc_eligible)
+                        @include('peptides.partials.show-reconstitution')
+                    @endif
                     @include('peptides.partials.show-quality-indicators')
                     @include('peptides.partials.show-effectiveness')
                     @include('peptides.partials.show-timeline')
@@ -40,7 +42,7 @@
                 <div class="space-y-6">
                     <div class="lg:sticky lg:top-24 space-y-6">
                         <x-buy-cta :peptide="$peptide" context="peptide-sidebar" variant="card" />
-                        @if(stripos($peptide->route ?? '', 'inject') !== false)
+                        @if($peptide->calc_eligible)
                             <a href="{{ route('calculators.show', $peptide->slug.'-dosage') }}"
                                class="flex items-center gap-3 rounded-2xl border border-gray-200 p-4 hover:border-primary-300 hover:shadow-sm transition-all">
                                 <span class="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center text-xl shrink-0">💉</span>

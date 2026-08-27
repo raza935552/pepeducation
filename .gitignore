@@ -64,3 +64,7 @@ Homestead.yaml
 /docs
 *.md
 !README.md
+
+# Peptide guide builder project (not part of the app)
+uiuxdesign.zip
+uiuxdesign_extracted/

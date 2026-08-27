@@ -1,3 +1,4 @@
+@php $seed = \App\Support\PeptideDosage::seed($peptide); @endphp
 <div class="card" x-data="{ calcOpen: false }">
     <h2 class="section-heading-lg">
         <span class="section-icon bg-gradient-to-br from-blue-400 to-blue-600 shadow-blue-500/30">
@@ -24,7 +25,7 @@
     <div x-show="calcOpen" x-collapse x-cloak class="mb-6">
         <div class="rounded-xl border border-blue-200 bg-blue-50 overflow-hidden">
             <div class="p-4">
-                @livewire('peptide-calculator')
+                @livewire('peptide-calculator', ['peptideAmount' => $seed['mg'], 'waterAmount' => $seed['water'], 'desiredDose' => $seed['dose'], 'doseUnit' => $seed['doseUnit']], key('recon-'.$peptide->id))
             </div>
         </div>
     </div>

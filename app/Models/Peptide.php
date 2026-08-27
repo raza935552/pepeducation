@@ -22,6 +22,12 @@ class Peptide extends Model
         'storage',
         'research_status',
         'is_published',
+        'calc_eligible',
+        'calc_default_dose',
+        'calc_dose_unit',
+        'calc_vial_mg',
+        'calc_water_ml',
+        'calc_note',
         'popularity',
         'overview',
         'key_benefits',
@@ -44,6 +50,8 @@ class Peptide extends Model
         'meta_title',
         'meta_description',
         'biolinx_url',
+        'guide_pdf',
+        'guide_updated_at',
     ];
 
     protected $casts = [
@@ -59,6 +67,11 @@ class Peptide extends Model
         'references' => 'array',
         'is_published' => 'boolean',
         'molecular_weight' => 'decimal:2',
+        'calc_eligible' => 'boolean',
+        'calc_default_dose' => 'decimal:3',
+        'calc_vial_mg' => 'decimal:3',
+        'calc_water_ml' => 'decimal:2',
+        'guide_updated_at' => 'datetime',
     ];
 
     protected static function boot()

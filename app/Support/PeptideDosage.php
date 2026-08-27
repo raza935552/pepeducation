@@ -16,13 +16,13 @@ class PeptideDosage
 {
     public const SUFFIX = '-dosage';
 
-    /** Published, injectable peptides — the set that gets a dosage page. */
+    /** Published peptides flagged calc_eligible — the set that gets a dosage page. */
     public static function eligible()
     {
         return Peptide::where('is_published', true)
-            ->where('route', 'like', '%inject%')
+            ->where('calc_eligible', true)
             ->orderBy('name')
-            ->get(['id', 'slug', 'name', 'abbreviation', 'typical_dose', 'dose_frequency', 'route', 'half_life', 'molecular_weight']);
+            ->get(['id', 'slug', 'name', 'abbreviation', 'typical_dose', 'dose_frequency', 'route', 'half_life', 'molecular_weight', 'calc_default_dose', 'calc_dose_unit', 'calc_vial_mg', 'calc_water_ml']);
     }
 
     /** Resolve a "{slug}-dosage" URL segment to its peptide, or null. */
@@ -36,29 +36,22 @@ class PeptideDosage
 
         return Peptide::where('slug', $slug)
             ->where('is_published', true)
-            ->where('route', 'like', '%inject%')
+            ->where('calc_eligible', true)
             ->first();
     }
 
-    /** Starting values for the reconstitution widget, parsed from typical_dose. */
+    /**
+     * Starting values for the reconstitution widget, from the curated calc_*
+     * columns (backfilled by peptides:backfill-calc, admin-editable). Falls back
+     * to safe defaults only if a column is somehow blank.
+     */
     public static function seed(Peptide $peptide): array
     {
-        $raw = (string) ($peptide->typical_dose ?? '');
-        $unit = stripos($raw, 'mg') !== false ? 'mg' : 'mcg';
-
-        preg_match('/([0-9]*\.?[0-9]+)/', $raw, $m);
-        $dose = isset($m[1]) ? (float) $m[1] : ($unit === 'mg' ? 1 : 250);
-
-        // GLP-1s ship in larger vials; everything else defaults to a common 5 mg.
-        $vialMg = stripos($peptide->name, 'glp') !== false
-            || in_array($peptide->slug, ['semaglutide', 'tirzepatide', 'retatrutide', 'cagrilintide'], true)
-            ? 10 : 5;
-
         return [
-            'mg'       => $vialMg,
-            'water'    => 2,
-            'dose'     => $dose,
-            'doseUnit' => $unit,
+            'mg'       => (float) ($peptide->calc_vial_mg ?: (new \App\Services\Calculator\DoseParser)->defaultVialMg($peptide)),
+            'water'    => (float) ($peptide->calc_water_ml ?: 2),
+            'dose'     => (float) ($peptide->calc_default_dose ?: ($peptide->calc_dose_unit === 'mg' ? 1 : 250)),
+            'doseUnit' => $peptide->calc_dose_unit ?: 'mcg',
         ];
     }
 }

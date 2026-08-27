@@ -1,7 +1,7 @@
 <x-admin-layout>
     <x-slot name="header">Edit {{ $peptide->name }}</x-slot>
 
-    <form action="{{ route('admin.peptides.update', $peptide) }}" method="POST">
+    <form action="{{ route('admin.peptides.update', $peptide) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         @include('admin.peptides.partials.form', ['peptide' => $peptide])

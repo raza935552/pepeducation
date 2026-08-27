@@ -48,6 +48,7 @@ class PeptideController extends Controller
         $validated = $this->validatePeptide($request);
         $validated = array_merge($validated, $this->parseAdvancedFields($request));
         $validated['slug'] = Str::slug($validated['name']);
+        unset($validated['guide_pdf_file']);
         $peptide = Peptide::create($validated);
         $peptide->categories()->sync($request->get('categories', []));
 
@@ -74,6 +75,16 @@ class PeptideController extends Controller
                 $newSlug .= '-' . $peptide->id;
             }
             $validated['slug'] = $newSlug;
+        }
+
+        unset($validated['guide_pdf_file']);
+
+        // Optional: replace the attached guide PDF with an admin upload.
+        if ($request->hasFile('guide_pdf_file')) {
+            $path = 'guides/' . ($validated['slug'] ?? $peptide->slug) . '.pdf';
+            $request->file('guide_pdf_file')->move(public_path('guides'), basename($path));
+            $validated['guide_pdf'] = $path;
+            $validated['guide_updated_at'] = now();
         }
 
         $peptide->update($validated);
@@ -129,6 +140,13 @@ class PeptideController extends Controller
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
             'biolinx_url' => 'nullable|url|max:500',
+            'guide_pdf_file' => 'nullable|file|mimes:pdf|max:20480',
+            // Reconstitution-calculator inputs (curated; feed the dosage pages).
+            'calc_eligible' => 'boolean',
+            'calc_default_dose' => 'nullable|numeric|min:0',
+            'calc_dose_unit' => 'nullable|in:mg,mcg',
+            'calc_vial_mg' => 'nullable|numeric|min:0',
+            'calc_water_ml' => 'nullable|numeric|min:0',
             'categories' => 'nullable|array',
             'categories.*' => 'exists:categories,id',
         ]);

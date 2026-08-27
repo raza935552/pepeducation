@@ -126,12 +126,14 @@ class PeptideCalculator extends Component
     }
 
     /**
-     * Get units to draw (capped at syringe max for display)
+     * Units to draw. Shows the TRUE number even when it exceeds the syringe
+     * (paired with exceedsSyringe() for a warning), matching the Alpine widget
+     * so both engines behave identically on an over-capacity dose.
      */
     #[Computed]
     public function unitsToDraw(): float
     {
-        return min($this->unitsToDrawRaw, $this->maxSyringeUnits);
+        return $this->unitsToDrawRaw;
     }
 
     /**
