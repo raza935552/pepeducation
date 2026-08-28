@@ -116,6 +116,14 @@ class OutboundLink extends Model
             }
         }
 
+        // Google Ads click identity — always forwarded so the Biolinx purchase
+        // reports back to Google Ads against the original ad click.
+        foreach (['gclid', 'gbraid', 'wbraid'] as $googleKey) {
+            if (!empty($trackingData[$googleKey]) && !preg_match('/[?&]' . $googleKey . '=/', $url)) {
+                $params[$googleKey] = $trackingData[$googleKey];
+            }
+        }
+
         // Affiliate identity — forwarded so the sale credits the affiliate on Biolinx
         // (aff_id + click_id on the offer/prospect, afid/sid/c1-c5 on Sticky). If a
         // param is already baked into the destination URL (a fixed default affiliate),

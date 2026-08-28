@@ -39,6 +39,7 @@ class SeoSettingsController extends Controller
         $bingVerification   = Setting::getValue('seo', 'bing_verification', '');
         $yandexVerification = Setting::getValue('seo', 'yandex_verification', '');
         $yandexMetricaId    = Setting::getValue('tracking', 'yandex_metrica_id', '');
+        $googleAdsId        = Setting::getValue('tracking', 'google_ads_id', '');
 
         // IndexNow
         $indexnowKey      = Setting::getValue('seo', 'indexnow_key', '');
@@ -52,7 +53,7 @@ class SeoSettingsController extends Controller
             'claudeModels', 'claudeModel', 'maskedKey', 'hasKey',
             'autoGenerate', 'missingCount', 'totalPeptides',
             'googleVerification', 'bingVerification', 'yandexVerification',
-            'yandexMetricaId',
+            'yandexMetricaId', 'googleAdsId',
             'indexnowKey', 'indexnowEnabled', 'indexnowKeyUrl', 'indexnowLastPing',
             'sitemapUrl'
         ));
@@ -65,12 +66,14 @@ class SeoSettingsController extends Controller
             'bing_verification'   => 'nullable|string|max:200',
             'yandex_verification' => 'nullable|string|max:200',
             'yandex_metrica_id'   => 'nullable|string|max:50',
+            'google_ads_id'       => 'nullable|string|max:50',
         ]);
 
         Setting::setValue('seo', 'google_verification', trim($request->input('google_verification', '')));
         Setting::setValue('seo', 'bing_verification', trim($request->input('bing_verification', '')));
         Setting::setValue('seo', 'yandex_verification', trim($request->input('yandex_verification', '')));
         Setting::setValue('tracking', 'yandex_metrica_id', trim($request->input('yandex_metrica_id', '')));
+        Setting::setValue('tracking', 'google_ads_id', trim($request->input('google_ads_id', '')));
 
         return back()->with('success', 'Webmaster verification settings saved.');
     }

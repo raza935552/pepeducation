@@ -86,17 +86,48 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <x-theme-variables />
 
-    {{-- Google Analytics 4 --}}
-    @php $ga4Id = \App\Models\Setting::getValue('tracking', 'ga4_measurement_id'); @endphp
-    @if($ga4Id)
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $ga4Id }}"></script>
+    {{-- Google tag: GA4 analytics + Google Ads (cross-domain linker for gclid).
+         Google Ads is dormant until tracking.google_ads_id is set in admin. --}}
+    @php
+        $ga4Id = \App\Models\Setting::getValue('tracking', 'ga4_measurement_id');
+        $googleAdsId = trim((string) \App\Models\Setting::getValue('tracking', 'google_ads_id'));
+        $gtagLoadId = $ga4Id ?: ($googleAdsId ?: null);
+    @endphp
+    @if($gtagLoadId)
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $gtagLoadId }}"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
+        @if($ga4Id)
         gtag('config', '{{ $ga4Id }}');
+        @endif
+        @if($googleAdsId)
+        // Google Ads — linker on so gclid auto-decorates links to the store (cross-domain).
+        gtag('config', '{{ $googleAdsId }}', { 'linker': { 'domains': ['biolinxlabs.com'] } });
+        @endif
     </script>
     @endif
+
+    {{-- Forward Google Ads click ids to any direct Biolinx link on the lander (the
+         /go redirect and gtag linker also cover this; this catches plain links). --}}
+    <script>
+    (function(){
+        var q=new URLSearchParams(location.search);
+        var ids={gclid:q.get('gclid'),gbraid:q.get('gbraid'),wbraid:q.get('wbraid')};
+        if(!ids.gclid&&!ids.gbraid&&!ids.wbraid) return;
+        function decorate(){
+            document.querySelectorAll('a[href*="biolinxlabs.com"]').forEach(function(a){
+                try{var u=new URL(a.href, location.origin);
+                    Object.keys(ids).forEach(function(k){ if(ids[k]&&!u.searchParams.get(k)) u.searchParams.set(k, ids[k]); });
+                    a.href=u.toString();
+                }catch(e){}
+            });
+        }
+        if(document.readyState!=='loading') decorate();
+        else document.addEventListener('DOMContentLoaded', decorate);
+    })();
+    </script>
 
     {{-- Yandex Metrica --}}
     @php $yandexMetricaId = \App\Models\Setting::getValue('tracking', 'yandex_metrica_id'); @endphp

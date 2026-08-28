@@ -364,6 +364,11 @@ class TrackingManager
             'fbclid' => session('meta_fbclid'),
             'fbp' => session('meta_fbp'),
             'fbc' => session('meta_fbc'),
+            // Google Ads click identity — forwarded to Biolinx so the purchase there
+            // reports back to Google Ads and matches the original ad click.
+            'gclid' => session('google_gclid'),
+            'gbraid' => session('google_gbraid'),
+            'wbraid' => session('google_wbraid'),
             // Affiliate identity (from an affiliate-tagged lander URL) — forwarded to
             // Biolinx so the affiliate offer + Sticky prospect credit the sale.
             'aff_id' => session('aff_aff_id'),

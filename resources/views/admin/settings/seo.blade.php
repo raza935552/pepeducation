@@ -261,6 +261,14 @@
                     <p class="mt-1 text-xs text-gray-500">Numeric counter ID from <a href="https://metrika.yandex.com" target="_blank" class="text-blue-600 underline">metrika.yandex.com</a> (Russia/CIS analytics, like GA4). Loads counter only when set.</p>
                 </div>
 
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Google Ads Conversion ID</label>
+                    <input type="text" name="google_ads_id" value="{{ $googleAdsId }}"
+                        placeholder="AW-123456789" pattern="AW-[0-9]+"
+                        class="max-w-xs rounded-lg border-gray-300 focus:border-orange-500 focus:ring-orange-500 font-mono text-sm">
+                    <p class="mt-1 text-xs text-gray-500">Adds the Google Ads tag to the landers with cross-domain linking so <span class="font-mono">gclid</span> carries to biolinxlabs.com. The purchase conversion itself fires on the store. Loads only when set.</p>
+                </div>
+
                 <div class="mt-4 pt-4 border-t border-gray-200">
                     <button type="submit" class="btn btn-primary">Save Verification Settings</button>
                 </div>

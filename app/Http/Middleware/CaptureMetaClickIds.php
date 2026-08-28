@@ -31,6 +31,15 @@ class CaptureMetaClickIds
             session(['meta_fbclid' => substr((string) $v, 0, 400)]);
         }
 
+        // Google Ads click identifiers — captured durably (same mechanism as fbclid)
+        // so the cross-domain hand-off forwards them to Biolinx, where the purchase
+        // is reported back to Google Ads. Latest ad click wins.
+        foreach (['gclid', 'gbraid', 'wbraid'] as $g) {
+            if ($v = $request->query($g)) {
+                session(['google_' . $g => substr((string) $v, 0, 512)]);
+            }
+        }
+
         // Capture the ad UTMs from the landing URL into the session (same durable
         // mechanism as fbclid) so the cross-domain hand-off forwards the REAL ad
         // campaign — Ad → Lander → Biolinx. Latest ad click wins.
