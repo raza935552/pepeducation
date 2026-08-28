@@ -65,6 +65,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('peptides/{peptide}/guide', [\App\Http\Controllers\GuideController::class, 'adminDownload'])
         ->name('peptides.guide');
 
+    // Guide PDF library (preview + download the education guides, SKU-based)
+    Route::get('guides', [\App\Http\Controllers\GuideController::class, 'index'])
+        ->name('guides.index');
+    Route::get('guides/{key}/download', [\App\Http\Controllers\GuideController::class, 'fileDownload'])
+        ->name('guides.download');
+
     // Categories
     Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::post('categories', [CategoryController::class, 'store'])->name('categories.store');

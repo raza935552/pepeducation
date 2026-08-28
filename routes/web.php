@@ -50,7 +50,7 @@ Route::get('/calculators/{calculator}', [CalculatorController::class, 'show'])
 Route::get('/calculator', [CalculatorController::class, 'legacyRedirect'])->name('calculator');
 
 // Peptide guide PDF — private (signed link for customer emails; admin route is separate)
-Route::get('/guide/{peptide:slug}/pdf', [GuideController::class, 'download'])->name('guide.download')->middleware('signed');
+Route::get('/guide/{key}/pdf', [GuideController::class, 'download'])->name('guide.download')->middleware('signed');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
