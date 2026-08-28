@@ -87,6 +87,63 @@ class GuideController extends Controller
         ]);
     }
 
+    /**
+     * Public SKU → guide map for the store's delivery automation. Names/sizes only,
+     * never the PDFs, so it is safe to expose. Keyed by BioLinx product slug.
+     */
+    public function publicManifest(): \Illuminate\Http\JsonResponse
+    {
+        $map = [];
+        foreach ($this->manifest() as $key => $meta) {
+            $entry = ['key' => $key, 'name' => $meta['name'] ?? $key, 'size' => $meta['size'] ?? null];
+            // Primary SKU + any alias SKUs (e.g. a GLP-1 sold under both a coded and
+            // a named product slug) all resolve to the same guide.
+            foreach (array_merge([$meta['sku'] ?? null], $meta['aliases'] ?? []) as $sku) {
+                if ($sku) {
+                    $map[$sku] = $entry;
+                }
+            }
+        }
+        return response()->json($map)->header('Cache-Control', 'public, max-age=1800');
+    }
+
+    /**
+     * HMAC-gated per-order delivery page: lists the guides matching the ordered SKUs,
+     * each with a 30-day signed download link. The store (BioLinx) signs the URL with
+     * the shared `guides.delivery_secret`; an empty secret disables this entirely.
+     */
+    public function deliver(Request $request): \Illuminate\Contracts\View\View
+    {
+        $secret = trim((string) \App\Models\Setting::getValue('guides', 'delivery_secret', ''));
+        abort_if($secret === '', 404);
+
+        $skus = collect(explode(',', (string) $request->query('skus', '')))
+            ->map(fn ($s) => trim($s))->filter()->unique()->sort()->values();
+        $order = (string) $request->query('order', '');
+        $exp = (int) $request->query('exp', 0);
+        $sig = (string) $request->query('sig', '');
+
+        abort_if($exp < time(), 410, 'This link has expired.');
+        $payload = $skus->implode(',') . '|' . $order . '|' . $exp;
+        abort_unless(hash_equals(hash_hmac('sha256', $payload, $secret), $sig), 403);
+
+        $skuList = $skus->all();
+        $guides = [];
+        foreach ($this->manifest() as $key => $meta) {
+            $guideSkus = array_merge([$meta['sku'] ?? null], $meta['aliases'] ?? []);
+            if (array_intersect($guideSkus, $skuList) && !isset($guides[$key])) {
+                $guides[$key] = [
+                    'key' => $key,
+                    'name' => $meta['name'] ?? $key,
+                    'size' => $meta['size'] ?? null,
+                    'url' => \Illuminate\Support\Facades\URL::signedRoute('guide.download', ['key' => $key], now()->addDays(30)),
+                ];
+            }
+        }
+
+        return view('guides.deliver', ['guides' => array_values($guides), 'order' => $order]);
+    }
+
     /** slug => [name, size, sku, bundle], written to storage at deploy time. */
     private function manifest(): array
     {

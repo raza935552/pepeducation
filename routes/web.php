@@ -51,6 +51,10 @@ Route::get('/calculator', [CalculatorController::class, 'legacyRedirect'])->name
 
 // Peptide guide PDF — private (signed link for customer emails; admin route is separate)
 Route::get('/guide/{key}/pdf', [GuideController::class, 'download'])->name('guide.download')->middleware('signed');
+// SKU→guide map for the store's delivery automation + the HMAC-gated per-order
+// delivery page (the store signs the link with the shared guides.delivery_secret).
+Route::get('/guides/manifest', [GuideController::class, 'publicManifest'])->name('guides.manifest');
+Route::get('/guides/deliver', [GuideController::class, 'deliver'])->name('guides.deliver');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

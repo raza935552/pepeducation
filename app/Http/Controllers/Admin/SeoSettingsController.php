@@ -40,6 +40,7 @@ class SeoSettingsController extends Controller
         $yandexVerification = Setting::getValue('seo', 'yandex_verification', '');
         $yandexMetricaId    = Setting::getValue('tracking', 'yandex_metrica_id', '');
         $googleAdsId        = Setting::getValue('tracking', 'google_ads_id', '');
+        $guideDeliverySecret = Setting::getValue('guides', 'delivery_secret', '');
 
         // IndexNow
         $indexnowKey      = Setting::getValue('seo', 'indexnow_key', '');
@@ -53,7 +54,7 @@ class SeoSettingsController extends Controller
             'claudeModels', 'claudeModel', 'maskedKey', 'hasKey',
             'autoGenerate', 'missingCount', 'totalPeptides',
             'googleVerification', 'bingVerification', 'yandexVerification',
-            'yandexMetricaId', 'googleAdsId',
+            'yandexMetricaId', 'googleAdsId', 'guideDeliverySecret',
             'indexnowKey', 'indexnowEnabled', 'indexnowKeyUrl', 'indexnowLastPing',
             'sitemapUrl'
         ));
@@ -67,6 +68,7 @@ class SeoSettingsController extends Controller
             'yandex_verification' => 'nullable|string|max:200',
             'yandex_metrica_id'   => 'nullable|string|max:50',
             'google_ads_id'       => 'nullable|string|max:50',
+            'guide_delivery_secret' => 'nullable|string|max:200',
         ]);
 
         Setting::setValue('seo', 'google_verification', trim($request->input('google_verification', '')));
@@ -74,6 +76,7 @@ class SeoSettingsController extends Controller
         Setting::setValue('seo', 'yandex_verification', trim($request->input('yandex_verification', '')));
         Setting::setValue('tracking', 'yandex_metrica_id', trim($request->input('yandex_metrica_id', '')));
         Setting::setValue('tracking', 'google_ads_id', trim($request->input('google_ads_id', '')));
+        Setting::setValue('guides', 'delivery_secret', trim($request->input('guide_delivery_secret', '')));
 
         return back()->with('success', 'Webmaster verification settings saved.');
     }

@@ -269,6 +269,14 @@
                     <p class="mt-1 text-xs text-gray-500">Adds the Google Ads tag to the landers with cross-domain linking so <span class="font-mono">gclid</span> carries to biolinxlabs.com. The purchase conversion itself fires on the store. Loads only when set.</p>
                 </div>
 
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Guide Delivery Secret</label>
+                    <input type="text" name="guide_delivery_secret" value="{{ $guideDeliverySecret }}"
+                        placeholder="a long random string"
+                        class="w-full rounded-lg border-gray-300 focus:border-orange-500 focus:ring-orange-500 font-mono text-sm">
+                    <p class="mt-1 text-xs text-gray-500">Must exactly match BioLinx → Settings → Guide Auto-Delivery. Validates the per-order guide links the store emails. Delivery is disabled while this is empty.</p>
+                </div>
+
                 <div class="mt-4 pt-4 border-t border-gray-200">
                     <button type="submit" class="btn btn-primary">Save Verification Settings</button>
                 </div>
