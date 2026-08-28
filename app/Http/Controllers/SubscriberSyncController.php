@@ -69,6 +69,32 @@ class SubscriberSyncController extends Controller
             'quiz_responses_linked' => $linked,
         ]);
 
+        // Lander guide auto-delivery: if the lead came from a lander mapped to a
+        // guide, email them that guide PDF (the PT-141 popup promises "the guide,
+        // sent to your inbox"). Sent AFTER the response so capture stays instant,
+        // and a mail failure can never break the capture.
+        $guideMap = [
+            'lp-pt141' => ['pt-141', 'PT-141'],
+            'lp-glow' => ['glow', 'GLOW'],
+            'lp-reta' => ['retatrutide', 'Retatrutide'],
+        ];
+        $source = (string) $request->input('source', '');
+        $email = $subscriber->email;
+        foreach ($guideMap as $prefix => [$guideKey, $guideName]) {
+            if (str_starts_with($source, $prefix)) {
+                dispatch(function () use ($email, $guideKey, $guideName) {
+                    try {
+                        \Illuminate\Support\Facades\Mail::to($email)
+                            ->send(new \App\Mail\LanderGuideMail($guideKey, $guideName));
+                        Log::info('Lander guide emailed', ['email' => $email, 'guide' => $guideKey]);
+                    } catch (\Throwable $e) {
+                        Log::warning('Lander guide email failed for ' . $email . ': ' . $e->getMessage());
+                    }
+                })->afterResponse();
+                break;
+            }
+        }
+
         return response()->json(['ok' => true]);
     }
 }

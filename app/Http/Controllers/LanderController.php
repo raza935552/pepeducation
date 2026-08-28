@@ -32,6 +32,8 @@ class LanderController extends Controller
         'vetted-47'           => 'lp-vetted-47',
         'retatrutide'         => 'lp-retatrutide',
         'pt141'               => 'lp-pt141',
+        'glow'                => 'lp-glow',
+        'reta'                => 'lp-reta',
     ];
 
     public function show(Request $request, string $slug): View

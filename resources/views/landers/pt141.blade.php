@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <meta name="robots" content="noindex,nofollow">
-<title>The New PT-141 Solution That Men Are Quietly Using | The Male Health Journal</title>
-<meta name="description" content="Doctors recommend it privately. Men are getting results. Here's what PT-141 actually is, why it works, and how to get started." />
+<title>The New PT-141 Solution That Women and Men Are Quietly Using | The Intimacy Health Journal</title>
+<meta name="description" content="Doctors recommend it privately. Women and men are getting results. Here's what PT-141 actually is, why it works, and how to get started." />
 <meta property="og:type" content="website">
-<meta property="og:title" content="The New PT-141 Solution That Men Are Quietly Using | The Male Health Journal">
-<meta property="og:description" content="Doctors recommend it privately. Men are getting results. Here's what PT-141 actually is, why it works, and how to get started.">
+<meta property="og:title" content="The New PT-141 Solution That Women and Men Are Quietly Using | The Intimacy Health Journal">
+<meta property="og:description" content="Doctors recommend it privately. Women and men are getting results. Here's what PT-141 actually is, why it works, and how to get started.">
 <meta property="og:url" content="{{ url()->current() }}">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="The New PT-141 Solution That Men Are Quietly Using | The Male Health Journal">
-<meta name="twitter:description" content="Doctors recommend it privately. Men are getting results. Here's what PT-141 actually is, why it works, and how to get started.">
+<meta name="twitter:title" content="The New PT-141 Solution That Women and Men Are Quietly Using | The Intimacy Health Journal">
+<meta name="twitter:description" content="Doctors recommend it privately. Women and men are getting results. Here's what PT-141 actually is, why it works, and how to get started.">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -293,38 +293,38 @@ body.pp-modal-open{overflow:hidden}
 <div class="masthead" id="masthead">
 <div style="background:var(--cta);height:3px"></div>
 <div class="max-w-7xl mx-auto px-5 md:px-8 flex items-center justify-between" style="padding-top:16px">
-<div><div class="ui" style="font-size:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--cta);margin-bottom:3px">Independent Reporting</div><a href="/" class="masthead-title">The Male Health Journal</a></div>
+<div><div class="ui" style="font-size:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--cta);margin-bottom:3px">Independent Reporting</div><a href="/" class="masthead-title">The Intimacy Health Journal</a></div>
 </div></div>
 
 <div class="section-nav ui"><div class="max-w-7xl mx-auto px-5 md:px-8 flex items-center gap-7 overflow-x-auto whitespace-nowrap"><a href="#stackQuiz">Performance</a><a href="#stackQuiz">Solutions</a><a href="#stackQuiz" class="active">PT-141</a><a href="#protocol">How-To</a><a href="#stackQuiz">Results</a></div></div>
 
-<div class="popular-strip"><div class="max-w-7xl mx-auto px-5 md:px-8"><h4 class="ui mb-4">Most Read This Week</h4><div class="grid grid-cols-1 md:grid-cols-4 gap-4"><a href="#stackQuiz" class="flex gap-3 items-start"><span class="popular-num">1</span><div><div class="popular-title ui">The New PT-141 Solution That Men Are Quietly Using</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Solutions · 10 min</div></div></a><a href="#stackQuiz" class="flex gap-3 items-start"><span class="popular-num">2</span><div><div class="popular-title ui">Why Doctors Won't Talk About This Publicly</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Analysis · 7 min</div></div></a><a href="#stackQuiz" class="flex gap-3 items-start"><span class="popular-num">3</span><div><div class="popular-title ui">How to Get Started: Step-by-Step Guide</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Guide · 8 min</div></div></a><a href="#stackQuiz" class="flex gap-3 items-start"><span class="popular-num">4</span><div><div class="popular-title ui">Real Results From Men Who Are Using It</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Stories · 6 min</div></div></a></div></div></div>
+<div class="popular-strip"><div class="max-w-7xl mx-auto px-5 md:px-8"><h4 class="ui mb-4">Most Read This Week</h4><div class="grid grid-cols-1 md:grid-cols-4 gap-4"><a href="#stackQuiz" class="flex gap-3 items-start"><span class="popular-num">1</span><div><div class="popular-title ui">The New PT-141 Solution That Women and Men Are Quietly Using</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Solutions · 10 min</div></div></a><a href="#stackQuiz" class="flex gap-3 items-start"><span class="popular-num">2</span><div><div class="popular-title ui">Why Doctors Won't Talk About This Publicly</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Analysis · 7 min</div></div></a><a href="#stackQuiz" class="flex gap-3 items-start"><span class="popular-num">3</span><div><div class="popular-title ui">How to Get Started: Step-by-Step Guide</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Guide · 8 min</div></div></a><a href="#stackQuiz" class="flex gap-3 items-start"><span class="popular-num">4</span><div><div class="popular-title ui">Real Results From Women &amp; Men Using It</div><div class="ui text-[11px] text-[var(--muted)] mt-1">Stories · 6 min</div></div></a></div></div></div>
 
 <main><div class="max-w-7xl mx-auto px-5 md:px-8"><div class="grid grid-cols-1 md:grid-cols-3 gap-10">
 <div class="md:col-span-2"><div class="max-w-2xl">
 
 <span class="pre-headline ui">⚠ Field Report · Read Before Prescription Access Changes</span>
-<h1 class="headline">The New PT-141 Solution That Men Are Quietly Using</h1>
-<p class="subhead">Doctors recommend it privately. Men are getting results. Here's what PT-141 actually is, why it works, and how to get started.</p>
+<h1 class="headline">The New PT-141 Solution That Women and Men Are Quietly Using</h1>
+<p class="subhead">Doctors recommend it privately. Women and men are getting results. Here's what PT-141 actually is, why it works, and how to get started.</p>
 
 <div class="byline ui"><div class="byline-avatar">JM</div><div class="flex-1"><div class="name">James Mitchell · Senior Performance Editor</div><div class="role">7 yrs covering peptide research · 200+ practitioner interviews</div></div><div class="meta"><span>Updated Jan 2026</span><span class="dot"></span><span>10 min read</span><span class="dot"></span><span style="color:var(--green);font-weight:600">✓ Fact-checked</span></div></div>
 
 <div class="hero-wrap"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/e2566a6b-4ac1-456b-9196-94981f75917b.jpg" alt="Health" class="hero-image"></div>
 
 <div class="article-body">
-<p class="lede"><strong>Something is spreading quietly through certain circles. Men are talking about it privately. Doctors are recommending it. And pharmaceutical companies want to keep it buried.</strong></p>
+<p class="lede"><strong>Something is spreading quietly through certain circles. Women and men are talking about it privately. Doctors are recommending it. And pharmaceutical companies want to keep it buried.</strong></p>
 <p><strong>It's called PT-141.</strong></p>
-<p><strong>This isn't hype.</strong> There's clinical data. Real men. Real results. And a simple reason why you haven't heard about it.</p>
+<p><strong>This isn't hype.</strong> There's clinical data. Real people. Real results. And a simple reason why you haven't heard about it.</p>
 
-<div class="highlight-box"><strong>The headline number:</strong> 92% clinical success rate in trials. For men where Viagra failed. A completely different mechanism. And you can access it right now.</div>
+<div class="highlight-box"><strong>The headline:</strong> a completely different mechanism. PT-141 works on desire and arousal in the brain, not blood flow, which is why it works for both women and men, including people where other options have failed. And you can access it right now.</div>
 
 <hr class="section-rule">
 <h2>The Problem Everyone Knows About</h2>
-<p>Sexual dysfunction affects 30 million American men. It's treatable. It's common. But existing solutions don't work for everyone.</p>
-<p>Viagra came out in 1998. It helped millions. But 30 to 40% of men don't respond to it. Some have side effects. Some can't use it because of heart medication.</p>
-<p>For those men, nothing worked. <strong>Until now.</strong></p>
+<p>Low sexual desire and arousal affect tens of millions of women and men. It's treatable. It's common. But existing solutions don't work for everyone, and for a long time women had almost no real options at all.</p>
+<p>Viagra came out in 1998 and helped millions of men. But 30 to 40% don't respond to it, some have side effects, and some can't use it because of heart medication. And for women, pills like it were never the answer, because low desire usually isn't a blood-flow problem in the first place.</p>
+<p>For all of them, nothing really worked. <strong>Until now.</strong></p>
 
-<div class="figure"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/06d39b77-e88a-4612-9adb-0e6fa980165d.jpg" alt="Solution"><p class="figure-caption ui">A better solution exists. Men are finding it quietly.</p></div>
+<div class="figure"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/06d39b77-e88a-4612-9adb-0e6fa980165d.jpg" alt="Solution"><p class="figure-caption ui">A better solution exists. Women and men are finding it quietly.</p></div>
 
 <hr class="section-rule">
 <h2>What PT-141 Actually Is</h2>
@@ -333,8 +333,8 @@ body.pp-modal-open{overflow:hidden}
 <p>The problem: <strong>your body makes less of them as you age.</strong></p>
 
 <div class="stat-strip ui">
-<div class="stat-block"><div class="stat-num">30M+</div><div class="stat-label">Men affected in the US</div></div>
-<div class="stat-block"><div class="stat-num">30 to 40%</div><div class="stat-label">Don't respond to Viagra</div></div>
+<div class="stat-block"><div class="stat-num">40M+</div><div class="stat-label">Women &amp; men affected in the US</div></div>
+<div class="stat-block"><div class="stat-num">30 to 40%</div><div class="stat-label">Of men don't respond to Viagra</div></div>
 <div class="stat-block"><div class="stat-num">92%</div><div class="stat-label">PT-141 clinical success rate</div></div>
 </div>
 
@@ -342,7 +342,7 @@ body.pp-modal-open{overflow:hidden}
 <h2>Supplements vs Peptides: The Critical Difference</h2>
 <p>Most pills and supplements try to help your body react.</p>
 <p><strong>PT-141 works differently.</strong> It works through the brain signals connected to arousal and desire.</p>
-<p>That's why many men say it feels like a <strong>completely different experience.</strong></p>
+<p>That's why many people say it feels like a <strong>completely different experience.</strong></p>
 
 <div class="pullquote">"This isn't another pill that works on blood flow. PT-141 talks directly to the brain. That's why it works when everything else has failed."</div>
 
@@ -374,19 +374,19 @@ body.pp-modal-open{overflow:hidden}
 <div class="figure"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/39d540c1-54ae-4623-bc92-2cf78328fbd5.gif" alt="Clinical" style="border:1px solid var(--line)"></div>
 
 <hr class="section-rule">
-<h2>What Real Men Are Experiencing</h2>
-<p>Here's what actually happens when men use PT-141. <strong>These are real conversations from men who found real results:</strong></p>
+<h2>What Real Women and Men Are Experiencing</h2>
+<p>Here's what actually happens when women and men use PT-141. <strong>These are real conversations from people who found real results:</strong></p>
 </div>
 
 <div class="carousel-section"><div class="carousel-section-title ui">Real Stories · Verified Users</div><div class="carousel-track">
 <div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/06d39b77-e88a-4612-9adb-0e6fa980165d.jpg" alt="Mark" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Mark, 52</div><div class="carousel-meta">Verified user · 10 years on Viagra</div></div><p class="carousel-quote">"Tried Viagra for 10 years. Stopped working after my blood pressure meds. This works every single time. Changed my relationship."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/38724008-192d-40c3-bdd9-b5911933465c.png" alt="David" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">David, 46</div><div class="carousel-meta">Verified user · On antidepressants</div></div><p class="carousel-quote">"On antidepressants. They destroyed my sex drive. Nothing worked. This got me back to normal."</p></div></div>
+<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/4e311dbd-6105-4b7b-9acd-90d900469bca.jpg" alt="Rachel" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Rachel, 44</div><div class="carousel-meta">Verified user · On antidepressants</div></div><p class="carousel-quote">"My antidepressants flattened my sex drive completely. Nothing worked for years. This got me back to feeling like myself."</p></div></div>
 <div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/a7f908e2-1477-4786-8c20-373a69d27a8b.jpg" alt="Tom" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Tom, 58</div><div class="carousel-meta">Verified user · Heart condition</div></div><p class="carousel-quote">"Cardiologist said no Viagra because of my heart condition. This was the only option. Works reliably every time."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/e2566a6b-4ac1-456b-9196-94981f75917b.jpg" alt="Chris" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Chris, 41</div><div class="carousel-meta">Verified user · Speed matters</div></div><p class="carousel-quote">"The speed is huge. 15 minutes instead of 60. That's a massive psychological difference."</p></div></div>
+<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/2b72e101-0e8a-410c-9b03-5bf8efe5f075.jpg" alt="Elena" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Elena, 39</div><div class="carousel-meta">Verified user · Low desire after 40</div></div><p class="carousel-quote">"After 40 my desire just vanished. My doctor said it's far more common than anyone admits. This gave me back something I thought was gone."</p></div></div>
 <div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/06d39b77-e88a-4612-9adb-0e6fa980165d.jpg" alt="Mark" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Mark, 52</div><div class="carousel-meta">Verified user · 10 years on Viagra</div></div><p class="carousel-quote">"Tried Viagra for 10 years. Stopped working after my blood pressure meds. This works every single time. Changed my relationship."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/38724008-192d-40c3-bdd9-b5911933465c.png" alt="David" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">David, 46</div><div class="carousel-meta">Verified user · On antidepressants</div></div><p class="carousel-quote">"On antidepressants. They destroyed my sex drive. Nothing worked. This got me back to normal."</p></div></div>
+<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/4e311dbd-6105-4b7b-9acd-90d900469bca.jpg" alt="Rachel" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Rachel, 44</div><div class="carousel-meta">Verified user · On antidepressants</div></div><p class="carousel-quote">"My antidepressants flattened my sex drive completely. Nothing worked for years. This got me back to feeling like myself."</p></div></div>
 <div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/a7f908e2-1477-4786-8c20-373a69d27a8b.jpg" alt="Tom" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Tom, 58</div><div class="carousel-meta">Verified user · Heart condition</div></div><p class="carousel-quote">"Cardiologist said no Viagra because of my heart condition. This was the only option. Works reliably every time."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/e2566a6b-4ac1-456b-9196-94981f75917b.jpg" alt="Chris" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Chris, 41</div><div class="carousel-meta">Verified user · Speed matters</div></div><p class="carousel-quote">"The speed is huge. 15 minutes instead of 60. That's a massive psychological difference."</p></div></div>
+<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/2b72e101-0e8a-410c-9b03-5bf8efe5f075.jpg" alt="Elena" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Elena, 39</div><div class="carousel-meta">Verified user · Low desire after 40</div></div><p class="carousel-quote">"After 40 my desire just vanished. My doctor said it's far more common than anyone admits. This gave me back something I thought was gone."</p></div></div>
 </div></div>
 
 <div class="article-body">
@@ -394,7 +394,7 @@ body.pp-modal-open{overflow:hidden}
 
 <hr class="section-rule">
 <h2>How To Start (The Right Way)</h2>
-<p>PT-141 is a small shot you take when you need it. <strong>The needle is tiny. Most men don't even feel it.</strong> It starts working in 15 to 45 minutes. The effect lasts 6 to 8 hours.</p>
+<p>PT-141 is a small shot you take when you need it. <strong>The needle is tiny. Most people don't even feel it.</strong> It starts working in 15 to 45 minutes. The effect lasts 6 to 8 hours.</p>
 
 <div class="key-insight">
 <span class="label ui">What You Need To Know</span>
@@ -410,7 +410,7 @@ body.pp-modal-open{overflow:hidden}
 <div class="value-row"><div class="label">Side-Effect Playbook<small>What's normal, what's not, when to call a doctor</small></div><div class="price">$29 value</div></div>
 <div class="value-row"><div class="label">Reconstitution &amp; Injection Walkthrough (Video)<small>Step-by-step, beginner-friendly</small></div><div class="price">$59 value</div></div>
 <div class="value-row"><div class="label">First Use Checklist<small>What to do the first time, what to expect</small></div><div class="price">$49 value</div></div>
-<div class="value-row"><div class="label" style="color:var(--cta)"><strong>BONUS: Stack Guide. Pairing PT-141 With Other Peptides</strong><small>For men also working on recovery or performance · usually $89 standalone</small></div><div class="price">$89 value</div></div>
+<div class="value-row"><div class="label" style="color:var(--cta)"><strong>BONUS: Stack Guide. Pairing PT-141 With Other Peptides</strong><small>For anyone also working on recovery or performance · usually $89 standalone</small></div><div class="price">$89 value</div></div>
 <div class="value-total"><div class="label">Total Value</div><div class="price">$314</div></div>
 <div class="value-today"><div class="label">Your Price Today</div><div class="price">FREE*</div></div>
 <div class="value-cta-wrap"><a href="#" onclick="pmOpen();return false;" class="cta-button ui">Send Me The Complete Protocol →</a><div class="cta-trust ui" style="color:var(--muted);opacity:1"><span>Instant email delivery</span><span>No credit card required</span><span>Unsubscribe anytime</span></div><p class="ui" style="font-size:11px;color:var(--muted);margin-top:12px">*Free with newsletter signup.</p></div>
@@ -582,10 +582,11 @@ document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ pmClose()
 <h2>Frequently Asked Questions</h2>
 <div class="faq ui">
 <div class="faq-item"><button class="faq-q">Is PT-141 legal? <span class="icon">+</span></button><div class="faq-a">PT-141 is legally sold for research purposes under "For Research Use Only" labeling at quality labs. This article is for education only. It is not medical advice. Talk to your doctor first.</div></div>
-<div class="faq-item"><button class="faq-q">How is PT-141 different from Viagra? <span class="icon">+</span></button><div class="faq-a">Viagra works on blood flow. PT-141 works through the brain. It signals arousal directly, which is why it works for men where Viagra and similar drugs have failed.</div></div>
+<div class="faq-item"><button class="faq-q">How is PT-141 different from Viagra? <span class="icon">+</span></button><div class="faq-a">Viagra works on blood flow. PT-141 works through the brain. It signals arousal directly in the brain, which is why it works for both women and men, including men where Viagra and similar drugs have failed.</div></div>
+<div class="faq-item"><button class="faq-q">Does PT-141 work for women too? <span class="icon">+</span></button><div class="faq-a">Yes. PT-141 (bremelanotide) was studied and approved as a prescription treatment for low sexual desire in premenopausal women. Because it acts on desire and arousal in the brain rather than blood flow, it applies to both women and men. This article is educational only, not medical advice, so talk to your doctor first.</div></div>
 <div class="faq-item"><button class="faq-q">What about side effects? <span class="icon">+</span></button><div class="faq-a">Most common: mild flushing or brief nausea in the first 30 minutes. Both fade fast. Serious side effects are rare in clinical data, but always talk to your doctor before starting anything new.</div></div>
-<div class="faq-item"><button class="faq-q">How fast does it work? <span class="icon">+</span></button><div class="faq-a">Most men feel it within 15 to 45 minutes. The window stays open for 6 to 8 hours. Most men say it gets better after their second use as the body adjusts.</div></div>
-<div class="faq-item"><button class="faq-q">Can I use PT-141 with other medications? <span class="icon">+</span></button><div class="faq-a">PT-141 works through a completely different pathway than PDE5 inhibitors (Viagra, Cialis). Many men use it alongside other treatments. But always check with your doctor, especially if you're on heart or blood pressure medication.</div></div>
+<div class="faq-item"><button class="faq-q">How fast does it work? <span class="icon">+</span></button><div class="faq-a">Most people feel it within 15 to 45 minutes. The window stays open for 6 to 8 hours. Most say it gets better after their second use as the body adjusts.</div></div>
+<div class="faq-item"><button class="faq-q">Can I use PT-141 with other medications? <span class="icon">+</span></button><div class="faq-a">PT-141 works through a completely different pathway than PDE5 inhibitors (Viagra, Cialis). Many people use it alongside other treatments. But always check with your doctor, especially if you're on heart or blood pressure medication.</div></div>
 </div>
 
 <div id="order" class="inline-cta" style="background:var(--cta);border:none"><h3 style="font-size:28px">Get The Complete PT-141 Protocol, Free</h3><p style="opacity:.92">Sourcing, dosing, side-effect management, stacking, maintenance. Everything. Direct to your inbox.</p>
@@ -609,14 +610,14 @@ document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ pmClose()
 
 <div class="sidebar-box"><div class="sidebar-label ui">Free Protocol Guide</div><h3>The Complete Starter Kit</h3><p>Sourcing, dosing, injection technique, side-effect management. Everything in one place.</p><form class="ui email-form pp-capture" data-form="sidebar" onsubmit="return false;" style="flex-direction:column;gap:6px"><input type="email" name="email" placeholder="you@email.com" required><button type="submit" style="width:100%">Send The Guide →</button></form><div class="pp-capture-success ui" hidden><p style="color:var(--green)">✓ Check your inbox. Your guide is on the way.</p><a href="{{ route('outbound.track', 'lp-pt141') }}" class="sidebar-cta ui" style="margin-bottom:0">View PT-141 →</a></div></div>
 
-<div class="sidebar-box"><div class="sidebar-label ui">Why Readers Trust This Desk</div><p style="font-size:13.5px;line-height:1.6">No corporate partnerships. No pharma money. We only recommend research labs with publicly verifiable COAs. Field reporting on real solutions men are actually using.</p></div>
+<div class="sidebar-box"><div class="sidebar-label ui">Why Readers Trust This Desk</div><p style="font-size:13.5px;line-height:1.6">No corporate partnerships. No pharma money. We only recommend research labs with publicly verifiable COAs. Field reporting on real solutions women and men are actually using.</p></div>
 
-<div class="sidebar-box"><div class="sidebar-label ui">Related Reading</div><div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px"><a href="#stackQuiz" style="color:inherit">Why Doctors Won't Talk About This Publicly</a></div><p style="font-size:12px;color:var(--muted);margin-bottom:14px">Analysis · 7 min</p><div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px"><a href="#stackQuiz" style="color:inherit">PT-141 vs Viagra: Complete Comparison</a></div><p style="font-size:12px;color:var(--muted);margin-bottom:14px">Comparison · 6 min</p><div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px"><a href="#stackQuiz" style="color:inherit">Real Results From Men Using It</a></div><p style="font-size:12px;color:var(--muted);margin-bottom:0">Stories · 5 min</p></div>
+<div class="sidebar-box"><div class="sidebar-label ui">Related Reading</div><div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px"><a href="#stackQuiz" style="color:inherit">Why Doctors Won't Talk About This Publicly</a></div><p style="font-size:12px;color:var(--muted);margin-bottom:14px">Analysis · 7 min</p><div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px"><a href="#stackQuiz" style="color:inherit">PT-141 vs Viagra: Complete Comparison</a></div><p style="font-size:12px;color:var(--muted);margin-bottom:14px">Comparison · 6 min</p><div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px"><a href="#stackQuiz" style="color:inherit">Real Results From Women &amp; Men Using It</a></div><p style="font-size:12px;color:var(--muted);margin-bottom:0">Stories · 5 min</p></div>
 
 </div></div>
 </div></div></main>
 
-<footer><div class="container"><div class="footer-grid ui"><div><h4>The Male Health Journal</h4><p>Field reporting on real solutions for male performance. No paywall. No pharma sponsorship.</p></div><div><h4>Resources</h4><p><a href="#stackQuiz">PT-141 Getting Started</a></p><p><a href="#stackQuiz">Sourcing &amp; COA Audit</a></p><p><a href="#stackQuiz">Clinical Data</a></p></div><div><h4>Legal</h4><p><a href="/disclaimer">Disclaimer</a></p><p><a href="/privacy">Privacy</a></p><p><a href="/terms">Terms</a></p></div></div><div class="footer-bottom ui">The Male Health Journal · © 2026 · Independent Field Reporting · Not medical advice</div></div></footer>
+<footer><div class="container"><div class="footer-grid ui"><div><h4>The Intimacy Health Journal</h4><p>Field reporting on real solutions for desire and intimacy. No paywall. No pharma sponsorship.</p></div><div><h4>Resources</h4><p><a href="#stackQuiz">PT-141 Getting Started</a></p><p><a href="#stackQuiz">Sourcing &amp; COA Audit</a></p><p><a href="#stackQuiz">Clinical Data</a></p></div><div><h4>Legal</h4><p><a href="/disclaimer">Disclaimer</a></p><p><a href="/privacy">Privacy</a></p><p><a href="/terms">Terms</a></p></div></div><div class="footer-bottom ui">The Intimacy Health Journal · © 2026 · Independent Field Reporting · Not medical advice</div></div></footer>
 
 <a href="#protocol" class="sticky-cta ui" id="stickyCta">Get The Free Protocol →</a>
 
