@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+@include('partials.gtm-head')
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- ════════════════════════════════════════════════════════════════
@@ -216,6 +217,7 @@
 
 </head>
 <body>
+@include('partials.gtm-body')
 
 <div class="age" id="age">
   <div class="card">

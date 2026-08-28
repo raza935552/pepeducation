@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+@include('partials.gtm-head')
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -114,6 +115,8 @@ main{background:var(--paper);padding:40px 0 80px}
 .carousel-name{font-weight:700;font-size:14px;color:var(--ink);line-height:1.2}
 .carousel-meta{font-size:11px;color:var(--muted)}
 .carousel-quote{font-size:14px;line-height:1.55;font-style:italic;color:var(--body);flex:1;margin-top:4px}
+.carousel-slide{border-top:3px solid var(--cta)}
+.carousel-body::before{content:'\201C';font-family:Georgia,serif;font-size:40px;line-height:.1;color:var(--cta);opacity:.55;display:block;height:22px;margin-top:2px}
 .inline-cta{background:var(--ink);color:#fff;padding:28px;margin:2.5em 0;border-radius:6px;text-align:center}
 .inline-cta h3{font-weight:700;font-size:26px;margin-bottom:8px;line-height:1.2}
 @media(min-width:768px){.inline-cta h3{font-size:30px}}
@@ -244,6 +247,7 @@ body.pp-modal-open{overflow:hidden}
 <x-posthog-lander />
 </head>
 <body>
+@include('partials.gtm-body')
 <div class="progress-bar" id="progress"></div>
 
 <div class="top-strip ui"><div class="max-w-7xl mx-auto px-5 md:px-8 flex items-center justify-between"><div class="flex items-center gap-3"><span style="color:#FFD66B">●</span><span>Skin &amp; Regeneration Report · January 2026</span></div><div class="hidden md:flex items-center gap-3 opacity-80"><span>11,400+ readers · No paywall</span></div></div></div>
@@ -346,12 +350,12 @@ body.pp-modal-open{overflow:hidden}
 </div>
 
 <div class="carousel-section"><div class="carousel-section-title ui">Real Stories · Verified Users</div><div class="carousel-track">
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/250eb3c2-c217-4112-942d-90f30e07f3da.jpg" alt="Sarah" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Sarah, 44</div><div class="carousel-meta">Verified user · 4 months in</div></div><p class="carousel-quote">"I've spent a fortune on serums. Two months of GLOW did more for my skin texture than any of them. My esthetician noticed before I said anything."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/250eb3c2-c217-4112-942d-90f30e07f3da.jpg" alt="Mark" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Mark, 51</div><div class="carousel-meta">Verified user · recovery focus</div></div><p class="carousel-quote">"Started it for a nagging shoulder. Didn't expect my skin to look better too. Both happened. The blend just makes sense."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/250eb3c2-c217-4112-942d-90f30e07f3da.jpg" alt="Priya" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Priya, 38</div><div class="carousel-meta">Verified user · scar softening</div></div><p class="carousel-quote">"An old scar that never faded is finally softening. That's the thing creams could never touch."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/250eb3c2-c217-4112-942d-90f30e07f3da.jpg" alt="Dan" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Dan, 47</div><div class="carousel-meta">Verified user · hair &amp; skin</div></div><p class="carousel-quote">"Hairline edges and skin tone both look healthier. I reconstitute it once, use it daily, done."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/250eb3c2-c217-4112-942d-90f30e07f3da.jpg" alt="Sarah" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Sarah, 44</div><div class="carousel-meta">Verified user · 4 months in</div></div><p class="carousel-quote">"Two months of GLOW did more for my skin texture than any serum. My esthetician noticed before I said anything."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/250eb3c2-c217-4112-942d-90f30e07f3da.jpg" alt="Mark" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Mark, 51</div><div class="carousel-meta">Verified user · recovery focus</div></div><p class="carousel-quote">"Started it for a nagging shoulder. Didn't expect my skin to look better too. Both happened."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Sarah, 44</div><div class="carousel-meta">Verified user · 4 months in</div></div><p class="carousel-quote">"I've spent a fortune on serums. Two months of GLOW did more for my skin texture than any of them. My esthetician noticed before I said anything."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Mark, 51</div><div class="carousel-meta">Verified user · recovery focus</div></div><p class="carousel-quote">"Started it for a nagging shoulder. Didn't expect my skin to look better too. Both happened. The blend just makes sense."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Priya, 38</div><div class="carousel-meta">Verified user · scar softening</div></div><p class="carousel-quote">"An old scar that never faded is finally softening. That's the thing creams could never touch."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Dan, 47</div><div class="carousel-meta">Verified user · hair &amp; skin</div></div><p class="carousel-quote">"Hairline edges and skin tone both look healthier. I reconstitute it once, use it daily, done."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Sarah, 44</div><div class="carousel-meta">Verified user · 4 months in</div></div><p class="carousel-quote">"Two months of GLOW did more for my skin texture than any serum. My esthetician noticed before I said anything."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Mark, 51</div><div class="carousel-meta">Verified user · recovery focus</div></div><p class="carousel-quote">"Started it for a nagging shoulder. Didn't expect my skin to look better too. Both happened."</p></div></div>
 </div></div>
 
 <div class="article-body">

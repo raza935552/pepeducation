@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+@include('partials.gtm-head')
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -155,6 +156,8 @@ main{background:var(--paper);padding:40px 0 80px}
 .carousel-name{font-weight:700;font-size:14px;color:var(--ink);line-height:1.2}
 .carousel-meta{font-size:11px;color:var(--muted)}
 .carousel-quote{font-size:14px;line-height:1.55;font-style:italic;color:var(--body);flex:1;margin-top:4px}
+.carousel-slide{border-top:3px solid var(--cta)}
+.carousel-body::before{content:'\201C';font-family:Georgia,serif;font-size:40px;line-height:.1;color:var(--cta);opacity:.55;display:block;height:22px;margin-top:2px}
 
 /* Inline CTA — red, 3D button like Retatrutide */
 .inline-cta{background:var(--ink);color:#fff;padding:28px;margin:2.5em 0;border-radius:6px;text-align:center}
@@ -286,6 +289,7 @@ body.pp-modal-open{overflow:hidden}
 <x-posthog-lander />
 </head>
 <body>
+@include('partials.gtm-body')
 <div class="progress-bar" id="progress"></div>
 
 <div class="top-strip ui"><div class="max-w-7xl mx-auto px-5 md:px-8 flex items-center justify-between"><div class="flex items-center gap-3"><span style="color:#FFD66B">●</span><span>Live Field Report · January 2026</span></div><div class="hidden md:flex items-center gap-3 opacity-80"><span>9,100+ readers · No paywall</span></div></div></div>
@@ -379,14 +383,14 @@ body.pp-modal-open{overflow:hidden}
 </div>
 
 <div class="carousel-section"><div class="carousel-section-title ui">Real Stories · Verified Users</div><div class="carousel-track">
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/06d39b77-e88a-4612-9adb-0e6fa980165d.jpg" alt="Mark" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Mark, 52</div><div class="carousel-meta">Verified user · 10 years on Viagra</div></div><p class="carousel-quote">"Tried Viagra for 10 years. Stopped working after my blood pressure meds. This works every single time. Changed my relationship."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/4e311dbd-6105-4b7b-9acd-90d900469bca.jpg" alt="Rachel" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Rachel, 44</div><div class="carousel-meta">Verified user · On antidepressants</div></div><p class="carousel-quote">"My antidepressants flattened my sex drive completely. Nothing worked for years. This got me back to feeling like myself."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/a7f908e2-1477-4786-8c20-373a69d27a8b.jpg" alt="Tom" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Tom, 58</div><div class="carousel-meta">Verified user · Heart condition</div></div><p class="carousel-quote">"Cardiologist said no Viagra because of my heart condition. This was the only option. Works reliably every time."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/2b72e101-0e8a-410c-9b03-5bf8efe5f075.jpg" alt="Elena" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Elena, 39</div><div class="carousel-meta">Verified user · Low desire after 40</div></div><p class="carousel-quote">"After 40 my desire just vanished. My doctor said it's far more common than anyone admits. This gave me back something I thought was gone."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/06d39b77-e88a-4612-9adb-0e6fa980165d.jpg" alt="Mark" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Mark, 52</div><div class="carousel-meta">Verified user · 10 years on Viagra</div></div><p class="carousel-quote">"Tried Viagra for 10 years. Stopped working after my blood pressure meds. This works every single time. Changed my relationship."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/4e311dbd-6105-4b7b-9acd-90d900469bca.jpg" alt="Rachel" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Rachel, 44</div><div class="carousel-meta">Verified user · On antidepressants</div></div><p class="carousel-quote">"My antidepressants flattened my sex drive completely. Nothing worked for years. This got me back to feeling like myself."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/a7f908e2-1477-4786-8c20-373a69d27a8b.jpg" alt="Tom" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Tom, 58</div><div class="carousel-meta">Verified user · Heart condition</div></div><p class="carousel-quote">"Cardiologist said no Viagra because of my heart condition. This was the only option. Works reliably every time."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/2b72e101-0e8a-410c-9b03-5bf8efe5f075.jpg" alt="Elena" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Elena, 39</div><div class="carousel-meta">Verified user · Low desire after 40</div></div><p class="carousel-quote">"After 40 my desire just vanished. My doctor said it's far more common than anyone admits. This gave me back something I thought was gone."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Mark, 52</div><div class="carousel-meta">Verified user · 10 years on Viagra</div></div><p class="carousel-quote">"Tried Viagra for 10 years. Stopped working after my blood pressure meds. This works every single time. Changed my relationship."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Rachel, 44</div><div class="carousel-meta">Verified user · On antidepressants</div></div><p class="carousel-quote">"My antidepressants flattened my sex drive completely. Nothing worked for years. This got me back to feeling like myself."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Tom, 58</div><div class="carousel-meta">Verified user · Heart condition</div></div><p class="carousel-quote">"Cardiologist said no Viagra because of my heart condition. This was the only option. Works reliably every time."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Elena, 39</div><div class="carousel-meta">Verified user · Low desire after 40</div></div><p class="carousel-quote">"After 40 my desire just vanished. My doctor said it's far more common than anyone admits. This gave me back something I thought was gone."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Mark, 52</div><div class="carousel-meta">Verified user · 10 years on Viagra</div></div><p class="carousel-quote">"Tried Viagra for 10 years. Stopped working after my blood pressure meds. This works every single time. Changed my relationship."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Rachel, 44</div><div class="carousel-meta">Verified user · On antidepressants</div></div><p class="carousel-quote">"My antidepressants flattened my sex drive completely. Nothing worked for years. This got me back to feeling like myself."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Tom, 58</div><div class="carousel-meta">Verified user · Heart condition</div></div><p class="carousel-quote">"Cardiologist said no Viagra because of my heart condition. This was the only option. Works reliably every time."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Elena, 39</div><div class="carousel-meta">Verified user · Low desire after 40</div></div><p class="carousel-quote">"After 40 my desire just vanished. My doctor said it's far more common than anyone admits. This gave me back something I thought was gone."</p></div></div>
 </div></div>
 
 <div class="article-body">

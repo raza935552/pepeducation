@@ -124,6 +124,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+@include('partials.gtm-head')
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -378,6 +379,7 @@ aside .corner{position:sticky;top:78px}
   <x-posthog-lander />
 </head>
 <body>
+@include('partials.gtm-body')
 <a class="skip" href="#guide">Skip to the guide</a>
 
 <header class="top">

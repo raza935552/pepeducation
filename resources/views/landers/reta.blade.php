@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+@include('partials.gtm-head')
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -114,6 +115,8 @@ main{background:var(--paper);padding:40px 0 80px}
 .carousel-name{font-weight:700;font-size:14px;color:var(--ink);line-height:1.2}
 .carousel-meta{font-size:11px;color:var(--muted)}
 .carousel-quote{font-size:14px;line-height:1.55;font-style:italic;color:var(--body);flex:1;margin-top:4px}
+.carousel-slide{border-top:3px solid var(--cta)}
+.carousel-body::before{content:'\201C';font-family:Georgia,serif;font-size:40px;line-height:.1;color:var(--cta);opacity:.55;display:block;height:22px;margin-top:2px}
 .inline-cta{background:var(--ink);color:#fff;padding:28px;margin:2.5em 0;border-radius:6px;text-align:center}
 .inline-cta h3{font-weight:700;font-size:26px;margin-bottom:8px;line-height:1.2}
 @media(min-width:768px){.inline-cta h3{font-size:30px}}
@@ -244,6 +247,7 @@ body.pp-modal-open{overflow:hidden}
 <x-posthog-lander />
 </head>
 <body>
+@include('partials.gtm-body')
 <div class="progress-bar" id="progress"></div>
 
 <div class="top-strip ui"><div class="max-w-7xl mx-auto px-5 md:px-8 flex items-center justify-between"><div class="flex items-center gap-3"><span style="color:#FFD66B">●</span><span>Metabolic Health Report · January 2026</span></div><div class="hidden md:flex items-center gap-3 opacity-80"><span>11,400+ readers · No paywall</span></div></div></div>
@@ -346,12 +350,12 @@ In a phase 2 human trial, adults with obesity on the highest retatrutide dose lo
 </div>
 
 <div class="carousel-section"><div class="carousel-section-title ui">Real Stories · Verified Users</div><div class="carousel-track">
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/ed358dc5-44ed-45ec-a390-feaddc1981ce.jpg" alt="Sarah" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Rachel, 43</div><div class="carousel-meta">Verified user · 3 months in</div></div><p class="carousel-quote">"Two GLP-1s stalled me for a year. Three months on this and the scale is finally moving again. The hunger just... quiets down."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/ed358dc5-44ed-45ec-a390-feaddc1981ce.jpg" alt="Mark" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Mark, 51</div><div class="carousel-meta">Verified user · recovery focus</div></div><p class="carousel-quote">"The food noise is gone. I used to think about snacks all day. Now I forget to eat lunch. That is the part nothing else touched."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/ed358dc5-44ed-45ec-a390-feaddc1981ce.jpg" alt="Priya" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Angela, 49</div><div class="carousel-meta">Verified user · bloodwork improved</div></div><p class="carousel-quote">"Down two belt notches. My bloodwork looked better at my last check-up than it has in a decade."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/ed358dc5-44ed-45ec-a390-feaddc1981ce.jpg" alt="Dan" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Chris, 45</div><div class="carousel-meta">Verified user · once a week</div></div><p class="carousel-quote">"One small shot a week. That is the whole routine. I reconstitute it once and I am set for the month."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/ed358dc5-44ed-45ec-a390-feaddc1981ce.jpg" alt="Sarah" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Rachel, 43</div><div class="carousel-meta">Verified user · 3 months in</div></div><p class="carousel-quote">"Three months on this and the scale is finally moving again after a year stuck."</p></div></div>
-<div class="carousel-slide"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/ed358dc5-44ed-45ec-a390-feaddc1981ce.jpg" alt="Mark" class="carousel-img"><div class="carousel-body ui"><div><div class="carousel-name">Mark, 51</div><div class="carousel-meta">Verified user · recovery focus</div></div><p class="carousel-quote">"The food noise is gone. That is the part nothing else touched."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Rachel, 43</div><div class="carousel-meta">Verified user · 3 months in</div></div><p class="carousel-quote">"Two GLP-1s stalled me for a year. Three months on this and the scale is finally moving again. The hunger just... quiets down."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Mark, 51</div><div class="carousel-meta">Verified user · recovery focus</div></div><p class="carousel-quote">"The food noise is gone. I used to think about snacks all day. Now I forget to eat lunch. That is the part nothing else touched."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Angela, 49</div><div class="carousel-meta">Verified user · bloodwork improved</div></div><p class="carousel-quote">"Down two belt notches. My bloodwork looked better at my last check-up than it has in a decade."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Chris, 45</div><div class="carousel-meta">Verified user · once a week</div></div><p class="carousel-quote">"One small shot a week. That is the whole routine. I reconstitute it once and I am set for the month."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Rachel, 43</div><div class="carousel-meta">Verified user · 3 months in</div></div><p class="carousel-quote">"Three months on this and the scale is finally moving again after a year stuck."</p></div></div>
+<div class="carousel-slide"><div class="carousel-body ui"><div><div class="carousel-name">Mark, 51</div><div class="carousel-meta">Verified user · recovery focus</div></div><p class="carousel-quote">"The food noise is gone. That is the part nothing else touched."</p></div></div>
 </div></div>
 
 <div class="article-body">

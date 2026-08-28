@@ -14,6 +14,7 @@
 <!doctype html>
 <html lang="en">
     <head>
+@include('partials.gtm-head')
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="{{ ($lander->noindex || $c('meta.noindex')) ? 'noindex,nofollow' : 'index,follow' }}">
@@ -35,6 +36,7 @@
 
     </head>
     <body>
+@include('partials.gtm-body')
         <div class="age" id="age">
             <div class="card">
                 <div class="b">{!! $c('age_gate.title', 'The Operator <b>Brief</b>') !!}</div>

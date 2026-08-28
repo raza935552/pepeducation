@@ -37,6 +37,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+@include('partials.gtm-head')
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   @if($lander->noindex)<meta name="robots" content="noindex,nofollow" />@endif
@@ -203,6 +204,7 @@ h2 .hl{color:var(--acc)}
   <x-posthog-lander />
 </head>
 <body>
+@include('partials.gtm-body')
   <a class="sticky-cta" href="{{ $go($primaryDest) }}" rel="nofollow noopener">{{ $lander->c('hero.primary_cta') ?: 'Get the Repair Stack' }} →</a>
 
   <!-- top bar -->

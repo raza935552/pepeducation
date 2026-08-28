@@ -119,6 +119,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+@include('partials.gtm-head')
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -350,6 +351,7 @@ h3{font-family:var(--sans);font-weight:700;font-size:19px;line-height:1.25}
   <x-posthog-lander />
 </head>
 <body>
+@include('partials.gtm-body')
 <a class="skip" href="#story">Skip to the story</a>
 <div class="progress" id="agProgress" aria-hidden="true"></div>
 

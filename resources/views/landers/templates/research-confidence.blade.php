@@ -24,6 +24,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+@include('partials.gtm-head')
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   @if($lander->noindex)<meta name="robots" content="noindex,nofollow" />@endif
@@ -61,6 +62,7 @@
   <x-posthog-lander />
 </head>
 <body>
+@include('partials.gtm-body')
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="page-shell">
     <header class="topbar" aria-label="Main header">

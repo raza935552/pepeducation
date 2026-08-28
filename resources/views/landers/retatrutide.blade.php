@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+@include('partials.gtm-head')
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Retasearch — Retatrutide: The Future of Weight Loss Medication</title>
@@ -657,6 +658,7 @@
     <x-posthog-lander />
 </head>
 <body>
+@include('partials.gtm-body')
 
 <header class="site-header">
   <div class="wrap">
