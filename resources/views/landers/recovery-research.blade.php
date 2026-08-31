@@ -1,62 +1,42 @@
-<!doctype html>
-<html lang="en">
-<head>
-@include('partials.gtm-head')
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="csrf-token" content="{{ csrf_token() }}">
-<title>Recovery and Tissue-Response Research | Biolinx Labs</title>
-<meta name="description" content="Muscle growth gets the attention, but recovery may be the more interesting science.">
-<meta name="robots" content="index,follow">
+<x-public-layout title="Recovery and Tissue-Response Research | Biolinx Labs" description="Muscle growth gets the attention, but recovery may be the more interesting science.">
+@push('head')
 <style>
-  :root{--ink:#1a1a1a;--muted:#6b7280;--line:#e7e2df;--accent:#C68F79;--accent-d:#a4715c;--bg:#ffffff;--soft:#faf7f5}
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--soft);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.7;font-size:17px}
-  .site-hd{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid #ececec;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-  .hd-in{max-width:1120px;margin:0 auto;padding:0 22px;height:66px;display:flex;align-items:center}
-  .hd-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
-  .hd-logo{height:34px;width:auto;display:block;border:none;border-radius:0}
-  .hd-txt{display:flex;flex-direction:column;line-height:1.12}
-  .hd-name{font-weight:800;font-size:16px;color:#171717;letter-spacing:-.01em}
-  .hd-tag{font-size:9.5px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:#9a9a9a}
-  .eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-d);margin-bottom:4px}
-  .wrap{max-width:760px;margin:0 auto;padding:34px 22px 60px}
-  h1{font-family:Georgia,'Times New Roman',serif;font-size:33px;line-height:1.2;letter-spacing:-.015em;margin:6px 0 22px}
-  p{margin:0 0 20px;color:#2b2b2b}
-  figure{margin:26px 0} figure a{display:block}
-  img{width:100%;height:auto;border-radius:14px;border:1px solid var(--line);display:block}
-  .cta-wrap{margin:34px 0 8px;text-align:center}
-  .cta{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;font-size:16px;padding:15px 30px;border-radius:999px;box-shadow:0 6px 18px rgba(198,143,121,.32);transition:transform .1s,box-shadow .15s}
-  .cta:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(198,143,121,.4)}
-  .foot{max-width:760px;margin:0 auto;padding:22px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;line-height:1.6}
-  /* Offer modal */
-  .lm-ov{position:fixed;inset:0;background:rgba(20,16,14,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:9999}
-  .lm-ov.on{display:flex}
-  .lm{background:#fff;max-width:430px;width:100%;border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.3);position:relative;text-align:center}
-  .lm-x{position:absolute;top:10px;right:12px;width:30px;height:30px;background:rgba(255,255,255,.92);border:none;border-radius:50%;font-size:20px;line-height:1;color:#555;cursor:pointer;z-index:2}
-  .lm-img{height:150px;overflow:hidden}
-  .lm-img img{width:100%;height:100%;object-fit:cover;object-position:62% 72%;display:block;border:none;border-radius:0}
-  .lm-body{padding:22px 26px 24px}
-  .lm-k{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-d);margin-bottom:7px}
-  .lm h3{font-family:Georgia,serif;font-size:22px;margin:0 0 8px;line-height:1.25;color:var(--ink)}
-  .lm p{font-size:13.5px;color:var(--muted);margin:0 0 16px;line-height:1.55}
-  .lm input{width:100%;padding:13px 15px;border:1px solid var(--line);border-radius:9px;font-size:15px;margin-bottom:10px}
-  .lm button.sub{width:100%;background:var(--accent);color:#fff;border:none;border-radius:9px;padding:14px;font-size:15px;font-weight:700;cursor:pointer}
-  .lm button.sub:hover{background:var(--accent-d)}
-  .lm .fine{font-size:11px;color:#9ca3af;margin:10px 0 0}
-  .lm .ok{display:none} .lm.done .form{display:none} .lm.done .ok{display:block}
-  .lm-code{display:flex;align-items:stretch;border:2px dashed var(--accent);border-radius:10px;overflow:hidden;margin:2px 0 14px}
-  .lm-code span{flex:1;font-family:'SF Mono',Menlo,Consolas,monospace;font-weight:800;font-size:20px;letter-spacing:.06em;color:var(--ink);padding:12px 8px;background:var(--soft)}
-  .lm-copy{background:var(--accent);color:#fff;border:none;font-weight:700;font-size:13px;padding:0 16px;cursor:pointer}
-  .lm-copy:hover{background:var(--accent-d)}
-  .lm-shop{display:block;background:var(--ink);color:#fff;text-decoration:none;font-weight:700;font-size:15px;padding:13px;border-radius:9px}
-  @media(max-width:600px){h1{font-size:27px}body{font-size:16px}}
+.adv{max-width:760px;margin:0 auto;padding:34px 22px 56px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#2b2b2b;line-height:1.7;font-size:17px}
+.adv .eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#a4715c;margin-bottom:6px}
+.adv h1{font-family:Georgia,'Times New Roman',serif;font-size:33px;line-height:1.2;letter-spacing:-.015em;margin:0 0 22px;color:#1a1a1a;font-weight:700}
+.adv p{margin:0 0 20px;color:#2b2b2b}
+.adv figure{margin:26px 0}
+.adv figure a{display:block}
+.adv figure img{width:100%;height:auto;border-radius:14px;border:1px solid #e7e2df;display:block}
+.adv .cta-wrap{margin:34px 0 8px;text-align:center}
+.adv .cta{display:inline-block;background:#C68F79;color:#fff;text-decoration:none;font-weight:700;font-size:16px;padding:15px 30px;border-radius:999px;box-shadow:0 6px 18px rgba(198,143,121,.32)}
+.adv .cta:hover{background:#a4715c}
+.adv .foot{margin-top:30px;padding-top:16px;border-top:1px solid #e7e2df;color:#6b7280;font-size:12px;line-height:1.6}
+.lm-ov{position:fixed;inset:0;background:rgba(20,16,14,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:99999}
+.lm-ov.on{display:flex}
+.lm{background:#fff;max-width:430px;width:100%;border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.3);position:relative;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif}
+.lm-x{position:absolute;top:10px;right:12px;width:30px;height:30px;background:rgba(255,255,255,.92);border:none;border-radius:50%;font-size:20px;line-height:1;color:#555;cursor:pointer;z-index:2}
+.lm-img{height:150px;overflow:hidden}
+.lm-img img{width:100%;height:100%;object-fit:cover;object-position:62% 72%;display:block}
+.lm-body{padding:22px 26px 24px}
+.lm-k{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#a4715c;margin-bottom:7px}
+.lm h3{font-family:Georgia,serif;font-size:22px;margin:0 0 8px;line-height:1.25;color:#1a1a1a}
+.lm p{font-size:13.5px;color:#6b7280;margin:0 0 16px;line-height:1.55}
+.lm input{width:100%;padding:13px 15px;border:1px solid #e7e2df;border-radius:9px;font-size:15px;margin-bottom:10px;font-family:inherit}
+.lm button.sub{width:100%;background:#C68F79;color:#fff;border:none;border-radius:9px;padding:14px;font-size:15px;font-weight:700;cursor:pointer}
+.lm button.sub:hover{background:#a4715c}
+.lm .fine{font-size:11px;color:#9ca3af;margin:10px 0 0}
+.lm .ok{display:none} .lm.done .form{display:none} .lm.done .ok{display:block}
+.lm-code{display:flex;align-items:stretch;border:2px dashed #C68F79;border-radius:10px;overflow:hidden;margin:2px 0 14px}
+.lm-code span{flex:1;font-family:'SF Mono',Menlo,Consolas,monospace;font-weight:800;font-size:20px;letter-spacing:.06em;color:#1a1a1a;padding:12px 8px;background:#faf7f5}
+.lm-copy{background:#C68F79;color:#fff;border:none;font-weight:700;font-size:13px;padding:0 16px;cursor:pointer}
+.lm-copy:hover{background:#a4715c}
+.lm-shop{display:block;background:#1a1a1a;color:#fff;text-decoration:none;font-weight:700;font-size:15px;padding:13px;border-radius:9px}
+@media(max-width:600px){.adv h1{font-size:27px}.adv{font-size:16px}}
 </style>
-</head>
-<body>
-@include('partials.gtm-body')
-<header class="site-hd"><div class="hd-in"><a class="hd-brand" href="https://biolinxlabs.com/"><img class="hd-logo" src="https://biolinxlabs.com/storage/logos/logo-1772464717.jpg" alt="Biolinx Labs"><span class="hd-txt"><span class="hd-name">Biolinx Labs</span><span class="hd-tag">Research Peptides</span></span></a></div></header>
-<article class="wrap">
+@endpush
+
+<div class="adv">
 <div class="eyebrow">Recovery Research</div>
 <h1>Muscle Growth Gets the Attention. Recovery Might Be More Interesting.</h1>
 <p>Most fitness conversations focus on muscle growth. Researchers, however, are interested in a much bigger picture.</p>
@@ -66,10 +46,8 @@
 <p>These questions have made recovery and tissue-response research an increasingly interesting area of peptide science. Compounds including BPC-157 and TB-500 are among those being investigated as researchers work to better understand these biological mechanisms.</p>
 <p>The interesting part isn’t simply the compound itself. It’s the science behind it, including molecular identity, purity, analytical testing, and how the material behaves in a controlled research environment.</p>
 <div class="cta-wrap"><a class="cta" href="https://biolinxlabs.com/best-sellers?utm_source=pp-advertorial&utm_medium=advertorial&utm_campaign=recovery&utm_content=cta">Explore Biolinx Labs’ recovery research collection →</a></div>
-</article>
 <div class="foot">For research use only. Not for human consumption or clinical use. Biolinx Labs supplies materials for laboratory and research purposes only. This page is educational and does not make medical claims.</div>
-
-<!-- Lead capture modal -> /subscriber/sync (source lp-recovery-research) -> saved locally + Customer.io -->
+</div>
 <div class="lm-ov" id="lmOv" aria-hidden="true">
   <div class="lm" id="lmBox" role="dialog" aria-modal="true" aria-labelledby="lmTitle">
     <button class="lm-x" type="button" onclick="lmClose()" aria-label="Close">&times;</button>
@@ -95,6 +73,8 @@
     </div>
   </div>
 </div>
+
+@push('scripts')
 <script>
 (function(){
   var KEY='blx_adv_lead_recovery';
@@ -107,22 +87,19 @@
     ev.preventDefault();
     var em=document.getElementById('lmEmail'), btn=document.getElementById('lmBtn');
     if(!em||!em.value||!em.checkValidity()){if(em)em.reportValidity();return false;}
-    if(btn){btn.disabled=true;btn.textContent='Subscribing...';}
+    if(btn){btn.disabled=true;btn.textContent='...';}
     var t=document.querySelector('meta[name=csrf-token]'), csrf=t?t.getAttribute('content'):'';
     var done=function(){ document.getElementById('lmBox').classList.add('done'); mark(); if(window.dataLayer)window.dataLayer.push({event:'lead_captured',lead_source:'lp-recovery-research'}); };
-    try{
-      fetch('/subscriber/sync',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-TOKEN':csrf,'Accept':'application/json'},credentials:'same-origin',body:JSON.stringify({email:em.value,source:'lp-recovery-research'})}).then(done).catch(done);
-    }catch(e){done();}
+    try{ fetch('/subscriber/sync',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-TOKEN':csrf,'Accept':'application/json'},credentials:'same-origin',body:JSON.stringify({email:em.value,source:'lp-recovery-research'})}).then(done).catch(done); }catch(e){done();}
     return false;
   };
-  // Triggers: 12s delay, 55% scroll, or exit-intent (once per browser).
   var fired=false; function trigger(){ if(fired||shown())return; fired=true; lmOpen(); }
   setTimeout(trigger, 12000);
   window.addEventListener('scroll', function(){ var h=document.documentElement.scrollHeight-innerHeight; if(h>0 && (scrollY/h)>0.55) trigger(); }, {passive:true});
   document.addEventListener('mouseout', function(e){ if(!e.relatedTarget && e.clientY<=0) trigger(); });
-  document.getElementById('lmOv').addEventListener('click', function(e){ if(e.target===this) lmClose(); });
+  var ov=document.getElementById('lmOv'); if(ov) ov.addEventListener('click', function(e){ if(e.target===this) lmClose(); });
   document.addEventListener('keydown', function(e){ if(e.key==='Escape') lmClose(); });
 })();
 </script>
-</body>
-</html>
+@endpush
+</x-public-layout>
