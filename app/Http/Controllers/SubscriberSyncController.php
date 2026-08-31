@@ -22,9 +22,12 @@ class SubscriberSyncController extends Controller
             'lead_event_id' => 'nullable|string|max:120',
         ]);
 
-        // Reject disposable / throwaway / test-domain emails — never subscribe or
-        // forward them to Biolinx (keeps junk out of our lists + the customer DB).
-        if (\App\Support\DisposableEmail::isDisposable($request->email)) {
+        // Advertorial / lander lead pages (source "lp-*") capture the lead no matter what —
+        // we want every lead from paid campaigns. The disposable filter still protects the
+        // popups/giveaway lists from throwaway addresses.
+        $syncSource = (string) $request->input('source', '');
+        $alwaysCapture = str_starts_with($syncSource, 'lp-');
+        if (! $alwaysCapture && \App\Support\DisposableEmail::isDisposable($request->email)) {
             return response()->json(['success' => false, 'message' => 'Please use a permanent email address.'], 422);
         }
 
