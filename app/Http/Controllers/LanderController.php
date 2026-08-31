@@ -34,6 +34,9 @@ class LanderController extends Controller
         'pt141'               => 'lp-pt141',
         'glow'                => 'lp-glow',
         'reta'                => 'lp-reta',
+        'metabolic-research'  => 'lp-metabolic-research',
+        'longevity-research'  => 'lp-longevity-research',
+        'recovery-research'   => 'lp-recovery-research',
     ];
 
     public function show(Request $request, string $slug): View
