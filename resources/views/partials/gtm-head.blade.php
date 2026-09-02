@@ -1,9 +1,9 @@
-{{-- Google Tag Manager (container GTM-5X5KGJ2B) — placed as high in <head> as possible.
+{{-- Google Tag Manager (container GTM-T3MH9R3M) — placed as high in <head> as possible.
      Coexists with the site's gtag.js (GA4 / Google Ads). Requested by the Google Ads team. --}}
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-5X5KGJ2B');</script>
+})(window,document,'script','dataLayer','GTM-T3MH9R3M');</script>
 <!-- End Google Tag Manager -->
