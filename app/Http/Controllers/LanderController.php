@@ -37,6 +37,8 @@ class LanderController extends Controller
         'metabolic-research'  => 'lp-metabolic-research',
         'longevity-research'  => 'lp-longevity-research',
         'recovery-research'   => 'lp-recovery-research',
+        '7-reasons'           => 'lp-7-reasons',
+        'research-vial'       => 'lp-research-vial',
     ];
 
     public function show(Request $request, string $slug): View
