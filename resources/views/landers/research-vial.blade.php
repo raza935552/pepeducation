@@ -431,7 +431,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           ➜ Browse all research compounds
         </a>
         <a class="img-link mt-3 block overflow-hidden rounded-md bg-card" href="https://biolinxlabs.com/best-sellers?utm_source=advertorial&amp;utm_medium=content&amp;utm_campaign=7-things-vial&amp;utm_content=sidebar-bottom" target="_blank" rel="noopener noreferrer">
-          <img src="https://assets.sticky.io/images/originals/2026-03-04-14-00-00/hdfsWqacCyBE3Y7aFw2MWZLTjxiuuEvXKSh8uXml.jpg" alt="Biolinx Labs G3-R research vial, third-party tested at 99.9% purity" class="h-auto w-full" loading="lazy">
+          <img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/eeccd530-d591-47c5-8af2-b3580b72b2c4.jpg" alt="Biolinx Labs G3-R research vial, third-party tested at 99.9% purity" class="h-auto w-full" loading="lazy">
         </a>
       </div>
     </aside>

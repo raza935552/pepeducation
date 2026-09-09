@@ -180,7 +180,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <figure class="mt-4 hero-card">
         <div class="hero-figure">
           <a class="img-link hero-plinth" href="https://biolinxlabs.com/best-sellers?utm_source=advertorial&amp;utm_medium=content&amp;utm_campaign=7-reasons-switching&amp;utm_content=hero" target="_blank" rel="noopener noreferrer">
-            <img src="https://assets.sticky.io/images/originals/2026-03-04-14-00-00/1BVIU0DzYOg3E4ZS3LwvM6HiKTEh2yLT3EsuljVk.jpg" alt="Biolinx Labs G3-R research vial, third-party tested at 99.9% purity">
+            <img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/eeccd530-d591-47c5-8af2-b3580b72b2c4.jpg" alt="Biolinx Labs G3-R research vial, third-party tested at 99.9% purity">
           </a>
           <p class="hero-note">Every vial carries a lot number. The certificate for that lot is published before you order, not after you pay.</p>
         </div>
@@ -410,7 +410,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
             <div class="offer-media">
               <a class="img-link" href="https://biolinxlabs.com/best-sellers?utm_source=advertorial&amp;utm_medium=content&amp;utm_campaign=7-reasons-switching&amp;utm_content=offer-box" target="_blank" rel="noopener noreferrer">
-                <img src="https://assets.sticky.io/images/originals/2026-03-04-14-00-00/1BVIU0DzYOg3E4ZS3LwvM6HiKTEh2yLT3EsuljVk.jpg" alt="Biolinx Labs G3-R research vial, third-party tested at 99.9% purity">
+                <img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/eeccd530-d591-47c5-8af2-b3580b72b2c4.jpg" alt="Biolinx Labs G3-R research vial, third-party tested at 99.9% purity">
               </a>
             </div>
           </div>
@@ -425,7 +425,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           Ready to Read Your Batch's <span class="text-brand">Certificate of Analysis</span> Before You Buy?
         </h2>
         <a class="img-link mt-3 block overflow-hidden rounded-md bg-card" href="https://biolinxlabs.com/best-sellers?utm_source=advertorial&amp;utm_medium=content&amp;utm_campaign=7-reasons-switching&amp;utm_content=sidebar-top" target="_blank" rel="noopener noreferrer">
-          <img src="https://assets.sticky.io/images/originals/2026-03-04-14-00-00/1BVIU0DzYOg3E4ZS3LwvM6HiKTEh2yLT3EsuljVk.jpg" alt="Biolinx Labs G3-R research vial, third-party tested at 99.9% purity" class="h-auto w-full" loading="lazy">
+          <img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/eeccd530-d591-47c5-8af2-b3580b72b2c4.jpg" alt="Biolinx Labs G3-R research vial, third-party tested at 99.9% purity" class="h-auto w-full" loading="lazy">
         </a>
         <a href="https://biolinxlabs.com/best-sellers?utm_source=advertorial&amp;utm_medium=content&amp;utm_campaign=7-reasons-switching&amp;utm_content=browse-all" target="_blank" rel="noopener noreferrer" class="cta-btn mt-3">
           ➜ Browse all research compounds

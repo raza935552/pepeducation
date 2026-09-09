@@ -286,7 +286,7 @@ body.pp-modal-open{overflow:hidden}
 <p>The first GLP-1 drugs changed the game by quieting that hunger signal. But they hit a single receptor, and for many people the results plateau. <strong>Retatrutide was built to go further.</strong></p>
 <p>By hitting three metabolic receptors instead of one, it works on appetite and on how the body burns energy at the same time.</p>
 
-<div class="figure"><img src="https://assets.sticky.io/images/originals/2026-03-04-14-00-00/hdfsWqacCyBE3Y7aFw2MWZLTjxiuuEvXKSh8uXml.jpg" alt="Retatrutide (G3-R) vial" style="aspect-ratio:16/9;object-fit:contain;background:var(--bg)"><p class="figure-caption ui">Retatrutide, sold as G3-R. A GLP-1 / GIP / glucagon triple agonist.</p></div>
+<div class="figure"><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/eeccd530-d591-47c5-8af2-b3580b72b2c4.jpg" alt="Retatrutide (G3-R) vial" style="aspect-ratio:16/9;object-fit:contain;background:var(--bg)"><p class="figure-caption ui">Retatrutide, sold as G3-R. A GLP-1 / GIP / glucagon triple agonist.</p></div>
 
 <hr class="section-rule">
 <h2>What Retatrutide Actually Is</h2>
@@ -389,9 +389,9 @@ In a phase 2 human trial, adults with obesity on the highest retatrutide dose lo
     $go = fn ($dest) => route('outbound.track', ['slug' => 'lp-reta', 'dest' => $dest]);
     // Full image URLs (BioLinx product CDN) so no R2 id juggling.
     $shelf = [
-        ['img' => 'https://assets.sticky.io/images/originals/2026-03-04-14-00-00/hdfsWqacCyBE3Y7aFw2MWZLTjxiuuEvXKSh8uXml.jpg', 'name' => 'G3-R (Retatrutide) · 10 mg', 'price' => '$79.93', 'dest' => $bx.'/products/g3-r-10-mg', 'contents' => 'Retatrutide 10mg · GLP-1/GIP/glucagon'],
-        ['img' => 'https://assets.sticky.io/images/originals/2026-03-04-14-00-00/hdfsWqacCyBE3Y7aFw2MWZLTjxiuuEvXKSh8uXml.jpg', 'name' => 'Retatrutide Starter Kit', 'price' => '$94.86', 'dest' => $bx.'/bundles/retatrutide-10mg-bac-water?add=1', 'featured' => true, 'contents' => 'Retatrutide 10mg · Bacteriostatic Water 3ml'],
-        ['img' => 'https://assets.sticky.io/images/originals/2026-03-04-14-00-00/1BVIU0DzYOg3E4ZS3LwvM6HiKTEh2yLT3EsuljVk.jpg', 'name' => 'G3-R (Retatrutide) · 30 mg', 'price' => '$179.93', 'dest' => $bx.'/products/g3-r-30-mg', 'contents' => 'Retatrutide 30mg · full-cycle size'],
+        ['img' => 'https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/eeccd530-d591-47c5-8af2-b3580b72b2c4.jpg', 'name' => 'G3-R (Retatrutide) · 10 mg', 'price' => '$79.93', 'dest' => $bx.'/products/g3-r-10-mg', 'contents' => 'Retatrutide 10mg · GLP-1/GIP/glucagon'],
+        ['img' => 'https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/eeccd530-d591-47c5-8af2-b3580b72b2c4.jpg', 'name' => 'Retatrutide Starter Kit', 'price' => '$94.86', 'dest' => $bx.'/bundles/retatrutide-10mg-bac-water?add=1', 'featured' => true, 'contents' => 'Retatrutide 10mg · Bacteriostatic Water 3ml'],
+        ['img' => 'https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/eeccd530-d591-47c5-8af2-b3580b72b2c4.jpg', 'name' => 'G3-R (Retatrutide) · 30 mg', 'price' => '$179.93', 'dest' => $bx.'/products/g3-r-30-mg', 'contents' => 'Retatrutide 30mg · full-cycle size'],
         ['img' => 'https://assets.sticky.io/images/originals/2026-03-04-14-00-00/nIkAtvXmnV2ALWe4qJXEklgXoFfaVrhWGpixDxPs.jpg', 'name' => 'G2-T (Tirzepatide) · 30 mg', 'price' => '$179.93', 'dest' => $bx.'/products/g2-t-30-mg', 'contents' => 'Tirzepatide 30mg · dual agonist'],
         ['img' => 'https://assets.sticky.io/images/originals/2026-03-04-14-00-00/F1uQuaBUxIev17YKYCmCANGCmOzLoWAgKtIJwvJ2.jpg', 'name' => 'G1-S (Semaglutide) · 10 mg', 'price' => '$79.93', 'dest' => $bx.'/products/g1-s-10-mg', 'contents' => 'Semaglutide 10mg · GLP-1'],
     ];
@@ -405,7 +405,7 @@ In a phase 2 human trial, adults with obesity on the highest retatrutide dose lo
 
 {{-- Mobile-only "Available At" purchase box --}}
 <div class="mobile-avail">
-<div class="sidebar-box" style="background:linear-gradient(180deg,var(--cta-soft) 0%,#FFF 100%);border:1.5px solid var(--cta)"><div class="sidebar-label ui" style="color:var(--cta);border-color:var(--cta)">Available At</div><h3>Retatrutide at BioLinx Labs</h3><p style="font-size:13.5px;line-height:1.55">Third-party HPLC tested · 99%+ purity · COA on every batch · Ships in 24 hrs.</p><a href="#" onclick="pmOpen();return false;" class="sidebar-cta ui">View Product →</a><img src="https://assets.sticky.io/images/originals/2026-03-04-14-00-00/hdfsWqacCyBE3Y7aFw2MWZLTjxiuuEvXKSh8uXml.jpg" alt="Retatrutide" style="width:100%;border-radius:6px;aspect-ratio:1/1;object-fit:contain;background:var(--bg);margin-top:14px" loading="lazy"></div>
+<div class="sidebar-box" style="background:linear-gradient(180deg,var(--cta-soft) 0%,#FFF 100%);border:1.5px solid var(--cta)"><div class="sidebar-label ui" style="color:var(--cta);border-color:var(--cta)">Available At</div><h3>Retatrutide at BioLinx Labs</h3><p style="font-size:13.5px;line-height:1.55">Third-party HPLC tested · 99%+ purity · COA on every batch · Ships in 24 hrs.</p><a href="#" onclick="pmOpen();return false;" class="sidebar-cta ui">View Product →</a><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/eeccd530-d591-47c5-8af2-b3580b72b2c4.jpg" alt="Retatrutide" style="width:100%;border-radius:6px;aspect-ratio:1/1;object-fit:contain;background:var(--bg);margin-top:14px" loading="lazy"></div>
 </div>
 
 <div class="ms-form ui" id="stackQuiz">
@@ -482,7 +482,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){pmClose();}
 
 <!-- Sidebar -->
 <div class="hidden md:block md:col-span-1"><div class="sticky top-14">
-<div class="sidebar-box" style="background:linear-gradient(180deg,var(--cta-soft) 0%,#FFF 100%);border:1.5px solid var(--cta)"><div class="sidebar-label ui" style="color:var(--cta);border-color:var(--cta)">Available At</div><h3>Retatrutide at BioLinx Labs</h3><p style="font-size:13.5px;line-height:1.55">Third-party HPLC tested · 99%+ purity · COA on every batch · Ships in 24 hrs.</p><a href="#" onclick="pmOpen();return false;" class="sidebar-cta ui">View Product →</a><img src="https://assets.sticky.io/images/originals/2026-03-04-14-00-00/hdfsWqacCyBE3Y7aFw2MWZLTjxiuuEvXKSh8uXml.jpg" alt="Retatrutide" style="width:100%;border-radius:6px;aspect-ratio:1/1;object-fit:contain;background:var(--bg);margin-top:14px"></div>
+<div class="sidebar-box" style="background:linear-gradient(180deg,var(--cta-soft) 0%,#FFF 100%);border:1.5px solid var(--cta)"><div class="sidebar-label ui" style="color:var(--cta);border-color:var(--cta)">Available At</div><h3>Retatrutide at BioLinx Labs</h3><p style="font-size:13.5px;line-height:1.55">Third-party HPLC tested · 99%+ purity · COA on every batch · Ships in 24 hrs.</p><a href="#" onclick="pmOpen();return false;" class="sidebar-cta ui">View Product →</a><img src="https://pub-0a9781e86a6b4f2d9b5bfbe22904ad3c.r2.dev/media/eeccd530-d591-47c5-8af2-b3580b72b2c4.jpg" alt="Retatrutide" style="width:100%;border-radius:6px;aspect-ratio:1/1;object-fit:contain;background:var(--bg);margin-top:14px"></div>
 
 <div class="sidebar-box"><div class="sidebar-label ui">Free Protocol Guide</div><h3>The Complete Retatrutide Starter Kit</h3><p>Sourcing, reconstitution, dosing, cycling, side-effect management. Everything in one place.</p><form class="ui email-form pp-capture" data-form="sidebar" onsubmit="return false;" style="flex-direction:column;gap:6px"><input type="email" name="email" placeholder="you@email.com" required><button type="submit" style="width:100%">Send The Guide →</button></form><div class="pp-capture-success ui" hidden><p style="color:var(--green)">✓ Check your inbox. Your guide is on the way.</p><a href="{{ route('outbound.track', 'lp-reta') }}" class="sidebar-cta ui" style="margin-bottom:0">View Retatrutide →</a></div></div>
 
