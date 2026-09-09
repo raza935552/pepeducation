@@ -179,7 +179,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- Hero: one editorial image, real Biolinx product photography and real site trust badges -->
       <figure class="mt-4 hero-card">
         <div class="hero-figure">
-          <a class="img-link hero-plinth" href="https://biolinxlabs.com/products/g3-r-30-mg?utm_source=advertorial&amp;utm_medium=content&amp;utm_campaign=7-reasons-switching&amp;utm_content=hero" target="_blank" rel="noopener noreferrer">
+          <a class="img-link hero-plinth" href="https://biolinxlabs.com/best-sellers?utm_source=advertorial&amp;utm_medium=content&amp;utm_campaign=7-reasons-switching&amp;utm_content=hero" target="_blank" rel="noopener noreferrer">
             <img src="https://assets.sticky.io/images/originals/2026-03-04-14-00-00/1BVIU0DzYOg3E4ZS3LwvM6HiKTEh2yLT3EsuljVk.jpg" alt="Biolinx Labs G3-R research vial, third-party tested at 99.9% purity">
           </a>
           <p class="hero-note">Every vial carries a lot number. The certificate for that lot is published before you order, not after you pay.</p>
@@ -212,7 +212,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="rounded-md border text-center" style="margin-top: 56px; padding: 32px 24px; border-color: var(--border); background-color: var(--background);">
         <h3 class="font-display text-[22px] font-bold leading-snug tracking-tight">No Templates. No Reused PDFs. Your Lot, Tested by Someone Else.</h3>
         <p class="mx-auto mt-3 max-w-md text-[15px] leading-relaxed" style="color: var(--muted-foreground);">Every batch we ship carries its own certificate. HPLC purity and mass spec identity on one document, hosted by an independent lab, matched to the lot in your hands.</p>
-        <a href="https://biolinxlabs.com/products" target="_blank" rel="noopener noreferrer" class="cta-btn mx-auto mt-5 max-w-sm">
+        <a href="https://biolinxlabs.com/best-sellers?utm_source=advertorial&amp;utm_medium=content&amp;utm_campaign=7-reasons-switching&amp;utm_content=browse-all" target="_blank" rel="noopener noreferrer" class="cta-btn mx-auto mt-5 max-w-sm">
           <span class="block text-lg tracking-tight sm:text-xl">Browse all research compounds →</span>
         </a>
       </div>
@@ -260,7 +260,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <p class="font-display text-2xl font-bold tracking-tight sm:text-3xl">DON'T MISS OUT ON</p>
           <p class="font-display text-2xl font-bold tracking-tight sm:text-3xl" style="color: var(--brand-strong);">★ 20% OFF THE G3-R METABOLIC STACK ★</p>
           <p class="mt-2 font-display text-lg italic">* Bundle discount applied automatically at checkout</p>
-          <a href="https://biolinxlabs.com/products" target="_blank" rel="noopener noreferrer" class="cta-btn mx-auto mt-5 max-w-sm">
+          <a href="https://biolinxlabs.com/best-sellers?utm_source=advertorial&amp;utm_medium=content&amp;utm_campaign=7-reasons-switching&amp;utm_content=browse-all" target="_blank" rel="noopener noreferrer" class="cta-btn mx-auto mt-5 max-w-sm">
             <span class="block text-lg tracking-tight sm:text-xl">Browse all research compounds →</span>
             <span class="mt-1 block text-xs font-normal">Not stacking? Researcher Exclusive gets you 10% off</span>
           </a>
@@ -319,7 +319,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <p class="font-display text-2xl font-bold tracking-tight sm:text-3xl">DON'T MISS OUT ON</p>
           <p class="font-display text-2xl font-bold tracking-tight sm:text-3xl" style="color: var(--brand-strong);">★ 20% OFF THE G3-R METABOLIC STACK ★</p>
           <p class="mt-2 font-display text-lg italic">* Bundle discount applied automatically at checkout</p>
-          <a href="https://biolinxlabs.com/products" target="_blank" rel="noopener noreferrer" class="cta-btn mx-auto mt-5 max-w-sm">
+          <a href="https://biolinxlabs.com/best-sellers?utm_source=advertorial&amp;utm_medium=content&amp;utm_campaign=7-reasons-switching&amp;utm_content=browse-all" target="_blank" rel="noopener noreferrer" class="cta-btn mx-auto mt-5 max-w-sm">
             <span class="block text-lg tracking-tight sm:text-xl">Browse all research compounds →</span>
             <span class="mt-1 block text-xs font-normal">Not stacking? Researcher Exclusive gets you 10% off</span>
           </a>
@@ -402,14 +402,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 </div>
               </div>
 
-              <a class="cta-btn" style="margin-top: 22px;" href="https://biolinxlabs.com/products" target="_blank" rel="noopener noreferrer">Browse all research compounds →</a>
+              <a class="cta-btn" style="margin-top: 22px;" href="https://biolinxlabs.com/best-sellers?utm_source=advertorial&amp;utm_medium=content&amp;utm_campaign=7-reasons-switching&amp;utm_content=browse-all" target="_blank" rel="noopener noreferrer">Browse all research compounds →</a>
 
               <div class="offer-note">
                 <p><span class="offer-note-title">Stacking instead?</span>The <strong>G3-R Metabolic Signaling Stack</strong> saves <strong>20%</strong>, applied automatically at checkout.</p>
               </div>
             </div>
             <div class="offer-media">
-              <a class="img-link" href="https://biolinxlabs.com/products/g3-r-30-mg?utm_source=advertorial&amp;utm_medium=content&amp;utm_campaign=7-reasons-switching&amp;utm_content=offer-box" target="_blank" rel="noopener noreferrer">
+              <a class="img-link" href="https://biolinxlabs.com/best-sellers?utm_source=advertorial&amp;utm_medium=content&amp;utm_campaign=7-reasons-switching&amp;utm_content=offer-box" target="_blank" rel="noopener noreferrer">
                 <img src="https://assets.sticky.io/images/originals/2026-03-04-14-00-00/1BVIU0DzYOg3E4ZS3LwvM6HiKTEh2yLT3EsuljVk.jpg" alt="Biolinx Labs G3-R research vial, third-party tested at 99.9% purity">
               </a>
             </div>
@@ -424,13 +424,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <h2 class="text-center font-display text-2xl font-bold leading-tight tracking-tight">
           Ready to Read Your Batch's <span class="text-brand">Certificate of Analysis</span> Before You Buy?
         </h2>
-        <a class="img-link mt-3 block overflow-hidden rounded-md bg-card" href="https://biolinxlabs.com/products/g3-r-30-mg?utm_source=advertorial&amp;utm_medium=content&amp;utm_campaign=7-reasons-switching&amp;utm_content=sidebar-top" target="_blank" rel="noopener noreferrer">
+        <a class="img-link mt-3 block overflow-hidden rounded-md bg-card" href="https://biolinxlabs.com/best-sellers?utm_source=advertorial&amp;utm_medium=content&amp;utm_campaign=7-reasons-switching&amp;utm_content=sidebar-top" target="_blank" rel="noopener noreferrer">
           <img src="https://assets.sticky.io/images/originals/2026-03-04-14-00-00/1BVIU0DzYOg3E4ZS3LwvM6HiKTEh2yLT3EsuljVk.jpg" alt="Biolinx Labs G3-R research vial, third-party tested at 99.9% purity" class="h-auto w-full" loading="lazy">
         </a>
-        <a href="https://biolinxlabs.com/products" target="_blank" rel="noopener noreferrer" class="cta-btn mt-3">
+        <a href="https://biolinxlabs.com/best-sellers?utm_source=advertorial&amp;utm_medium=content&amp;utm_campaign=7-reasons-switching&amp;utm_content=browse-all" target="_blank" rel="noopener noreferrer" class="cta-btn mt-3">
           ➜ Browse all research compounds
         </a>
-        <a class="img-link mt-3 block overflow-hidden rounded-md bg-card" href="https://biolinxlabs.com/products/g2-t-30-mg?utm_source=advertorial&amp;utm_medium=content&amp;utm_campaign=7-reasons-switching&amp;utm_content=sidebar-bottom" target="_blank" rel="noopener noreferrer">
+        <a class="img-link mt-3 block overflow-hidden rounded-md bg-card" href="https://biolinxlabs.com/best-sellers?utm_source=advertorial&amp;utm_medium=content&amp;utm_campaign=7-reasons-switching&amp;utm_content=sidebar-bottom" target="_blank" rel="noopener noreferrer">
           <img src="https://assets.sticky.io/images/originals/2026-03-04-14-00-00/nIkAtvXmnV2ALWe4qJXEklgXoFfaVrhWGpixDxPs.jpg" alt="Biolinx Labs G2-T research vial, third-party tested at 99.75% purity" class="h-auto w-full" loading="lazy">
         </a>
       </div>
@@ -450,7 +450,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <!-- Mobile-only fixed bottom CTA bar -->
   <div class="mobile-sticky-bar">
-    <a class="msb-btn" href="https://biolinxlabs.com/products" target="_blank" rel="noopener noreferrer">
+    <a class="msb-btn" href="https://biolinxlabs.com/best-sellers?utm_source=advertorial&amp;utm_medium=content&amp;utm_campaign=7-reasons-switching&amp;utm_content=browse-all" target="_blank" rel="noopener noreferrer">
       Browse all research compounds
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
     </a>
