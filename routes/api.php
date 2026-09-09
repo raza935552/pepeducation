@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Route;
 // Biolinx → PP conversion bridge (revenue per lander/campaign for Ad Analytics).
 // Secret-verified inside the controller (X-PP-Secret header); no session/CSRF.
 Route::post('/pp/conversions', [ConversionIngestController::class, 'store']);
+// Biolinx -> PP: create/update an affiliate's tailored pre-lander (X-PP-Secret).
+Route::post('/affiliate-landers', [\App\Http\Controllers\Api\AffiliateLanderController::class, 'store']);
 
 // Tracking API
 Route::middleware([\App\Http\Middleware\ValidateTrackingOrigin::class])->group(function () {
